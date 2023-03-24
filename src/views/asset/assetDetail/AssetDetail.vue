@@ -139,7 +139,7 @@
                                     isFormat="money"
                                     typeValue="number"
                                     @getValueEventInput="getValueCostInput"
-                                    v-model="asset.cost"
+                                    v-model="cost"
                                     label="Nguyên giá">
                                 </MInput>
                             </div>
@@ -365,6 +365,7 @@ export default {
             keyLifeTime: 0,
             keyAssetCode: "",
             newCode: "",
+            cost: 0,
         }
     },
     watch: {
@@ -463,7 +464,7 @@ export default {
             // lấy giá trị của assetCategoryId của asset gán cho assetCategoryId
             this.assetCategoryId = this.asset.fixed_asset_category_id;
             this.depreciationValueYear = this.getDepreciationValueYear;
-            this.cost = this.asset.cost;
+            this.cost = this.asset.cost
         }
     },
     mounted() {
@@ -523,6 +524,7 @@ export default {
         handlerEventBtnClickSave(){
             if(this.validateForm()){
                 this.asset.quantity = Number(this.asset.quantity);
+                console.log(this.asset.cost);
                 let entity = {
                     fixed_asset_code : this.asset.fixed_asset_code,
                     fixed_asset_name : this.asset.fixed_asset_name,
@@ -545,6 +547,7 @@ export default {
                     active: false
                 }
                 this.isShowLoad = true;
+                console.log("entity:",entity);
                 if(this.typeForm=="add" || this.typeForm == "clone"){
                     this.addAsset(entity);
                 }else if(this.typeForm == "edit"){
