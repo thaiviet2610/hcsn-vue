@@ -1,0 +1,248 @@
+.content{
+    width: 100%;
+    height: 100%;
+    background-color: #f4f7ff;
+    float: right;
+    box-sizing: border-box;
+    /* position: relative;
+    top: 44px;
+    left: 66px; */
+    display: flex;
+    flex-direction: column;
+    padding: 14px 20px 16px 20px;
+}
+
+.content-header{
+    /* margin-top: 14px;
+    margin-left: 11px; */
+    width: 100%;
+    height: 38px;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    
+    /* position: absolute;
+    top: 13px;
+    left: 20px; */
+}
+
+.content-header__left{
+    /* width: 639px; */
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 11px;
+    border-radius: 2.5px;
+}
+
+.input1{
+    /* width: 179px; */
+    min-width: 179px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.input1__text{
+    width: 140px;
+    height: 15px;
+    margin-left: 8px;
+    font-size: 13px;
+    font-style: italic;
+    overflow: hidden;
+    /* color: rgba(0, 0, 0, 0.356); */
+}
+
+
+
+.input2{
+    border-radius: 2.5px;
+    border: 1px solid #afafaf;
+    /* width: 100px; */
+    /* width: 219px; */
+    /* min-width: 170px; */
+    height: 35px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: #ffffff;
+}
+
+
+.input2-up{
+    /* width: 219px; */
+    height: 35px;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+}
+
+.input2__icon1{
+	width: 17px;
+	height: 16px;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -68px;
+
+}
+
+.input2__text{
+    /* width: 63px;
+    height: 15px; */
+    /* width: auto; */
+    /* min-width: 63px; */
+    /* width: 80px; */
+    min-width: 160px;
+    margin-left: 8px;
+    overflow: hidden;
+    
+    /* font-size: 13px;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.356); */
+}
+
+.input2__text input{
+    width: 130px;
+    overflow: hidden;
+    padding-left: 8px;
+    /* margin-left: 8px; */
+}
+
+
+
+.input1__text input{
+    width: 120px;
+    height: 15px;
+    font-size: 13px;
+    font-style: italic;
+    /* color: rgba(0, 0, 0, 0.014); */
+
+    border: none;
+}
+
+/* .content .input__icon2{
+    width: 8px;
+    height: 5px;
+    position: absolute;
+    right: 12px;
+    border: none;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -72px -338px;
+    cursor: pointer;
+} */
+
+
+
+
+
+.content-header__right{
+    height: 36px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 10px;
+    margin-left: 10px;
+    /* position: absolute;
+    right: 0px; */
+}
+
+.content-header__right .item1{
+    background-color: #1aa4c8;
+    border-radius: 3px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, .16);
+    width: 110px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+}
+
+.content-header__right .item1:hover{
+    background-color: #097894;
+}
+
+.content-header__right .item1__text{
+    min-width: 79px;
+    height: 15px;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.item2{
+    border: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow:  inset 0 2px 6px rgba(0, 0, 0, .16);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.item2__icon{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.item2__icon--image{
+    width: 18px;
+	height: 17px;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -287px -111px;
+}
+
+.item3{
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, .16);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+}
+
+.item3:hover{
+    background-color: #dacece;
+}
+
+.item3__icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    
+}
+
+.item3__icon--image{
+    width: 18px;
+	height: 18px;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -463px -111px;
+}
+
+.content-body{
+    width: 100%;
+    height: calc(100% - 38px - 13px);
+    /* max-height: calc(100% - 38px);
+    overflow-y: scroll ; */
+    /* padding-top: 13px;
+    padding-bottom: 17px; */
+    border-radius: 3.5px;
+    border: 1px solid #afafaf;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    margin-top: 13px;
+    /* margin-bottom: 16px; */
+    box-sizing: border-box;
+    position: relative;
+}

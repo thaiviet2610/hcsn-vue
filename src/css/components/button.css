@@ -1,0 +1,82 @@
+.btn-header__icon{
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-header__icon:hover{
+    background-color: white;
+}
+
+.btn-form__footer{
+    width: 80px;
+    height: 36px;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+
+.btn--default{
+    background-color: #1aa4c8;
+    color: white;
+    border: none;
+}
+
+.btn-form__footer:hover{
+    background-color: rgb(153, 151, 151);
+}
+
+.btn--default:hover{
+    background-color: #097894;
+}
+
+
+
+/* .btn__toast--delete:hover{
+    background-color: rgb(168, 164, 164);
+} */
+
+
+
+.btn-dialog__no{
+    background-color: white;
+    border: 1px solid rgba(206, 205, 205, 0.384); 
+    
+}
+
+.btn-dialog__no:hover{
+    background-color: rgba(156, 153, 153, 0.349);
+}
+
+.btn-dialog__no-save{
+    background-color: rgba(136, 219, 242, 0.904);
+    border: 1px solid rgba(14, 143, 179, 0.904); 
+}
+
+.btn-dialog__no-save:hover{
+    background-color: rgba(25, 192, 238, 0.904);
+}
+
+.btn-dialog__cancel,.btn-dialog__delete,.btn-dialog__close{
+    background-color: #50B83C;
+    border: none;
+}
+
+.btn-dialog__cancel:hover,.btn-dialog__delete:hover,.btn-dialog__close:hover{
+    background-color: #177a03;
+}
+
+
+
+
+
+
+
+

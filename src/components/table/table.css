@@ -1,0 +1,446 @@
+
+table{
+    /* height: 533px; */
+    /* height: 100%; */
+    /* min-width: 1260px; */
+    width: 100%;
+    
+    /* height: 100%; */
+    /* overflow-x: scroll; */
+    background-color: #ffffff;
+    border-collapse: collapse;
+    border-bottom: 1px solid #afafaf;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
+    border-spacing: 0;
+    /* padding: 0 5px 0 5px; */
+    /* overflow: hidden; */
+    /* position: relative; */
+    /* overflow-y: scroll; */
+}
+
+.table{
+    height: 100%;
+    min-width: 835px;
+    /* max-height: 100%; */
+    max-height: calc(100% - 40px);
+    overflow-y: scroll ;
+}
+
+
+th{
+    height: 38px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #afafaf;
+}
+
+td{
+    height: 40px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #afafaf;
+}
+
+tfoot td{
+    height: 35px !important;
+}
+
+
+
+
+thead{
+    position: sticky;
+    top: 0;
+    background-color: #f5f5f5;
+    z-index: 1;
+    font-size: 13px;
+    color: #001031;
+    font-weight: 700;
+}
+
+tbody tr{
+    cursor: pointer;
+
+}
+
+
+tbody td{
+    
+    cursor: pointer;
+    
+}
+
+.footer__table tbody{
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    position: sticky;
+    bottom: 0;
+    padding: 0;
+    outline: 1px solid #afafaf;
+    opacity: 100%;
+}
+
+
+tfoot{
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    position: sticky;
+    bottom: 0;
+    padding: 0;
+    outline: 1px solid #afafaf;
+    opacity: 100%;
+}
+
+
+
+
+
+.checkbox{
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    /* padding-left: 16px;
+    padding-right: 20px; */
+    color: #001031;
+    /* background: url('../../assets/icon/qlts-icon.png') no-repeat -113px -377px; */
+}
+
+.text-align-left{
+    text-align: left;
+}
+
+.text-align-right{
+    text-align: right;
+}
+
+.text-align-center{
+    text-align: center;
+}
+
+.column1{
+    width: 50px;
+    /* min-width: 50px; */
+    padding: 0 20px 0 16px;
+    box-sizing: border-box;
+}
+
+.column2{
+    width: 29px;
+    /* min-width: 25px; */
+    box-sizing: border-box;
+    padding-right: 10px;
+}
+
+.column3{
+    /* width: 80px; */
+    min-width: min-content;
+    padding-right: 10px;
+}
+
+
+.column4{
+    /* width: 115px; */
+    min-width: 90px;
+    padding-right: 10px;
+}
+
+
+.column5{
+    /* width: 125px; */
+    min-width: 90px;
+    padding-right: 10px;
+}
+
+
+
+.column6{
+    min-width: 90px;
+    padding-right: 5px;
+}
+
+
+
+.column7{
+    width: 55px;
+    /* min-width: 52px; */
+}
+
+.footer_right{
+    text-align: right;
+    font-family: Roboto-Bold;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+
+
+.column8{
+    width: 110px;
+    min-width: 100px;
+    padding: 0 0 0 10px;
+}
+
+
+
+.column9{
+    width: 110px;
+    min-width: 100px ;
+    padding: 0 0 0 10px;
+}
+
+
+
+.column10{
+    width: 110px;
+    min-width: 100px;
+    padding: 0 0 0 10px;
+}
+
+
+
+.column11{
+    width: 95px;
+    min-width: 60px;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+.column12{
+    width: 100px;
+    min-width: 66px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+
+.function{
+    /* width: 62px; */
+    /* padding: 0px 18px 0px 18px; */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    visibility: hidden;
+}
+
+.function__edit{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -156px -68px;
+	width: 16px;
+	height: 16px;
+    border: none !important;
+    cursor: pointer;
+}
+
+.function__edit:hover{
+    background-color: unset;
+}
+
+.function__clone{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -244px -112px;
+	width: 16px;
+	height: 16px;
+    border: none !important;
+    cursor: pointer;
+}
+
+.function__clone:hover{
+    background-color: unset;
+}
+
+
+
+.content-footer__item3--icon1{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-weight: 400 !important;
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.content-footer__item3--icon1:hover{
+    background-color: rgb(207, 203, 203);
+}
+
+.item3__icon1--image{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -206px -248px;
+	width: 5px;
+	height: 8px;
+}
+
+.item3__icon3--image{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -250px -248px;
+	width: 5px;
+	height: 8px;
+}
+
+/* [status="row__selecter"]{
+    background-color: rgba(26, 164, 200, .2);
+} */
+
+.row__selected{
+    background-color: rgba(162, 240, 243, 0.829);
+}
+
+tbody tr:hover{
+    height: 38px;
+    background-color: rgba(162, 240, 243, 0.829);
+}
+
+tbody tr:hover .function {
+    visibility: visible !important;
+}
+
+.content-footer__item2--icon{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -72px -338px;
+	width: 7px;
+	height: 5px;
+}
+
+.item2--icon{
+    width: 7px;
+	height: 5px;
+    padding: 0;
+    border: none !important;
+}
+
+.content-footer__left{
+    width: 402px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    padding-left: 16px;
+    align-items: center;
+    position: relative;
+}
+
+.content-footer__item1--text{
+    font-size: 11px;
+    height: 13px;
+    font-weight: 400;
+}
+
+.content-footer__item2{
+    background-color: #ffffff;
+    border-radius: 2.625px;
+    border: 1px solid #afafaf;
+    width: 59px;
+    height: 25px;
+    overflow: hidden;
+    /* position: absolute; */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.content-footer__item2--text{
+    height: 14px;
+
+}
+
+.content-footer__item3{
+    min-width: 180px;
+    display: flex;
+    column-gap: 10px;
+    position: absolute;
+    left: 229px;
+
+}
+
+.content-footer__item3--icon2{
+    display: flex;
+    column-gap: 5px;
+}
+
+.page--selected{
+    background-color: #f5f5f5 !important;
+    font-weight: 700 !important;
+}
+
+.text{
+    height: 12px;
+    font-size: 11px;
+}
+
+.page__index{
+    background-color: #ffffff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    font-weight: 400;
+    height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.page__index:hover{
+    background-color: #f5f5f5;
+}
+
+.item3__icon2--icon{
+    width: 20px;
+    height: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 8px;
+}
+
+.icon__ellipsis{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -422px -31px;
+	width: 13px;
+	height: 3px;
+}
+
+.content-footer{
+    width: 100%;
+    min-width: 1000px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    padding: 0px 107px 0px 17px;
+}
+
+/* .dropdown_down_table{
+    width: 61px;
+    height: 27px;
+} */
+
+.dropdown_table{
+    width: 59px;
+    height: 25px;
+    position: absolute;
+    left: 150px;
+    font-weight: 400;
+}
+
+.footer__table{
+    min-width: 835px;
+    height: 40px;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+}
+
+.footer__left{
+    min-width: 418px;
+}
+
+
+
+
+
+
+

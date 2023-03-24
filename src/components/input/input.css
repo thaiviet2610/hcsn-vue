@@ -1,0 +1,100 @@
+.input{
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    position: relative;
+}
+
+
+.error--info{
+    color: #ff0000 !important;
+    font-size: 11px;
+    font-weight: 400px;
+    font-family: Roboto-Regular;
+}
+
+input[type="date"]{
+    padding-right: 6px;
+    text-align: left;
+}
+
+.input__icon2--image{
+    width: 16px;
+    height: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input__icon2--image:hover{
+    background-color: rgb(207, 203, 203);
+}
+
+.icon__search{
+    width: 24px;
+    height: 24px;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    position: absolute !important;
+    border: none;
+    padding: 0;
+    position: absolute;
+    top: 5px;
+}
+
+.icon__search--image{
+    /* margin-left: 6px; */
+    width: 18px;
+	height: 18px;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -23px;
+}
+
+.input__icon1{
+    width: 24px;
+    height: 24px;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input1__icon1{
+    /* margin-left: 6px; */
+    width: 18px;
+	height: 18px;
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -23px;
+}
+
+.content-header input{
+    font-family: Roboto-Italic ;
+}
+
+.inputNumber{
+    text-align: right;
+}
+
+.classInput{
+    color: black !important;
+}
+
+/* Ẩn nút mũi tên trong input number trên 
+    Chrome, Safari, Edge, Opera */
+.classInput::-webkit-outer-spin-button,
+.classInput::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Ẩn nút mũi tên trong input number trên 
+    Firefox */
+
+.classInput[type=number] {
+    -moz-appearance: textfield;
+}
+
+.disableClass{
+    background-color: rgb(220 215 215 / 36%) !important;
+}

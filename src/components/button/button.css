@@ -1,0 +1,35 @@
+.btn--default {
+    background-color: #1aa4c8 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn--default:hover{
+    background-color: #097894 !important;
+}
+
+.btn{
+    width: 82px;
+    height: 36px;
+    padding: 0;
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #afafaf;
+    
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn:hover{
+    background-color: rgb(153, 151, 151);
+}
+
+.btn--no-save{
+    background-color: rgb(230, 233, 235) !important;
+    border: 1px solid rgba(14, 143, 179, 0.904) !important; 
+    color: rgba(14, 143, 179, 0.904) !important;
+}
+
+.btn--no-save:hover{
+    background-color: rgba(25, 192, 238, 0.904) !important;
+}

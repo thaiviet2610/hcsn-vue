@@ -1,0 +1,124 @@
+@import url(./components/button.css);
+@import url(./components/input.css);
+@import url(./components/popup.css);
+@import url(../components/table/table.css);
+@import url(./layout/content.css);
+@import url(./layout/header.css);
+@import url(./layout/menu.css);
+@import url(./components/sidebar.css);
+/* @import url(./components/dropdown.css); */
+@import url(./components/tooltip.css);
+body{
+    width: 100%;
+    height: 100vh;
+    /* width: 1366px;
+    height: 668px; */
+    margin: 0px;
+    /* padding: 0px; */
+    font-size: 13px;
+    /* display: flex; */
+    
+}
+
+body::-webkit-scrollbar {
+    height: 4px;
+    width: 8px;
+}
+
+*{
+    font-family: Roboto-Regular;
+    font-size: 13px;
+}
+
+
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(../assets/font/Roboto-Regular.ttf);
+    font-weight: 400px;
+    font-size: 14px;
+}
+
+@font-face {
+    font-family: Roboto-Bold;
+    src: url(../assets/font/Roboto-Bold.ttf);
+    font-weight: 700px;
+    font-size: 13px;
+}
+
+@font-face {
+    font-family: Roboto-Medium;
+    src: url(../assets/font/Roboto-Medium.ttf);
+    font-weight: 500px;
+    font-size: 14px;
+}
+
+@font-face {
+    font-family: Roboto-Italic;
+    src: url(../assets/font/Roboto-Italic.ttf);
+    font-weight: 500px;
+    font-size: 13px;
+}
+
+@font-face {
+    font-family: Roboto-Thin;
+    src: url(../assets/font/Roboto-Thin.ttf);
+    font-weight: 500px;
+    font-size: 13px;
+}
+
+.required{
+    color: red;
+}
+
+.m-flex{
+    display: flex;
+}
+
+.m-col-gap-8{
+    column-gap: 8px;
+}
+
+.m-row-gap-8{
+    column-gap: 8px;
+}
+
+.m-row{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* .body{
+    width: calc(100% - 66px);
+} */
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    /* display: none; */
+}
+
+.body{
+    width: calc(100% - 66px);
+    min-width: 837px;
+    height: 100%;
+}
+
+
+.main{
+    /* width: calc(100% - 194px); */
+    width: 100%;
+    min-width: 882px;
+    height: calc(100% - 44px);
+    /* height: 100%; */
+    /* float: left;
+    position: absolute;
+    top: 0;
+    right: 0; */
+}
+
+.body-right__sidebar{
+    width: calc(100% - 194px);
+    height: 650px;
+}
