@@ -13,6 +13,7 @@
             <div class="dialog-footer">
                 <!-- nút lưu của dialog  -->
                 <MButton
+                    ref="mButtonSave"
                     :isDefault="isDefault"
                     label="Lưu"
                     @btnAddOnClickBtn="handlerEventBtnClickSave"  >
@@ -46,12 +47,24 @@ export default {
             default:null
         }
     },
+    mounted() {
+        this.setFocus();
+    },
     data() {
         return {
             isDefault: true
         }
     },
     methods: {
+        /**
+        * Hàm set focus vào input
+        * @author LTVIET (05/03/2023)
+        */
+        setFocus() {
+            this.$nextTick(function() {
+                this.$refs["mButtonSave"].setFocus();
+            })
+        }, 
         /**
          * Hàm xử lý sự kiện lưu asset
          * @author LTVIET (02/03/2023)

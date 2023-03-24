@@ -1,8 +1,8 @@
 <template>
-  <div class="dialog">
+  <div  class="dialog">
     <div class="dialog-content">
       <!-- body của dialog  -->
-      <div class="dialog-body">
+      <div  class="dialog-body">
         <!-- icon của dialog  -->
         <div class="dialog-body__icon"></div>
         <!-- nội dung thông báo của dialog  -->
@@ -11,9 +11,13 @@
       <!-- footer của dialog  -->
       <div class="dialog-footer">
         <!-- nút đóng của dialog  -->
-        <button @click="this.$emit('onClose')" class="btn-dialog btn--default">
+        <MButton ref="mButton"
+        @btnAddOnClickBtn = "addOnClickBtn"
+        class="btn-dialog btn--default"
+        label="Đóng"></MButton>
+        <!-- <button ref="mButton" @click="this.$emit('onClose')" class="btn-dialog btn--default">
           Đóng
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -24,6 +28,23 @@ export default {
   name: "MDialogNotify",
   props: ["content"],
   components: {},
+  mounted() {
+    this.setFocus();
+  },
+  methods: {
+    /**
+    * Hàm set focus vào button đóng
+    * @author LTVIET (05/03/2023)
+    */
+    setFocus() {
+      this.$nextTick(function() {
+          this.$refs["mButton"].setFocus();
+      })
+    }, 
+    addOnClickBtn(){
+      this.$emit('onClose');
+    }
+  },
 };
 </script>
 

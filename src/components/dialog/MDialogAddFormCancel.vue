@@ -18,6 +18,7 @@
             <div class="dialog-footer">
                 <!-- nút hủy của dialog  -->
                 <MButton
+                    ref="mButtonCancel"
                     :isDefault="isDefault"
                     :label="labelButtonDefault"
                     @btnAddOnClickBtn="handlerEventBtnClickCancel"  >
@@ -70,6 +71,9 @@ export default {
     components:{
 
     },
+    mounted() {
+        this.setFocus();
+    },
     created() {
         // hiển thị label button theo type cảu dialog
         if(this.type == "delete"){
@@ -85,6 +89,15 @@ export default {
         }
     },
     methods: {
+        /**
+        * Hàm set focus vào input
+        * @author LTVIET (05/03/2023)
+        */
+        setFocus() {
+            this.$nextTick(function() {
+                this.$refs["mButtonCancel"].setFocus();
+            })
+        }, 
         /**
          * Hàm gọi đến asset detail để đóng dialog
          * @author LTVIET (02/03/2023)

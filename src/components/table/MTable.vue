@@ -220,7 +220,7 @@
               </div>
             </div>
           </th>
-          <th class="column7 text-align-right">{{ quantityTotal }}</th>
+          <th class="column7 text-align-right">{{ formatValue(quantityTotal, "money") }}</th>
           <th class="column8 text-align-right">{{ formatValue(costTotal, "money") }}</th>
           <th class="column9 text-align-right">
             {{ formatValue(depreciationValueTotal, "money") }}
@@ -320,11 +320,12 @@ export default {
           this.depreciationValueTotal = res.data.DepreciationValueTotal;
           this.residualValueTotal = this.costTotal - this.depreciationValueTotal;
           this.getTotalPage();
-          this.checkbox.fill(false);
-          this.isSelectedRow.fill(false);
-          this.quantityCheckbox = 0;
-          this.checkboxAll = false;
-          this.indexCheckbox = -1;
+          this.cancelCheckbox();
+          // this.checkbox.fill(false);
+          // this.isSelectedRow.fill(false);
+          // this.quantityCheckbox = 0;
+          // this.checkboxAll = false;
+          // this.indexCheckbox = -1;
           // this.isShowLoad=false;
           this.isShowLoad = false;
         })
@@ -343,10 +344,10 @@ export default {
      * @author LTVIET (24/03/2023)
      */
     getMonthDiff(value){
-      let valueTime = moment(value).diff(moment(), "milliseconds");
+      let valueTime = moment(moment()).diff(value, "milliseconds");
       let duration = moment.duration(valueTime);
-      let monthDiff = duration.months()/-1;
-      let yearDiff = duration.years()/-1;
+      let monthDiff = duration.months();
+      let yearDiff = duration.years();
       return monthDiff+(yearDiff*12);
     },
 
@@ -603,6 +604,17 @@ export default {
     addOnClickPageNumber(index) {
       this.pageNumber = index;
     },
+
+    /**
+     * Hàm set trạng thái tất cả checkbox thành false;
+     */
+    cancelCheckbox(){
+      this.checkbox.fill(false);
+      this.isSelectedRow.fill(false);
+      this.quantityCheckbox = 0;
+      this.checkboxAll = false;
+      this.indexCheckbox = -1;
+    }
   },
   async created() {
     // lấy api để load danh sách asset

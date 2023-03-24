@@ -1,5 +1,6 @@
 <template>
     <button 
+        ref="mButton"
         class="btn"
         :class="{'btn--default':isDefault,'btn--no-save':isNoSave}"
         @click="addEventClickBtn">
@@ -38,6 +39,9 @@ export default {
     components:{
 
     },
+    mounted() {
+        this.setFocus();
+    },
     methods: {
         /**
          * Hàm xử lý sự kiện click button
@@ -45,7 +49,16 @@ export default {
          */
         addEventClickBtn() {
             this.$emit('btnAddOnClickBtn');
-        }
+        },
+        /**
+        * Hàm set focus vào button
+        * @author LTVIET (05/03/2023)
+        */
+        setFocus() {
+        this.$nextTick(function() {
+            this.$refs["mButton"].focus();
+        })
+        }, 
     },
 }
 </script>

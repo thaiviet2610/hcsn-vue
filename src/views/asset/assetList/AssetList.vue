@@ -92,16 +92,18 @@
         </AssetDetail>
         <!-- dialog thông báo hành động không có tài sản nào được chọn để xóa -->
         <MDialogNotify 
+            ref="mDialogNotifyDelete"
             :content="contentDialogNotifyDelete"
-            v-if="isShowDialogNotifyDelete" 
-            @onClose="this.isShowDialogNotifyDelete = false">
+            v-show="isShowDialogNotifyDelete" 
+            @onClose="handleEventCloseDialogNotifyDelete">
         </MDialogNotify>
         
         <!-- dialog xác nhận hành động xóa 1 tài sản -->
         <MDialogFormConfirm 
+            ref="mDialogConfirmDeleteOneAsset"
             :content="contentDialogConfirmDeleteOneAsset"
             type="delete"
-            v-if="isShowDialogConfirmDeleteOneAsset"
+            v-show="isShowDialogConfirmDeleteOneAsset"
             :contentColorAfter="contentColorAfter"
             :contentAfter="contentAfterDialogConfirmDeleteOneAsset"
             :colorTextAfter="colorTextAfter"
@@ -110,9 +112,10 @@
         </MDialogFormConfirm>
         <!-- dialog xác nhận hành động xóa nhiều tài sản -->
         <MDialogFormConfirm 
+            ref="mDialogConfirmDeleteMultiAsset"
             :content="contentDialogConfirmDeleteMultiAsset"
             type="delete"
-            v-if="isShowDialogConfirmDeleteMultiAsset"
+            v-show="isShowDialogConfirmDeleteMultiAsset"
             :contentColorBefore="contentColorBefore"
             :colorTextBefore="colorTextBefore"
             @onCloseDialogNoDelete="handleEventCloseDialogNoDelete"
@@ -122,7 +125,7 @@
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
         <!-- toast message thông báo xóa thành công  -->
         <MToastSucess 
-            v-if="isShowToastSucess"
+            v-show="isShowToastSucess"
             :notify="notifyToastSuccess"
             :content="contentToastSuccess"
             :buttonUndo="isButtonUndo"
@@ -228,9 +231,7 @@ export default {
          */
         handlerEventKeydownEnter(value){
             this.keyword = value;
-            console.log(this.keyword);
             if(!this.invalid){
-                console.log(this.keyword);
                 this.keyTable = ++this.keyTable;
             }
         },
@@ -337,6 +338,7 @@ export default {
             if(this.quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
                 this.isShowDialogNotifyDelete = true;
+                this.$refs["mDialogNotifyDelete"].setFocus();
             }else if(this.quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
                 //2.2.1. lấy thông tin của tài sản đó
@@ -349,6 +351,7 @@ export default {
                 this.contentAfterDialogConfirmDeleteOneAsset = "?";
                 this.colorTextAfter = 'black';
                 this.isShowDialogConfirmDeleteOneAsset = true;
+                this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
             }else{
                 //2.2. nếu nếu số lượng > 1 thì hiển thị thông báo xóa nhiều tài sản
                 this.isShowDialogConfirmDeleteMultiAsset = true;
@@ -365,6 +368,7 @@ export default {
                     this.contentColorBefore = quantity;
                     this.colorTextBefore = 'black';
                 }
+                this.$refs["mDialogConfirmDeleteMultiAsset"].setFocus();
             }
             
         },
@@ -377,9 +381,11 @@ export default {
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 //--> ẩn đi dialog xác nhận xóa 1 tái sản
                 this.isShowDialogConfirmDeleteOneAsset = false;
+                this.$refs["txtSearchAsset"].setFocus();
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 //-->ẩn đi dialog xác nhận xóa nhiều tái sản
                 this.isShowDialogConfirmDeleteMultiAsset = false;
+                this.$refs["txtSearchAsset"].setFocus();
             }
         },
 
@@ -397,11 +403,12 @@ export default {
                 let id = checkboxSelected.fixed_asset_id;
                 //gọi hàm xóa tài sản
                 this.deleteAsset(id);
+                this.$refs["txtSearchAsset"].setFocus();
+                this.$refs['mTable'].cancelCheckbox();
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 //-->ẩn đi dialog xác nhận xóa nhiều tái sản
                 this.isShowDialogConfirmDeleteMultiAsset = false;
-                // duyệt mảng các tài snar cần xóa
-
+                // duyệt mảng các tài sản cần xóa
                 for(let i =0;i<checkboxSelected.length;i++){
                     // lấy id của từng tài sản cần xóa
                     let id = checkboxSelected[i].fixed_asset_id;
@@ -411,7 +418,8 @@ export default {
                         break;
                     }
                 }
-                
+                this.$refs["txtSearchAsset"].setFocus();
+                this.$refs['mTable'].cancelCheckbox();
             }
             
         },
@@ -511,6 +519,10 @@ export default {
             if(!value){
                 this.departmentId = "";
             }
+        },
+        handleEventCloseDialogNotifyDelete(){
+            this.isShowDialogNotifyDelete = false;
+            this.$refs["txtSearchAsset"].setFocus();
         }
         
     },
@@ -525,6 +537,7 @@ export default {
             console.log(error);
             this.invalid = true;
         })
+        
     },
     mounted() {
         // mặc định focus vào input tìm kiếm khi load trang

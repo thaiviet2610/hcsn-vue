@@ -337,7 +337,6 @@ methods: {
                 this.isShow = true;
                 this.zIndex = 2;
                 break;
-            case enumJS.tab:
             case enumJS.enter:
                 if(this.indexItemSelect==-1){
                     if(this.value){
