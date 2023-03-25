@@ -5,7 +5,7 @@
 @import url(./layout/content.css);
 @import url(./layout/header.css);
 @import url(./layout/menu.css);
-@import url(./components/sidebar.css);
+@import url(./layout/sidebar.css);
 /* @import url(./components/dropdown.css); */
 @import url(./components/tooltip.css);
 body{

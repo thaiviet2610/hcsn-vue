@@ -59,7 +59,9 @@ const resourceJS = {
     validateProfessionalAssetDetail: {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá.",
         depreciationRateDifferentLifeTimeValue: "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng",
-        purchaseDateGreaterThanProductionYear: "Ngày bắt đầu sử dụng phải là ngày sau ngày mua!"
+        purchaseDateGreaterThanProductionYear: "Ngày bắt đầu sử dụng phải là ngày sau ngày mua!",
+        maxLengthCode: "Mã tài sản vượt quá độ dài cho phép 100 ký tự!",
+        maxLengthName: "Tên tài sản vượt quá độ dài cho phép 255 ký tự!"
     },
     error: {
         validateData: "Cần phải nhập thông tin ",

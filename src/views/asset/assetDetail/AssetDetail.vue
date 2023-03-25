@@ -673,6 +673,21 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateProfessional(){
+            // validate độ dài mã tài sản (không được quá 100 ký tự)
+            if(this.asset.fixed_asset_code.length > 100){
+                this.isShowDialogNotify = true;
+                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
+                return false;
+            }
+
+            // validate độ dài mã tài sản (không được quá 255 ký tự)
+            if(this.asset.fixed_asset_code.length > 255){
+                this.isShowDialogNotify = true;
+                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                return false;
+            }
+
+            // validate giá trị hao mòn năm phải nhỏ hơn nguyên giá
             let depreciationValueYear;
             if(typeof this.depreciationValueYear == "string"){
                 depreciationValueYear = this.getMoney(this.depreciationValueYear);
@@ -686,18 +701,22 @@ export default {
                 return false;
             }
 
+            // validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
             if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
                 
                 return false;
             }
+
+            // validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
             let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
-            if(valueTime>0){
+            if(valueTime > 0){
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
                 return false;
             }
+            
             return true;
         },
         

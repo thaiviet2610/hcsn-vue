@@ -19,6 +19,10 @@
     /* display: none; */
 }
 
+.sidebar a{
+    text-decoration: none;
+}
+
 .sidebar-header{
     width: 100%;
     height: 50px;
@@ -207,6 +211,6 @@
     background-color: #324e70;
 }
 
-[status=sidebar__selected]{
+.router-link-active{
     background-color: #1aa4c8;
 }
