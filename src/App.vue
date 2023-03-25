@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" >
     <TheMenu></TheMenu>
     <div class="body">
       <TheHeader></TheHeader>
@@ -18,6 +18,9 @@ export default {
   components: {
     TheMain,TheMenu,
     TheHeader
+  },
+  methods: {
+    
   },
 }
 </script>

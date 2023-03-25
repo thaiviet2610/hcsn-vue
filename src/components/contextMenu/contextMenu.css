@@ -1,0 +1,59 @@
+.context__menu{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    
+    z-index: 60;
+    border: 1px solid #afafaf;;
+}
+
+.context__menu--item{
+    padding: 10px 10px 10px 0;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 1px solid #afafaf;
+    cursor: pointer;
+}
+
+
+.context__menu--item:hover{
+    background-color: rgba(162, 240, 243, 0.829);
+}
+
+.item--icon{
+    padding: 0 12px 0 12px;
+    box-sizing: border-box;
+}
+
+.item--text{
+    font-family: Roboto-Regular;
+    font-size: 14px;
+    font-weight: 400;
+    color: #212121;
+}
+
+.context__menu--icon-add{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -375px -419px;
+	width: 18px;
+	height: 18px;
+}
+
+.context__menu--icon-clone{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -244px -112px;
+	width: 16px;
+	height: 16px;
+}
+
+.context__menu--icon-edit{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -156px -68px;
+	width: 16px;
+	height: 16px;
+}
+
+.context__menu--icon-delete{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -419px -111px;
+	width: 18px;
+	height: 18px;
+}

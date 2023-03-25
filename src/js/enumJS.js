@@ -11,6 +11,12 @@ const enumJS = {
         updateFailed : 5,
         deleteFailed : 6,
         notFound : 7,
+    },
+    contextMenu:{
+        add: 0,
+        clone: 1,
+        edit: 2,
+        delete: 3,
     }
 }
 

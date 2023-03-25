@@ -34,7 +34,8 @@
       </thead>
       <!-- phần body của table  -->
       <tbody>
-        <tr
+        <tr style="position: relative;"
+          @contextmenu="handleEventClickRightMouse($event,item)"
           @dblclick="btnAddOnDblClickRowTable(item)"
           @click="btnAddOnClickRowTable(index + 1)"
           v-for="(item, index) in this.assets"
@@ -97,6 +98,7 @@
             </div>
           </td>
         </tr>
+
       </tbody>
     <!-- phần footer của table  -->
     </table>
@@ -239,7 +241,16 @@
       @onClose="handlerEventCloseDialogNotifyLoadError"
     >
     </MDialogNotify>
+    <MContextMenu  
+          v-show="isShowContextMenu"
+          :data="dataContextMenu"
+          :pageX="contextMenuPageX"
+          :pageY="contextMenuPageY"
+          :key="keyContextMenu"
+          :entity="contextMenuEnity"
+          @addOnClickItem="addOnClickItemContextMenu"></MContextMenu>
   </div>
+  
 </template>
 
 <script>
@@ -248,10 +259,11 @@ import resourceJS from "@/js/resourceJS.js";
 import MDialogLoadData from "../dialog/MDialogLoadData.vue";
 import axios from "axios";
 import moment from 'moment'
+import MContextMenu from "../contextMenu/MContextMenu.vue";
 export default {
   name: "MTable",
   components: {
-    MDialogLoadData,
+    MDialogLoadData,MContextMenu
   },
   props: {
     api: {
@@ -301,11 +313,48 @@ export default {
       costTotal: 0,
       depreciationValueTotal: 0,
       residualValueTotal: 0,
+      isShowContextMenu: false,
+      dataContextMenu: [
+        {
+          icon: "context__menu--icon-add",
+          text: "Thêm tài sản"
+        },
+        {
+          icon: "context__menu--icon-clone",
+          text: "Nhân bản tài sản"
+        },
+        {
+          icon: "context__menu--icon-edit",
+          text: "Sửa tài sản"
+        },
+        {
+          icon: "context__menu--icon-delete",
+          text: "Xóa tài sản"
+        }
+      ],
+      contextMenuPageX: 0,
+      contextMenuPageY: 0,
+      keyContextMenu: 0,
+      contextMenuEnity: null,
     };
   },
   computed: {
   },
   methods: {
+    addOnClickItemContextMenu(values){
+      let index = values[0];
+      let item = values[1];
+      this.$emit("addOnClickContextMenu",[item,index]);
+      
+    },
+    handleEventClickRightMouse(event,item){
+        event.preventDefault();
+        this.contextMenuEnity = item;
+        this.contextMenuPageX = event.pageX+10;
+        this.contextMenuPageY = event.pageY+10;
+        this.isShowContextMenu = true;
+        this.keyContextMenu=++this.keyContextMenu;
+    },
     loadData() {
       this.isShowLoad = true;
       axios

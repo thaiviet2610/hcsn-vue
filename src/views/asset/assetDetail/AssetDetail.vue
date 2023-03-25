@@ -436,7 +436,6 @@ export default {
     
     created() {
         if(this.typeForm == "add"){
-            console.log(this.asset);
             this.getDefaultAsset();
             this.asset.fixed_asset_code = this.propAssetCode;
             this.oldValueAseet = JSON.stringify(this.asset);
@@ -508,7 +507,7 @@ export default {
             if(this.typeForm == "add"){
                 this.isShowDialogAddFormCancel = true;
             }
-            if(this.typeForm == "edit"){
+            if(this.typeForm == "edit" || this.typeForm == "clone"){
                 if(newValueAsset != this.oldValueAseet){
                     this.isShowDialogEditFormCancel = true;
                 }else{

@@ -1,6 +1,6 @@
 <template>
     <!-- <div class="body"> -->
-        <div class="main">
+        <div class="main" @click="addOnClickAssetList">
             <!-- phần header  -->
             
             <!-- phần content  -->
@@ -66,7 +66,7 @@
                 <div class="content-body">
                     <!-- table hiển thị danh sách tài sản  -->
                     <Mtable 
-                        ref="mtable"
+                        ref="mTable"
                         @btnDblClickRow="handleEventDblClickRow"
                         @btnClickFunctionOpenForm="handleEventOpenForm"
                         :departmentId="departmentId"
@@ -74,6 +74,7 @@
                         :keyword="keyword"
                         :key="keyTable"
                         v-model="quantityCheckbox"
+                        @addOnClickContextMenu="handleEventClickContextMenu"
                         :api="this.assetApi"></Mtable>
                 </div>
             </div>
@@ -147,6 +148,7 @@ import resourceJS from '@/js/resourceJS.js';
 import MToastSucess from '@/components/toast/MToastSucess.vue';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import axios from 'axios'
+import enumJS from '@/js/enumJS';
 export default {
     name: "AssetList",
     components:{
@@ -193,6 +195,8 @@ export default {
             contentColorAfter: "",
             colorTextAfter: "",
             invalid: false,
+            contextMenuDelete: false,
+            contextMenuItemDelete: null,
         }
     },
 
@@ -332,8 +336,8 @@ export default {
             this.contentColorAfter="";
             this.contentColorBefore="";
             //1. lấy số lượng checkbox = true từ table
-            this.quantityCheckbox = this.$refs["mtable"].quantityCheckbox;
-            let length = this.$refs["mtable"].assets.length;
+            this.quantityCheckbox = this.$refs["mTable"].quantityCheckbox;
+            let length = this.$refs["mTable"].assets.length;
             //2. kiểm tra số lượng 
             if(this.quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
@@ -342,7 +346,7 @@ export default {
             }else if(this.quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
                 //2.2.1. lấy thông tin của tài sản đó
-                let asset = this.$refs['mtable'].getItemSelected();
+                let asset = this.$refs['mTable'].getItemSelected();
                 let codeAsset = asset.fixed_asset_code;
                 let nameAsset = asset.fixed_asset_name;
                 //2.2.2. hiển thị thông báo xác nhận có muốn xóa không
@@ -394,15 +398,22 @@ export default {
          * @author LTVIET (02/03/2023)
          */
         handleEventCloseDialogDelete() {
-            let checkboxSelected = this.$refs['mtable'].getItemSelected();
+            let checkboxSelected = this.$refs['mTable'].getItemSelected();
             //1.thực hiện ẩn đi dialog và xóa tài sản trong database
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 //--> ẩn đi dialog xác nhận xóa 1 tái sản
                 this.isShowDialogConfirmDeleteOneAsset = false;
                 //lấy id tài sản cần xóa
-                let id = checkboxSelected.fixed_asset_id;
+                let id = "";
+                if(this.contextMenuDelete){
+                    id = this.contextMenuItemDelete.fixed_asset_id;
+                }else{
+                    id = checkboxSelected.fixed_asset_id;
+                }
                 //gọi hàm xóa tài sản
-                this.deleteAsset(id);
+                if(id){
+                    this.deleteAsset(id);
+                }
                 this.$refs["txtSearchAsset"].setFocus();
                 this.$refs['mTable'].cancelCheckbox();
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
@@ -493,7 +504,7 @@ export default {
             this.contentToastSuccess = "Lưu dữ liệu thành công";
             this.isShowToastSucess = true;
             this.isShowLoad = true;
-            this.$refs['mtable'].loadData();
+            this.$refs['mTable'].loadData();
             setTimeout(this.isShowLoad=false,5000);
             setTimeout(this.closeToastSucess,5000);
         },
@@ -523,8 +534,53 @@ export default {
         handleEventCloseDialogNotifyDelete(){
             this.isShowDialogNotifyDelete = false;
             this.$refs["txtSearchAsset"].setFocus();
-        }
+        },
+
+        addOnClickAssetList(){
+            this.$refs["mTable"].isShowContextMenu = false;
+        },
         
+        /**
+         * Hàm xử lý sự kiện khi click vào context menu
+         * @param {*} values các giá trị truyền vào (index, item)
+         * @author LTVIET (25/03/2023)
+         */
+        handleEventClickContextMenu(values){
+            let index = values[1];
+            let item = values[0];
+            let codeAsset = item.fixed_asset_code;
+            let nameAsset = item.fixed_asset_name;
+            switch (index) {
+                case enumJS.contextMenu.add:
+                    this.btnClickOpenForm();
+                    break;
+                case enumJS.contextMenu.clone:
+                    this.labelForm = resourceJS.titlteForm.cloneAssetForm;
+                    this.typeForm = "clone";
+                    this.getNewCode();
+                    this.isShowForm = true;
+                    this.assetInput = item;
+                    break;
+                case enumJS.contextMenu.edit:
+                    this.labelForm = resourceJS.titlteForm.editAssetForm;
+                    this.typeForm = "edit";
+                    this.isShowForm = true;
+                    this.assetInput = item;
+                    break;
+                case enumJS.contextMenu.delete:
+                    this.contentDialogConfirmDeleteOneAsset = resourceJS.confirm.oneAssetDelete;
+                    this.contentColorAfter = `<<${codeAsset} - ${nameAsset}>>`;
+                    this.contentAfterDialogConfirmDeleteOneAsset = "?";
+                    this.colorTextAfter = 'black';
+                    this.isShowDialogConfirmDeleteOneAsset = true;
+                    this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
+                    this.contextMenuItemDelete = item;
+                    this.contextMenuDelete = true;
+                    break;
+                default:
+                    break;
+            }
+        }
     },
     
     async created() {
