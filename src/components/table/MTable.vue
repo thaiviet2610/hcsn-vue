@@ -596,6 +596,7 @@ export default {
 
     /**
      * Hàm set trạng thái tất cả checkbox thành false;
+     * @author LTVIET (26/03/2023)
      */
     cancelCheckbox(){
       this.checkbox.fill(false);
@@ -603,7 +604,7 @@ export default {
       this.quantityCheckbox = 0;
       this.checkboxAll = false;
       this.indexCheckbox = -1;
-    }
+    },
   },
   async created() {
     // lấy api để load danh sách asset

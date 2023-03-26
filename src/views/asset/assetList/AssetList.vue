@@ -1,6 +1,6 @@
 <template>
     <!-- <div class="body"> -->
-        <div class="main" @click="addOnClickAssetList">
+        <div class="main" @click="addOnClickAssetList" @keydown.shift="abc">
             <!-- phần header  -->
             
             <!-- phần content  -->
@@ -84,8 +84,7 @@
             v-if="isShowForm" 
             :label="labelForm" 
             :assetInput="assetInput" 
-            :propAssetCode="newCode"
-            :yearFollow="this.year"
+            :propAssetCode="newCode" 
             :typeForm="typeForm"
             :key="keyAssetDetail"
             @addOnClickBtnSave="handlerEventSaveForm"
@@ -175,8 +174,6 @@ export default {
             departApi: resourceJS.api.departmentApi,
             assetCategoryApi: resourceJS.api.assetCategoryApi,
             exportExcelApi: resourceJS.api.exportExcelApi,
-            year: null,
-            valueCheckboxAll: false,
             isShowLoad: false,
             isShowToastSucess: false,
             isButtonUndo: false,
@@ -186,7 +183,6 @@ export default {
             departmentId:"",
             assetCategoryId: "",
             typeForm: "",
-            assetsDelete: [],
             keyword: "",
             keyTable: 0,
             newCode: "",
@@ -204,17 +200,12 @@ export default {
     },
 
     watch: {
-        // assetCategoryId: function(newValue) {
-        //     console.log(newValue);
-        //     this.keyTable = ++this.keyTable;
-        // },
-
-        // departmentId: function(newValue) {
-        //     console.log(newValue);
-        //     this.keyTable = ++this.keyTable;
-        // }
     },
     methods: {
+        /**
+         * Hàm xử lý sự kiện click button đóng form
+         * @author LTVIET (06/03/2023)
+         */
         addOnClickCloseForm(){
             this.isShowForm = false;
             this.$refs["txtSearchAsset"].setFocus();
@@ -274,37 +265,7 @@ export default {
                 return commonJS.formatDate(value);
             }
         },
-
-        /**
-         * Hàm tính tổng
-         * @param {*} moldelName loại thuộc tính cần tính tổng 
-         * @param {*} list danh sách các đối tượng chứa thuộc tính
-         * @author LTVIET (02/03/2023)
-         */
-        getTotal(modelName,list) {
-            let total = 0;
-            for (const item of list) {
-                total += item[modelName];
-            }
-            return this.formatValue(total,"money");
-        },
         
-        /**
-         * Hàm thay đổi số năm
-         * @param {*} check nếu check = true thì tăng 1 đơn vị, check = false thì giảm 1 đơn vị
-         * @author LTVIET (02/03/2023)
-         */
-        addOnChangeYear(check) {
-            if(check){
-                this.year += 1;
-            }else{
-                this.year -= 1;
-                if(this.year < 0 ){
-                    this.year = 0;
-                }
-            }
-        },
-
         /**
          * Hàm xử lý sự kiện mở form chi tiết tài sản khi click vào chức năng của table
          * @param {*} values giá trị được truyền từ lớp con (label form,đối tượng tài sản asset)
@@ -438,6 +399,7 @@ export default {
             }
             this.$refs["txtSearchAsset"].setFocus();
         },
+
         /**
          * Hàm gọi api xóa tài sản
          * @author LTVIET (06/03/2023) 
@@ -462,7 +424,6 @@ export default {
                 console.log(error);
                 if(!this.invalid){
                     this.handleEventErrorAPI(error);
-                    
                 }
             })
             
@@ -510,13 +471,13 @@ export default {
             this.isShowToastSucess = true;
             this.isShowLoad = true;
             this.$refs['mTable'].loadData();
-            
             setTimeout(() => {
                 this.isShowLoad=false;
                 this.$refs["txtSearchAsset"].setFocus();
             }, 5000);
             
         },
+
         /**
          * Hàm xử lý sự kiện khi click btn xuất ra excel
          * @author LTVIET (06/03/2023) 
@@ -525,6 +486,10 @@ export default {
             this.generateExcelFile();
         },
 
+        /**
+         * Hàm gọi api để xuất dữ liệu ra file excel
+         * @author LTVIET (26/03/2023)
+         */
         generateExcelFile(){
             this.isShowLoad = true;
             axios.get(`${this.exportExcelApi}/fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
@@ -555,14 +520,23 @@ export default {
             })
         },
 
+        /**
+         * Hàm lấy dữ liệu từ combobox loại tài sản
+         * @param {*} value giá trị của combobox
+         * @author LTVIET (12/06/2023)
+         */
         getValueAssetCategory(value){
-            console.log("assetCategoryId:",value);
-            this.keyTable = ++this.keyTable;
             if(!value){
                 this.assetCategoryId = "";
             }
-
+            this.keyTable = ++this.keyTable;
         },
+
+        /**
+         * Hàm lấy dữ liệu từ combobox phòng ban
+         * @param {*} value giá trị của combobox
+         * @author LTVIET (12/06/2023)
+         */
         getValueDepartment(value){
             this.keyTable = ++this.keyTable;
             console.log("departmentID:",value);
@@ -570,11 +544,20 @@ export default {
                 this.departmentId = "";
             }
         },
+
+        /**
+         * Hàm xử lý sự kiện đóng dialog thông báo không có tài sản nào được chọn để xóa
+         * @author LTVIET (12/06/2023)
+         */
         handleEventCloseDialogNotifyDelete(){
             this.isShowDialogNotifyDelete = false;
             this.$refs["txtSearchAsset"].setFocus();
         },
 
+        /**
+         * Hàm xử lý sự kiện ẩn đi contextmenu khi click vào asset list
+         * @author LTVIET (26/06/2023)
+         */
         addOnClickAssetList(){
             this.$refs["mTable"].isShowContextMenu = false;
         },
@@ -619,21 +602,13 @@ export default {
                 default:
                     break;
             }
+        },
+        abc(){
+            console.log(1);
         }
     },
     
-    async created() {
-        // Gọi api lấy đữ liệu trả về danh sách tài sản
-        axios.get(this.assetApi)
-        .then(res=>{
-            this.assetsDelete = res.data;
-        })
-        .catch(error=>{
-            console.log(error);
-            this.invalid = true;
-        })
-        
-    },
+    
     mounted() {
         // mặc định focus vào input tìm kiếm khi load trang
         this.$nextTick(function() {

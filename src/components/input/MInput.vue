@@ -133,6 +133,7 @@ export default {
         
     },
     created() {
+        
         //1. nếu modelValue có giá trị thì gán cho value
         if(this.modelValue){
             this.value = this.modelValue;
@@ -346,11 +347,6 @@ export default {
          * @author LTVIET(16/03/2023)
          */
         onKeyDownSelecte(){
-            // let keyCode = event.keyCode;
-            // if(keyCode==13){
-            //     console.log(this.value);
-            //     // this.$emit("update:modelValue",this.value);
-            // }
             this.$emit("keydownEnter",this.value);
         },
         

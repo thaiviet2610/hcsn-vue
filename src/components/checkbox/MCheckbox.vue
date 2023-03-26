@@ -3,7 +3,7 @@
         ref="mCheckbox"
         v-if="checked"
         @click="addOnClick" 
-        class="checkbox1">
+        class="checkbox">
         <div class="checkbox__true"></div>
     </button>
 
@@ -11,8 +11,7 @@
         ref="mCheckbox"
         v-else  
         @click="addOnClick" 
-        @mousedown="addOnMouseDown"
-        class="checkbox1">
+        class="checkbox">
         <div class="checkbox__false"></div>
     </button>
 </template>
@@ -34,6 +33,8 @@ export default {
             
         }
     },
+    watch: {
+    },
     methods: {
         addOnClick(){
             this.$emit('addOnClick');
@@ -44,9 +45,6 @@ export default {
                 this.$refs["mCheckbox"].focus();
             })
         },
-        addOnMouseDown(){
-            this.$emit("addOnMouseDown");
-        }
     },
 }
 </script>
