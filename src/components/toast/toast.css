@@ -38,6 +38,7 @@
 }
 
 .toast--success .toast__text--left{
+    max-width: 390px;
     font-size: 14px;
     font-family: Roboto-Regular;
     color: #50B83C;

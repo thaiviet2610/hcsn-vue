@@ -88,6 +88,7 @@ const resourceJS = {
         exception: "Đã có lỗi xảy ra. Vui lòng liên hệ trung tâm tư vấn!",
         inValid: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
         duplicate: "Mã đã bị trùng. Vui lòng kiểm tra lại!",
+        exportExcelFailed: "Xuất dữu liệu ra file excel không thành công. Vui lòng kiểm tra lại!"
     },
     confirm: {
         oneAssetDelete: "Bạn có muốn xóa tài sản ",
@@ -98,18 +99,30 @@ const resourceJS = {
         cancelFormAsset: "Bạn có muốn hủy bỏ khai báo tài sản này?",
         changeCancelFormAsset: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
     },
+    toastSuccess: {
+        exportExcel: "Xuất dữ liệu ra file excel thành công tại địa chỉ: ",
+        success: "Thành công!",
+        saveSuccess: "Lưu dữ liệu thành công",
+        deleteSuccess: "Tài sản đã được xóa",
+    },
     api: {
         departmentApi: "https://localhost:7123/api/v1/Departments",
         employeeApi: "https://apidemo.laptrinhweb.edu.vn/api/v1/Employees",
         assetCategoryApi: "https://localhost:7123/api/v1/AssetCategories",
         assetApi: "https://localhost:7123/api/v1/Assets",
         assetFilterApi: "https://localhost:7123/api/Assets/v1/Filter?",
-        assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/GetNewCode"
+        assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/GetNewCode",
+        exportExcelApi: "https://localhost:7123/api/v1/Assets/Export?",
     },
     titlteForm: {
         addAssetForm: "Thêm tài sản",
         editAssetForm: "Sửa tài sản",
         cloneAssetForm: "Nhân bản tài sản"
+    },
+    typeForm: {
+        edit: "edit",
+        add: "add",
+        clone: "clone",
     },
     tooltip: {
         toolTipDepreciation: "Hao mòn/Khấu hao lũy kế",

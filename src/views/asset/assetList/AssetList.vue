@@ -131,6 +131,7 @@
             :content="contentToastSuccess"
             :buttonUndo="isButtonUndo"
             :buttonClose="isButtonClose"
+            :link="linkExcel"
             @onClose="closeToastSucess"
             >
         </MToastSucess>
@@ -173,6 +174,7 @@ export default {
             assetApi: resourceJS.api.assetApi,
             departApi: resourceJS.api.departmentApi,
             assetCategoryApi: resourceJS.api.assetCategoryApi,
+            exportExcelApi: resourceJS.api.exportExcelApi,
             year: null,
             valueCheckboxAll: false,
             isShowLoad: false,
@@ -197,6 +199,7 @@ export default {
             invalid: false,
             contextMenuDelete: false,
             contextMenuItemDelete: null,
+            linkExcel: "",
         }
     },
 
@@ -249,8 +252,8 @@ export default {
         btnClickOpenForm() {
             this.isShowToastSucess = false;
             this.isShowForm = true;
-            this.typeForm = "add";
-            this.labelForm = "Thêm tài sản";
+            this.typeForm = resourceJS.typeForm.add;
+            this.labelForm = resourceJS.titlteForm.addAssetForm;
             this.getNewCode();
         },
         
@@ -306,10 +309,10 @@ export default {
         handleEventOpenForm(values) {
             this.isShowToastSucess = false;
             this.labelForm = values[0];
-            if(this.labelForm == "Sửa tài sản"){
-                this.typeForm = "edit";
+            if(this.labelForm == resourceJS.titlteForm.editAssetForm){
+                this.typeForm = resourceJS.typeForm.edit;
             }else{
-                this.typeForm = "clone";
+                this.typeForm = resourceJS.typeForm.clone;
                 this.getNewCode();
             }
             this.isShowForm = true;
@@ -324,8 +327,8 @@ export default {
         handleEventDblClickRow(item){
             this.isShowForm = true;
             this.assetInput = item;
-            this.typeForm = "edit";
-            this.labelForm = "Sửa tài sản";
+            this.typeForm = resourceJS.typeForm.edit;
+            this.labelForm = resourceJS.titlteForm.editAssetForm;
         },
 
         /**
@@ -448,8 +451,8 @@ export default {
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
-                this.notifyToastSuccess = "Thành công!";
-                this.contentToastSuccess = "Tài sản đã được xóa";
+                this.notifyToastSuccess = resourceJS.toastSuccess.success;
+                this.contentToastSuccess = resourceJS.toastSuccess.deleteSuccess;
                 this.isShowToastSucess = true;
                 //--> thực hiện hành động xóa 1 tài sản
                 setTimeout(this.closeToastSucess,5000);
@@ -501,21 +504,50 @@ export default {
             this.isShowForm = false;
             this.isButtonUndo = false;
             this.isButtonClose = false;
-            this.contentToastSuccess = "Lưu dữ liệu thành công";
+            this.contentToastSuccess = resourceJS.toastSuccess.saveSuccess;
             this.isShowToastSucess = true;
             this.isShowLoad = true;
             this.$refs['mTable'].loadData();
             setTimeout(this.isShowLoad=false,5000);
-            setTimeout(this.closeToastSucess,5000);
         },
         /**
          * Hàm xử lý sự kiện khi click btn xuất ra excel
          * @author LTVIET (06/03/2023) 
          */
         handlerEventClickBtnExcel(){
-            // this.assetsSearch = this.assets.filter(item=>item["GenderName"].includes("Nam"));
-            // console.log(this.assetsSearch);
+            this.generateExcelFile();
         },
+
+        generateExcelFile(){
+            this.isShowLoad = true;
+            axios.get(`${this.exportExcelApi}/fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
+            .then(res => {
+                console.log(res.data);
+                this.isButtonUndo = false;
+                this.isButtonClose = true;
+                this.notifyToastSuccess = resourceJS.toastSuccess.success;
+                this.contentToastSuccess = resourceJS.toastSuccess.exportExcel;
+                this.linkExcel = res.data;
+                this.isShowLoad=false;
+                this.isShowToastSucess=true;
+                setTimeout(() => {
+                    this.isShowToastSucess=false;
+                }, 5000);
+            })
+            .catch(error => {
+                console.log(error);
+                if(error.code == "ERR_NETWORK"){
+                    this.isShowDialogNotifyDelete = true;
+                    this.contentDialogNotifyDelete = resourceJS.errorMsg.errorConnection;
+                }
+                else{
+                    this.isShowLoad = false;
+                    this.isShowDialogNotifyDelete = true;
+                    this.contentDialogNotifyDelete = resourceJS.errorMsg.exportExcelFailed;
+                }
+            })
+        },
+
         getValueAssetCategory(value){
             console.log("assetCategoryId:",value);
             this.keyTable = ++this.keyTable;
@@ -556,14 +588,14 @@ export default {
                     break;
                 case enumJS.contextMenu.clone:
                     this.labelForm = resourceJS.titlteForm.cloneAssetForm;
-                    this.typeForm = "clone";
+                    this.typeForm = resourceJS.typeForm.clone;
                     this.getNewCode();
                     this.isShowForm = true;
                     this.assetInput = item;
                     break;
                 case enumJS.contextMenu.edit:
                     this.labelForm = resourceJS.titlteForm.editAssetForm;
-                    this.typeForm = "edit";
+                    this.typeForm = resourceJS.typeForm.edit;
                     this.isShowForm = true;
                     this.assetInput = item;
                     break;

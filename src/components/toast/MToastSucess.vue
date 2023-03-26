@@ -4,7 +4,11 @@
             <!-- phần nội dung  -->
             <div class="toast__left">
                 <div class="dialog-icon"></div>
-                <div class="toast__text--left">{{ notify }} <span class="toast-text--success">{{ content }}</span></div>
+                <div class="toast__text--left">
+                    {{ notify }} 
+                    <span class="toast-text--success">{{ content }}</span> 
+                    <span class="toast-text--success"><u>{{ link }}</u></span>
+                </div>
             </div>
             <!-- phần button (nếu có)  -->
             <div class="toast__right">
@@ -47,6 +51,10 @@ export default {
             type: Boolean,
             default: false
         },
+        link: {
+            type: String,
+            default: ""
+        }
     },
     data() {
         return {

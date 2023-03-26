@@ -70,7 +70,7 @@
             {{ formatValue(item.cost, "money") }}
           </td>
           <td class="column9 text-align-right">
-            {{ formatValue(getDepreciationValue(item), "money") }}
+            {{ formatValue(item.depreciation_value, "money") }}
           </td>
           <td class="column10 text-align-right">
             {{ formatValue(getResidualCost(item), "money") }}
@@ -370,12 +370,6 @@ export default {
           this.residualValueTotal = this.costTotal - this.depreciationValueTotal;
           this.getTotalPage();
           this.cancelCheckbox();
-          // this.checkbox.fill(false);
-          // this.isSelectedRow.fill(false);
-          // this.quantityCheckbox = 0;
-          // this.checkboxAll = false;
-          // this.indexCheckbox = -1;
-          // this.isShowLoad=false;
           this.isShowLoad = false;
         })
         .catch((error) => {
@@ -416,29 +410,8 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     getResidualCost(item) {
-      let value = item.cost - this.getDepreciationValue(item);
+      let value = item.cost - item.depreciation_value;
       return value;
-    },
-
-    /**
-     * Hàm tính hao mòn lũy kế của 1 tài sản trong table
-     * @author LTVIET (02/03/2023)
-     */
-    getDepreciationValue(item) {
-      let depreciationValueYear = Math.round(this.getDepreciationValueYear(item));
-      let monthDiff = this.getMonthDiff(item.production_year);
-      let depreciationValueMonth = Math.round((depreciationValueYear/12));
-      let depreciationValue = Math.round(depreciationValueMonth*monthDiff);
-      return depreciationValue;
-    },
-
-    /**
-     * Hàm tính giá trị hao mòn năm
-     * @param {*} item đối tượng chứa giá trị caabd tính
-     * @author LTVIET (24/03/2023)
-     */
-    getDepreciationValueYear(item){
-      return item.cost*item.depreciation_rate;
     },
 
     /**
