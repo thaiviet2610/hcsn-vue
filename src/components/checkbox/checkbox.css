@@ -1,0 +1,19 @@
+.checkbox1{
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+}
+
+.checkbox__false{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -113px -377px;
+	width: 14px;
+	height: 14px;
+}
+
+.checkbox__true{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -157px -377px;
+	width: 14px;
+	height: 14px;
+}

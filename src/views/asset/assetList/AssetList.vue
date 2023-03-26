@@ -89,7 +89,7 @@
             :typeForm="typeForm"
             :key="keyAssetDetail"
             @addOnClickBtnSave="handlerEventSaveForm"
-            @onClose="isShowForm = false">
+            @onClose="addOnClickCloseForm">
         </AssetDetail>
         <!-- dialog thông báo hành động không có tài sản nào được chọn để xóa -->
         <MDialogNotify 
@@ -215,6 +215,10 @@ export default {
         // }
     },
     methods: {
+        addOnClickCloseForm(){
+            this.isShowForm = false;
+            this.$refs["txtSearchAsset"].setFocus();
+        },
         /**
          * Hàm gọi api để lấy ra mã tài sản mới từ lần nhập gần nhất + 1
          * @author LTVIET (17/03/2023)
@@ -388,12 +392,11 @@ export default {
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 //--> ẩn đi dialog xác nhận xóa 1 tái sản
                 this.isShowDialogConfirmDeleteOneAsset = false;
-                this.$refs["txtSearchAsset"].setFocus();
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 //-->ẩn đi dialog xác nhận xóa nhiều tái sản
                 this.isShowDialogConfirmDeleteMultiAsset = false;
-                this.$refs["txtSearchAsset"].setFocus();
             }
+            this.$refs["txtSearchAsset"].setFocus();
         },
 
         /**
@@ -417,7 +420,6 @@ export default {
                 if(id){
                     this.deleteAsset(id);
                 }
-                this.$refs["txtSearchAsset"].setFocus();
                 this.$refs['mTable'].cancelCheckbox();
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 //-->ẩn đi dialog xác nhận xóa nhiều tái sản
@@ -432,10 +434,9 @@ export default {
                         break;
                     }
                 }
-                this.$refs["txtSearchAsset"].setFocus();
                 this.$refs['mTable'].cancelCheckbox();
             }
-            
+            this.$refs["txtSearchAsset"].setFocus();
         },
         /**
          * Hàm gọi api xóa tài sản
@@ -494,6 +495,7 @@ export default {
          */
         closeToastSucess(){
             this.isShowToastSucess = false;
+            this.$refs["txtSearchAsset"].setFocus();
         },
 
         /**
@@ -508,7 +510,12 @@ export default {
             this.isShowToastSucess = true;
             this.isShowLoad = true;
             this.$refs['mTable'].loadData();
-            setTimeout(this.isShowLoad=false,5000);
+            
+            setTimeout(() => {
+                this.isShowLoad=false;
+                this.$refs["txtSearchAsset"].setFocus();
+            }, 5000);
+            
         },
         /**
          * Hàm xử lý sự kiện khi click btn xuất ra excel

@@ -5,15 +5,11 @@
       <thead>
         <tr>
           <th class="column1 text-align-center">
-            <input
-              ref="mCheckboxAll"
-              type="checkbox"
-              class="checkbox"
+            <MCheckbox 
               :checked="checkboxAll"
-              @keydown="addOnEventKeyDown($event, 0)"
-              @click="addOnClick"
-              @change="markCheckboxAll"
-            />
+              @addOnClick="markCheckboxAll"
+              >
+            </MCheckbox>
           </th>
           <th class="column2 text-align-center">STT</th>
           <th class="column3 text-align-left">Mã tài sản</th>
@@ -45,14 +41,11 @@
           }"
         >
           <td class="column1 text-align-center">
-            <input
-              :ref="`mCheckbox${index + 1}`"
+            <MCheckbox 
               :checked="checkbox[index + 1]"
-              @change="markCheckbox(index + 1)"
-              @keydown="addOnEventKeyDown($event, index + 1)"
-              type="checkbox"
-              class="checkbox"
-            />
+              @addOnClick="markCheckbox(index + 1)"
+              >
+            </MCheckbox>
           </td>
           <td class="column2 text-align-center" type="stt">
             {{ (pageNumber - 1) * pageSize + index + 1 }}
@@ -258,7 +251,6 @@ import commonJS from "@/js/common.js";
 import resourceJS from "@/js/resourceJS.js";
 import MDialogLoadData from "../dialog/MDialogLoadData.vue";
 import axios from "axios";
-import moment from 'moment'
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 export default {
   name: "MTable",
@@ -285,7 +277,9 @@ export default {
     },
   },
   data() {
+    
     return {
+      
       titleEditAssetForm: resourceJS.titlteForm.editAssetForm,
       titleCloneAssetForm: resourceJS.titlteForm.cloneAssetForm,
       labelForm: "",
@@ -309,6 +303,7 @@ export default {
       totalRecord: 0,
       totalPage: 0,
       clickFunction: false,
+      clickCheckbox: false,
       quantityTotal: 0,
       costTotal: 0,
       depreciationValueTotal: 0,
@@ -381,20 +376,6 @@ export default {
         });
     },
 
-    /**
-     * Hàm tính khoảng cách thời gian từ thời điểm hiện tại đến thời gian cho trước theo tháng
-     * @param {*} value giá trị thời gian cần tính
-     * @author LTVIET (24/03/2023)
-     */
-    getMonthDiff(value){
-      let valueTime = moment(moment()).diff(value, "milliseconds");
-      let duration = moment.duration(valueTime);
-      let monthDiff = duration.months();
-      let yearDiff = duration.years();
-      return monthDiff+(yearDiff*12);
-    },
-
-    
 
     /**
      * Hàm tính tổng số trang của table
@@ -463,14 +444,19 @@ export default {
     },
     btnAddOnClickRowTable(index) {
       if (!this.checkbox[index]) {
-        if (!this.clickFunction) {
+        if (!this.clickFunction&&!this.clickCheckbox) {
           this.isSelectedRow[index] = !this.isSelectedRow[index];
+          if(index != this.indexRowClick){
+            this.isSelectedRow[this.indexRowClick] = false;
+          }
         }
-        this.isSelectedRow[this.indexRowClick] = false;
         if (this.isSelectedRow[index]) {
           this.indexRowClick = index;
         }
+
       }
+      this.clickFunction = false;
+      this.clickCheckbox = false;
     },
     /**
      * Hàm xử lý sự kiện click vòa checkboxAll
@@ -505,7 +491,7 @@ export default {
     markCheckbox(index) {
       //1. set giá trị của checkbox: false-->true hoặc true-->false
       this.checkbox[index] = !this.checkbox[index];
-      let length = this.assets.length;
+      let length = this.pageSize;
       if (this.checkbox[index]) {
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
@@ -529,6 +515,7 @@ export default {
         this.checkboxAll = false;
         this.isSelectedRow[index] = false;
       }
+      this.clickCheckbox = true;
     },
 
     /**
@@ -565,26 +552,6 @@ export default {
       } else {
         //nếu checkbox = false thì hiển thị icon
         return "visibility: hidden;";
-      }
-    },
-    /**
-     * Hàm sư lý sự kiện key down cho checkbox
-     * @param {*} event sự kiện cần sử lý
-     * @param {*} index ví trí của checkbox cần xử lý sự kiện
-     * @author LTVIET (05/03/2023)
-     */
-    addOnEventKeyDown(event, index) {
-      //lấy giá trị của phím nhập
-      const key = event.keyCode;
-      if (key == 13) {
-        //nếu là phím enter
-        if (index == 0) {
-          //nếu index = 0 thì click nút checkboxAll
-          this.markCheckboxAll();
-        } else {
-          //ngược lại thì click nút checkbox ở ví trí index
-          this.markCheckbox(index);
-        }
       }
     },
 
@@ -645,6 +612,9 @@ export default {
       this.quantityCheckbox = this.modelValue;
       this.pageSize = Number(this.dataPageSize[0]);
     }
+    for(let i=0;i<=this.pageSize;i++){
+      this.checkbox[i] = false;
+    }
   },
   watch: {
     /** Hàm theo dõi số bản ghi trong 1 trang (pageSize),
@@ -665,12 +635,10 @@ export default {
 
     assetCategoryId: function (newValue) {
       if (!newValue) {
-        console.log("table:",this.assetCategoryId);
         this.loadData();
       }
     },
     departmentId: function () {
-      console.log("table:",this.departmentId);
       this.loadData();
     },
   },
