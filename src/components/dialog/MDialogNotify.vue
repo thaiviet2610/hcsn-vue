@@ -6,7 +6,7 @@
         <!-- icon của dialog  -->
         <div class="dialog-body__icon"></div>
         <!-- nội dung thông báo của dialog  -->
-        <div class="dialog-body__text">{{ content }}</div>
+        <div class="dialog-body__text">{{ content }} <span :data_tooltip_bottom="tooltip"><u>{{ link }}</u></span></div>
       </div>
       <!-- footer của dialog  -->
       <div class="dialog-footer">
@@ -26,9 +26,25 @@
 <script>
 export default {
   name: "MDialogNotify",
-  props: ["content"],
+  props: {
+    content: {
+      type: String,
+      default: ""
+    },
+    link: {
+      type: String,
+      default: ""
+    },
+    tooltip: {
+      type: String,
+      default: ""
+    }
+  },
   components: {},
   mounted() {
+    this.setFocus();
+  },
+  created() {
     this.setFocus();
   },
   methods: {
@@ -42,6 +58,7 @@ export default {
       })
     }, 
     addOnClickBtn(){
+      
       this.$emit('onClose');
     }
   },

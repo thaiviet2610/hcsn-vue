@@ -343,9 +343,6 @@ export default {
             
             if(this.required){
                 this.handlerEventError(type,this.notifyErrorEmpty);
-                // this.inValidDate = true;
-                // this.inValid = true;
-                // this.notifyError = this.notifyErrorEmpty;
             }
         },
 

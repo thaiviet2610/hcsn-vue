@@ -48,11 +48,6 @@
         <div v-if="iconInput"  class="icon__search">
             <div class="icon__search--image"></div>
         </div>
-        <!-- <MButtonIcon
-                v-if="iconInput" 
-                class="icon__search"
-                classIcon="icon__search--image">
-            </MButtonIcon> -->
         
     </div>
 </template>
@@ -133,7 +128,6 @@ export default {
         
     },
     created() {
-        
         //1. nếu modelValue có giá trị thì gán cho value
         if(this.modelValue){
             this.value = this.modelValue;
@@ -143,10 +137,8 @@ export default {
         }else{
             //2. nếu modelValue không có giá trị và input thuộc kiểu number hoặc rate
             if(this.typeValue == "number" || this.typeValue == "rate"){
-                
                 //2.1. gán giá trị mặc định = 0
                 this.value = 0;
-                
             }
         }
         //3. nếu input có button thì input là kiểu number và set style cho input

@@ -302,7 +302,6 @@ methods: {
                 //2.1. nếu là phím xuống:
                 if(this.isShow){
                     //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
-
                     //  set vị trí được chọn mới tăng lên 1 đơn vị
                     if(this.indexItemSelect < (length - 1) ){
                         this.indexItemSelect += 1;
@@ -313,9 +312,7 @@ methods: {
                     }
                 }else{
                     this.entitiesSearch = this.entities;
-
                 }
-                
                 this.isShow = true;
                 this.zIndex = 2;
                 break;
@@ -383,7 +380,6 @@ methods: {
         let findIndex = this.entitiesSearch.findIndex(item=>item[me.propName].toLowerCase() == me.value.toLowerCase());
         if(this.required && !this.value){
             //1.1. nếu có thì set invalid =true và hiển thị thêm thông báo lỗi không được để trống
-            console.log(1);
             this.inValid = true;
             this.notifyError = this.label + resourceJS.error.emptyInput;
             return;
@@ -394,27 +390,16 @@ methods: {
             this.notifyError = this.label + resourceJS.error.errorDontFindInData;
             return;
         }
-        // else{
-        //     this.inValid = false;
-
-        // }
         else if(findIndex >= 0){
             //1.3. trường hợp còn lại thì set invalid = false (tức là không có lỗi)
             this.inValid = false;
             this.indexItemSelect = findIndex;
-
-            // let entitySelected = this.entities.find(item=>item[me.propName].toLowerCase() == me.value.toLowerCase());
-            // if(entitySelected){
-            //     this.value = entitySelected[this.propName];
-            // }
             return;
         }else if(findIndex==-1 && !this.required){
             this.inValid = false;
             return;
         }
         
-        // console.log(5);
-        // return true;
     },
     /**
      * Hàm xử lý sự kiện xóa bỏ mặc định của combobox-data khi blur input

@@ -94,7 +94,9 @@
         <MDialogNotify 
             ref="mDialogNotifyDelete"
             :content="contentDialogNotifyDelete"
-            v-show="isShowDialogNotifyDelete" 
+            :link="textLink"
+            :tooltip="linkExcel"
+            v-if="isShowDialogNotifyDelete" 
             @onClose="handleEventCloseDialogNotifyDelete">
         </MDialogNotify>
         
@@ -103,7 +105,7 @@
             ref="mDialogConfirmDeleteOneAsset"
             :content="contentDialogConfirmDeleteOneAsset"
             type="delete"
-            v-show="isShowDialogConfirmDeleteOneAsset"
+            v-if="isShowDialogConfirmDeleteOneAsset"
             :contentColorAfter="contentColorAfter"
             :contentAfter="contentAfterDialogConfirmDeleteOneAsset"
             :colorTextAfter="colorTextAfter"
@@ -115,7 +117,7 @@
             ref="mDialogConfirmDeleteMultiAsset"
             :content="contentDialogConfirmDeleteMultiAsset"
             type="delete"
-            v-show="isShowDialogConfirmDeleteMultiAsset"
+            v-if="isShowDialogConfirmDeleteMultiAsset"
             :contentColorBefore="contentColorBefore"
             :colorTextBefore="colorTextBefore"
             @onCloseDialogNoDelete="handleEventCloseDialogNoDelete"
@@ -125,7 +127,7 @@
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
         <!-- toast message thông báo xóa thành công  -->
         <MToastSucess 
-            v-show="isShowToastSucess"
+            v-if="isShowToastSucess"
             :notify="notifyToastSuccess"
             :content="contentToastSuccess"
             :buttonUndo="isButtonUndo"
@@ -164,7 +166,7 @@ export default {
             isShowDialogConfirm: false,
             isShowDialogConfirmDeleteOneAsset: false,
             isShowDialogConfirmDeleteMultiAsset: false,
-            contentDialogNotifyDelete: resourceJS.notify.noAssetDelete,
+            contentDialogNotifyDelete: "",
             contentDialogConfirm: "",
             contentDialogConfirmDeleteOneAsset: "",
             contentAfterDialogConfirmDeleteOneAsset: "",
@@ -196,6 +198,7 @@ export default {
             contextMenuDelete: false,
             contextMenuItemDelete: null,
             linkExcel: "",
+            textLink: ""
         }
     },
 
@@ -310,7 +313,8 @@ export default {
             if(this.quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
                 this.isShowDialogNotifyDelete = true;
-                this.$refs["mDialogNotifyDelete"].setFocus();
+                this.contentDialogNotifyDelete = resourceJS.notify.noAssetDelete;
+                // this.$refs["mDialogNotifyDelete"].setFocus();
             }else if(this.quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
                 //2.2.1. lấy thông tin của tài sản đó
@@ -323,7 +327,7 @@ export default {
                 this.contentAfterDialogConfirmDeleteOneAsset = "?";
                 this.colorTextAfter = 'black';
                 this.isShowDialogConfirmDeleteOneAsset = true;
-                this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
+                // this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
             }else{
                 //2.2. nếu nếu số lượng > 1 thì hiển thị thông báo xóa nhiều tài sản
                 this.isShowDialogConfirmDeleteMultiAsset = true;
@@ -340,7 +344,7 @@ export default {
                     this.contentColorBefore = quantity;
                     this.colorTextBefore = 'black';
                 }
-                this.$refs["mDialogConfirmDeleteMultiAsset"].setFocus();
+                // this.$refs["mDialogConfirmDeleteMultiAsset"].setFocus();
             }
             
         },
@@ -406,11 +410,11 @@ export default {
          */
         deleteAsset(id){
             axios.delete(`${this.assetApi}/${id}`)
-            .then(res=>{
+            .then(async res=>{
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
-                this.keyTable = ++this.keyTable;
-                
+                // this.keyTable = ++this.keyTable;
+                await this.$refs["mTable"].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -419,6 +423,7 @@ export default {
                 this.isShowToastSucess = true;
                 //--> thực hiện hành động xóa 1 tài sản
                 setTimeout(this.closeToastSucess,5000);
+                
             })
             .catch(error=>{
                 console.log(error);
@@ -429,6 +434,7 @@ export default {
             
         },
 
+        
         /**
          * Hàm xử lý sự kiện gặp lỗi khi gọi API
          * @param {*} error Lỗi cần xử lý
@@ -463,18 +469,23 @@ export default {
          * Hàm đóng đóng form lưu và hiển thị toast message thông báo lưu thành công
          * @author LTVIET (06/03/2023) 
          */
-        handlerEventSaveForm(){
+        async handlerEventSaveForm(){
             this.isShowForm = false;
             this.isButtonUndo = false;
             this.isButtonClose = false;
             this.contentToastSuccess = resourceJS.toastSuccess.saveSuccess;
+            
+            await this.$refs['mTable'].loadData();
             this.isShowToastSucess = true;
-            this.isShowLoad = true;
-            this.$refs['mTable'].loadData();
-            setTimeout(() => {
-                this.isShowLoad=false;
-                this.$refs["txtSearchAsset"].setFocus();
-            }, 5000);
+                setTimeout(() => {
+                    this.isShowToastSucess=false;
+                    this.$refs["txtSearchAsset"].setFocus();
+                }, 5000);
+            // if(!this.$refs['mTable'].isShowLoad){
+                
+            // }
+            
+            
             
         },
 
@@ -491,20 +502,18 @@ export default {
          * @author LTVIET (26/03/2023)
          */
         generateExcelFile(){
+            console.log("keyword:",this.keyword);
+            console.log("assetCategoryId:",this.assetCategoryId);
+            console.log("departmentId:",this.departmentId);
             this.isShowLoad = true;
-            axios.get(`${this.exportExcelApi}/fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
+            axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
             .then(res => {
-                console.log(res.data);
-                this.isButtonUndo = false;
-                this.isButtonClose = true;
-                this.notifyToastSuccess = resourceJS.toastSuccess.success;
-                this.contentToastSuccess = resourceJS.toastSuccess.exportExcel;
+                this.isShowDialogNotifyDelete = true;
+                this.contentDialogNotifyDelete = "Dữ liệu đã được xuất thành công ra file excel: ";
                 this.linkExcel = res.data;
+                let arr = this.linkExcel.split('\\');
+                this.textLink = arr[arr.length-1];
                 this.isShowLoad=false;
-                this.isShowToastSucess=true;
-                setTimeout(() => {
-                    this.isShowToastSucess=false;
-                }, 5000);
             })
             .catch(error => {
                 console.log(error);
@@ -518,6 +527,7 @@ export default {
                     this.contentDialogNotifyDelete = resourceJS.errorMsg.exportExcelFailed;
                 }
             })
+            
         },
 
         /**
@@ -551,6 +561,7 @@ export default {
          */
         handleEventCloseDialogNotifyDelete(){
             this.isShowDialogNotifyDelete = false;
+            this.textLink = "";
             this.$refs["txtSearchAsset"].setFocus();
         },
 
@@ -595,7 +606,7 @@ export default {
                     this.contentAfterDialogConfirmDeleteOneAsset = "?";
                     this.colorTextAfter = 'black';
                     this.isShowDialogConfirmDeleteOneAsset = true;
-                    this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
+                    // this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
                     this.contextMenuItemDelete = item;
                     this.contextMenuDelete = true;
                     break;

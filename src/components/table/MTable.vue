@@ -350,19 +350,19 @@ export default {
         this.isShowContextMenu = true;
         this.keyContextMenu=++this.keyContextMenu;
     },
-    loadData() {
+    async loadData() {
       this.isShowLoad = true;
-      axios
+       axios
         .get(
           `${this.api}/filter?fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}&pageSize=${this.pageSize}&pageNumber=${this.pageNumber}`
         )
-        .then((res) => {
-          this.assets = res.data.Data;
-          this.totalRecord = res.data.TotalRecord;
-          this.quantityTotal = res.data.QuantityTotal;
-          this.costTotal = res.data.CostTotal;
-          this.depreciationValueTotal = res.data.DepreciationValueTotal;
-          this.residualValueTotal = this.costTotal - this.depreciationValueTotal;
+        .then(async (res) => {
+          this.assets = await res.data.Data;
+          this.totalRecord = await res.data.TotalRecord;
+          this.quantityTotal = await res.data.QuantityTotal;
+          this.costTotal = await res.data.CostTotal;
+          this.depreciationValueTotal = await res.data.DepreciationValueTotal;
+          this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
           this.getTotalPage();
           this.cancelCheckbox();
           this.isShowLoad = false;
@@ -374,6 +374,8 @@ export default {
           this.contentDialogNotifyLoadError =
             "Đã có lỗi khi load data table. Vui lòng thử lại sau!";
         });
+        // this.isShowLoad = false;
+
     },
 
 
@@ -417,6 +419,7 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     formatValue(value, type) {
+      
       if (type == "money") {
         return commonJS.formatMoney(value);
       } else if (type == "date") {
