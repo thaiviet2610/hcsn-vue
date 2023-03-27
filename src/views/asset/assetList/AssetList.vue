@@ -24,8 +24,7 @@
                             propName="fixed_asset_category_name" 
                             placeholder="Loại tài sản" 
                             propValue="fixed_asset_category_id"
-                            @getInputCombobox="getValueAssetCategory"
-                            v-model="assetCategoryId">
+                            @getInputCombobox="getValueAssetCategory">
                         </MCombobox>
                         <!-- combobox lọc bộ phận sử dụng  -->
                         <MCombobox  
@@ -34,8 +33,7 @@
                             propName="department_name" 
                             placeholder="Bộ phận sử dụng" 
                             propValue="department_id"
-                            @getInputCombobox="getValueDepartment"
-                            v-model="departmentId" >
+                            @getInputCombobox="getValueDepartment" >
                         </MCombobox>
                     </div>
                     <div class="content-header__right">
@@ -414,6 +412,7 @@ export default {
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
                 // this.keyTable = ++this.keyTable;
+                this.$refs["mTable"].pageNumber = 1;
                 await this.$refs["mTable"].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
@@ -474,13 +473,14 @@ export default {
             this.isButtonUndo = false;
             this.isButtonClose = false;
             this.contentToastSuccess = resourceJS.toastSuccess.saveSuccess;
-            
+            this.$refs['mTable'].pageNumber = 1;
             await this.$refs['mTable'].loadData();
+
             this.isShowToastSucess = true;
-                setTimeout(() => {
-                    this.isShowToastSucess=false;
-                    this.$refs["txtSearchAsset"].setFocus();
-                }, 5000);
+            setTimeout(() => {
+                this.isShowToastSucess=false;
+                this.$refs["txtSearchAsset"].setFocus();
+            }, 5000);
             // if(!this.$refs['mTable'].isShowLoad){
                 
             // }
@@ -536,9 +536,11 @@ export default {
          * @author LTVIET (12/06/2023)
          */
         getValueAssetCategory(value){
+            this.assetCategoryId = value;
             if(!value){
                 this.assetCategoryId = "";
             }
+            
             this.keyTable = ++this.keyTable;
         },
 
@@ -548,11 +550,12 @@ export default {
          * @author LTVIET (12/06/2023)
          */
         getValueDepartment(value){
-            this.keyTable = ++this.keyTable;
-            console.log("departmentID:",value);
+            this.departmentId = value;
             if(!value){
                 this.departmentId = "";
             }
+            
+            this.keyTable = ++this.keyTable;
         },
 
         /**

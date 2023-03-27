@@ -95,6 +95,3 @@ input[type="date"]{
     -moz-appearance: textfield;
 }
 
-.disableClass{
-    background-color: rgb(220 215 215 / 36%) !important;
-}

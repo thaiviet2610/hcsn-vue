@@ -612,9 +612,10 @@ export default {
   async created() {
     // lấy api để load danh sách asset
     if (this.api) {
+      this.pageSize = Number(this.dataPageSize[0]);
       this.loadData();
       this.quantityCheckbox = this.modelValue;
-      this.pageSize = Number(this.dataPageSize[0]);
+      
     }
     for(let i=0;i<=this.pageSize;i++){
       this.checkbox[i] = false;

@@ -3,6 +3,9 @@ const enumJS = {
     arrowDown: 40,
     enter: 13,
     tab: 9,
+    keyS: 83,
+    keyCtrl: 17,
+    keyEsc: 27,
     errorCode: {
         exception: 1,
         inValid: 2,

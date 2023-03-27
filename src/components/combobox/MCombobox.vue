@@ -81,9 +81,7 @@ import MDialogLoadData from '../dialog/MDialogLoadData.vue'
 import axios from 'axios'
 export default {
 name:"TheCombobox",
-// props: ["isIcon","api","propValue","propName","placeholder","label","modelValue","required"],
 props: {
-    modelValue: [String,Number,Boolean],
     isIcon: {
         type: Boolean,
         default: false
@@ -116,9 +114,12 @@ props: {
         type: Array,
         default: null,
         required: false
+    },
+    valueInput: {
+        type: String,
+        default: ""
     }
 },
-emits:["update:modelValue"],
 data() {
     return {
         entities: [],
@@ -233,7 +234,6 @@ methods: {
         this.setFocus();
         const value = item[this.propValue];
         this.$emit("getInputCombobox",value);
-        this.$emit("update:modelValue",value);
     },
     /**
      * Hàm set focus vào input của combobox
@@ -251,8 +251,8 @@ methods: {
      */
     setItemSelected(){
         let me = this;
-        //tìm item tương ứng với modelValue
-        let entitySelected = this.entities.find(item=>item[this.propValue] == me.modelValue);
+        //tìm item tương ứng với valueInput
+        let entitySelected = this.entities.find(item=>item[this.propValue] == me.valueInput);
         if(entitySelected){
             this.value = entitySelected[this.propName];
         }
@@ -268,7 +268,7 @@ methods: {
             this.itemSelected = null;
             this.entitiesSearch = this.entities;
         }else{
-            //tìm item tương ứng với modelValue
+            //tìm item tương ứng với value
             this.entitiesSearch = this.entities.filter(item=>item[this.propName].toLowerCase().includes(me.value.toLowerCase()));
             this.isShow = true;
             this.zIndex = 2;
@@ -338,10 +338,8 @@ methods: {
                 if(this.indexItemSelect==-1){
                     if(this.value){
                         this.$emit("getInputCombobox",null);
-                        this.$emit("update:modelValue",null);
                     }else{
                         this.$emit("getInputCombobox","");
-                        this.$emit("update:modelValue","");
                     }
                     this.isShow = false;
                     this.zIndex = 0;
@@ -359,7 +357,6 @@ methods: {
                     this.setFocus();
                     //2.4.5. binding dữ liệu mới ra bên ngoài
                     this.$emit("getInputCombobox",this.itemSelected[this.propValue]);
-                    this.$emit("update:modelValue",this.itemSelected[this.propValue]);
                 }
                 break;
         

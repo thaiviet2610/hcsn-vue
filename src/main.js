@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import MInput from './components/input/MInput.vue'
+import MInputNumber from './components/input/MInputNumber.vue'
+import MInputDisable from './components/input/MInputDisable.vue'
 import MButton from './components/button/MButton.vue'
 import MInputDate from './components/input/MInputDate.vue'
 import MDropdown from './components/dropdown/MDropdown.vue'
@@ -48,6 +50,8 @@ app.use(router);
 
 app.component("MCheckbox",MCheckbox);
 app.component("MInput",MInput);
+app.component("MInputNumber",MInputNumber);
+app.component("MInputDisable",MInputDisable);
 app.component("MInputDate",MInputDate);
 app.component("MButton",MButton);
 app.component("MDropdown",MDropdown);

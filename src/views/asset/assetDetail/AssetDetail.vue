@@ -1,7 +1,8 @@
 <template>
     <div>
-        <div class="form editForm">
-            <div class="form-data">
+        <div class="form editForm" @keydown="handleEventKeyDown"
+        >
+            <div class="form-data" >
                 <!-- phần header của form  -->
                 <div class="form-header">
                     <!-- title của form  -->
@@ -57,21 +58,30 @@
                                         placeholder="Nhập mã bộ phận sử dụng" 
                                         label="Mã bộ phận sử dụng"
                                         propValue="department_id" 
-                                        v-model="departmentId">
+                                        :valueInput="asset.department_id"
+                                        @getInputCombobox="getValueDepartmentId"
+                                        :key="keyDepartment">
                                     </MCombobox>
                                 </div>
                             </div>
                             
                             <div class="up-right">
                                 <!-- input nhập tên bộ phận sử dụng  -->
-                                <MInput 
+                                <MInputDisable
+                                    ref="txtDepartmentName"
+                                    placeholder="Nhập tên bộ phận sử dụng"
+                                    :value="this.asset.department_name"
+                                    label="Tên bộ phận sử dụng"
+                                    >
+                                </MInputDisable>
+                                <!-- <MInput 
                                     ref="txtDepartmentName"
                                     :disableInput="true"
                                     placeholder="Nhập tên bộ phận sử dụng"
                                     typeValue="text"
                                     :valueDisable="this.depart.department_name"
                                     label="Tên bộ phận sử dụng">
-                                </MInput>
+                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row">
@@ -86,21 +96,30 @@
                                     placeholder="Nhập mã loại tài sản" 
                                     label="Mã loại tài sản"
                                     propValue="fixed_asset_category_id" 
-                                    v-model="assetCategoryId">
+                                    :valueInput="asset.fixed_asset_category_id"
+                                    @getInputCombobox="getValueAssetCategoryId">
                                 </MCombobox>
                                 
                             </div>
                             
                             <div class="up-right">
                                 <!-- input nhập tên loại tài sản  -->
-                                <MInput 
+                                <MInputDisable 
+                                    ref="txtAssetCategoryName"
+                                    placeholder="Nhập tên loại tài sản"
+                                    label="Tên loại tài sản"
+                                    :value="this.asset.fixed_asset_category_name"
+                                    >
+
+                                </MInputDisable>
+                                <!-- <MInput 
                                     :disableInput="true"
                                     ref="txtAssetCategoryName"
                                     placeholder="Nhập tên loại tài sản"
                                     typeValue="text"
                                     :valueDisable="this.assetCategory.fixed_asset_category_name"
                                     label="Tên loại tài sản">
-                                </MInput>
+                                </MInput> -->
                             </div>
                         </div>
                     </div>
@@ -108,7 +127,20 @@
                         <div class="m-row">
                             <div class="down-left">
                                 <!-- input nhập số lượng  -->
-                                <MInput 
+                                <MInputNumber
+                                    ref="txtQuantity"
+                                    :required="true"
+                                    placeholder="Nhập số lượng"
+                                    :valueInput="asset.quantity"
+                                    @getValueInput="getValueQuantity"
+                                    @getValueEventInput="getValueQuantity"
+                                    :buttonInput="true"
+                                    typeValue="rate"
+                                    :stepValue= 0.02
+                                    label="Số lượng"
+                                    >
+                                </MInputNumber>
+                                <!-- <MInput 
                                     :required="true"
                                     ref="txtQuantity"
                                     placeholder="Nhập số lượng"
@@ -116,12 +148,24 @@
                                     v-model="asset.quantity"
                                     :buttonInput="true"
                                     label="Số lượng">
-                                </MInput>
+                                </MInput> -->
                             </div>
                             
                             <div class="down-center">
                                 <!-- input nhập nguyên giá  -->
-                                <MInput 
+                                <MInputNumber
+                                    ref="txtCost"
+                                    :required="true"
+                                    placeholder="Nhập nguyên giá"
+                                    isFormat="money"
+                                    typeValue="number"
+                                    @getValueInput="getValueCostInput"
+                                    @getValueEventInput="getValueCostInput"
+                                    :valueInput="asset.cost"
+                                    label="Nguyên giá"
+                                    >
+                                </MInputNumber>
+                                <!-- <MInput 
                                     ref="txtCost"
                                     :required="true"
                                     placeholder="Nhập nguyên giá"
@@ -130,12 +174,24 @@
                                     @getValueEventInput="getValueCostInput"
                                     v-model="cost"
                                     label="Nguyên giá">
-                                </MInput>
+                                </MInput> -->
                             </div>
                            
                             <div class="down-right">
                                 <!-- input nhập số năm sử dụng  -->
-                                <MInput 
+                                <MInputNumber
+                                    ref="txtLifeTime"
+                                    :required="true"
+                                    placeholder="Nhập số năm sử dụng"
+                                    label="Số năm sử dụng"
+                                    typeValue="number"
+                                    @getValueInput="getValueLifeTime"
+                                    @getValueEventInput="getValueLifeTime"
+                                    :key="keyLifeTime"
+                                    :valueInput="this.asset.life_time"
+                                    >
+                                </MInputNumber>
+                                <!-- <MInput 
                                     ref="txtLifeTime"
                                     :required="true"
                                     placeholder="Nhập số năm sử dụng"
@@ -144,13 +200,23 @@
                                     @getValueEventInput="getValueLifeTime"
                                     :key="keyLifeTime"
                                     v-model="this.asset.life_time">
-                                </MInput>
+                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row">
                             <div class="down-left">
                                 <!-- input nhập tỷ lệ hao mòn  -->
-                                <MInput 
+                                <MInputDisable
+                                    ref="txtDepreciationRate"
+                                    :required="true"
+                                    placeholder="Nhập tỷ lệ hao mòn (%)"
+                                    label="Tỷ lệ hao mòn (%)"
+                                    :value="depreciationRate"
+                                    :key="keyDepreciationRate"
+                                    typeValue="number"
+                                    >
+                                </MInputDisable>
+                                <!-- <MInput 
                                     ref="txtDepreciationRate"
                                     :required="true"
                                     placeholder="Nhập tỷ lệ hao mòn (%)"
@@ -160,11 +226,21 @@
                                     label="Tỷ lệ hao mòn (%)"
                                     :valueDisable="depreciationRate"
                                     :key="keyDepreciationRate">
-                                </MInput>
+                                </MInput> -->
                             </div>
                             <div class="down-center">
                                 <!-- input nhập giá trị hao mòn  -->
-                                <MInput 
+                                <MInputDisable
+                                    ref="txtDepreciationValueYear"
+                                    :required="true"
+                                    placeholder="Nhập giá trị hao mòn năm"
+                                    label="Giá trị hao mòn năm"
+                                    :value="depreciationValueYear"
+                                    :key="keyDepreciationValueYear"
+                                    typeValue="number"
+                                    >
+                                </MInputDisable>
+                                <!-- <MInput 
                                     ref="txtDepreciationValueYear"
                                     :required="true"
                                     placeholder="Nhập giá trị hao mòn năm"
@@ -174,18 +250,27 @@
                                     :disableInput="true"
                                     :valueDisable="depreciationValueYear"
                                     :key="keyDepreciationValueYear">
-                                </MInput>
+                                </MInput> -->
                             </div>
                             <div class="down-right">
                                 <!-- inptu nhập năm theo dõi  -->
-                                <MInput 
+                                <MInputDisable
+                                    ref="txtTrackedYear"
+                                    :required="true"
+                                    placeholder="Nhập năm theo dõi"
+                                    label="Năm theo dõi"
+                                    :value="asset.tracked_year"
+                                    typeValue="number"
+                                    >
+                                </MInputDisable>
+                                <!-- <MInput 
                                     ref="txtTrackedYear"
                                     :disableInput="true"
                                     placeholder="Nhập năm theo dõi"
                                     typeValue="number"
                                     :valueDisable="asset.tracked_year"
                                     label="Năm theo dõi">
-                                </MInput>
+                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row ">
@@ -197,7 +282,6 @@
                                     label="Ngày mua"
                                     format="dd/mm/yyyy"
                                     v-model="asset.purchase_date"
-                                    @getValueInputDate="GetValuePurchaseDate"
                                     :required="true"
                                     >
                                 </MInputDate>
@@ -210,7 +294,6 @@
                                     label="Ngày bắt đầu sử dụng"
                                     format="dd/mm/yyyy"
                                     v-model="asset.production_year"
-                                    @getValueInputDate = "getValueProductionYear"
                                     :required="true"
                                     >
                                 </MInputDate>
@@ -240,7 +323,7 @@
         <MDialogNotify 
             v-if="isShowDialogNotify" 
             :content="contentDialogNotifyErrorValidate"
-            @onClose="this.isShowDialogNotify = false">
+            @onClose="handleEventCloseDialogNotify">
         </MDialogNotify>
         <!-- dialog xác nhận sự kiện hủy (không có thay đổi dữ liệu) -->
         <MDialogAddFormCancel 
@@ -274,6 +357,7 @@ import axios from 'axios'
 import enumJS from '@/js/enumJS';
 import commonJS from '@/js/common';
 import moment from 'moment';
+import MInputDisable from '@/components/input/MInputDisable.vue';
 export default {
     name:"assetDetail",
     props: {
@@ -296,8 +380,13 @@ export default {
 
     },
     components:{
-        MCombobox,MDialogNotify,MDialogAddFormCancel,MDialogEditFormCancel,MInput,
-    },
+    MCombobox,
+    MDialogNotify,
+    MDialogAddFormCancel,
+    MDialogEditFormCancel,
+    MInput,
+    MInputDisable
+},
     data() {
         return {
             oldValueAseet: null,
@@ -325,65 +414,10 @@ export default {
             keyAssetCode: "",
             newCode: "",
             cost: 0,
+            keyDepartment: 0,
+            itemError: null,
+            previousKey: ""
         }
-    },
-    watch: {
-        /**
-         * Hàm theo dõi sự thay đổi giá trị của departmentId
-         * @param {*} newValue giá trị mới 
-         * @author LTVIET (06/03/2023)
-         */
-        departmentId: function(newValue){
-            this.asset.department_id = newValue;
-            // nếu đối tượng asset có sự thay đổi dữu liệu thì gọi api lấy ra đối tượng department theo asset mới
-            this.getDepartment();
-            
-        },
-
-        /**
-         * Hàm theo dõi sự thay đổi giá trị của depart
-         * @param {*} newValue giá trị mới 
-         * @author LTVIET (06/03/2023)
-         */
-        depart: function(newValue){
-            // Nếu đối tượng phòng ban thay đổi thì lấy code, name theo đối tượng mới
-            this.asset.department_code = newValue.department_code;
-            this.asset.department_name = newValue.department_name;
-        },
-
-        /**
-         * Hàm theo dõi sự thay đổi giá trị của assetCategoryId
-         * @param {*} newValue giá trị mới 
-         * @author LTVIET (06/03/2023)
-         */
-        assetCategoryId: function(newValue){
-            this.asset.fixed_asset_category_id = newValue;
-            // nếu đối tượng asset có sự thay đổi dữu liệu thì gọi api lấy ra đối tượng department theo asset mới
-            this.getAssetCategory();
-        },
-
-        /**
-         * Hàm theo dõi sự thay đổi giá trị của assetCategory
-         * @param {*} newValue giá trị mới 
-         * @author LTVIET (06/03/2023)
-         */
-        assetCategory: function(newValue){
-            // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
-            this.asset.fixed_asset_category_code = newValue.fixed_asset_category_code;
-            this.asset.fixed_asset_category_name = newValue.fixed_asset_category_name;
-            // Nếu thay đổi loại tài sản thì sẽ lấy:
-            // --> số năm sử dụng theo loại tài sản
-            this.asset.life_time = newValue.life_time;
-            // --> tỷ lệ khấu hao theo loại tài sản
-            this.asset.depreciation_rate = newValue.depreciation_rate;
-            this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
-            // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
-            this.depreciationValueYear = this.getDepreciationValueYear;
-            this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
-            this.keyDepreciationRate = ++this.keyDepreciationRate;
-            this.keyLifeTime = ++this.keyLifeTime;
-        },
-
     },
 
     computed: {
@@ -408,7 +442,7 @@ export default {
             if(this.assetInput){
                 //--> lưu dữ liệu vào 1 biến lưu trữ
                 this.oldValueAseet = JSON.stringify(this.assetInput);
-                //--> khai báo 1 biến mới và gán giá trị lưu trũ vào biến mới đó
+                //--> khai báo 1 biến mới và gán giá trị lưu trữ vào biến mới đó
                 this.asset = JSON.parse(this.oldValueAseet);
                 if(this.typeForm=="clone"){
                     this.asset.fixed_asset_code = this.propAssetCode;
@@ -427,7 +461,7 @@ export default {
             // lấy giá trị của assetCategoryId của asset gán cho assetCategoryId
             this.assetCategoryId = this.asset.fixed_asset_category_id;
             this.depreciationValueYear = this.getDepreciationValueYear;
-            this.cost = this.asset.cost
+            this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
         }
     },
     mounted() {
@@ -583,10 +617,12 @@ export default {
          */
         validateForm(){
             // this.validateEmptyValue();
-            let itemError = this.validateEmptyValue();
-            if(itemError!=""){
+            let itemRef = this.validateEmptyValue();
+            if(itemRef!=""){
+                this.itemError = this.$refs[itemRef];
+                let label = this.itemError.label;
                 this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.error.validateData + `<<${itemError}>>`;
+                this.contentDialogNotifyErrorValidate = resourceJS.error.validateData + `<<${label}>>`;
                 return false;
             }
             return this.validateProfessional();
@@ -605,27 +641,29 @@ export default {
                 let item = this.$refs[refs[i]];
                 if(refs[i] == 'txtPurchaseDate' || refs[i] == 'txtProductionYear'){
                     if(!item.txtInputDate){
-                        txt = item.label;
+                        txt = refs[i];
                         item.inValid = true;
                         break;
                     }
-                }else{
-                    if((!item.value)){
-                        if(item.typeValue=="number" || item.typeValue == "rate"){
-                            if(item.value!=0){
-                                txt = item.label;
-                                item.inValid = true;
-                                item.notifyError = item.label + resourceJS.error.emptyInput;
-                                break;
-                            }
-                        }else{
-                            txt = item.label;
-                            item.inValid = true;
-                            item.notifyError = item.label + resourceJS.error.emptyInput;
-                            break;
-                        }
+                }
+                if(i>=0 && i < 4){
+                    if(!item.value){
+                        txt = refs[i];
+                        item.inValid = true;
+                        item.notifyError = item.label + resourceJS.error.emptyInput;
+                        break;
                     }
                 }
+                if(i>=4 && i < 9){
+                    if(!item.value && item.value != 0){
+                        txt = refs[i];
+                        item.inValid = true;
+                        item.notifyError = item.label + resourceJS.error.emptyInput;
+                        break;
+                    }
+                    
+                }
+                
             }
             return txt;
         },
@@ -742,6 +780,9 @@ export default {
                 axios.get(`${this.departApi}/${this.asset.department_id}`)
                 .then(res =>{
                     this.depart = res.data;
+                    // Nếu đối tượng phòng ban thay đổi thì lấy code, name theo đối tượng mới
+                    this.asset.department_code = this.depart.department_code;
+                    this.asset.department_name = this.depart.department_name;
                 })
                 .catch(error=>{
                     console.log(error);
@@ -760,6 +801,20 @@ export default {
                await axios.get(`${this.assetCategoryApi}/${this.asset.fixed_asset_category_id}`)
                 .then(res =>{
                     this.assetCategory = res.data;
+                    // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
+                    this.asset.fixed_asset_category_code = this.assetCategory.fixed_asset_category_code;
+                    this.asset.fixed_asset_category_name = this.assetCategory.fixed_asset_category_name;
+                    // Nếu thay đổi loại tài sản thì sẽ lấy:
+                    // --> số năm sử dụng theo loại tài sản
+                    this.asset.life_time = this.assetCategory.life_time;
+                    // --> tỷ lệ khấu hao theo loại tài sản
+                    this.asset.depreciation_rate = this.assetCategory.depreciation_rate;
+                    this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
+                    // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
+                    this.depreciationValueYear = this.getDepreciationValueYear;
+                    this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
+                    this.keyDepreciationRate = ++this.keyDepreciationRate;
+                    this.keyLifeTime = ++this.keyLifeTime;
                 })
                 .catch(error=>{
                     console.log(error);
@@ -855,7 +910,7 @@ export default {
          * @author LTVIET(23/03/2023)
          */
         getValueLifeTime(value){
-            if(value != null && value != "" && value != undefined){
+            if(value != null && value != "" && value != undefined && value != 0){
                 this.asset.life_time = value;
                 this.asset.depreciation_rate = this.getRoundValue(1/value,1000);
                 this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
@@ -899,6 +954,42 @@ export default {
             
         },
 
+        getValueDepartmentId(value){
+            this.asset.department_id = value;
+            this.getDepartment();
+        },
+
+        getValueAssetCategoryId(value){
+            this.asset.fixed_asset_category_id = value;
+            this.getAssetCategory();
+        },
+        getValueQuantity(value){
+            this.asset.quantity = value;
+        },
+        handleEventCloseDialogNotify(){
+            this.isShowDialogNotify = false;
+            if(this.itemError!=null){
+                console.log(1);
+                this.itemError.setFocus();
+            }
+        },
+        handleEventKeyDown(event){
+            event.preventDefault()
+            let keyCode = event.keyCode;
+            console.log(keyCode);
+            if (keyCode == enumJS.keyCtrl) {
+                this.previousKey = keyCode;
+                setTimeout(() => {
+                    this.previousKey = ""; 
+                }, 1000);
+            }
+            if(keyCode == enumJS.keyS && this.previousKey == enumJS.keyCtrl){
+                this.handlerEventBtnClickSave();
+            }
+            if(keyCode == enumJS.keyEsc){
+                this.$emit('onClose');
+            }
+        }
         
     },
 }
