@@ -59,17 +59,6 @@
                                         propValue="department_id" 
                                         v-model="departmentId">
                                     </MCombobox>
-                                    <!-- <MCombobox  
-                                        :is-icon="false" 
-                                        ref="txtDepartmentCode"
-                                        :required="true"
-                                        
-                                        :data=[1,2,3,4,5,6,7,8,9,10]
-                                        :placeholder="departmentCodePlaceholder" 
-                                        :label="departmentCodeLabel"
-                                        propValue="DepartmentId" 
-                                        v-model="assets.DepartmentId">
-                                    </MCombobox> -->
                                 </div>
                             </div>
                             
@@ -212,16 +201,6 @@
                                     :required="true"
                                     >
                                 </MInputDate>
-                                <!-- <MDatetime
-                                label="Ngày mua"
-                                ></MDatetime> -->
-                                <!-- <MInput 
-                                    ref="txtDateBuy"
-                                    :required="true"
-                                    v-model="dateBuyValue"
-                                    typeValue="date"
-                                    :label="dateBuyLabel">
-                                </MInput> -->
                             </div>
                             
                             <div class="down-center">
@@ -235,16 +214,6 @@
                                     :required="true"
                                     >
                                 </MInputDate>
-                                <!-- <MDatetime
-                                    label="Ngày bắt đầu sử dụng"
-                                ></MDatetime> -->
-                                <!-- <MInput 
-                                    ref="txtDateStart"
-                                    :required="true"
-                                    v-model="dateStartValue"
-                                    typeValue="date"
-                                    :label="dateStartUseLabel">
-                                </MInput> -->
                             </div>
 
                             <div class="input-wrapper down-center"></div>
@@ -300,16 +269,13 @@ import MDialogNotify from '@/components/dialog/MDialogNotify.vue';
 import MDialogAddFormCancel from '@/components/dialog/MDialogAddFormCancel.vue';
 import MDialogEditFormCancel from '@/components/dialog/MDialogEditFormCancel.vue';
 import MInput from '@/components/input/MInput.vue';
-// import MDatetime from '@/components/MDatetime/MDatetime.vue';
 import resourceJS from '@/js/resourceJS.js'
 import axios from 'axios'
 import enumJS from '@/js/enumJS';
 import commonJS from '@/js/common';
 import moment from 'moment';
-// import { ElDatePicker } from "element-plus";
 export default {
     name:"assetDetail",
-    // props: ["assetInput","label"],
     props: {
         assetInput: {
             type: Object,
@@ -334,7 +300,6 @@ export default {
     },
     data() {
         return {
-            isShow: true,
             oldValueAseet: null,
             isShowDialogNotify: false,
             isShowDialogAddFormCancel: false,
@@ -348,17 +313,11 @@ export default {
             generateNewCodeApi: resourceJS.api.assetGenerateNewCodeApi,
             depart: [],
             assetCategory: [],
-            assetCatagories: [],
-            dateBuyValue: null,
-            dateStartValue: null,
             isShowLoad: false,
-            trackedYear: null,
             asset: [],
             departmentId: null,
             assetCategoryId: null,
-            dateBuy: "2023-03-09",
             depreciationValueYear: 0,
-            purchaseDate: null,
             depreciationRate: 0,
             keyDepreciationRate: 0,
             keyDepreciationValueYear: 0,
@@ -370,64 +329,67 @@ export default {
     },
     watch: {
         /**
-         * Hàm theo dõi đối tượng asset
-         * @author LTVIET(05/03/2023)
+         * Hàm theo dõi sự thay đổi giá trị của departmentId
+         * @param {*} newValue giá trị mới 
+         * @author LTVIET (06/03/2023)
          */
-         asset:{
-            handler: function(){
-                
-                // // nếu đối tượng asset có sự thay đổi dữu liệu thì gọi api lấy ra đối tượng department theo asset mới
-                // this.getDepartment();
-                // console.log("newDepartId:",newValue.DepartmentName);
-            },
-            deep:true
-        },
         departmentId: function(newValue){
             this.asset.department_id = newValue;
             // nếu đối tượng asset có sự thay đổi dữu liệu thì gọi api lấy ra đối tượng department theo asset mới
             this.getDepartment();
             
         },
+
+        /**
+         * Hàm theo dõi sự thay đổi giá trị của depart
+         * @param {*} newValue giá trị mới 
+         * @author LTVIET (06/03/2023)
+         */
         depart: function(newValue){
             // Nếu đối tượng phòng ban thay đổi thì lấy code, name theo đối tượng mới
             this.asset.department_code = newValue.department_code;
             this.asset.department_name = newValue.department_name;
         },
+
+        /**
+         * Hàm theo dõi sự thay đổi giá trị của assetCategoryId
+         * @param {*} newValue giá trị mới 
+         * @author LTVIET (06/03/2023)
+         */
         assetCategoryId: function(newValue){
             this.asset.fixed_asset_category_id = newValue;
             // nếu đối tượng asset có sự thay đổi dữu liệu thì gọi api lấy ra đối tượng department theo asset mới
             this.getAssetCategory();
         },
+
+        /**
+         * Hàm theo dõi sự thay đổi giá trị của assetCategory
+         * @param {*} newValue giá trị mới 
+         * @author LTVIET (06/03/2023)
+         */
         assetCategory: function(newValue){
             // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
             this.asset.fixed_asset_category_code = newValue.fixed_asset_category_code;
             this.asset.fixed_asset_category_name = newValue.fixed_asset_category_name;
-            // Nếu thay đổi loại tài sản thì sẽ lấy tỷ lệ khấu hao theo loại tài sản
+            // Nếu thay đổi loại tài sản thì sẽ lấy:
+            // --> số năm sử dụng theo loại tài sản
             this.asset.life_time = newValue.life_time;
+            // --> tỷ lệ khấu hao theo loại tài sản
             this.asset.depreciation_rate = newValue.depreciation_rate;
             this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
+            // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
             this.depreciationValueYear = this.getDepreciationValueYear;
             this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
             this.keyDepreciationRate = ++this.keyDepreciationRate;
             this.keyLifeTime = ++this.keyLifeTime;
         },
 
-        depreciationValueYear: function(){
-            // this.asset.depreciation_rate = (this.asset.cost-newValue)/this.asset.cost;
-        },
-        // newCode: function(newValue){
-        //     if(this.typeForm=="add"||this.typeForm=="clone"){
-        //         let entity = JSON.parse(this.oldValueAseet);
-        //         entity.fixed_asset_code = newValue;
-        //         this.oldValueAseet = JSON.stringify(entity);
-        //     }
-        // }
-        // dateBuy: function(newValue){
-        //     console.log("dateBuy:",newValue);
-        // }
     },
 
     computed: {
+        /**
+         * Hàm tính giá trị hao mòn năm
+         */
         getDepreciationValueYear: function(){
             let value = this.asset.cost*this.asset.depreciation_rate;
             return commonJS.formatMoney(value);
@@ -436,10 +398,12 @@ export default {
     
     created() {
         if(this.typeForm == "add"){
+            // Nếu là form thêm tài sản (chưa có dữ liệu)
             this.getDefaultAsset();
             this.asset.fixed_asset_code = this.propAssetCode;
             this.oldValueAseet = JSON.stringify(this.asset);
         }else{
+            // Nếu là form sửa haocjw nhân bản (đã có sẵn dư liệu)
             //1. nếu có dữ liệu từ bên ngoài gửi vào
             if(this.assetInput){
                 //--> lưu dữ liệu vào 1 biến lưu trữ
@@ -523,7 +487,6 @@ export default {
         handlerEventBtnClickSave(){
             if(this.validateForm()){
                 this.asset.quantity = Number(this.asset.quantity);
-                console.log(this.asset.cost);
                 let entity = {
                     fixed_asset_code : this.asset.fixed_asset_code,
                     fixed_asset_name : this.asset.fixed_asset_name,
@@ -546,7 +509,6 @@ export default {
                     active: false
                 }
                 this.isShowLoad = true;
-                console.log("entity:",entity);
                 if(this.typeForm=="add" || this.typeForm == "clone"){
                     this.addAsset(entity);
                 }else if(this.typeForm == "edit"){
