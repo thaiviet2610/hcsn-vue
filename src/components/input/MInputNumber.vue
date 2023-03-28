@@ -17,11 +17,13 @@
         <!-- thẻ div hiển thị button tăng giảm giá trị (nếu có)  -->
         <div v-if="buttonInput" class="input__icon2" >
             <MButtonIcon
+                @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown1"
                 @addOnClickBtnIcon="handlerEventIncreaseValue">
             </MButtonIcon>
             <MButtonIcon
+                @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown2"
                 @addOnClickBtnIcon="handlerEventDecreaseValue">
@@ -161,25 +163,27 @@ export default {
                         this.inValid = true;
                         this.notifyError = resourceJS.error.errorMaxLengthNumber;
                     }else{
-                        if(this.isFormat=="money"){
-                            this.value = commonJS.formatMoney(this.getMoney(this.value));
-                        }
+                        this.value = commonJS.formatMoney(this.getMoney(this.value));
                         //--> nếu ngược lại thì set invalid = false
                         this.inValid = false;
                     }
-                    if(this.value.indexOf(".") == -1){
+                    // console.log("value:",this.value,typeof this.value);
+                    if(this.value && String(this.value).indexOf(".") == -1){
                         this.value = Number(this.value);
-                        if(this.value<10){
+                        if(this.value > 0 && this.value<10){
+                            console.log(1);
                             this.value = Number(this.value);
                             this.value = `0${this.value}`;
                         }
                     }
+                    console.log("value:",this.value,typeof this.value);
                 }
                 
             }
             
             if(!this.inValid){
-                this.$emit('getValueInput',this.value);
+                let value = this.getMoney(this.value);
+                this.$emit('getValueInput',value);
             }
         },
         /**
@@ -189,17 +193,26 @@ export default {
         handlerEventIncreaseValue() {
             // let step = Number(this.stepValue);
             //1. set focus vào input
-            this.setFocus();
+            //this.setFocus();
             //2. nếu giá trị rỗng thì gán bằng 0
             if(this.value == "" || this.value == null || this.value == undefined){
                 this.value = 0;
-                this.$emit('getValueInput',this.value);
+                let value = this.getMoney(this.value);
+                this.$emit('getValueInput',value);
             }
             this.value = Number(this.value) + Number(this.stepValue);
             if(this.stepValue < 1){
                 this.value = Math.round(this.value*(1/this.stepValue))/(1/this.stepValue);
             }
-            this.$emit('getValueInput',this.value);
+            let value = this.getMoney(this.value);
+            this.$emit('getValueInput',value);
+            if(this.value && String(this.value).indexOf(".") == -1){
+                this.value = Number(this.value);
+                if(this.value<10){
+                    this.value = Number(this.value);
+                    this.value = `0${this.value}`;
+                }
+            }
         },
         /**
          * Hàm xử lý sự kiện click vào button giảm giá trị
@@ -207,7 +220,7 @@ export default {
          */
         handlerEventDecreaseValue(){
             //1. set focus vào input
-            this.setFocus();
+            // this.setFocus();
             //2. nếu giá trị rỗng thì gán bằng 0
             if(this.value == "" || this.value == null || this.value == undefined){
                 this.value = 0;
@@ -219,7 +232,15 @@ export default {
             if(this.value < 0){
                 this.value = 0;
             }
-            this.$emit('getValueInput',this.value);
+            let value = this.getMoney(this.value);
+            this.$emit('getValueInput',value);
+            if(this.value && String(this.value).indexOf(".") == -1){
+                this.value = Number(this.value);
+                if(this.value<10){
+                    this.value = Number(this.value);
+                    this.value = `0${this.value}`;
+                }
+            }
         },
         /**
          * Hàm set focus vào input
@@ -245,7 +266,8 @@ export default {
          * @author LTVIET(14/03/2023)
          */
          getMoney(value){
-            return Number(value.replaceAll('.',''));
+            return String(this.value).indexOf(".") == -1 ? value : Number(value.replaceAll('.',''));
+            
         },
 
         /**

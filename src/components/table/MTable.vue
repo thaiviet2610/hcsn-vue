@@ -75,7 +75,7 @@
                 class="function__edit"
                 data_tooltip_bottom="Sửa"
                 @addOnClickBtnIcon="
-                  handleEventClickFunction(titleEditAssetForm, item, index + 1)
+                  handleEventClickFunction(titleEditAssetForm, item)
                 "
               >
               </MButtonIcon>
@@ -84,7 +84,7 @@
                 class="function__clone"
                 data_tooltip_bottom="Nhân bản"
                 @addOnClickBtnIcon="
-                  handleEventClickFunction(titleCloneAssetForm, item, index + 1)
+                  handleEventClickFunction(titleCloneAssetForm, item)
                 "
               >
               </MButtonIcon>
@@ -432,9 +432,8 @@ export default {
      * @param {*} item đối tượng cần xử lý
      * @author LTVIET (02/03/2023)
      */
-    handleEventClickFunction(title, item, index) {
+    handleEventClickFunction(title, item) {
       this.clickFunction = true;
-      this.isSelectedRow[index] = false;
       this.$emit("btnClickFunctionOpenForm", [title, item]);
     },
     /**

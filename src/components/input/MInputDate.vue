@@ -2,110 +2,117 @@
     <div class="input__date" >
         <!-- label của input  -->
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
-        <!-- input nhập dữ liệu  -->    
-        <input
-            ref="date" 
-            v-model="txtInputDate" type="date">
-        <div class="input__date-container">
-            <!-- input định dạnh "dd/mm/yyyy"  -->
-            <div v-if="format == 'dd/mm/yyyy'" class="input__date--format">
-                <input 
-                v-model="txtDate" 
-                type="number"
-                :class="{'input--error':inValidDate}"
-                @blur="addEventBlurInput('day')"
-                class="input__date-day">
-            <span>/</span>
-            <input 
-                v-model="txtMonth"
-                :style="styleMonth" 
-                type="number"
-                :class="{'input--error':inValidMonth}"
-                @blur="addEventBlurInput('month')"
-                class="input__date-month">
-            <span>/</span>
-            <input 
-                v-model="txtYear" 
-                type="number"
-                :class="{'input--error':inValidYear}"
-                @blur="addEventBlurInput('year')"
-                class="input__date-year">
-            </div>
-            <!-- input định dạnh "mm/dd/yyyy"  -->
-            <div v-if="format == 'mm/dd/yyyy'" class="input__date--format">
-                <input 
-                    v-model="txtMonth"
-                    :style="styleMonth" 
-                    type="number"
-                    :class="{'input--error':inValidMonth}"
-                    @blur="addEventBlurInput('month')"
-                    class="input__date-month">
-                <span>/</span>
-                <input 
+        
+        <div class="date">
+            <div class="datePicker"></div>
+            <!-- input nhập dữ liệu  -->    
+            <input
+                ref="date" 
+                v-model="txtInputDate" type="date"
+                >
+            
+            <div class="input__date-container">
+                <!-- input định dạnh "dd/mm/yyyy"  -->
+                <div v-if="format == 'dd/mm/yyyy'" class="input__date--format">
+                    <input 
                     v-model="txtDate" 
                     type="number"
                     :class="{'input--error':inValidDate}"
                     @blur="addEventBlurInput('day')"
                     class="input__date-day">
-                <span>/</span>
-                <input 
-                    v-model="txtYear" 
-                    type="number"
-                    :class="{'input--error':inValidYear}"
-                    @blur="addEventBlurInput('year')"
-                    class="input__date-year">
+                    <span>/</span>
+                    <input 
+                        v-model="txtMonth"
+                        :style="styleMonth" 
+                        type="number"
+                        :class="{'input--error':inValidMonth}"
+                        @blur="addEventBlurInput('month')"
+                        class="input__date-month">
+                    <span>/</span>
+                    <input 
+                        v-model="txtYear" 
+                        type="number"
+                        :class="{'input--error':inValidYear}"
+                        @blur="addEventBlurInput('year')"
+                        class="input__date-year">
+                    
+                </div>
+                <!-- input định dạnh "mm/dd/yyyy"  -->
+                <div v-if="format == 'mm/dd/yyyy'" class="input__date--format">
+                    <input 
+                        v-model="txtMonth"
+                        :style="styleMonth" 
+                        type="number"
+                        :class="{'input--error':inValidMonth}"
+                        @blur="addEventBlurInput('month')"
+                        class="input__date-month">
+                    <span>/</span>
+                    <input 
+                        v-model="txtDate" 
+                        type="number"
+                        :class="{'input--error':inValidDate}"
+                        @blur="addEventBlurInput('day')"
+                        class="input__date-day">
+                    <span>/</span>
+                    <input 
+                        v-model="txtYear" 
+                        type="number"
+                        :class="{'input--error':inValidYear}"
+                        @blur="addEventBlurInput('year')"
+                        class="input__date-year">
+                </div>
+                <!-- input định dạnh "yyyy/mm/dd"  -->
+                <div v-if="format == 'yyyy/mm/dd'" class="input__date--format">
+                    <input 
+                        v-model="txtYear" 
+                        type="number"
+                        :class="{'input--error':inValidYear}"
+                        @blur="addEventBlurInput('year')"
+                        class="input__date-year">
+                    <span>/</span>
+                    <input 
+                        v-model="txtMonth"
+                        :style="styleMonth" 
+                        type="number"
+                        :class="{'input--error':inValidMonth}"
+                        @blur="addEventBlurInput('month')"
+                        class="input__date-month">
+                    <span>/</span>   
+                    <input 
+                        v-model="txtDate" 
+                        type="number"
+                        :class="{'input--error':inValidDate}"
+                        @blur="addEventBlurInput('day')"
+                        class="input__date-day">
+                </div>
+                <!-- input định dạnh "yyyy/dd/mm"  -->
+                <div v-if="format == 'yyyy/dd/mm'" class="input__date--format">
+                    <input 
+                        v-model="txtYear" 
+                        type="number"
+                        :class="{'input--error':inValidYear}"
+                        @blur="addEventBlurInput('year')"
+                        class="input__date-year">
+                    <span>/</span>
+                    <input 
+                        v-model="txtDate" 
+                        type="number"
+                        :class="{'input--error':inValidDate}"
+                        @blur="addEventBlurInput('day')"
+                        class="input__date-day">
+                    <span>/</span>
+                    <input 
+                        v-model="txtMonth"
+                        :style="styleMonth" 
+                        type="number"
+                        :class="{'input--error':inValidMonth}"
+                        @blur="addEventBlurInput('month')"
+                        class="input__date-month">
+                    
+                    
+                </div>
             </div>
-            <!-- input định dạnh "yyyy/mm/dd"  -->
-            <div v-if="format == 'yyyy/mm/dd'" class="input__date--format">
-                <input 
-                    v-model="txtYear" 
-                    type="number"
-                    :class="{'input--error':inValidYear}"
-                    @blur="addEventBlurInput('year')"
-                    class="input__date-year">
-                <span>/</span>
-                <input 
-                    v-model="txtMonth"
-                    :style="styleMonth" 
-                    type="number"
-                    :class="{'input--error':inValidMonth}"
-                    @blur="addEventBlurInput('month')"
-                    class="input__date-month">
-                <span>/</span>   
-                <input 
-                    v-model="txtDate" 
-                    type="number"
-                    :class="{'input--error':inValidDate}"
-                    @blur="addEventBlurInput('day')"
-                    class="input__date-day">
-            </div>
-            <!-- input định dạnh "yyyy/dd/mm"  -->
-            <div v-if="format == 'yyyy/dd/mm'" class="input__date--format">
-                <input 
-                    v-model="txtYear" 
-                    type="number"
-                    :class="{'input--error':inValidYear}"
-                    @blur="addEventBlurInput('year')"
-                    class="input__date-year">
-                <span>/</span>
-                <input 
-                    v-model="txtDate" 
-                    type="number"
-                    :class="{'input--error':inValidDate}"
-                    @blur="addEventBlurInput('day')"
-                    class="input__date-day">
-                <span>/</span>
-                <input 
-                    v-model="txtMonth"
-                    :style="styleMonth" 
-                    type="number"
-                    :class="{'input--error':inValidMonth}"
-                    @blur="addEventBlurInput('month')"
-                    class="input__date-month">
-                
-                
-            </div>
-        </div>
+        </div> 
         <!-- dialog thông báo lỗi  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>  
         
@@ -479,6 +486,11 @@ export default {
             this.txtYear = currentDate.getFullYear();
             this.getFormatYear();
             this.txtInputDate = commonJS.formatDate(currentDate);
+        },
+
+        abc(event){
+            event.preventDefault();
+            
         }
     },
 }

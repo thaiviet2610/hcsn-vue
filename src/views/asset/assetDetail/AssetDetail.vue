@@ -11,7 +11,7 @@
                     <MButtonIcon
                         class="btn-header__icon"
                         classIcon="form-header__icon"
-                        data_tooltip_bottom="Đóng"
+                        data_tooltip_bottom="Đóng (Esc)"
                         @addOnClickBtnIcon="handlerEventBtnClickCancel">
                     </MButtonIcon>
                 </div>
@@ -135,8 +135,7 @@
                                     @getValueInput="getValueQuantity"
                                     @getValueEventInput="getValueQuantity"
                                     :buttonInput="true"
-                                    typeValue="rate"
-                                    :stepValue= 0.02
+                                    :stepValue= 1
                                     label="Số lượng"
                                     >
                                 </MInputNumber>
@@ -891,7 +890,7 @@ export default {
          * @author LTVIET(14/03/2023)
          */
         getValueCostInput(value){
-            this.asset.cost = this.getMoney(value);
+            this.asset.cost = value;
             this.depreciationValueYear = this.getDepreciationValueYear;
             this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
         },
@@ -910,6 +909,7 @@ export default {
          * @author LTVIET(23/03/2023)
          */
         getValueLifeTime(value){
+            console.log("value1:",value);
             if(value != null && value != "" && value != undefined && value != 0){
                 this.asset.life_time = value;
                 this.asset.depreciation_rate = this.getRoundValue(1/value,1000);
@@ -969,14 +969,11 @@ export default {
         handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
             if(this.itemError!=null){
-                console.log(1);
                 this.itemError.setFocus();
             }
         },
         handleEventKeyDown(event){
-            event.preventDefault()
             let keyCode = event.keyCode;
-            console.log(keyCode);
             if (keyCode == enumJS.keyCtrl) {
                 this.previousKey = keyCode;
                 setTimeout(() => {
@@ -984,11 +981,14 @@ export default {
                 }, 1000);
             }
             if(keyCode == enumJS.keyS && this.previousKey == enumJS.keyCtrl){
+                event.preventDefault();
                 this.handlerEventBtnClickSave();
             }
             if(keyCode == enumJS.keyEsc){
+                event.preventDefault();
                 this.$emit('onClose');
             }
+            
         }
         
     },

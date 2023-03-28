@@ -6,6 +6,11 @@ const enumJS = {
     keyS: 83,
     keyCtrl: 17,
     keyEsc: 27,
+    key0: 48,
+    key1: 49,
+    keyE: 69,
+    keyD: 68,
+    keyP: 80,
     errorCode: {
         exception: 1,
         inValid: 2,

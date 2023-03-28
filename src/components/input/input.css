@@ -13,10 +13,7 @@
     font-family: Roboto-Regular;
 }
 
-input[type="date"]{
-    padding-right: 6px;
-    text-align: left;
-}
+
 
 .input__icon2--image{
     width: 16px;
@@ -76,6 +73,7 @@ input[type="date"]{
     text-align: right;
 }
 
+
 .classInput{
     color: black !important;
 }
@@ -91,7 +89,7 @@ input[type="date"]{
 /* Ẩn nút mũi tên trong input number trên 
     Firefox */
 
-.classInput[type=number] {
+.classInput {
     -moz-appearance: textfield;
 }
 

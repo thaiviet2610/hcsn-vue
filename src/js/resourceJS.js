@@ -113,6 +113,7 @@ const resourceJS = {
         assetFilterApi: "https://localhost:7123/api/Assets/v1/Filter?",
         assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/GetNewCode",
         exportExcelApi: "https://localhost:7123/api/v1/Assets/Export?",
+        deleteMultipleAsset: "https://localhost:7123/api/v1/Assets/DeleteMultiple",
     },
     titlteForm: {
         addAssetForm: "Thêm tài sản",
