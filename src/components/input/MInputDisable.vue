@@ -7,7 +7,7 @@
             ref="mInput"
             :class="[{'inputNumber':typeValue=='number'}]"
             class="classInput" 
-            style="background-color: rgb(147 142 142 / 36%);"
+            style="background-color: #f5f5f5;"
             :disabled="true"
             :value="value"
             :placeholder="placeholder">  

@@ -14,6 +14,7 @@
     height: 36px !important;
     border: 1px solid #afafaf;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .input__date>input[type="date"]{

@@ -321,6 +321,7 @@
                     <!-- button hủy form  -->
                     <MButton
                         label="Hủy"
+                        style="border: 0;"
                         @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                     </MButton>
                 </div>

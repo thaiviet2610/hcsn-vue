@@ -1,7 +1,8 @@
 .btn-header__icon{
-    width: 35px;
-    height: 35px;
+    width: 24px;
+    height: 24px;
     display: flex;
+    padding: 0;
     align-items: center;
     justify-content: center;
     background-color: white;
