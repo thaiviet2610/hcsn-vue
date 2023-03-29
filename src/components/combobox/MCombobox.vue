@@ -67,7 +67,7 @@
     <MDialogNotify 
         :content="contentDialogNotifyLoadError"
         v-if="isShowDialogNotifyLoadError" 
-        @onClose="handlerEventCloseDialogNotifyLoadError">
+        @onClose="handleEventCloseDialogNotifyLoadError">
     </MDialogNotify>
 </template>
 
@@ -463,7 +463,7 @@ export default {
          * Hàm xử lý sự kiện khi click btn close của dialog thông báo lỗi load data
          * @author LTVIET (06/03/2023) 
          */
-        handlerEventCloseDialogNotifyLoadError(){
+        handleEventCloseDialogNotifyLoadError(){
             this.isShowDialogNotifyLoadError = false;
         },
     }

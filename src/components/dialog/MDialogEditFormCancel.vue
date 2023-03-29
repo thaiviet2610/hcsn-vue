@@ -16,18 +16,18 @@
                     ref="mButtonSave"
                     :isDefault="isDefault"
                     label="Lưu"
-                    @btnAddOnClickBtn="handlerEventBtnClickSave"  >
+                    @btnAddOnClickBtn="handleEventBtnClickSave"  >
                 </MButton>
                 <!-- nút không lưu của dialog  -->
                 <MButton
                     label="Không lưu"
                     class="btn--no-save"
-                    @btnAddOnClickBtn="handlerEventBtnClickCancel"  >
+                    @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                 </MButton>
                 <!-- nút hủy bỏ của dialog  -->
                 <MButton
                     label="Hủy bỏ"
-                    @btnAddOnClickBtn="handlerEventBtnClickClose"  >
+                    @btnAddOnClickBtn="handleEventBtnClickClose"  >
                 </MButton>
             </div>
         </div>
@@ -70,21 +70,21 @@ export default {
          * Hàm xử lý sự kiện lưu asset
          * @author LTVIET (02/03/2023)
          */
-         handlerEventBtnClickSave(){
+         handleEventBtnClickSave(){
             this.$emit('onCloseDialogCancelSave');
         },
         /**
          * Hàm xử lý sự kiện không lưu asset
          * @author LTVIET (02/03/2023)
          */
-         handlerEventBtnClickCancel(){
+         handleEventBtnClickCancel(){
             this.$emit('onCloseDialogCancelNoSave');
         },
         /**
          * Hàm xử lý sự kiện hủy bỏ việc thoát ra form 
          * @author LTVIET (02/03/2023)
          */
-         handlerEventBtnClickClose(){
+         handleEventBtnClickClose(){
             this.$emit('onCloseDialogCancelChange')
         }
     },

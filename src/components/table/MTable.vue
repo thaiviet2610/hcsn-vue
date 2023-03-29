@@ -33,7 +33,7 @@
       <tbody>
         <tr style="position: relative;"
           @contextmenu="handleEventClickRightMouse($event,item)"
-          @dblclick="btnAddOnDblClickRowTable(item)"
+          @dblclick="btnAddOnDblClickRowTable(item,index+1)"
           @click="btnAddOnClickRowTable(index + 1)"
           v-for="(item, index) in this.assets"
           :key="index"
@@ -233,7 +233,7 @@
     <MDialogNotify
       :content="contentDialogNotifyLoadError"
       v-if="isShowDialogNotifyLoadError"
-      @onClose="handlerEventCloseDialogNotifyLoadError"
+      @onClose="handleEventCloseDialogNotifyLoadError"
     >
     </MDialogNotify>
     <MContextMenu  
@@ -339,12 +339,24 @@ export default {
   computed: {
   },
   methods: {
+    /**
+     * Hàm xử lý sự kiện click vào 1 item trong contextmenu
+     * @param {*} values dữ liệu được truyền vào (item,index)
+     * @author LTVIET (24/03/2023)
+     */
     addOnClickItemContextMenu(values){
       let index = values[0];
       let item = values[1];
       this.$emit("addOnClickContextMenu",[item,index]);
       
     },
+
+    /**
+     * Hàm xử lý sự kiện click chuột phải vào từng dòng của table
+     * @param {*} event Đối tượng sự kiện cần xử lý
+     * @param {*} item Đối tượng dữ liệu của dòng vừa click
+     * @author LTVIET (24/03/2023)
+     */
     handleEventClickRightMouse(event,item){
         event.preventDefault();
         this.contextMenuEnity = item;
@@ -359,6 +371,11 @@ export default {
         this.isShowContextMenu = true;
         this.keyContextMenu=++this.keyContextMenu;
     },
+
+    /**
+     * Hàm xử lý sự kiện gọi api load dữ liệu mTable
+     * @author LTVIET (02/03/2023)
+     */
     async loadData() {
       this.isShowLoad = true;
        axios
@@ -397,6 +414,7 @@ export default {
       this.totalPage = this.totalRecord / this.pageSize;
       this.totalPage = Math.ceil(this.totalPage);
     },
+
     /**
      * Hàm tính giá trị còn lại của 1 tài sản trong table
      * @author LTVIET (02/03/2023)
@@ -421,6 +439,7 @@ export default {
         this.assetInput = null;
       }
     },
+
     /**
      * Hàm format lại định dạng tiền
      * @param {*} value giá trị cần format
@@ -435,6 +454,7 @@ export default {
         return commonJS.formatDate(value);
       }
     },
+
     /**
      * Hàm xử lý sự kiện click chức năng(sửa hoặc nhân bản) của table
      * @param {*} title tiêu đề form (sửa tài sản hoặc nhân bản tài sản)
@@ -445,14 +465,24 @@ export default {
       this.clickFunction = true;
       this.$emit("btnClickFunctionOpenForm", [title, item]);
     },
+
     /**
      * Hàm xử lý sự kiện double click 1 dòng của table
      * @param {*} item dòng của table được dblclick
+     * @param {*} index vị trí dòng của table được dblclick
      * @author LTVIET (02/03/2023)
      */
-    btnAddOnDblClickRowTable(item) {
+    btnAddOnDblClickRowTable(item,index) {
+      this.isSelectedRow[index] = false;
+      this.indexRowClick = -1;
       this.$emit("btnDblClickRow", item);
     },
+
+    /**
+     * Hàm xử lý sự kiện click 1 dòng của table
+     * @param {*} index vị trí dòng của table được dblclick
+     * @author LTVIET (02/03/2023)
+     */
     btnAddOnClickRowTable(index) {
       if (!this.checkbox[index]) {
         if (!this.clickFunction&&!this.clickCheckbox) {
@@ -592,11 +622,12 @@ export default {
         this.pageNumber = 1;
       }
     },
+
     /**
      * Hàm xử lý sự kiện khi click btn close của dialog thông báo lỗi load data
      * @author LTVIET (06/03/2023)
      */
-    handlerEventCloseDialogNotifyLoadError() {
+    handleEventCloseDialogNotifyLoadError() {
       this.isShowDialogNotifyLoadError = false;
     },
     /**
@@ -628,12 +659,12 @@ export default {
     setFocusCheckbox(index){
       if(index == 0){
         this.markCheckboxAll();
-        // this.$refs["mCheckboxAll"][0].setFocus();
       }else{
         this.markCheckbox(index);
       }
     }
   },
+
   async created() {
     // lấy api để load danh sách asset
     if (this.api) {
@@ -647,7 +678,8 @@ export default {
     }
   },
   watch: {
-    /** Hàm theo dõi số bản ghi trong 1 trang (pageSize),
+    /** 
+     * Hàm theo dõi số bản ghi trong 1 trang (pageSize),
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
@@ -655,7 +687,9 @@ export default {
       this.pageNumber = 1;
       this.loadData();
     },
-    /** Hàm theo dõi số trang hiện tại (pageNumber),
+
+    /** 
+     * Hàm theo dõi số trang hiện tại (pageNumber),
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
@@ -663,11 +697,22 @@ export default {
       this.loadData();
     },
 
+    /** 
+     * Hàm theo dõi id loại tài sản,
+     * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
+     * @author LTVIET (15/03/2023)
+     */
     assetCategoryId: function (newValue) {
       if (!newValue) {
         this.loadData();
       }
     },
+
+    /** 
+     * Hàm theo dõi id phòng ban,
+     * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
+     * @author LTVIET (15/03/2023)
+     */
     departmentId: function () {
       this.loadData();
     },

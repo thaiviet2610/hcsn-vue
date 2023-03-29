@@ -20,13 +20,13 @@
                 @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown1"
-                @addOnClickBtnIcon="handlerEventIncreaseValue">
+                @addOnClickBtnIcon="handleEventIncreaseValue">
             </MButtonIcon>
             <MButtonIcon
                 @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown2"
-                @addOnClickBtnIcon="handlerEventDecreaseValue">
+                @addOnClickBtnIcon="handleEventDecreaseValue">
             </MButtonIcon>
         </div>
         
@@ -190,7 +190,7 @@ export default {
          * Hàm xử lý sự kiện click vào button tăng giá trị
          * @author LTVIET (05/03/2023)
          */
-        handlerEventIncreaseValue() {
+        handleEventIncreaseValue() {
             // let step = Number(this.stepValue);
             //1. set focus vào input
             //this.setFocus();
@@ -218,7 +218,7 @@ export default {
          * Hàm xử lý sự kiện click vào button giảm giá trị
          * @author LTVIET (05/03/2023)
          */
-        handlerEventDecreaseValue(){
+        handleEventDecreaseValue(){
             //1. set focus vào input
             // this.setFocus();
             //2. nếu giá trị rỗng thì gán bằng 0
