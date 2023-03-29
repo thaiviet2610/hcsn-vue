@@ -58,6 +58,8 @@
                                         placeholder="Nhập mã bộ phận sử dụng" 
                                         label="Mã bộ phận sử dụng"
                                         propValue="department_id" 
+                                        :itemHeight = 36
+                                        :quantityItem = 4
                                         :valueInput="asset.department_id"
                                         @getInputCombobox="getValueDepartmentId"
                                         :key="keyDepartment">
@@ -95,6 +97,8 @@
                                     propName="fixed_asset_category_code" 
                                     placeholder="Nhập mã loại tài sản" 
                                     label="Mã loại tài sản"
+                                    :itemHeight = 36
+                                    :quantityItem = 4
                                     propValue="fixed_asset_category_id" 
                                     :valueInput="asset.fixed_asset_category_id"
                                     @getInputCombobox="getValueAssetCategoryId">

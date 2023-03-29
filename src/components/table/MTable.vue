@@ -333,6 +333,7 @@ export default {
       contextMenuEnity: null,
     };
   },
+  
   computed: {
   },
   methods: {
@@ -347,6 +348,12 @@ export default {
         this.contextMenuEnity = item;
         this.contextMenuPageX = event.pageX+10;
         this.contextMenuPageY = event.pageY+10;
+        if(this.contextMenuPageX+156 > window.innerWidth){
+          this.contextMenuPageX = this.contextMenuPageX - 20 - 156 ;
+        }
+        if(this.contextMenuPageY+153 > window.innerHeight){
+          this.contextMenuPageY = this.contextMenuPageY - 10 - 153;
+        }
         this.isShowContextMenu = true;
         this.keyContextMenu=++this.keyContextMenu;
     },

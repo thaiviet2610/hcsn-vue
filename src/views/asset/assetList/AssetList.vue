@@ -23,7 +23,9 @@
                             :api="this.assetCategoryApi"
                             propName="fixed_asset_category_name" 
                             placeholder="Loại tài sản" 
+                            :itemHeight = 36
                             propValue="fixed_asset_category_id"
+                            :quantityItem = 4
                             @getInputCombobox="getValueAssetCategory">
                         </MCombobox>
                         <!-- combobox lọc bộ phận sử dụng  -->
@@ -33,6 +35,8 @@
                             propName="department_name" 
                             placeholder="Bộ phận sử dụng" 
                             propValue="department_id"
+                            :itemHeight = 36
+                            :quantityItem = 4
                             @getInputCombobox="getValueDepartment" >
                         </MCombobox>
                     </div>

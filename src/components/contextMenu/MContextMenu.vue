@@ -22,12 +22,12 @@ export default {
     props: {
         data: [Object,Array],
         pageX: {
-            type: String,
-            default: "",
+            type: Number,
+            default: 0,
         },
         pageY: {
-            type: String,
-            default: "",
+            type: Number,
+            default: 0,
         },
         entity: {
             type: Object,
