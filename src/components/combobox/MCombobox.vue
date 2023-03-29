@@ -438,7 +438,6 @@ export default {
                 return;
             }
             else if(findIndex >= 0){
-                console.log(3);
                 //1.3. trường hợp còn lại thì set invalid = false (tức là không có lỗi)
                 this.inValid = false;
                 this.indexItemSelect = findIndex;

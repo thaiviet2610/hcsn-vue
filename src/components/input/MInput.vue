@@ -47,9 +47,13 @@ export default {
             default: false
         },
         tooltip:{
-            type:String,
+            type: String,
             default: null
         },
+        valueInput: {
+            type: String,
+            default: ""
+        }
     },
     components:{
 
@@ -72,9 +76,9 @@ export default {
         
     },
     created() {
-        //1. nếu modelValue có giá trị thì gán cho value
-        if(this.modelValue){
-            this.value = this.modelValue;
+        //1. nếu valueInput có giá trị thì gán cho value
+        if(this.valueInput){
+            this.value = this.valueInput;
         }
         //3. nếu input có icon set style cho input
         if(this.iconInput){
@@ -101,7 +105,6 @@ export default {
                 this.inValid = false;
             }  
             if(!this.inValid){
-                this.$emit("update:modelValue",this.value);
                 this.$emit('getValueInput',this.value);
             }
         },

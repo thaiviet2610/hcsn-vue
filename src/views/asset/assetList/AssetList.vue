@@ -508,6 +508,7 @@ export default {
          */
         async handleEventSaveForm(){
             this.isShowForm = false;
+            this.$refs["txtSearchAsset"].setFocus();
             this.isButtonUndo = false;
             this.isButtonClose = false;
             this.contentToastSuccess = resourceJS.toastSuccess.saveSuccess;
@@ -517,7 +518,6 @@ export default {
             this.isShowToastSucess = true;
             setTimeout(() => {
                 this.isShowToastSucess=false;
-                this.$refs["txtSearchAsset"].setFocus();
             }, 5000);
             // if(!this.$refs['mTable'].isShowLoad){
                 
@@ -690,9 +690,12 @@ export default {
                 let table = this.$refs["mTable"];
                 let quantityCheckbox = table.quantityCheckbox;
                 switch (keyCode) {
+                    // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:
+                        event.preventDefault();
                         this.btnClickOpenForm();
                         break;
+                    // nếu tổ hợp phím là Ctrl+0 thì gọi đến form nhân bản tài sản
                     case enumJS.key0:
                         event.preventDefault();
                         if(quantityCheckbox == 1){
@@ -700,6 +703,7 @@ export default {
                             table.handleEventClickFunction(resourceJS.titlteForm.cloneAssetForm,asset);
                         }
                         break;
+                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form sửa tài sản
                     case enumJS.keyE:
                         event.preventDefault();
                         if(quantityCheckbox == 1){
@@ -707,12 +711,72 @@ export default {
                             table.handleEventClickFunction(resourceJS.titlteForm.editAssetForm,asset);
                         }
                         break;
+                    // nếu tổ hợp phím là Ctrl+D thì gọi đến form xóa tài sản
                     case enumJS.keyD:
+                        event.preventDefault();
                         this.btnOnClick();
                         break;
+                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form xuất ra file excel
                     case enumJS.keyP:
                         event.preventDefault();
                         this.handlerEventClickBtnExcel();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if(keyCode == enumJS.keyShift){
+                this.previousKey = keyCode;
+                setTimeout(() => {
+                    this.previousKey = ""; 
+                }, 1000);
+            }
+            if(this.previousKey == enumJS.keyShift){
+                
+                switch (keyCode) {
+                    case enumJS.keyA:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(0);
+                        break;
+                    case enumJS.key1:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(1);
+                        break;
+                    case enumJS.key2:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(2);
+                        break;
+                    case enumJS.key3:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(3);
+                        break;
+                    case enumJS.key4:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(4);
+                        break;
+                    case enumJS.key5:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(5);
+                        break;
+                    case enumJS.key6:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(6);
+                        break;
+                    case enumJS.key7:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(7);
+                        break;
+                    case enumJS.key8:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(8);
+                        break;
+                    case enumJS.key9:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(9);
+                        break;
+                    case enumJS.key0:
+                        event.preventDefault();
+                        this.$refs["mTable"].setFocusCheckbox(10);
                         break;
                     default:
                         break;

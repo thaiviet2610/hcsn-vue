@@ -24,7 +24,8 @@
                                 <MInput 
                                     ref="txtAssetCode"
                                     :required="true"
-                                    v-model="asset.fixed_asset_code"
+                                    @getValueEventInput="GetValueAssetCode"
+                                    :valueInput="asset.fixed_asset_code"
                                     placeholder="Nhập mã tài sản"
                                     typeValue="text"
                                     label="Mã tài sản"
@@ -37,8 +38,9 @@
                                 <MInput 
                                     ref="txtAssetName"
                                     :required="true"
-                                    v-model="asset.fixed_asset_name"
                                     placeholder="Nhập tên tài sản"
+                                    @getValueEventInput="GetValueAssetName"
+                                    :valueInput="asset.fixed_asset_name"
                                     typeValue="text"
                                     label="Tên tài sản">
                                 </MInput>
@@ -553,6 +555,24 @@ export default {
                 }
             }  
             
+        },
+
+        /**
+         * Hàm lấy giá trị của mã tài sản từ input rồi gán vào đối tượng asset
+         * @param {*} value giá trị của mã tài sản
+         * @author LTVIET (20/03/2023)
+         */
+        GetValueAssetCode(value){
+            this.asset.fixed_asset_code = value;
+        },
+
+        /**
+         * Hàm lấy giá trị của tên tài sản từ input rồi gán vào đối tượng asset
+         * @param {*} value giá trị của tên tài sản
+         * @author LTVIET (20/03/2023)
+         */
+        GetValueAssetName(value){
+            this.asset.fixed_asset_name = value;
         },
 
         /**

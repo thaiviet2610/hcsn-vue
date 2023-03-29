@@ -6,6 +6,7 @@
         <tr>
           <th class="column1 text-align-center">
             <MCheckbox 
+              ref="mCheckboxAll"
               :checked="checkboxAll"
               @addOnClick="markCheckboxAll"
               >
@@ -42,6 +43,7 @@
         >
           <td class="column1 text-align-center">
             <MCheckbox 
+              :ref="`mCheckbox_${index+1}`"
               :checked="checkbox[index + 1]"
               @addOnClick="markCheckbox(index + 1)"
               >
@@ -73,7 +75,7 @@
               <!-- chức năng sửa tài sản trong table  -->
               <MButtonIcon
                 class="function__edit"
-                data_tooltip_bottom="Sửa"
+                data_tooltip_bottom="Sửa (Ctrl+E)"
                 @addOnClickBtnIcon="
                   handleEventClickFunction(titleEditAssetForm, item)
                 "
@@ -82,7 +84,7 @@
               <!-- chức năng nhân bản tài sản trong table  -->
               <MButtonIcon
                 class="function__clone"
-                data_tooltip_bottom="Nhân bản"
+                data_tooltip_bottom="Nhân bản (Ctrl+0)"
                 @addOnClickBtnIcon="
                   handleEventClickFunction(titleCloneAssetForm, item)
                 "
@@ -333,7 +335,7 @@ export default {
       contextMenuEnity: null,
     };
   },
-  
+
   computed: {
   },
   methods: {
@@ -482,6 +484,7 @@ export default {
         //--> gán giá trị true cho tất cả cac checkbox
         this.quantityCheckbox = length;
         check = true;
+        this.$refs["mCheckboxAll"].setFocus();
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
@@ -502,6 +505,7 @@ export default {
       this.checkbox[index] = !this.checkbox[index];
       let length = this.pageSize;
       if (this.checkbox[index]) {
+        this.$refs[`mCheckbox_${index}`][0].setFocus();
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
@@ -614,6 +618,20 @@ export default {
       this.checkboxAll = false;
       this.indexCheckbox = -1;
     },
+
+    /**
+     * Hàm set focus vào checkbox
+     * @param {*} index vị trí của checkbox muốn focus
+     * @author LTVIET (29/03/2023)
+     */
+    setFocusCheckbox(index){
+      if(index == 0){
+        this.markCheckboxAll();
+        // this.$refs["mCheckboxAll"][0].setFocus();
+      }else{
+        this.markCheckbox(index);
+      }
+    }
   },
   async created() {
     // lấy api để load danh sách asset
