@@ -19,6 +19,7 @@
                     type="number"
                     :class="{'input--error':inValidDate}"
                     @blur="addEventBlurInput('day')"
+                    @input="handleEventInput('day')"
                     class="input__date-day">
                     <span>/</span>
                     <input 
@@ -27,6 +28,7 @@
                         type="number"
                         :class="{'input--error':inValidMonth}"
                         @blur="addEventBlurInput('month')"
+                        @input="handleEventInput('month')"
                         class="input__date-month">
                     <span>/</span>
                     <input 
@@ -34,8 +36,8 @@
                         type="number"
                         :class="{'input--error':inValidYear}"
                         @blur="addEventBlurInput('year')"
+                        @input="handleEventInput('year')"
                         class="input__date-year">
-                    
                 </div>
                 <!-- input định dạnh "mm/dd/yyyy"  -->
                 <div v-if="format == 'mm/dd/yyyy'" class="input__date--format">
@@ -44,6 +46,7 @@
                         :style="styleMonth" 
                         type="number"
                         :class="{'input--error':inValidMonth}"
+                        @input="handleEventInput('month')"
                         @blur="addEventBlurInput('month')"
                         class="input__date-month">
                     <span>/</span>
@@ -51,6 +54,7 @@
                         v-model="txtDate" 
                         type="number"
                         :class="{'input--error':inValidDate}"
+                        @input="handleEventInput('day')"
                         @blur="addEventBlurInput('day')"
                         class="input__date-day">
                     <span>/</span>
@@ -58,6 +62,7 @@
                         v-model="txtYear" 
                         type="number"
                         :class="{'input--error':inValidYear}"
+                        @input="handleEventInput('year')"
                         @blur="addEventBlurInput('year')"
                         class="input__date-year">
                 </div>
@@ -68,6 +73,7 @@
                         type="number"
                         :class="{'input--error':inValidYear}"
                         @blur="addEventBlurInput('year')"
+                        @input="handleEventInput('year')"
                         class="input__date-year">
                     <span>/</span>
                     <input 
@@ -75,6 +81,7 @@
                         :style="styleMonth" 
                         type="number"
                         :class="{'input--error':inValidMonth}"
+                        @input="handleEventInput('month')"
                         @blur="addEventBlurInput('month')"
                         class="input__date-month">
                     <span>/</span>   
@@ -83,6 +90,7 @@
                         type="number"
                         :class="{'input--error':inValidDate}"
                         @blur="addEventBlurInput('day')"
+                        @input="handleEventInput('day')"
                         class="input__date-day">
                 </div>
                 <!-- input định dạnh "yyyy/dd/mm"  -->
@@ -92,6 +100,7 @@
                         type="number"
                         :class="{'input--error':inValidYear}"
                         @blur="addEventBlurInput('year')"
+                        @input="handleEventInput('year')"
                         class="input__date-year">
                     <span>/</span>
                     <input 
@@ -99,6 +108,7 @@
                         type="number"
                         :class="{'input--error':inValidDate}"
                         @blur="addEventBlurInput('day')"
+                        @input="handleEventInput('day')"
                         class="input__date-day">
                     <span>/</span>
                     <input 
@@ -107,9 +117,8 @@
                         type="number"
                         :class="{'input--error':inValidMonth}"
                         @blur="addEventBlurInput('month')"
+                        @input="handleEventInput('month')"
                         class="input__date-month">
-                    
-                    
                 </div>
             </div>
         </div> 
@@ -137,6 +146,10 @@ export default {
         format: {
             type: String,
             default: "dd/mm/yyyy"
+        },
+        valueInputDate: {
+            type: String,
+            default: ""
         }
     },
     data() {
@@ -157,16 +170,16 @@ export default {
     },
     created() {
         // nếu có dữ liệu truyền vào thì hiển thị dữ liệu đó
-        if(this.modelValue){
-            this.propValue = this.modelValue;
-            let date = new Date(this.modelValue);
+        if(this.valueInputDate){
+            this.propValue = this.valueInputDate;
+            let date = new Date(this.valueInputDate);
             this.txtDate = date.getDate();
             this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
             this.txtMonth = date.getMonth()+1;
             this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
             this.txtYear = date.getFullYear();
             this.txtYear = this.txtYear < 10 ? `0${this.txtYear}` : this.txtYear;
-            this.txtInputDate = commonJS.formatDate(this.modelValue);
+            this.txtInputDate = commonJS.formatDate(this.valueInputDate);
         }else{
             //nếu không có dữ liệu truyền vào thì hiển thị thời gian hiện tại
             this.getCurrentDate();
@@ -185,7 +198,7 @@ export default {
                 this.inValidDate = true;
                 this.inValidMonth = true;
                 this.inValidYear = true;
-                this.handlerEventError("",this.notifyErrorEmpty);
+                this.handleEventError("",this.notifyErrorEmpty);
             }else{
                 this.inValidDate = false;
                 this.inValidMonth = false;
@@ -193,7 +206,6 @@ export default {
                 this.inValid = false;
                 let value = commonJS.formatDate(newValue);
                 this.$emit("getValueInputDate",value);
-                this.$emit("update:modelValue",value);
             }
         },
         
@@ -208,6 +220,7 @@ export default {
          * @author LTVIET (12/03/2023)
          */
         addEventBlurInput(type){
+            
             let check = true;
             switch (type) {
                 case "day":
@@ -226,8 +239,8 @@ export default {
             if(check){
                 this.txtInputDate = this.getInputDate();
                 this.txtInputDate = commonJS.formatDate(this.txtInputDate);
+                console.log(1);
                 this.$emit("getValueInputDate",this.txtInputDate);
-                this.$emit("update:modelValue",this.txtInputDate);
             }            
         },
 
@@ -239,7 +252,7 @@ export default {
             this.txtDate = Number(this.txtDate);
             //1. kiểm tra xem input có rỗng không
             if(this.txtDate == "" || this.txtDate == null || this.txtDate == undefined || this.txtDate=="00"){
-                this.handlerInputEmpty("date");
+                this.handleInputEmpty("date");
                 return false;
             }
             else{
@@ -247,7 +260,7 @@ export default {
                 if(this.txtDate < 0 || this.txtDate > 31){
                     //2.1. nếu giá trị ngày nhỏ hơn 0 hoặc lớn hơn 31 thì hiện thị thông báo lỗi
                     let contentError = "Vui lòng nhập giá trị ngày trong khoảng từ 1->31!";
-                    this.handlerEventError("date",contentError);
+                    this.handleEventError("date",contentError);
                     return false;
                 }
                 else{
@@ -276,14 +289,14 @@ export default {
             this.txtMonth = Number(this.txtMonth);
             //1. kiểm tra xem input có rỗng không
             if(this.txtMonth == "" || this.txtMonth == null || this.txtMonth == undefined || this.txtMonth == "00"){
-                this.handlerInputEmpty("month");
+                this.handleInputEmpty("month");
                 return false;
             }else{ 
                 //2. nếu input không rỗng
                 if(this.txtMonth < 0 || this.txtMonth > 12){
                     //2.1. nếu giá trị tháng nhỏ hơn 0 hoặc lớn hơn 12 thì hiện thị thông báo lỗi
                     let contentError = "Vui lòng nhập giá trị tháng trong khoảng từ 1 -> 12!";
-                    this.handlerEventError("month",contentError);
+                    this.handleEventError("month",contentError);
                     return false;
                 }
                 else{
@@ -311,7 +324,7 @@ export default {
         validateInputYear(){
             //1. kiểm tra xem input có rỗng không
             if(this.txtYear == "" || this.txtYear == null || this.txtYear == undefined || this.txtYear == "0000"){
-                this.handlerInputEmpty("year");
+                this.handleInputEmpty("year");
                 return false;
             }else{
                 //2. nếu input không rỗng
@@ -333,7 +346,7 @@ export default {
          * @param {*} type loại input cần xét (date, month,year)
          * @author LTVIET (12/03/2023)
          */
-        handlerInputEmpty(type){
+        handleInputEmpty(type){
             switch (type) {
                 case "date":
                     this.txtDate = "00";
@@ -349,7 +362,7 @@ export default {
             }
             
             if(this.required){
-                this.handlerEventError(type,this.notifyErrorEmpty);
+                this.handleEventError(type,this.notifyErrorEmpty);
             }
         },
 
@@ -403,7 +416,7 @@ export default {
          * @param {*} contentError nội dung thông báo lỗi
          * @author LTVIET (12/03/2023)
          */
-        handlerEventError(type,contentError){
+        handleEventError(type,contentError){
             switch (type) {
                 case "date":
                     this.inValidDate = true;
@@ -488,10 +501,9 @@ export default {
             this.txtInputDate = commonJS.formatDate(currentDate);
         },
 
-        abc(event){
-            event.preventDefault();
-            
-        }
+        handleEventInput(type){
+            this.addEventBlurInput(type);
+        },
     },
 }
 </script>

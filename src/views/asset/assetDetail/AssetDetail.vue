@@ -12,7 +12,7 @@
                         class="btn-header__icon"
                         classIcon="form-header__icon"
                         data_tooltip_bottom="Đóng (Esc)"
-                        @addOnClickBtnIcon="handlerEventBtnClickCancel">
+                        @addOnClickBtnIcon="handleEventBtnClickCancel">
                     </MButtonIcon>
                 </div>
                 <!-- phần body của form  -->
@@ -286,7 +286,8 @@
                                     ref="txtPurchaseDate"
                                     label="Ngày mua"
                                     format="dd/mm/yyyy"
-                                    v-model="asset.purchase_date"
+                                    :valueInputDate="asset.purchase_date"
+                                    @getValueInputDate="getValuePurchaseDate"
                                     :required="true"
                                     >
                                 </MInputDate>
@@ -298,7 +299,8 @@
                                     ref="txtProductionYear"
                                     label="Ngày bắt đầu sử dụng"
                                     format="dd/mm/yyyy"
-                                    v-model="asset.production_year"
+                                    :valueInputDate="asset.production_year"
+                                    @getValueInputDate="getValueProductionYear"
                                     :required="true"
                                     >
                                 </MInputDate>
@@ -314,12 +316,12 @@
                     <MButton
                         :isDefault="true"
                         label="Lưu"
-                        @btnAddOnClickBtn="handlerEventBtnClickSave">
+                        @btnAddOnClickBtn="handleEventBtnClickSave">
                     </MButton>
                     <!-- button hủy form  -->
                     <MButton
                         label="Hủy"
-                        @btnAddOnClickBtn="handlerEventBtnClickCancel"  >
+                        @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                     </MButton>
                 </div>
             </div>
@@ -344,7 +346,7 @@
             v-if="isShowDialogEditFormCancel"
             @onCloseDialogCancelNoSave="handleEventCloseDialogCancelNoSave"
             @onCloseDialogCancelChange="handleEventCloseDialogCancelChange"
-            @onCloseDialogCancelSave="handlerEventCloseDialogCancelSave">
+            @onCloseDialogCancelSave="handleEventCloseDialogCancelSave">
         </MDialogEditFormCancel>
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
@@ -505,7 +507,7 @@ export default {
          * Hàm tạo sự kiện khi click btn hủy thì hiển thị dialog xác nhận
          * @author LTVIET (03/03/2023)
          */
-        handlerEventBtnClickCancel(){
+        handleEventBtnClickCancel(){
             let newValueAsset = JSON.stringify(this.asset);
             if(this.typeForm == "add"){
                 this.isShowDialogAddFormCancel = true;
@@ -523,7 +525,7 @@ export default {
          * Hàm tạo sự kiện khi click btn lưu thì hiển thị dialog xác nhận
          * @author LTVIET (04/03/2023)
          */
-        handlerEventBtnClickSave(){
+        handleEventBtnClickSave(){
             if(this.validateForm()){
                 this.asset.quantity = Number(this.asset.quantity);
                 let entity = {
@@ -790,8 +792,8 @@ export default {
          * Hàm xử lý sự kiện đóng dialog khi không lưu dữ liệu thay đổi 
          * @author LTVIET (02/03/2023)
          */
-         handlerEventCloseDialogCancelSave(){
-            this.handlerEventBtnClickSave();
+         handleEventCloseDialogCancelSave(){
+            this.handleEventBtnClickSave();
         },
 
         /**
@@ -978,24 +980,51 @@ export default {
             
         },
 
+        /**
+         * Hàm nhận giá trị id phòng ban từ combobox gán vào đối tượng asset
+         * @param {*} value giá trị từ combobox
+         * @author LTVIET (29/03/2023)
+         */
         getValueDepartmentId(value){
             this.asset.department_id = value;
             this.getDepartment();
         },
 
+        /**
+         * Hàm nhận giá trị id loại tài sản từ combobox gán vào đối tượng asset
+         * @param {*} value giá trị từ combobox
+         * @author LTVIET (29/03/2023)
+         */
         getValueAssetCategoryId(value){
             this.asset.fixed_asset_category_id = value;
             this.getAssetCategory();
         },
+
+        /**
+         * Hàm nhận giá trị số lượng từ input gán vào đối tượng asset
+         * @param {*} value giá trị từ input
+         * @author LTVIET (29/03/2023)
+         */
         getValueQuantity(value){
             this.asset.quantity = value;
         },
+
+        /**
+         * Hàm xử lý sự kiện click button đóng dialog
+         * @author LTVIET (29/03/2023)
+         */
         handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
             if(this.itemError!=null){
                 this.itemError.setFocus();
             }
         },
+
+        /**
+         * Hàm xử lý sự kiện bấm các phím tắt ở form detail (lưu,thoát)
+         * @param {*} event đối tượng sự kiện cần sử lý
+         * @author LTVIET (29/03/2023)
+         */
         handleEventKeyDown(event){
             let keyCode = event.keyCode;
             if (keyCode == enumJS.keyCtrl) {
@@ -1006,13 +1035,31 @@ export default {
             }
             if(keyCode == enumJS.keyS && this.previousKey == enumJS.keyCtrl){
                 event.preventDefault();
-                this.handlerEventBtnClickSave();
+                this.handleEventBtnClickSave();
             }
             if(keyCode == enumJS.keyEsc){
                 event.preventDefault();
                 this.$emit('onClose');
             }
             
+        },
+
+        /**
+         * Hàm nhận giá trị ngày mua từ input gán vào đối tượng asset
+         * @param {*} value giá trị từ input
+         * @author LTVIET (29/03/2023)
+         */
+        getValuePurchaseDate(value){
+            this.asset.purchase_date = value;
+        },
+
+        /**
+         * Hàm nhận giá trị ngày bắt đầu sử dụng từ input gán vào đối tượng asset
+         * @param {*} value giá trị từ input
+         * @author LTVIET (29/03/2023)
+         */
+        getValueProductionYear(value){
+            this.asset.production_year = value;
         }
         
     },

@@ -10,7 +10,7 @@
                         <!-- input tìm kiếm tài sản  -->
                         <div class="input1">
                             <MInput 
-                                @keydownEnter ="handlerEventKeydownEnterInputSearch"
+                                @keydownEnter ="handleEventKeydownEnterInputSearch"
                                 ref="txtSearchAsset"
                                 placeholder="Tìm kiếm tài sản"
                                 :iconInput="true"
@@ -54,7 +54,7 @@
                             class="item2"
                             classIcon="item2__icon--image"
                             data_tooltip_bottom="Xuất ra Excel  (Ctrl+P)"
-                            @addOnClickBtnIcon="handlerEventClickBtnExcel">
+                            @addOnClickBtnIcon="handleEventClickBtnExcel">
                         </MButtonIcon>
                         <!-- button xóa tài sản  -->
                         <MButtonIcon
@@ -239,7 +239,7 @@ export default {
          * @param {*} value giá trị cần tìm kiếm
          * @author LTVIET (16/03/2023)
          */
-         handlerEventKeydownEnterInputSearch(value){
+         handleEventKeydownEnterInputSearch(value){
             this.keyword = value;
             if(!this.invalid){
                 this.keyTable = ++this.keyTable;
@@ -531,7 +531,7 @@ export default {
          * Hàm xử lý sự kiện khi click btn xuất ra excel
          * @author LTVIET (06/03/2023) 
          */
-        handlerEventClickBtnExcel(){
+        handleEventClickBtnExcel(){
             this.isShowLoad = true;
             axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
             .then(res => {
@@ -796,7 +796,7 @@ export default {
                     // nếu tổ hợp phím là Ctrl+E thì gọi đến form xuất ra file excel
                     case enumJS.keyP:
                         event.preventDefault();
-                        this.handlerEventClickBtnExcel();
+                        this.handleEventClickBtnExcel();
                         break;
                     default:
                         break;

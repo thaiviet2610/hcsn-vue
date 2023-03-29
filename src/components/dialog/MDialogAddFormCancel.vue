@@ -21,12 +21,12 @@
                     ref="mButtonCancel"
                     :isDefault="isDefault"
                     :label="labelButtonDefault"
-                    @btnAddOnClickBtn="handlerEventBtnClickCancel"  >
+                    @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                 </MButton>
                 <!-- không hủy của dialog  -->
                 <MButton
                     label="Không"
-                    @btnAddOnClickBtn="handlerEventBtnClickNoCancel"  >
+                    @btnAddOnClickBtn="handleEventBtnClickNoCancel"  >
                 </MButton>
             </div>
         </div>
@@ -102,7 +102,7 @@ export default {
          * Hàm gọi đến asset detail để đóng dialog
          * @author LTVIET (02/03/2023)
          */
-        handlerEventBtnClickNoCancel(){
+        handleEventBtnClickNoCancel(){
             if(this.type == "cancel"){
                 this.$emit('onCloseDialogNoCancel');
             }else if(this.type == "delete"){
@@ -115,7 +115,7 @@ export default {
          * từ asset detail gọi đến asset list để đóng asset detail
          * @author LTVIET (02/03/2023)
          */
-        handlerEventBtnClickCancel() {
+        handleEventBtnClickCancel() {
             if(this.type == "cancel"){
                 this.$emit('onCloseDialogCancel');
             }else if(this.type == "delete"){
