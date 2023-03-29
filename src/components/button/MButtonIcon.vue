@@ -1,6 +1,7 @@
 <template>
     <button 
-        :class="{'btn--default':isDefault,'btn--no-save':isNoSave}"
+        ref="mButtonIcon"
+        :class="{'btn--default':isDefault}"
         @click="addEventClickBtnIcon">
             <div :class="classIcon"></div>
     </button>
@@ -32,17 +33,14 @@ export default {
     },
     data() {
         return {
-            isNoSave: false
         }
     },
     created() {
-        if(this.label == "Không lưu"){
-            this.isNoSave = true;
-        }
     },
     components:{
 
     },
+    
     methods: {
         /**
          * Hàm xử lý sự kiện click button
@@ -50,6 +48,12 @@ export default {
          */
         addEventClickBtnIcon() {
             this.$emit('addOnClickBtnIcon');   
+        },
+
+        setFocus(){
+            this.$nextTick(function() {
+                this.$refs["mButtonIcon"].focus();
+            })
         }
     }
 }

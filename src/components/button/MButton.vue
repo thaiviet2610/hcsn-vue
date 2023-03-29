@@ -2,7 +2,7 @@
     <button 
         ref="mButton"
         class="btn"
-        :class="{'btn--default':isDefault,'btn--no-save':isNoSave}"
+        :class="{'btn--default':isDefault}"
         @click="addEventClickBtn">
             {{ label }}
     </button>
@@ -28,13 +28,9 @@ export default {
     },
     data() {
         return {
-            isNoSave: false
         }
     },
     created() {
-        if(this.label == "Không lưu"){
-            this.isNoSave = true;
-        }
     },
     components:{
 

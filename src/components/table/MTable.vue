@@ -112,7 +112,7 @@
               <div class="dropdown_table">
                 <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
               </div>
-              <div class="content-footer__item3">
+              <div class="content-footer__item3"> 
                 <MButtonIcon
                   @addOnClickBtnIcon="addOnDecreaseNumberPage"
                   class="content-footer__item3--icon1"

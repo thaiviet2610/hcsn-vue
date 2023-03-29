@@ -190,7 +190,7 @@ export default {
          * @param {*} event sự kiện cần xửu lý
          * @author LTVIET (11/03/2023)
          */
-         onMouseDownInput(event){
+        onMouseDownInput(event){
             event.preventDefault();
         },
         /**

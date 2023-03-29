@@ -21,6 +21,7 @@
                 <!-- nút không lưu của dialog  -->
                 <MButton
                     label="Không lưu"
+                    class="btn--no-save"
                     @btnAddOnClickBtn="handlerEventBtnClickCancel"  >
                 </MButton>
                 <!-- nút hủy bỏ của dialog  -->
