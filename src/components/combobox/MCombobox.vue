@@ -319,7 +319,6 @@ export default {
                     // console.log(this.$refs["mComboboxData"].scroll);
                     //2.1. nếu là phím xuống:
                     if(this.isShow){
-                        
                         //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
                         //  set vị trí được chọn mới tăng lên 1 đơn vị
                         if(this.indexItemSelect < (length - 1) ){
@@ -378,7 +377,7 @@ export default {
                     this.isShow = true;
                     this.zIndex = 2;
                     break;
-                case enumJS.enter:
+                case enumJS.keyEnter:
                     if(this.indexItemSelect==-1){
                         if(this.value){
                             this.$emit("getInputCombobox",null);
@@ -389,7 +388,6 @@ export default {
                         this.scrollY = 0;
                         this.zIndex = 0;
                     }else{
-                        //2.3. nếu là phím tab thì xử lý giống phím enter
                         //2.4. nếu là phím enter
                         //2.4.1. lấy ra item được chọn trong danh sách
                         this.itemSelected = this.entitiesSearch[this.indexItemSelect];

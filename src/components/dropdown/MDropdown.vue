@@ -227,8 +227,7 @@ export default {
                         this.indexItemSelected = length-1;
                     }
                     break;
-                case enumJS.tab://2.3. nếu là phím tab thì xử lý giống phím enter
-                case enumJS.enter:
+                case enumJS.keyEnter:
                     //2.4. nếu là phím enter
                     //2.4.1. lấy ra item được chọn trong danh sách
                     if(length == 0){

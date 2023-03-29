@@ -1,8 +1,9 @@
 const enumJS = {
-    tab: 9,
-    enter: 13,
+    keyTab: 9,
+    keyEnter: 13,
     keyShift: 16,
     keyCtrl: 17,
+    ketAlt: 18,
     keyEsc: 27,
     arrowUp: 38,
     arrowDown: 40,

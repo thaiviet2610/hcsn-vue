@@ -680,51 +680,18 @@ export default {
          */
         HandleEventKeyDown(event){
             let keyCode = event.keyCode;
-            if (keyCode == enumJS.keyCtrl) {
-                this.previousKey = keyCode;
-                setTimeout(() => {
-                    this.previousKey = ""; 
-                }, 1000);
-            }
-            if(this.previousKey == enumJS.keyCtrl){
-                let table = this.$refs["mTable"];
-                let quantityCheckbox = table.quantityCheckbox;
-                switch (keyCode) {
-                    // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
-                    case enumJS.key1:
-                        event.preventDefault();
-                        this.btnClickOpenForm();
-                        break;
-                    // nếu tổ hợp phím là Ctrl+0 thì gọi đến form nhân bản tài sản
-                    case enumJS.key0:
-                        event.preventDefault();
-                        if(quantityCheckbox == 1){
-                            let asset = table.getItemSelected();
-                            table.handleEventClickFunction(resourceJS.titlteForm.cloneAssetForm,asset);
-                        }
-                        break;
-                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form sửa tài sản
-                    case enumJS.keyE:
-                        event.preventDefault();
-                        if(quantityCheckbox == 1){
-                            let asset = table.getItemSelected();
-                            table.handleEventClickFunction(resourceJS.titlteForm.editAssetForm,asset);
-                        }
-                        break;
-                    // nếu tổ hợp phím là Ctrl+D thì gọi đến form xóa tài sản
-                    case enumJS.keyD:
-                        event.preventDefault();
-                        this.btnOnClick();
-                        break;
-                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form xuất ra file excel
-                    case enumJS.keyP:
-                        event.preventDefault();
-                        this.handlerEventClickBtnExcel();
-                        break;
-                    default:
-                        break;
-                }
-            }
+            console.log(keyCode);
+            this.handleEventKeyStrokesCtrl(event,keyCode);
+            this.handleEventKeyStrokesShift(event,keyCode);
+        },
+
+        /**
+         * Hàm xử lsy sự kiện khi bấm tổ hợp phím Shift + keycode
+         * @param {*} event Sự kiện khi bấm phím
+         * @param {*} keyCode Ký tự bấm cùng phím Shift
+         * @author LTVIET (29/03/2023)
+         */
+        handleEventKeyStrokesShift(event,keyCode){
             if(keyCode == enumJS.keyShift){
                 this.previousKey = keyCode;
                 setTimeout(() => {
@@ -732,9 +699,8 @@ export default {
                 }, 1000);
             }
             if(this.previousKey == enumJS.keyShift){
-                
                 switch (keyCode) {
-                    case enumJS.keyA:
+                    case enumJS.ketAlt:
                         event.preventDefault();
                         this.$refs["mTable"].setFocusCheckbox(0);
                         break;
@@ -777,6 +743,60 @@ export default {
                     case enumJS.key0:
                         event.preventDefault();
                         this.$refs["mTable"].setFocusCheckbox(10);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lsy sự kiện khi bấm tổ hợp phím Ctrl + keycode
+         * @param {*} event Sự kiện khi bấm phím
+         * @param {*} keyCode Ký tự bấm cùng phím Ctrl
+         * @author LTVIET (29/03/2023)
+         */
+        handleEventKeyStrokesCtrl(event,keyCode){
+            if (keyCode == enumJS.keyCtrl) {
+                this.previousKey = keyCode;
+                setTimeout(() => {
+                    this.previousKey = ""; 
+                }, 1000);
+            }
+            if(this.previousKey == enumJS.keyCtrl){
+                let table = this.$refs["mTable"];
+                let quantityCheckbox = table.quantityCheckbox;
+                switch (keyCode) {
+                    // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
+                    case enumJS.key1:
+                        event.preventDefault();
+                        this.btnClickOpenForm();
+                        break;
+                    // nếu tổ hợp phím là Ctrl+0 thì gọi đến form nhân bản tài sản
+                    case enumJS.key0:
+                        event.preventDefault();
+                        if(quantityCheckbox == 1){
+                            let asset = table.getItemSelected();
+                            table.handleEventClickFunction(resourceJS.titlteForm.cloneAssetForm,asset);
+                        }
+                        break;
+                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form sửa tài sản
+                    case enumJS.keyE:
+                        event.preventDefault();
+                        if(quantityCheckbox == 1){
+                            let asset = table.getItemSelected();
+                            table.handleEventClickFunction(resourceJS.titlteForm.editAssetForm,asset);
+                        }
+                        break;
+                    // nếu tổ hợp phím là Ctrl+D thì gọi đến form xóa tài sản
+                    case enumJS.keyD:
+                        event.preventDefault();
+                        this.btnOnClick();
+                        break;
+                    // nếu tổ hợp phím là Ctrl+E thì gọi đến form xuất ra file excel
+                    case enumJS.keyP:
+                        event.preventDefault();
+                        this.handlerEventClickBtnExcel();
                         break;
                     default:
                         break;

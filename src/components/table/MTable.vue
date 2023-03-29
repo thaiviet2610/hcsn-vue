@@ -484,7 +484,7 @@ export default {
         //--> gán giá trị true cho tất cả cac checkbox
         this.quantityCheckbox = length;
         check = true;
-        this.$refs["mCheckboxAll"].setFocus();
+        
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
@@ -494,6 +494,7 @@ export default {
       for (let i = 1; i <= length; i++) {
         this.checkbox[i] = check;
       }
+      this.$refs["mCheckboxAll"].setFocus();
     },
     /**
      * Hàm xử lý sựu kiện khi click vào checkbox
@@ -505,7 +506,6 @@ export default {
       this.checkbox[index] = !this.checkbox[index];
       let length = this.pageSize;
       if (this.checkbox[index]) {
-        this.$refs[`mCheckbox_${index}`][0].setFocus();
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
@@ -519,6 +519,7 @@ export default {
             return;
           }
         }
+        this.$refs[`mCheckbox_${index}`][0].setFocus();
         //2.1.4. nếu tất cả checkbox = true thì set checkboxAll = true
         this.checkboxAll = true;
       } else {
