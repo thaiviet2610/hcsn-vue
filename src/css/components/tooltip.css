@@ -1,3 +1,4 @@
+/* tooltip top  */
 [data_tooltip_top]{
     position: relative;
 }
@@ -18,38 +19,17 @@
     bottom: 0;
     line-height: 1rem;
     right: 0%;
-    z-index: 10;
+    z-index: 100;
     transform: scale(0);
     transition: 0.25s ease-in-out;
 }
-
-/* [data_tooltip_top]::after{
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid white;
-    transform: translateX(-50%);
-    left: calc(50% - 5px);
-    bottom: 50%;
-    transform: scale(0);
-    transition: 0.25s ease-in-out;
-    z-index: 10;
-} */
 
 [data_tooltip_top]:hover::before{
     transform: scale(1);
     bottom: calc(100% + 4px);
 }
 
-
-/* [data_tooltip_top]:hover::after{
-    bottom: 100%;
-    transform: scale(1);
-} */
-
+/* tooltip bottom  */
 [data_tooltip_bottom]{
     position: relative;
 }
@@ -70,35 +50,16 @@
     top: 0;
     line-height: 1rem;
     right: 30%;
-    z-index: 10;
+    z-index: 100;
     transform: scale(0);
     transition: 0.25s ease-in-out;
 }
-
-/* [data_tooltip_bottom]::before{
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid rgb(7, 199, 33);
-    left: calc(50% - 2.5px);
-    top: 50%;
-    transform: scale(0);
-    transition: 0.25s ease-in-out;
-} */
 
 [data_tooltip_bottom]:hover::after{
     transform: scale(1);
     top: calc(100% + 8px);
 }
 
-
-/* [data_tooltip_bottom]:hover::before{
-    top: 100%;
-    transform: scale(1);
-} */
 
 /* tooltip right */
 
@@ -127,28 +88,9 @@
 
 }
 
-/* [data_tooltip_right]::after{
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 8px solid rgb(7, 199, 33);
-    left: 150%;
-    transform: scale(0);
-    transition: 0.25s ease-in-out;
-} */
 
 [data_tooltip_right]:hover::before{
     transform: scale(1);
     left: 115%;
     top: 23%;
-    /* bottom: 100%; */
 }
-
-/* 
-[data_tooltip_right]:hover::after{
-    left: 100%;
-    transform: scale(1);
-} */

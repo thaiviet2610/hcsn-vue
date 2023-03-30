@@ -6,7 +6,6 @@ menu{
     height: 100%;
     background-color: #1c3048;
     float: left;
-    /* display: none; */
     position: sticky;
     top: 0;
     left: 0;
@@ -28,9 +27,6 @@ menu{
     height: 36px;
     background: url('../../assets/icon/qlts-icon.png') no-repeat -20px -680px;
     border-radius: 40px;
-    /* position: fixed;
-    top: 11px;
-    left: 15px; */
 }
 
 
@@ -45,8 +41,6 @@ menu{
     border-radius: 6px;
     width: 44px;
     height: 40px;
-    /* margin: 0px 11px; */
-    /* position: relative; */
     padding: 8px 10px;
     box-sizing: border-box;
     display: flex;
@@ -67,9 +61,6 @@ menu{
 .menu-body__item2{
     width: 24px;
     height: 24px;
-    /* position: absolute;
-    top: 8px;
-    left: 10px; */
 }
 
 .menu-body__item2--icon1{

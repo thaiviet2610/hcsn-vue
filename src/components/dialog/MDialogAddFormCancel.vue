@@ -7,11 +7,7 @@
                 <!-- icon của dialog  -->
                 <div class="dialog-body__icon"></div>
                 <!-- nội dung thông báo của dialog  -->
-                <div class="dialog-body__text">
-                    <span style="font-family: Roboto-Bold !important;" :style="`color:${colorTextBefore};`">{{ contentColorBefore }}</span>
-                    {{ content }}
-                    <span style="font-family: Roboto-Bold !important;" :style="`color:${colorTextAfter};`">{{ contentColorAfter }}</span>
-                    {{ contentAfter }}
+                <div class="dialog-body__text" v-html="content">
                 </div>
             </div>
             <!-- footer của dialog  -->

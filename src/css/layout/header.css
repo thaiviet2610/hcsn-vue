@@ -12,9 +12,6 @@ header{
     height: 15px;
     margin-left: 19px;
     margin-top: 15px;
-    /* position: relative;
-    top: 15px;
-    left: 86px; */
 }
 
 .header-left__text{
@@ -27,10 +24,6 @@ header{
     width: auto;
     height: 44px;
     margin-right: 23px;
-    /* margin-left: 283px; */
-    /* position: absolute;
-    right: 23px;
-    top: 0px; */
     float: right;
     display: flex;
     align-items: center;
@@ -88,8 +81,6 @@ header .input__icon2--image{
     background-color: rgba(26, 165, 200, 0);
 }
 
-
-
 .header-right__item--icon1{
 
     height: 5px;
@@ -126,9 +117,6 @@ header .input__icon2--image{
     padding: 0;
 }
 
-
-
-
 .header-right__icon1--image{
     background: url('../../assets/icon/qlts-icon.png') no-repeat -332px -109px;
 	width: 16px;
@@ -152,7 +140,6 @@ header .input__icon2--image{
     align-items: center;
     justify-content: space-between;
     column-gap: 10px;
-    /* width: 24px; */
     height: 24px;
 }
 
@@ -180,23 +167,4 @@ header .input__icon2--image{
     cursor: pointer;
 }
 
-
-.parents__icon1{
-    
-    background: url('../../assets/icon/qlts-icon.png') no-repeat no-repeat -332px -109px;
-}
-
-.parents__icon2{
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -199px -23px;
-}
-
-.parents__icon3{
-    
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -67px -67px;
-}
-
-.parents__icon4{
-    
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -23px -23px;
-}
 

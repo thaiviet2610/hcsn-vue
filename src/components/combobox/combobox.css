@@ -1,23 +1,15 @@
 .combobox{
-    /* width: 219px; */
-    /* max-width: 219px; */
     height: 35px;
     background-color: white;
     position: relative;
     border-radius: 2.5px;
-    /* z-index: 1; */
-    /* display: none; */
     font-size: 2px !important;
 }
 
-/* .combobox_input:focus{
-    border: rgba(60, 135, 225, 0.829);
-} */
 
 .combobox__icon{
     width: 24px;
     height: 24px;
-    /* margin-left: 6px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,30 +29,28 @@
     background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -68px;
 }
 
-/* .combobox_input{
-    height: 34px !important;
-    padding-top: 0;
-    padding-bottom: 0;
-} */
-
 .combobox_input:focus{
     border: 1px solid rgba(84, 173, 225, 0.829);
 }
 
 .combobox_input{
-    /* width: 139px; */
-    /* width: calc(100% - 40px - 38px); */
-    /* min-width: 80px; */
     width: calc(100% - 32px - 38px);
     height: 34px !important;
     padding-top: 0;
     padding-bottom: 0;
-    overflow: hidden;
+    
     padding-left: 38px;
     padding-right: 32px;
     border-radius: 3px;
     outline: none;
     border: 1px solid #afafaf;
+    
+}
+
+.combobox input{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .combobox__button{
@@ -101,21 +91,15 @@
 
 .combobox__data{
     width: 100%;
-    /* max-height: 184px; */
-    /* max-height: 147px; */
     padding: 2px 2px 0 2px;
-    /* margin: 8px 8px 8px 8px; */
     box-sizing: border-box;
     overflow-y: scroll;
-    /* background-color: #f6f7f7c9; */
     background-color: white;
     box-shadow: 0 0 6px #ccc;
-    /* display: none; */
 }
 
 .combobox__data_item{
     width: 100%;
-    /* height: 36px; */
     display: flex;
     align-items: center;
     color: #1F1F1F;

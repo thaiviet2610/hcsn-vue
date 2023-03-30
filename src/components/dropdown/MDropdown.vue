@@ -205,27 +205,37 @@ export default {
             switch (key) {
                 case enumJS.arrowDown:
                     //2.1. nếu là phím xuống:
-                    //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
-                    //  set vị trí được chọn mới tăng lên 1 đơn vị
-                    if(this.indexItemSelected < (length - 1) ){
-                        this.indexItemSelected += 1;
+                    if(this.isShowData){
+                        //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
+                        //  set vị trí được chọn mới tăng lên 1 đơn vị
+                        if(this.indexItemSelected < (length - 1) ){
+                            this.indexItemSelected += 1;
+                        }else{
+                            //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
+                            //set vị trí được chọn mới ở đầu tiên
+                            this.indexItemSelected = 0;
+                        }
                     }else{
-                        //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
-                        //set vị trí được chọn mới ở đầu tiên
-                        this.indexItemSelected = 0;
+                        this.dataSearch = this.data;
                     }
+                    this.isShowData = true;
                     break;
                 case enumJS.arrowUp:
                     //2.2. nếu là phím lên:
-                    //2.2.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
-                    //  set vị trí được chọn mới giảm đi 1 đơn vị
-                    if(this.indexItemSelected > 0){
-                        this.indexItemSelected -= 1;
+                    if(this.isShowData){
+                        //2.2.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
+                        //  set vị trí được chọn mới giảm đi 1 đơn vị
+                        if(this.indexItemSelected > 0){
+                            this.indexItemSelected -= 1;
+                        }else{
+                            //2.2.2. nếu vị trí item được chọn là ở dầu tiên thi
+                            //set vị trí được chọn mới ở cuối cùng
+                            this.indexItemSelected = length-1;
+                        }
                     }else{
-                        //2.2.2. nếu vị trí item được chọn là ở dầu tiên thi
-                        //set vị trí được chọn mới ở cuối cùng
-                        this.indexItemSelected = length-1;
+                        this.dataSearch = this.data;
                     }
+                    this.isShowData = true;
                     break;
                 case enumJS.keyEnter:
                     //2.4. nếu là phím enter

@@ -6,7 +6,7 @@
         <!-- icon của dialog  -->
         <div class="dialog-body__icon"></div>
         <!-- nội dung thông báo của dialog  -->
-        <div class="dialog-body__text">{{ content }} <span :data_tooltip_bottom="tooltip"><u>{{ link }}</u></span></div>
+        <div class="dialog-body__text" v-html="content"></div>
       </div>
       <!-- footer của dialog  -->
       <div class="dialog-footer">

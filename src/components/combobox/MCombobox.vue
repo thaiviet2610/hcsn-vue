@@ -3,7 +3,7 @@
     <!-- thẻ label của combobox  -->
     <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
     <!-- combobox  -->
-    <div class="combobox" :style="'z-index:'+this.zIndex">
+    <div class="combobox" :style="'z-index:'+this.zIndex" :data_tooltip_top="value.length>24?value:null">
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
@@ -323,9 +323,6 @@ export default {
                         //  set vị trí được chọn mới tăng lên 1 đơn vị
                         if(this.indexItemSelect < (length - 1) ){
                             this.indexItemSelect += 1;
-                            // console.log("index:",this.indexItemSelect);
-                            // console.log(this.$refs[`item_${this.indexItemSelect}`]);
-                            // event.view.focus();
                         }else{
                             //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
                             //set vị trí được chọn mới ở đầu tiên
@@ -336,7 +333,6 @@ export default {
                         if(this.scrollY < 0){
                             this.scrollY = 0;
                         }
-                        console.log(this.scrollY);
                         if(this.indexItemSelect<=0){
                             this.$refs["mComboboxData"].scrollTo(0,0);
                         }

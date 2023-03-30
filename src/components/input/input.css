@@ -1,26 +1,10 @@
-.input{
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-    position: relative;
+
+.input--error{
+    border-color: #ff0000 !important;
 }
 
-
-.error--info{
-    color: #ff0000 !important;
-    font-size: 11px;
-    font-weight: 400px;
-    font-family: Roboto-Regular;
-}
-
-
-
-.input__icon2--image{
-    width: 16px;
-    height: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+input:focus{
+    border: 1px solid rgba(84, 173, 225, 0.829);
 }
 
 .input__icon2--image:hover{
@@ -47,6 +31,33 @@
     width: 18px;
 	height: 18px;
     background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -23px;
+}
+
+.input__icon--dropdown1{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -28px -338px;
+	width: 7px;
+	height: 5px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.input__icon--dropdown2{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -72px -338px;
+	width: 7px;
+	height: 5px;
+}
+
+.input__icon2--image{
+    width: 16px;
+    height: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    padding: 0;
+    border: none;
+    cursor: pointer;
 }
 
 .input__icon1{

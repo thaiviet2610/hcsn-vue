@@ -123,20 +123,7 @@
     /* display: none; */
 }
 
-.btn-dialog{
-    width: 80px;
-    height: 36px;
-    border-radius: 4px;
-    cursor: pointer;
-}
 
-.btn-default{
-    background-color: #1aa4c8;
-    border: none;
-}
 
-.btn-default:hover{
-    background-color: #097894;
-}
 
 

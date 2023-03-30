@@ -1,6 +1,7 @@
 <template>
     <!-- <div class="body"> -->
-        <div class="main" @click="addOnClickAssetList" @keydown="HandleEventKeyDown">
+        <div class="main" @click="addOnClickAssetList" @keydown="HandleEventKeyDown"
+            @keyup="handleEventKeyUp">
             <!-- phần header  -->
             
             <!-- phần content  -->
@@ -78,6 +79,7 @@
                         :key="keyTable"
                         v-model="quantityCheckbox"
                         @addOnClickContextMenu="handleEventClickContextMenu"
+                        @addOnEventMouseUp="handleEventTableMouseUp"
                         :api="this.assetApi"></Mtable>
                 </div>
             </div>
@@ -121,8 +123,6 @@
             :content="contentDialogConfirmDeleteMultiAsset"
             type="delete"
             v-if="isShowDialogConfirmDeleteMultiAsset"
-            :contentColorBefore="contentColorBefore"
-            :colorTextBefore="colorTextBefore"
             @onCloseDialogNoDelete="handleEventCloseDialogNoDelete"
             @onCloseDialogDelete="handleEventCloseDialogDelete">
         </MDialogFormConfirm>
@@ -194,16 +194,16 @@ export default {
             newCode: "",
             generateNewCodeApi: resourceJS.api.assetGenerateNewCodeApi,
             keyAssetDetail: 0,
-            colorTextBefore: "",
-            contentColorBefore: "",
-            contentColorAfter: "",
-            colorTextAfter: "",
             invalid: false,
             contextMenuDelete: false,
             contextMenuItemDelete: null,
             linkExcel: "",
             textLink: "",
             previousKey: "",
+            previousKeyCtrl: false,
+            previousKeyShift: false,
+            indexDeleteStart: 0,
+            indexDeleteEnd: 0,
         }
     },
 
@@ -309,8 +309,6 @@ export default {
          * @author LTVIET (02/03/2023)
          */
         btnOnClick(){
-            this.contentColorAfter="";
-            this.contentColorBefore="";
             //1. lấy số lượng checkbox = true từ table
             this.quantityCheckbox = this.$refs["mTable"].quantityCheckbox;
             let length = this.$refs["mTable"].assets.length;
@@ -327,12 +325,10 @@ export default {
                 let codeAsset = asset.fixed_asset_code;
                 let nameAsset = asset.fixed_asset_name;
                 //2.2.2. hiển thị thông báo xác nhận có muốn xóa không
-                this.contentDialogConfirmDeleteOneAsset = resourceJS.confirm.oneAssetDelete;
-                this.contentColorAfter = `<<${codeAsset} - ${nameAsset}>>`;
-                this.contentAfterDialogConfirmDeleteOneAsset = "?";
-                this.colorTextAfter = 'black';
+                let message = resourceJS.confirm.oneAssetDelete.replace("{0}", codeAsset);
+                message = message.replace("{1}", nameAsset);
+                this.contentDialogConfirmDeleteOneAsset = message;
                 this.isShowDialogConfirmDeleteOneAsset = true;
-                // this.$refs["mDialogConfirmDeleteOneAsset"].setFocus();
             }else{
                 //2.2. nếu nếu số lượng > 1 thì hiển thị thông báo xóa nhiều tài sản
                 this.isShowDialogConfirmDeleteMultiAsset = true;
@@ -345,9 +341,7 @@ export default {
                     if(this.quantityCheckbox < 10){
                         quantity = `0${quantity}`; 
                     }
-                    this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.multiAssetDelete;
-                    this.contentColorBefore = quantity;
-                    this.colorTextBefore = 'black';
+                    this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.multiAssetDelete.replace("{0}", quantity);
                 }
             }
             
@@ -672,6 +666,18 @@ export default {
             this.contextMenuItemDelete = item;
             this.contextMenuDelete = true;
         },
+
+        handleEventKeyUp(event){
+            let keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
+            }
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = false;
+                this.indexDeleteStart = 0;
+                this.indexDeleteEnd = 0;
+            }
+        },
         
         /**
          * Hàm xu lý sự kiện bấm phím tắt
@@ -680,9 +686,14 @@ export default {
          */
         HandleEventKeyDown(event){
             let keyCode = event.keyCode;
-            console.log(keyCode);
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = true;
+            }
             this.handleEventKeyStrokesCtrl(event,keyCode);
-            this.handleEventKeyStrokesShift(event,keyCode);
+            // this.handleEventKeyStrokesShift(event,keyCode);
         },
 
         /**
@@ -691,61 +702,88 @@ export default {
          * @param {*} keyCode Ký tự bấm cùng phím Shift
          * @author LTVIET (29/03/2023)
          */
-        handleEventKeyStrokesShift(event,keyCode){
-            if(keyCode == enumJS.keyShift){
-                this.previousKey = keyCode;
-                setTimeout(() => {
-                    this.previousKey = ""; 
-                }, 1000);
-            }
-            if(this.previousKey == enumJS.keyShift){
-                switch (keyCode) {
-                    case enumJS.ketAlt:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(0);
-                        break;
-                    case enumJS.key1:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(1);
-                        break;
-                    case enumJS.key2:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(2);
-                        break;
-                    case enumJS.key3:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(3);
-                        break;
-                    case enumJS.key4:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(4);
-                        break;
-                    case enumJS.key5:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(5);
-                        break;
-                    case enumJS.key6:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(6);
-                        break;
-                    case enumJS.key7:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(7);
-                        break;
-                    case enumJS.key8:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(8);
-                        break;
-                    case enumJS.key9:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(9);
-                        break;
-                    case enumJS.key0:
-                        event.preventDefault();
-                        this.$refs["mTable"].setFocusCheckbox(10);
-                        break;
-                    default:
-                        break;
+        // handleEventKeyStrokesShift(event,keyCode){
+        //     if(this.previousKeyShift){
+        //         event.preventDefault();
+        //         let index = this.$refs["mTable"].indexRowClick;
+        //         if(index > 0){
+        //             console.log(keyCode);
+        //             console.log(index);
+        //         }
+        //     }
+        //     // if(this.previousKeyShift){
+        //     //     switch (keyCode) {
+        //     //         case enumJS.ketAlt:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(0);
+        //     //             break;
+        //     //         case enumJS.key1:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(1);
+        //     //             break;
+        //     //         case enumJS.key2:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(2);
+        //     //             break;
+        //     //         case enumJS.key3:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(3);
+        //     //             break;
+        //     //         case enumJS.key4:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(4);
+        //     //             break;
+        //     //         case enumJS.key5:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(5);
+        //     //             break;
+        //     //         case enumJS.key6:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(6);
+        //     //             break;
+        //     //         case enumJS.key7:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(7);
+        //     //             break;
+        //     //         case enumJS.key8:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(8);
+        //     //             break;
+        //     //         case enumJS.key9:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(9);
+        //     //             break;
+        //     //         case enumJS.key0:
+        //     //             event.preventDefault();
+        //     //             this.$refs["mTable"].setFocusCheckbox(10);
+        //     //             break;
+        //     //         default:
+        //     //             break;
+        //     //     }
+        //     // }
+        // },
+
+        handleEventTableMouseUp(value){
+            if(this.previousKeyShift && value > 0){
+                if(this.indexDeleteStart == 0){
+                    this.indexDeleteStart = value;
+                    this.$refs["mTable"].setFocusCheckbox(value);
+                }else {
+                    if(this.indexDeleteEnd == 0){
+                        this.indexDeleteEnd = value;
+                    }else{
+                        if(this.indexDeleteStart > value){
+                            this.indexDeleteStart = value;
+                        }else{
+                            this.indexDeleteEnd = value;
+                        }
+                    }
+                    for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
+                        let checkbox = this.$refs["mTable"].checkbox[i];
+                        if(!checkbox){
+                            this.$refs["mTable"].markCheckbox(i);
+                        }
+                    }
                 }
             }
         },
@@ -757,13 +795,7 @@ export default {
          * @author LTVIET (29/03/2023)
          */
         handleEventKeyStrokesCtrl(event,keyCode){
-            if (keyCode == enumJS.keyCtrl) {
-                this.previousKey = keyCode;
-                setTimeout(() => {
-                    this.previousKey = ""; 
-                }, 1000);
-            }
-            if(this.previousKey == enumJS.keyCtrl){
+            if(this.previousKeyCtrl){
                 let table = this.$refs["mTable"];
                 let quantityCheckbox = table.quantityCheckbox;
                 switch (keyCode) {

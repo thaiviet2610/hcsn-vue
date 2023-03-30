@@ -617,6 +617,7 @@ export default {
          * @author LTVIET(04/03/2023)
          */
         handleEventErrorAPI(error){
+            console.log(1);
             console.log(error);
             this.isShowLoad = false;
             if(error.code == "ERR_NETWORK"){
@@ -629,6 +630,9 @@ export default {
                 let message = errorData.UserMsg;
                 if(errorCode == enumJS.errorCode.inValid){
                     message = errorData.MoreInfo.Message;
+                }
+                if(errorCode == enumJS.errorCode.duplicate){
+                    message = resourceJS.errorMsg.duplicate.replace("{0}",this.asset.fixed_asset_code);
                 }
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = message;

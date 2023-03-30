@@ -4,30 +4,25 @@
     background-color: #f4f7ff;
     float: right;
     box-sizing: border-box;
-    /* position: relative;
-    top: 44px;
-    left: 66px; */
     display: flex;
     flex-direction: column;
     padding: 14px 20px 16px 20px;
 }
 
 .content-header{
-    /* margin-top: 14px;
-    margin-left: 11px; */
     width: 100%;
     height: 38px;
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    
-    /* position: absolute;
-    top: 13px;
-    left: 20px; */
+}
+
+.content-header input{
+    outline: none;
+    border-radius: 4px;
 }
 
 .content-header__left{
-    /* width: 639px; */
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -36,14 +31,11 @@
 }
 
 .input1{
-    /* width: 179px; */
     min-width: 179px;
     height: 35px;
     display: flex;
     align-items: center;
 }
-
-
 
 .input1__text{
     width: 140px;
@@ -52,7 +44,6 @@
     font-size: 13px;
     font-style: italic;
     overflow: hidden;
-    /* color: rgba(0, 0, 0, 0.356); */
 }
 
 
@@ -60,9 +51,6 @@
 .input2{
     border-radius: 2.5px;
     border: 1px solid #afafaf;
-    /* width: 100px; */
-    /* width: 219px; */
-    /* min-width: 170px; */
     height: 35px;
     display: flex;
     align-items: center;
@@ -72,7 +60,6 @@
 
 
 .input2-up{
-    /* width: 219px; */
     height: 35px;
     display: flex;
     align-items: center;
@@ -88,25 +75,15 @@
 }
 
 .input2__text{
-    /* width: 63px;
-    height: 15px; */
-    /* width: auto; */
-    /* min-width: 63px; */
-    /* width: 80px; */
     min-width: 160px;
     margin-left: 8px;
     overflow: hidden;
-    
-    /* font-size: 13px;
-    font-style: italic;
-    color: rgba(0, 0, 0, 0.356); */
 }
 
 .input2__text input{
     width: 130px;
     overflow: hidden;
     padding-left: 8px;
-    /* margin-left: 8px; */
 }
 
 
@@ -116,21 +93,8 @@
     height: 15px;
     font-size: 13px;
     font-style: italic;
-    /* color: rgba(0, 0, 0, 0.014); */
-
     border: none;
 }
-
-/* .content .input__icon2{
-    width: 8px;
-    height: 5px;
-    position: absolute;
-    right: 12px;
-    border: none;
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -72px -338px;
-    cursor: pointer;
-} */
-
 
 
 
@@ -141,8 +105,6 @@
     justify-content: space-between;
     column-gap: 10px;
     margin-left: 10px;
-    /* position: absolute;
-    right: 0px; */
 }
 
 .content-header__right .item1{
@@ -234,15 +196,10 @@
 .content-body{
     width: 100%;
     height: calc(100% - 38px - 13px);
-    /* max-height: calc(100% - 38px);
-    overflow-y: scroll ; */
-    /* padding-top: 13px;
-    padding-bottom: 17px; */
     border-radius: 3.5px;
     border: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     margin-top: 13px;
-    /* margin-bottom: 16px; */
     box-sizing: border-box;
     position: relative;
 }

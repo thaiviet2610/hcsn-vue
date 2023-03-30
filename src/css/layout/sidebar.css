@@ -1,9 +1,7 @@
 .sidebar{
-    
     width: 194px;
     min-width: 194px;
     height: 100%;
-    
     background-color: #1c3048;
     display: flex;
     flex-direction: column;
@@ -16,11 +14,6 @@
     top: 0;
     left: 0;
     z-index: 2;
-    /* display: none; */
-}
-
-.sidebar a{
-    text-decoration: none;
 }
 
 .sidebar-header{
@@ -67,15 +60,13 @@
     border-radius: 6px;
     width: 100%;
     height: 40px;
-    /* margin: 0px 11px; */
-    /* position: relative; */
     display: flex;
     align-items: center;
-    /* justify-content: space-between; */
     column-gap: 8px;
     margin-bottom: 4px;
     cursor: pointer;
 }
+
 .sidebar-body__item:hover{
     background-color: #1aa4c8;
 }
@@ -87,9 +78,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* position: absolute;
-    top: 8px;
-    left: 10px; */
 }
 
 .sidebar-body__text{
@@ -166,9 +154,6 @@
 	height: 22px;
     background: url('../../assets/icon/qlts-icon.png') no-repeat -329px -153px;
 }
-
-
-
 
 .sidebar-body__item1--modifier{
     background-color: #1aa4c8;

@@ -74,7 +74,6 @@ const resourceJS = {
         errorUpdateAssetFail: "Hành động sửa tài sản thất bại. Vui lòng thử lại sau!",
         errorAddAssetFail: "Hành động thêm tài sản thất bại. Vui lòng thử lại sau!",
         errorCloneAssetFail: "Hành động nhân bản tài sản thất bại. Vui lòng thử lại sau!",
-
     },
     notify: {
         noAssetDelete: "Không có tài sản nào được chọn. Vui lòng chọn tài sản muốn xóa!",
@@ -87,12 +86,12 @@ const resourceJS = {
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
         exception: "Đã có lỗi xảy ra. Vui lòng liên hệ trung tâm tư vấn!",
         inValid: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
-        duplicate: "Mã đã bị trùng. Vui lòng kiểm tra lại!",
+        duplicate: "Mã tài sản <b> << {0} >> </b> đã tồn tại. Vui lòng kiểm tra lại!",
         exportExcelFailed: "Xuất dữu liệu ra file excel không thành công. Vui lòng kiểm tra lại!"
     },
     confirm: {
-        oneAssetDelete: "Bạn có muốn xóa tài sản ",
-        multiAssetDelete: " tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
+        oneAssetDelete: "Bạn có muốn xóa tài sản <b><< {0} - {1} >></b>?",
+        multiAssetDelete: "<b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
         allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này?",
         cantDeleteAsset: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
         multiCantDeleteAsset: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",

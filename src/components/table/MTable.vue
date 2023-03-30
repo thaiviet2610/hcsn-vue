@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-    <table class="content__table">
+    <table class="content__table" >
       <!-- phần title của table  -->
       <thead>
         <tr>
@@ -35,6 +35,7 @@
           @contextmenu="handleEventClickRightMouse($event,item)"
           @dblclick="btnAddOnDblClickRowTable(item,index+1)"
           @click="btnAddOnClickRowTable(index + 1)"
+          @mouseup="handleEventMouseUp(index+1)"
           v-for="(item, index) in this.assets"
           :key="index"
           :class="{
@@ -57,7 +58,8 @@
           <td class="column5 text-align-left">
             {{ item.fixed_asset_category_name }}
           </td>
-          <td class="column6 text-align-left">{{ item.department_name }}</td>
+          <td class="column6 text-align-left column6--text"
+            >{{ item.department_name }}</td>
           <td class="column7 text-align-right">
             {{ formatValue(item.quantity, "money") }}
           </td>
@@ -333,12 +335,16 @@ export default {
       contextMenuPageY: 0,
       keyContextMenu: 0,
       contextMenuEnity: null,
+      previousKeyShift: false,
     };
   },
 
   computed: {
   },
   methods: {
+    handleEventMouseUp(index){
+      this.$emit('addOnEventMouseUp',index);
+    },
     /**
      * Hàm xử lý sự kiện click vào 1 item trong contextmenu
      * @param {*} values dữ liệu được truyền vào (item,index)
@@ -400,7 +406,7 @@ export default {
           this.contentDialogNotifyLoadError =
             "Đã có lỗi khi load data table. Vui lòng thử lại sau!";
         });
-        // this.isShowLoad = false;
+        
 
     },
 
@@ -536,6 +542,7 @@ export default {
       this.checkbox[index] = !this.checkbox[index];
       let length = this.pageSize;
       if (this.checkbox[index]) {
+        let check = true;
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
@@ -546,12 +553,15 @@ export default {
           //2.1.3. nếu có 1 checkbox = false thì set checkboxAll = false
           if (!this.checkbox[i]) {
             this.checkboxAll = false;
-            return;
+            check = false;
+            break;
           }
         }
         this.$refs[`mCheckbox_${index}`][0].setFocus();
         //2.1.4. nếu tất cả checkbox = true thì set checkboxAll = true
-        this.checkboxAll = true;
+        if(check){
+          this.checkboxAll = true;
+        }
       } else {
         //2.2. nếu checkbox = false thì giảm số lượng của checkbox = true giảm đi 1 đơn vị
         // và set checkboxAll = false
