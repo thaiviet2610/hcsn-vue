@@ -54,6 +54,7 @@
     display: flex;
     align-items: center;
     background-color: white;
+    border: none;
 }
 
 .input__date--format{
@@ -74,26 +75,15 @@
     padding: 0;
 }
 
-.input__date input:focus{
-    border: 1px solid rgba(84, 173, 225, 0.829);
+.input__date-container:focus{
+    border: none ;
 }
 
-/* .slash1{
-    position: absolute;
-    left: 28px;
-}
-
-.slash2{
-    position: absolute;
-    left: 50px;
-} */
 
 .input__date-month{
     width: 16px;
     height: 18px;
     background-color: white;
-    /* position: absolute;
-    left: 34px; */
     display: flex;
     align-items: center;
     justify-content: center;

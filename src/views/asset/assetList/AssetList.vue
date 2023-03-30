@@ -99,8 +99,6 @@
         <MDialogNotify 
             ref="mDialogNotifyDelete"
             :content="contentDialogNotifyDelete"
-            :link="textLink"
-            :tooltip="linkExcel"
             v-if="isShowDialogNotifyDelete" 
             @onClose="handleEventCloseDialogNotifyDelete">
         </MDialogNotify>
@@ -164,7 +162,7 @@ export default {
             quantityCheckbox: 0,
             labelForm: "",
             assetInput:null,
-            isShowForm: false,
+            isShowForm: true,
             isShowDialogNotifyDelete: false,
             isShowDialogConfirm: false,
             isShowDialogConfirmDeleteOneAsset: false,
@@ -197,8 +195,6 @@ export default {
             invalid: false,
             contextMenuDelete: false,
             contextMenuItemDelete: null,
-            linkExcel: "",
-            textLink: "",
             previousKey: "",
             previousKeyCtrl: false,
             previousKeyShift: false,
@@ -530,10 +526,10 @@ export default {
             axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
             .then(res => {
                 this.isShowDialogNotifyDelete = true;
-                this.contentDialogNotifyDelete = "Dữ liệu đã được xuất thành công ra file excel: ";
-                this.linkExcel = res.data;
-                let arr = this.linkExcel.split('\\');
-                this.textLink = arr[arr.length-1];
+                let linkExcel = res.data;
+                let arr = linkExcel.split('\\');
+                let excelFile = arr[arr.length-1];
+                this.contentDialogNotifyDelete = resourceJS.toastSuccess.exportExcel.replace("{0}",excelFile);
                 this.isShowLoad=false;
             })
             .catch(error => {
@@ -587,7 +583,6 @@ export default {
          */
         handleEventCloseDialogNotifyDelete(){
             this.isShowDialogNotifyDelete = false;
-            this.textLink = "";
             this.$refs["txtSearchAsset"].setFocus();
         },
 

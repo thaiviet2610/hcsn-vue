@@ -417,13 +417,11 @@ export default {
             let me = this;
             let findIndex = this.entitiesSearch.findIndex(item=>item[me.propName].toLowerCase() == me.value.toLowerCase());
             if(this.required && !this.value){
-                console.log(1);
                 //1.1. nếu có thì set invalid =true và hiển thị thêm thông báo lỗi không được để trống
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.emptyInput;
                 return;
             }else if(this.required && findIndex == -1){
-                console.log(2);
                 //1.2. kiểm tra xem giá trị nhập vào có nằm trong danh sách dữ liệu không
                 //1.2.1. nếu có thì set invalid = true và hiển thị thêm thông báo lỗi 
                 this.inValid = true;

@@ -53,7 +53,7 @@ export default {
         valueInput: {
             type: String,
             default: ""
-        }
+        },
     },
     components:{
 

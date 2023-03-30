@@ -13,12 +13,12 @@
                     <MButtonIcon
                         class="input__icon2--image"
                         classIcon="input__icon--dropdown1"
-                        @addOnClickBtnIcon="addOnChangeYear(true)">
+                        >
                     </MButtonIcon>
                     <MButtonIcon
                         class="input__icon2--image"
                         classIcon="input__icon--dropdown2"
-                        @addOnClickBtnIcon="addOnChangeYear(false)">
+                        >
                     </MButtonIcon>
                 </div>
             </div>

@@ -239,7 +239,6 @@ export default {
             if(check){
                 this.txtInputDate = this.getInputDate();
                 this.txtInputDate = commonJS.formatDate(this.txtInputDate);
-                console.log(1);
                 this.$emit("getValueInputDate",this.txtInputDate);
             }            
         },

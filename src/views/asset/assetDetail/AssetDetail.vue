@@ -78,14 +78,6 @@
                                     label="Tên bộ phận sử dụng"
                                     >
                                 </MInputDisable>
-                                <!-- <MInput 
-                                    ref="txtDepartmentName"
-                                    :disableInput="true"
-                                    placeholder="Nhập tên bộ phận sử dụng"
-                                    typeValue="text"
-                                    :valueDisable="this.depart.department_name"
-                                    label="Tên bộ phận sử dụng">
-                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row">
@@ -116,16 +108,7 @@
                                     label="Tên loại tài sản"
                                     :value="this.asset.fixed_asset_category_name"
                                     >
-
                                 </MInputDisable>
-                                <!-- <MInput 
-                                    :disableInput="true"
-                                    ref="txtAssetCategoryName"
-                                    placeholder="Nhập tên loại tài sản"
-                                    typeValue="text"
-                                    :valueDisable="this.assetCategory.fixed_asset_category_name"
-                                    label="Tên loại tài sản">
-                                </MInput> -->
                             </div>
                         </div>
                     </div>
@@ -145,15 +128,6 @@
                                     label="Số lượng"
                                     >
                                 </MInputNumber>
-                                <!-- <MInput 
-                                    :required="true"
-                                    ref="txtQuantity"
-                                    placeholder="Nhập số lượng"
-                                    typeValue="number"
-                                    v-model="asset.quantity"
-                                    :buttonInput="true"
-                                    label="Số lượng">
-                                </MInput> -->
                             </div>
                             
                             <div class="down-center">
@@ -170,16 +144,6 @@
                                     label="Nguyên giá"
                                     >
                                 </MInputNumber>
-                                <!-- <MInput 
-                                    ref="txtCost"
-                                    :required="true"
-                                    placeholder="Nhập nguyên giá"
-                                    isFormat="money"
-                                    typeValue="number"
-                                    @getValueEventInput="getValueCostInput"
-                                    v-model="cost"
-                                    label="Nguyên giá">
-                                </MInput> -->
                             </div>
                            
                             <div class="down-right">
@@ -196,16 +160,6 @@
                                     :valueInput="this.asset.life_time"
                                     >
                                 </MInputNumber>
-                                <!-- <MInput 
-                                    ref="txtLifeTime"
-                                    :required="true"
-                                    placeholder="Nhập số năm sử dụng"
-                                    typeValue="number"
-                                    label="Số năm sử dụng"
-                                    @getValueEventInput="getValueLifeTime"
-                                    :key="keyLifeTime"
-                                    v-model="this.asset.life_time">
-                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row">
@@ -221,17 +175,6 @@
                                     typeValue="number"
                                     >
                                 </MInputDisable>
-                                <!-- <MInput 
-                                    ref="txtDepreciationRate"
-                                    :required="true"
-                                    placeholder="Nhập tỷ lệ hao mòn (%)"
-                                    typeValue="rate"
-                                    :buttonInput="true"
-                                    :disableInput="true"
-                                    label="Tỷ lệ hao mòn (%)"
-                                    :valueDisable="depreciationRate"
-                                    :key="keyDepreciationRate">
-                                </MInput> -->
                             </div>
                             <div class="down-center">
                                 <!-- input nhập giá trị hao mòn  -->
@@ -245,17 +188,6 @@
                                     typeValue="number"
                                     >
                                 </MInputDisable>
-                                <!-- <MInput 
-                                    ref="txtDepreciationValueYear"
-                                    :required="true"
-                                    placeholder="Nhập giá trị hao mòn năm"
-                                    isFormat="money"
-                                    typeValue="number"
-                                    label="Giá trị hao mòn năm"
-                                    :disableInput="true"
-                                    :valueDisable="depreciationValueYear"
-                                    :key="keyDepreciationValueYear">
-                                </MInput> -->
                             </div>
                             <div class="down-right">
                                 <!-- inptu nhập năm theo dõi  -->
@@ -268,14 +200,6 @@
                                     typeValue="number"
                                     >
                                 </MInputDisable>
-                                <!-- <MInput 
-                                    ref="txtTrackedYear"
-                                    :disableInput="true"
-                                    placeholder="Nhập năm theo dõi"
-                                    typeValue="number"
-                                    :valueDisable="asset.tracked_year"
-                                    label="Năm theo dõi">
-                                </MInput> -->
                             </div>
                         </div>
                         <div class="m-row ">

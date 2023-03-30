@@ -86,12 +86,12 @@ const resourceJS = {
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
         exception: "Đã có lỗi xảy ra. Vui lòng liên hệ trung tâm tư vấn!",
         inValid: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
-        duplicate: "Mã tài sản <b> << {0} >> </b> đã tồn tại. Vui lòng kiểm tra lại!",
+        duplicate: "<div>Mã tài sản <b> << {0} >> </b> đã tồn tại. Vui lòng kiểm tra lại!</div>",
         exportExcelFailed: "Xuất dữu liệu ra file excel không thành công. Vui lòng kiểm tra lại!"
     },
     confirm: {
         oneAssetDelete: "Bạn có muốn xóa tài sản <b><< {0} - {1} >></b>?",
-        multiAssetDelete: "<b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?",
+        multiAssetDelete: "<div><b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?</div>",
         allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này?",
         cantDeleteAsset: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
         multiCantDeleteAsset: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",
@@ -99,7 +99,7 @@ const resourceJS = {
         changeCancelFormAsset: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
     },
     toastSuccess: {
-        exportExcel: "Xuất dữ liệu ra file excel thành công tại địa chỉ: ",
+        exportExcel: "<div>Dữ liệu đã được xuất ra file excel thành công tại địa chỉ: <u>{0}</u></div> ",
         success: "Thành công!",
         saveSuccess: "Lưu dữ liệu thành công",
         deleteSuccess: "Tài sản đã được xóa",
