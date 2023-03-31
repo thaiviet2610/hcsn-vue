@@ -234,6 +234,7 @@
     <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
     <MDialogNotify
       :content="contentDialogNotifyLoadError"
+      btnLabel="Đóng"
       v-if="isShowDialogNotifyLoadError"
       @onClose="handleEventCloseDialogNotifyLoadError"
     >
@@ -427,7 +428,7 @@ export default {
      */
     getResidualCost(item) {
       let value = item.cost - item.depreciation_value;
-      return value;
+      return value > 0 ? value : 0;
     },
 
     /**

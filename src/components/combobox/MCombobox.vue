@@ -66,6 +66,7 @@
     <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
     <MDialogNotify 
         :content="contentDialogNotifyLoadError"
+        btnLabel="Đóng"
         v-if="isShowDialogNotifyLoadError" 
         @onClose="handleEventCloseDialogNotifyLoadError">
     </MDialogNotify>

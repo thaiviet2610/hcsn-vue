@@ -43,6 +43,7 @@
         <!-- dialog thông báo giá trị input không có trong danh sách dữ liệu-->
         <MDialogNotify 
             :content="contentDialogNotify"
+            btnLabel="Đóng"
             v-if="isShowDialogNotify" 
             @onClose="addEventClickBtnCloseDialogNotify">
         </MDialogNotify>
