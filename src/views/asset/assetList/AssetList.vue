@@ -137,6 +137,7 @@
             @onClose="closeToastSucess"
             >
         </MToastSucess>
+        
     <!-- </div> -->
 </template>
 
@@ -162,7 +163,7 @@ export default {
             quantityCheckbox: 0,
             labelForm: "",
             assetInput:null,
-            isShowForm: true,
+            isShowForm: false,
             isShowDialogNotifyDelete: false,
             isShowDialogConfirm: false,
             isShowDialogConfirmDeleteOneAsset: false,
@@ -284,6 +285,7 @@ export default {
                 this.typeForm = resourceJS.typeForm.clone;
                 this.getNewCode();
             }
+            this.isShowToastSucess = false;
             this.isShowForm = true;
             this.assetInput = values[1];
         },
@@ -294,6 +296,7 @@ export default {
          * @author LTVIET (02/03/2023)
          */
         handleEventDblClickRow(item){
+            this.isShowToastSucess = false;
             this.isShowForm = true;
             this.assetInput = item;
             this.typeForm = resourceJS.typeForm.edit;
@@ -629,6 +632,7 @@ export default {
             this.labelForm = resourceJS.titlteForm.cloneAssetForm;
             this.typeForm = resourceJS.typeForm.clone;
             this.getNewCode();
+            this.isShowToastSucess = false;
             this.isShowForm = true;
             this.assetInput = item;
         },
@@ -641,6 +645,7 @@ export default {
         addOnClickContextMenuEdit(item){
             this.labelForm = resourceJS.titlteForm.editAssetForm;
             this.typeForm = resourceJS.typeForm.edit;
+            this.isShowToastSucess = false;
             this.isShowForm = true;
             this.assetInput = item;
         },

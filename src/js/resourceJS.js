@@ -128,7 +128,12 @@ const resourceJS = {
         toolTipDepreciation: "Hao mòn/Khấu hao lũy kế",
 
     },
-    searchAssetPlaceholder: "Tìm kiếm tài sản"
+    searchAssetPlaceholder: "Tìm kiếm tài sản",
+    inputDate: {
+        inValidFormat: " sai định dạng! VD: {0}",
+        inValidFormatMonth: "Giá trị tháng phải nằm trong khoảng từ 1-12!",
+        invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
+    }
 }
 
 export default resourceJS;

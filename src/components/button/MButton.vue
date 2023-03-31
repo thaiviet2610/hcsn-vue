@@ -51,9 +51,9 @@ export default {
         * @author LTVIET (05/03/2023)
         */
         setFocus() {
-        this.$nextTick(function() {
-            this.$refs["mButton"].focus();
-        })
+            this.$nextTick(function() {
+                this.$refs["mButton"].focus();
+            })
         }, 
     },
 }

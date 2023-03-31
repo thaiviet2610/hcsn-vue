@@ -10,13 +10,13 @@ const commonJS = {
                 month =  month < 10 ? `0${month}` : month;
                 let year = dateTime.getFullYear();
                 year = year < 10 ? `0${year}` : year;
-                let hours = dateTime.getHours();
-                hours = hours < 10 ? `0${hours}` : hours;
-                let minutes = dateTime.getMinutes();
-                minutes = minutes < 10 ? `0${minutes}` : minutes;
-                let seconds = dateTime.getSeconds();
-                seconds = seconds < 10 ? `0${seconds}` : seconds;
-                return `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+                // let hours = dateTime.getHours();
+                // hours = hours < 10 ? `0${hours}` : hours;
+                // let minutes = dateTime.getMinutes();
+                // minutes = minutes < 10 ? `0${minutes}` : minutes;
+                // let seconds = dateTime.getSeconds();
+                // seconds = seconds < 10 ? `0${seconds}` : seconds;
+                return `${year}-${month}-${date}`;
             
             }else {
                 return "";

@@ -3,124 +3,22 @@
         <!-- label của input  -->
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
         
-        <div class="date">
+        <div class="date" :class="{'input--error':inValid}">
             <div class="datePicker"></div>
             <!-- input nhập dữ liệu  -->    
             <input
                 ref="date" 
                 v-model="txtInputDate" type="date"
+                :key="keyValue"
+                @change="handleEventChangeDatePicker"
                 >
-            
-            <div class="input__date-container">
-                <!-- input định dạnh "dd/mm/yyyy"  -->
-                <div v-if="format == 'dd/mm/yyyy'" class="input__date--format">
-                    <input 
-                    v-model="txtDate" 
-                    type="number"
-                    :class="{'input--error':inValidDate}"
-                    @blur="addEventBlurInput('day')"
-                    @input="handleEventInput('day')"
-                    class="input__date-day">
-                    <span>/</span>
-                    <input 
-                        v-model="txtMonth"
-                        :style="styleMonth" 
-                        type="number"
-                        :class="{'input--error':inValidMonth}"
-                        @blur="addEventBlurInput('month')"
-                        @input="handleEventInput('month')"
-                        class="input__date-month">
-                    <span>/</span>
-                    <input 
-                        v-model="txtYear" 
-                        type="number"
-                        :class="{'input--error':inValidYear}"
-                        @blur="addEventBlurInput('year')"
-                        @input="handleEventInput('year')"
-                        class="input__date-year">
-                </div>
-                <!-- input định dạnh "mm/dd/yyyy"  -->
-                <div v-if="format == 'mm/dd/yyyy'" class="input__date--format">
-                    <input 
-                        v-model="txtMonth"
-                        :style="styleMonth" 
-                        type="number"
-                        :class="{'input--error':inValidMonth}"
-                        @input="handleEventInput('month')"
-                        @blur="addEventBlurInput('month')"
-                        class="input__date-month">
-                    <span>/</span>
-                    <input 
-                        v-model="txtDate" 
-                        type="number"
-                        :class="{'input--error':inValidDate}"
-                        @input="handleEventInput('day')"
-                        @blur="addEventBlurInput('day')"
-                        class="input__date-day">
-                    <span>/</span>
-                    <input 
-                        v-model="txtYear" 
-                        type="number"
-                        :class="{'input--error':inValidYear}"
-                        @input="handleEventInput('year')"
-                        @blur="addEventBlurInput('year')"
-                        class="input__date-year">
-                </div>
-                <!-- input định dạnh "yyyy/mm/dd"  -->
-                <div v-if="format == 'yyyy/mm/dd'" class="input__date--format">
-                    <input 
-                        v-model="txtYear" 
-                        type="number"
-                        :class="{'input--error':inValidYear}"
-                        @blur="addEventBlurInput('year')"
-                        @input="handleEventInput('year')"
-                        class="input__date-year">
-                    <span>/</span>
-                    <input 
-                        v-model="txtMonth"
-                        :style="styleMonth" 
-                        type="number"
-                        :class="{'input--error':inValidMonth}"
-                        @input="handleEventInput('month')"
-                        @blur="addEventBlurInput('month')"
-                        class="input__date-month">
-                    <span>/</span>   
-                    <input 
-                        v-model="txtDate" 
-                        type="number"
-                        :class="{'input--error':inValidDate}"
-                        @blur="addEventBlurInput('day')"
-                        @input="handleEventInput('day')"
-                        class="input__date-day">
-                </div>
-                <!-- input định dạnh "yyyy/dd/mm"  -->
-                <div v-if="format == 'yyyy/dd/mm'" class="input__date--format">
-                    <input 
-                        v-model="txtYear" 
-                        type="number"
-                        :class="{'input--error':inValidYear}"
-                        @blur="addEventBlurInput('year')"
-                        @input="handleEventInput('year')"
-                        class="input__date-year">
-                    <span>/</span>
-                    <input 
-                        v-model="txtDate" 
-                        type="number"
-                        :class="{'input--error':inValidDate}"
-                        @blur="addEventBlurInput('day')"
-                        @input="handleEventInput('day')"
-                        class="input__date-day">
-                    <span>/</span>
-                    <input 
-                        v-model="txtMonth"
-                        :style="styleMonth" 
-                        type="number"
-                        :class="{'input--error':inValidMonth}"
-                        @blur="addEventBlurInput('month')"
-                        @input="handleEventInput('month')"
-                        class="input__date-month">
-                </div>
-            </div>
+            <input 
+                class="input__date-container" 
+                :placeholder="placeholder"
+                @input="handleEventInput" 
+                @blur="addEventBlurInput"
+                :key="keyValueInput"
+                v-model="value">
         </div> 
         <!-- dialog thông báo lỗi  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>  
@@ -130,6 +28,7 @@
 
 <script>
 import commonJS from '@/js/common';
+import resourceJS from '@/js/resourceJS';
 export default {
     name:"TheSidebar",
     components:{},
@@ -164,204 +63,103 @@ export default {
             inValidMonth: false,
             inValidYear: false,
             inValid: false,
-            notifyErrorEmpty: "Ngày, tháng, năm không được để trống",
-            notifyError: ""
+            notifyError: "",
+            placeholder: "",
+            regex: Object,
+            keyValueInput: 0,
+            keyValue: 0
         }
     },
     created() {
         // nếu có dữ liệu truyền vào thì hiển thị dữ liệu đó
         if(this.valueInputDate){
             this.propValue = this.valueInputDate;
+            this.propValue = commonJS.formatDate(this.propValue);
             let date = new Date(this.valueInputDate);
             this.txtDate = date.getDate();
             this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
             this.txtMonth = date.getMonth()+1;
             this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
-            this.txtYear = date.getFullYear();
-            this.txtYear = this.txtYear < 10 ? `0${this.txtYear}` : this.txtYear;
-            this.txtInputDate = commonJS.formatDate(this.valueInputDate);
+            
+            this.value = this.getFormatDate(this.propValue,"yyyy-mm-dd",this.format);
+            this.txtInputDate = this.propValue;
         }else{
             //nếu không có dữ liệu truyền vào thì hiển thị thời gian hiện tại
-            this.getCurrentDate();
+            let currentDate = this.getCurrentDate();
+            this.txtInputDate = currentDate;
+            this.value = this.getFormatDate(currentDate,"yyyy-mm-dd",this.format);
+        }
+
+        if(this.format.split("/")[0].length == 4){
+            this.regex = /^[0-9]{4}[/]{1}([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})$/;
+        }else{
+            this.regex = /^([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})[/]{1}[0-9]{4}$/;
         }
     },
-    watch: {
-        // nếu giá trị của ngày, tháng, năm rỗng thì gán mặc định là 0
-        txtInputDate: function(newValue){
-            this.txtDate = newValue.slice(8,10);
-            this.txtMonth = newValue.slice(5,7);
-            this.txtYear = newValue.slice(0,4);
-            if(newValue==""){
-                this.txtDate = "00";
-                this.txtMonth = "00";
-                this.txtYear = "0000";
-                this.inValidDate = true;
-                this.inValidMonth = true;
-                this.inValidYear = true;
-                this.handleEventError("",this.notifyErrorEmpty);
+    methods: {
+        handleEventChangeDatePicker(){
+            if(this.txtInputDate == ""){
+                this.placeholder = this.format;
+                this.value = "";
+                if(this.required){
+                    this.inValid = true;
+                }
             }else{
-                this.inValidDate = false;
-                this.inValidMonth = false;
-                this.inValidYear = false;
                 this.inValid = false;
-                let value = commonJS.formatDate(newValue);
-                this.$emit("getValueInputDate",value);
+                this.value = this.getFormatDate(this.txtInputDate,"yyyy-mm-dd",this.format);
+                console.log("this.txtInputDate:",this.txtInputDate);
+                this.$emit("getValueInputDate",this.txtInputDate);
             }
         },
-        
-    },
-    computed: {
-        
-    },
-    methods: {
         /**
          * Hàm xử lý sự kiện blur khỏi input
-         * @param {*} type loại input cần xét blur(day, month,year)
          * @author LTVIET (12/03/2023)
          */
-        addEventBlurInput(type){
-            
-            let check = true;
-            switch (type) {
-                case "day":
-                    check = this.validateInputDate();
-                    break;
-                case "month":
-                    check = this.validateInputMonth();
-                    break;
-                case "year":
-                    check = this.validateInputYear();
-                    break;
-                default:
-                    break;
-            }
-            
-            if(check){
-                this.txtInputDate = this.getInputDate();
-                this.txtInputDate = commonJS.formatDate(this.txtInputDate);
-                this.$emit("getValueInputDate",this.txtInputDate);
-            }            
-        },
-
-        /**
-         * Hàm validate giá trị của input date
-         * @author LTVIET (12/03/2023)
-         */
-        validateInputDate(){
-            this.txtDate = Number(this.txtDate);
-            //1. kiểm tra xem input có rỗng không
-            if(this.txtDate == "" || this.txtDate == null || this.txtDate == undefined || this.txtDate=="00"){
-                this.handleInputEmpty("date");
-                return false;
-            }
-            else{
-                //2. nếu input không rỗng
-                if(this.txtDate < 0 || this.txtDate > 31){
-                    //2.1. nếu giá trị ngày nhỏ hơn 0 hoặc lớn hơn 31 thì hiện thị thông báo lỗi
-                    let contentError = "Vui lòng nhập giá trị ngày trong khoảng từ 1->31!";
-                    this.handleEventError("date",contentError);
-                    return false;
-                }
-                else{
-                    //3.1. nếu giá trị ngày trong khoảng phù hợp
-                    //--> validate lại giá trị của ngày cho phù hợp
-                    this.validateValueDate();
-                    //4. format lại giá trị date
-                    this.getFormatDate();
-                    this.inValidDate = false;
-                    //5. kiểm tra lại xem input date, month, year có cần lỗi không
-                    if(!this.inValidDate && !this.inValidMonth && !this.inValidYear){
-                        //--> nếu không có thì ẩn thông báo lỗi
-                        this.inValid = false;
-                        this.notifyError = "";
-                    }
-                    return true;
-                }
-            }
-        },
-
-        /**
-         * Hàm validate giá trị của input month
-         * @author LTVIET (12/03/2023)
-         */
-         validateInputMonth(){
-            this.txtMonth = Number(this.txtMonth);
-            //1. kiểm tra xem input có rỗng không
-            if(this.txtMonth == "" || this.txtMonth == null || this.txtMonth == undefined || this.txtMonth == "00"){
-                this.handleInputEmpty("month");
-                return false;
-            }else{ 
-                //2. nếu input không rỗng
-                if(this.txtMonth < 0 || this.txtMonth > 12){
-                    //2.1. nếu giá trị tháng nhỏ hơn 0 hoặc lớn hơn 12 thì hiện thị thông báo lỗi
-                    let contentError = "Vui lòng nhập giá trị tháng trong khoảng từ 1 -> 12!";
-                    this.handleEventError("month",contentError);
-                    return false;
-                }
-                else{
-                    //3.1. nếu giá trị ngày trong khoảng phù hợp
-                    //--> validate lại giá trị của ngày cho phù hợp
-                    this.validateValueDate();
-                    //4. format lại giá trị month
-                    this.getFormatMonth();
-                    this.inValidMonth = false;
-                    //5. kiểm tra lại xem input date, month, year có cần lỗi không
-                    if(!this.inValidDate && !this.inValidMonth && !this.inValidYear){
-                        //--> nếu không có thì ẩn thông báo lỗi
-                        this.inValid = false;
-                        this.notifyError = "";
-                    }
-                } 
-                return true;
-            }
-        },
-
-        /**
-         * Hàm validate giá trị của input year
-         * @author LTVIET (12/03/2023)
-         */
-        validateInputYear(){
-            //1. kiểm tra xem input có rỗng không
-            if(this.txtYear == "" || this.txtYear == null || this.txtYear == undefined || this.txtYear == "0000"){
-                this.handleInputEmpty("year");
-                return false;
-            }else{
-                //2. nếu input không rỗng
-                //3. format lại giá trị year
-                this.getFormatYear();
-                this.inValidYear = false;
-                //4. kiểm tra lại xem input date, month, year có cần lỗi không
-                if(!this.inValidDate && !this.inValidMonth && !this.inValidYear){
-                    //--> nếu không có thì ẩn thông báo lỗi
+        addEventBlurInput(){
+            if(!this.value){
+                // 1. nếu giá trị là rỗng
+                if(this.required){
+                    // 1.1. nếu là truognwf bắt buộc nhập thì thông báo lỗi
+                    this.inValid = true;
+                    this.notifyError = this.label + resourceJS.error.emptyInput;
+                }else{
+                    // 1.2. nếu là trường không bắt buộc thì hiển thị placeholder là định dạng date
+                    this.placeholder = this.format;
                     this.inValid = false;
-                    this.notifyError = "";
                 }
-                return true;
-            }
-        },
+                this.txtInputDate = this.getCurrentDate();
+                this.value = "";
+                this.keyValueInput = ++this.keyValueInput;
+            }else{
+                // 2.kiểm tra định dạnh của giá trị date
+                if(!this.regex.test(this.value)){
+                    // 2.1. nếu không đúng định dạng thì thông báo lỗi
+                    this.inValid = true;
+                    this.notifyError = this.label + resourceJS.inputDate.inValidFormat;
+                    this.notifyError = this.notifyError.replace("{0}",this.format);
+                }else{
+                    // 2.2. nếu đúng định dạng
+                    // 2.2.1. validate lại giá trị ngày, tháng, năm
+                    let check = this.validateValueDate();
+                    if(check == true){
+                        // nếu giá trị ngày, tháng, năm hợp lệ
+                        // format lại giá trị date
+                        this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
+                        this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
+                        while(this.txtYear < 1000){
+                            this.txtYear = `0${this.txtYear}`;
+                        }
+                        let result = this.format.replace("dd",this.txtDate);
+                        result = result.replace("mm",this.txtMonth);
+                        result = result.replace("yyyy",this.txtYear);
 
-        /**
-         * Hàm xử lý sự kiện khi input rỗng
-         * @param {*} type loại input cần xét (date, month,year)
-         * @author LTVIET (12/03/2023)
-         */
-        handleInputEmpty(type){
-            switch (type) {
-                case "date":
-                    this.txtDate = "00";
-                    break;
-                case "month":
-                    this.txtMonth = "00";
-                    break;
-                case "year":
-                    this.txtYear = "0000";
-                    break;
-                default:
-                    break;
-            }
-            
-            if(this.required){
-                this.handleEventError(type,this.notifyErrorEmpty);
+                        this.value = result;
+                        this.txtInputDate = this.getFormatDate(this.value,this.format,"yyyy-mm-dd");
+                        this.keyValueInput = ++this.keyValueInput;
+                        this.inValid = false;
+                    }
+                    
+                }
             }
         },
 
@@ -370,15 +168,33 @@ export default {
          * @author LTVIET (12/03/2023)
          */
         validateValueDate(){
+            let message = resourceJS.inputDate.invalidFormatDate;
+            message = message.replace("{0}",this.txtMonth);
+            message = message.replace("{1}",this.txtYear);
+            // nếu giá trị tháng nằm ngoài khoảng 1-12 thì thông báo lỗi
+            if(this.txtMonth > 12 || this.txtMonth < 1){
+                this.inValid = true;
+                this.notifyError = resourceJS.inputDate.inValidFormatMonth;
+                return false;
+            }
             switch (this.txtMonth) {
                 //1. nếu tháng hiện tại là tháng 2
                 case 2:
-                    //1.1. nếu là năm nhuận và date > 28 thì date = 29
-                    if(this.txtDate > 28 && this.txtYear % 4 == 0){
-                        this.txtDate = 29;
-                    }else if(this.txtDate > 28 && this.txtYear % 4 != 0){
-                        //1.2. nếu là năm không nhuận và date > 28 thì date = 28
-                        this.txtDate = 28;
+                    //1.1. nếu là năm nhuận
+                    if((this.txtDate > 29 || this.txtDate < 1) && this.txtYear % 4 == 0){
+                        // nếu date > 29 hoặc date < 1 thì thông báo lỗi
+                        this.inValid = true;
+                        message = message.replace("{2}",29);
+                        this.notifyError = message;
+                        return false;
+                    }
+                    //1.2. nếu là năm không nhuận
+                    else if((this.txtDate > 28 || this.txtDate < 1) && this.txtYear % 4 != 0){
+                        // nếu date > 28 hoặc date < 1 thì thông báo lỗi
+                        this.inValid = true;
+                        message = message.replace("{2}",28);
+                        this.notifyError = message;
+                        return false;
                     }
                     break;
                 //2. nếu tháng hiện tại là tháng 1,3,5,7,8,10,12 có 31 ngày    
@@ -389,9 +205,12 @@ export default {
                 case 8:
                 case 10:
                 case 12:
-                    //2.1. nếu date > 31 thì date = 31
-                    if(this.txtDate > 31){
-                        this.txtDate = 31;
+                    //2.1. nếu date > 31 hoặc date < 1 thì thông báo lỗi
+                    if(this.txtDate > 31 || this.txtDate < 1){
+                        this.inValid = true;
+                        message = message.replace("{2}",31);
+                        this.notifyError = message;
+                        return false;
                     }
                     break;
                 //3. nếu tháng hiện tại là tháng 4,6,9,11 có 30 ngày 
@@ -399,90 +218,19 @@ export default {
                 case 6:
                 case 9:
                 case 11:
-                    //2.1. nếu date > 30 thì date = 30
-                    if(this.txtDate > 30){
-                        this.txtDate = 30;
+                    // 3.1 nếu date > 30 hoặc date < 1 thì thông báo lỗi
+                    if(this.txtDate > 30 || this.txtDate < 1){
+                        this.inValid = true;
+                        message = message.replace("{2}",30);
+                        this.notifyError = message;
+                        return false;
                     }
                     break;
                 default:
                     break;
             }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi có lỗi
-         * @param {*} type loại input cần xử lý (date,month,year)
-         * @param {*} contentError nội dung thông báo lỗi
-         * @author LTVIET (12/03/2023)
-         */
-        handleEventError(type,contentError){
-            switch (type) {
-                case "date":
-                    this.inValidDate = true;
-                    break;
-                case "month":
-                    this.inValidMonth = true;
-                    break;
-                case "year":
-                    this.inValidYear = true;
-                    break;
-                default:
-                    break;
-            }
-            this.inValid = true;
-            this.notifyError = contentError;
-        },
-
-        /**
-         * Hàm format lại giá trị date (nếu date <10 và có 1 chữ số thì thêm số 0 vào đằng trước)
-         * @author LTVIET (12/03/2023)
-         */
-        getFormatDate(){
-            if(typeof this.txtDate == "number"){
-                this.txtDate = (this.txtDate < 10) ? `0${this.txtDate}` : this.txtDate;
-            }else if(typeof this.txtDate == "string"){
-                this.txtDate = (this.txtDate < 10 && this.txtDate.length == 1 ) ? `0${this.txtDate}` : this.txtDate;
-            }
-        },
-
-        /**
-         * Hàm format lại giá trị month (nếu month <10 và có 1 chữ số thì thêm số 0 vào đằng trước)
-         * @author LTVIET (12/03/2023)
-         */
-        getFormatMonth(){
-            if(typeof this.txtMonth == "number"){
-                this.txtMonth = (this.txtMonth < 10) ? `0${this.txtMonth}` : this.txtMonth;
-            }else if(typeof this.txtMonth == "string"){
-                this.txtMonth = (this.txtMonth < 10 && this.txtMonth.length == 1 ) ? `0${this.txtMonth}` : this.txtMonth;
-            }
-        },
-
-        /**
-         * Hàm format lại giá trị month (nếu month <1000 và có số chữ số nhỏ hơn 4 
-         *        thì thêm các số 0 vào đằng trước để cho đủ 4 chữ số)
-         * @author LTVIET (12/03/2023)
-         */
-        getFormatYear(){
-            if(typeof this.txtYear == "number"){
-                if(this.txtYear < 1000){
-                    this.txtYear = `0${this.txtYear}`;
-                    while(this.txtYear.length < 4){
-                        this.txtYear = `0${this.txtYear}`;
-                    }
-                }
-            }else if(typeof this.txtYear == "string"){
-                while(this.txtYear < 1000 && this.txtYear.length < 4){
-                    this.txtYear = `0${this.txtYear}`;
-                }
-            }
-        },
-
-        /**
-         * Hàm trả lại định dạng đầy đủ input date
-         * @author LTVIET (12/03/2023)
-         */
-        getInputDate(){
-            return `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
+            
+            return true;
         },
 
         /**
@@ -491,17 +239,79 @@ export default {
          */
         getCurrentDate(){
             let currentDate = new Date();
-            this.txtDate = currentDate.getDate();
-            this.getFormatDate();
-            this.txtMonth = currentDate.getMonth() + 1;
-            this.getFormatMonth();
-            this.txtYear = currentDate.getFullYear();
-            this.getFormatYear();
-            this.txtInputDate = commonJS.formatDate(currentDate);
+            let txtDate = currentDate.getDate();
+            txtDate = Number(txtDate) < 10 ? `0${Number(txtDate)}` : txtDate;
+            let txtMonth = currentDate.getMonth() + 1;
+            txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
+            let txtYear = currentDate.getFullYear();
+            while(txtYear < 1000){
+                txtYear = `0${txtYear}`;
+            }
+            return `${txtYear}-${txtMonth}-${txtDate}`;
         },
 
-        handleEventInput(type){
-            this.addEventBlurInput(type);
+        /**
+         * Hàm xử lý sự kiện nhập giá trị vào input date
+         * @author LTVIET (26/03/2023)
+         */
+        handleEventInput(){
+            // 1.Kiểm tra xem giá trị nhập vào input có đúng định dạng không ? 
+            if(this.regex.test(this.value)){
+                // 2. Nếu đúng định dạng thì:
+                // 2.1. Lấy ra giá trị ngày, tháng, năm
+                let arr = this.format.split("/");
+                let indexDay = arr.indexOf("dd");
+                let indexMonth = arr.indexOf("mm");
+                let indexYear = arr.indexOf("yyyy");
+                let arrValue = this.value.split("/");
+                this.txtDate = Number(arrValue[indexDay]);
+                this.txtMonth = Number(arrValue[indexMonth]);
+                this.txtYear = Number(arrValue[indexYear]);
+                // 2.2. format lại giá trị ngày, tháng, năm
+                this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
+                this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
+                while(this.txtYear < 1000){
+                    this.txtYear = `0${this.txtYear}`;
+                }
+                // 2.3. validate giá trị ngày, tháng, năm
+                if(this.validateValueDate()){
+                    // 2.3.1. nếu giá trị ngày, tháng, năm hợp lệ thì truyền dữ liệu ra ngoài
+                    this.inValid = false;
+                    let value = `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
+                    this.$emit('getValueInputDate',value);
+                }
+            }
+        },
+
+        /**
+         * Hàm chuyển giá trị date từ sang định dạng muốn format
+         * @param {*} value giá trị date
+         * @param {*} formatBefore định dạng lúc đầu
+         * @param {*} formatAfter định dạng muốn format
+         * @author LTVIET (26/03/2023)
+         */
+        getFormatDate(value,formatBefore,formatAfter){
+            // Xác định vị trí ngày , tháng, năm ở định dạng ban đầu
+            let arrBefore = formatBefore.split(/[/,-]/);
+            let indexDayBefore = arrBefore.indexOf("dd");
+            let indexMonthBefore = arrBefore.indexOf("mm");
+            let indexYearBefore = arrBefore.indexOf("yyyy");
+            // Lấy giá trị ngày , tháng, năm ở định dạng ban đầu theo vị trí
+            let arrValue = value.split(/[/,-]/);
+            let txtDate = Number(arrValue[indexDayBefore]);
+            let txtMonth = Number(arrValue[indexMonthBefore]);
+            let txtYear = Number(arrValue[indexYearBefore]);
+            // format lại giá trị ngày , tháng, năm
+            txtDate = Number(txtDate) < 10 ? `0${Number(txtDate)}` : txtDate;
+            txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
+            while(txtYear < 1000){
+                txtYear = `0${txtYear}`;
+            }
+            // gán giá trị ngày , tháng, năm của format ban đầu vào định dạng muốn format
+            let result = formatAfter.replace("dd",txtDate);
+            result = result.replace("mm",txtMonth);
+            result = result.replace("yyyy",txtYear);
+            return result;
         },
     },
 }

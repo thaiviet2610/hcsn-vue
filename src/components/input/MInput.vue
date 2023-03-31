@@ -5,7 +5,7 @@
         <!-- input nhập dữ liệu -->    
         <input
             ref="mInput"
-            :class="[{'input--error':inValid}]" 
+            :class="{'input--error':inValid}" 
             class="classInput" :style="styleInput"
             v-model="value"
             @input="handleEventInput"

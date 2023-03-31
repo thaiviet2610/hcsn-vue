@@ -1,5 +1,12 @@
 <template>
-    <div class="dialog__loading"></div>
+    <div id="load">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -12,5 +19,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(./dialog.css);
+@import url(./dialogLoadData.css);
 </style>
