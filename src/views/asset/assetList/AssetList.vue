@@ -55,7 +55,7 @@
                             class="item2"
                             classIcon="item2__icon--image"
                             data_tooltip_bottom="Xuất ra Excel  (Ctrl+P)"
-                            @addOnClickBtnIcon="handleEventClickBtnExcel">
+                            @addOnClickBtnIcon="addOnClicKBtnExportExcel">
                         </MButtonIcon>
                         <!-- button xóa tài sản  -->
                         <MButtonIcon
@@ -99,6 +99,7 @@
         <MDialogNotify 
             ref="mDialogNotifyDelete"
             :content="contentDialogNotifyDelete"
+            btnLabel="Đóng"
             v-if="isShowDialogNotifyDelete" 
             @onClose="handleEventCloseDialogNotifyDelete">
         </MDialogNotify>
@@ -107,22 +108,32 @@
         <MDialogFormConfirm 
             ref="mDialogConfirmDeleteOneAsset"
             :content="contentDialogConfirmDeleteOneAsset"
-            type="delete"
+            normalBtnLabel="Không"
+            mainBtnLabel="Xóa"
             v-if="isShowDialogConfirmDeleteOneAsset"
-            :contentColorAfter="contentColorAfter"
-            :contentAfter="contentAfterDialogConfirmDeleteOneAsset"
-            :colorTextAfter="colorTextAfter"
-            @onCloseDialogNoDelete="handleEventCloseDialogNoDelete"
-            @onCloseDialogDelete="handleEventCloseDialogDelete">
+            @onClickNormalBtn="handleEventCloseDialogNoDelete"
+            @onClickMainBtn="handleEventCloseDialogDelete">
         </MDialogFormConfirm>
         <!-- dialog xác nhận hành động xóa nhiều tài sản -->
         <MDialogFormConfirm 
             ref="mDialogConfirmDeleteMultiAsset"
             :content="contentDialogConfirmDeleteMultiAsset"
-            type="delete"
+            normalBtnLabel="Không"
+            mainBtnLabel="Xóa"
             v-if="isShowDialogConfirmDeleteMultiAsset"
-            @onCloseDialogNoDelete="handleEventCloseDialogNoDelete"
-            @onCloseDialogDelete="handleEventCloseDialogDelete">
+            @onClickNormalBtn="handleEventCloseDialogNoDelete"
+            @onClickMainBtn="handleEventCloseDialogDelete">
+        </MDialogFormConfirm>
+        <!-- dialog xác nhận hành động xuất dữ liệu ra file excel -->
+        <MDialogFormConfirm 
+            ref="mDialogConfirmExportExcel"
+            :content="contentDialogConfirmExportExcel"
+            type="delete"
+            normalBtnLabel="Không"
+            mainBtnLabel="Tải xuống"
+            v-if="isShowDialogConfirmExportExcel"
+            @onClickNormalBtn="handleEventCloseDialogNoExportExcel"
+            @onClickMainBtn="handleEventClickBtnExcel">
         </MDialogFormConfirm>
         <!-- dialog loading dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
@@ -133,7 +144,6 @@
             :content="contentToastSuccess"
             :buttonUndo="isButtonUndo"
             :buttonClose="isButtonClose"
-            :link="linkExcel"
             @onClose="closeToastSucess"
             >
         </MToastSucess>
@@ -153,6 +163,7 @@ import MToastSucess from '@/components/toast/MToastSucess.vue';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import axios from 'axios'
 import enumJS from '@/js/enumJS';
+import { saveAs } from 'file-saver';
 export default {
     name: "AssetList",
     components:{
@@ -165,13 +176,12 @@ export default {
             assetInput:null,
             isShowForm: false,
             isShowDialogNotifyDelete: false,
-            isShowDialogConfirm: false,
             isShowDialogConfirmDeleteOneAsset: false,
             isShowDialogConfirmDeleteMultiAsset: false,
+            isShowDialogConfirmExportExcel: false,
             contentDialogNotifyDelete: "",
-            contentDialogConfirm: "",
+            contentDialogConfirmExportExcel: "",
             contentDialogConfirmDeleteOneAsset: "",
-            contentAfterDialogConfirmDeleteOneAsset: "",
             contentDialogConfirmDeleteMultiAsset: "",
             assets : [],
             assetApi: resourceJS.api.assetApi,
@@ -361,6 +371,9 @@ export default {
             this.$refs["txtSearchAsset"].setFocus();
         },
 
+        
+
+
         /**
          * Hàm xử lý sự kiện click vào button xóa của dialog xác nhận hành động xóa
          * @author LTVIET (02/03/2023)
@@ -511,29 +524,49 @@ export default {
             this.isShowToastSucess = true;
             setTimeout(() => {
                 this.isShowToastSucess=false;
-            }, 5000);
-            // if(!this.$refs['mTable'].isShowLoad){
-                
-            // }
-            
-            
+            }, 3000);
             
         },
 
         /**
-         * Hàm xử lý sự kiện khi click btn xuất ra excel
+         * Hàm xử lý sự kiện click btn xuất file excel
+         * @author LTVIET (06/03/2023)
+         */
+        addOnClicKBtnExportExcel(){
+            this.isShowDialogConfirmExportExcel = true;
+            this.contentDialogConfirmExportExcel = resourceJS.confirm.exportExcel;
+        },
+
+        /**
+         * Hàm xử lý sự kiện click btn không xuất file excel trong dialog thông báo xác nhận xuất file excel
+         * @author LTVIET (06/03/2023)
+         */
+        handleEventCloseDialogNoExportExcel(){
+            this.isShowDialogConfirmExportExcel = false;
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi click btn xuất ra file excel
          * @author LTVIET (06/03/2023) 
          */
         handleEventClickBtnExcel(){
             this.isShowLoad = true;
-            axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`)
+            axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`,
+            { responseType: "blob" })
             .then(res => {
-                this.isShowDialogNotifyDelete = true;
-                let linkExcel = res.data;
-                let arr = linkExcel.split('\\');
-                let excelFile = arr[arr.length-1];
-                this.contentDialogNotifyDelete = resourceJS.toastSuccess.exportExcel.replace("{0}",excelFile);
+                const blob = new Blob([res.data], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                });
+                
+                const fileName = `Assets(${this.getCurrentDate()}).xlsx`;
+                saveAs(blob,fileName);
+                this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
+                this.isShowToastSucess = true;
+                this.contentToastSuccess = resourceJS.toastSuccess.exportExcel.replace("{0}",fileName);
+                setTimeout(() => {
+                    this.isShowToastSucess = false;
+                }, 3000);
             })
             .catch(error => {
                 console.log(error);
@@ -550,7 +583,24 @@ export default {
             
         },
 
-        
+        getCurrentDate(){
+            let currentDate = new Date();
+            let day = currentDate.getDate();
+            day = day < 10 ? `0${day}` : day;
+            let month = currentDate.getMonth() + 1;
+            month = month < 10 ? `0${month}` : month;
+            let year = currentDate.getFullYear();
+            while(year < 1000){
+                year = `0${year}`;
+            }
+            let hours = currentDate.getHours();
+            hours = hours < 10 ? `0${hours}` : hours;
+            let minutes = currentDate.getMinutes() + 1;
+            minutes = minutes < 10 ? `0${minutes}` : minutes;
+            let seconds = currentDate.getSeconds();
+            seconds = seconds < 10 ? `0${seconds}` : seconds;
+            return `${day}-${month}-${year}T${hours}.${minutes}.${seconds}`;
+        },
 
         /**
          * Hàm lấy dữ liệu từ combobox loại tài sản
@@ -658,10 +708,9 @@ export default {
         addOnClickContextMenuDelete(item){
             let codeAsset = item.fixed_asset_code;
             let nameAsset = item.fixed_asset_name;
-            this.contentDialogConfirmDeleteOneAsset = resourceJS.confirm.oneAssetDelete;
-            this.contentColorAfter = `<<${codeAsset} - ${nameAsset}>>`;
-            this.contentAfterDialogConfirmDeleteOneAsset = "?";
-            this.colorTextAfter = 'black';
+            let message = resourceJS.confirm.oneAssetDelete.replace("{0}",codeAsset);
+            message = message.replace("{1}",nameAsset);
+            this.contentDialogConfirmDeleteOneAsset = message;
             this.isShowDialogConfirmDeleteOneAsset = true;
             this.contextMenuItemDelete = item;
             this.contextMenuDelete = true;
@@ -828,7 +877,7 @@ export default {
                     // nếu tổ hợp phím là Ctrl+E thì gọi đến form xuất ra file excel
                     case enumJS.keyP:
                         event.preventDefault();
-                        this.handleEventClickBtnExcel();
+                        this.addOnClicKBtnExportExcel();
                         break;
                     default:
                         break;

@@ -11,23 +11,23 @@
             </div>
             <!-- footer của dialog  -->
             <div class="dialog-footer">
-                <!-- nút lưu của dialog  -->
+                <!-- nút chính của dialog  -->
                 <MButton
                     ref="mButtonSave"
                     :isDefault="isDefault"
-                    label="Lưu"
-                    @btnAddOnClickBtn="handleEventBtnClickSave"  >
+                    :label="mainBtnLabel"
+                    @btnAddOnClickBtn="handleEventClickMainBtn"  >
                 </MButton>
-                <!-- nút không lưu của dialog  -->
+                <!-- nút phụ của dialog  -->
                 <MButton
-                    label="Không lưu"
+                    :label="supportBtnLabel"
                     class="btn--no-save"
-                    @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                    @btnAddOnClickBtn="handleEventClickSupportBtn"  >
                 </MButton>
-                <!-- nút hủy bỏ của dialog  -->
+                <!-- nút thường của dialog  -->
                 <MButton
-                    label="Hủy bỏ"
-                    @btnAddOnClickBtn="handleEventBtnClickClose"  >
+                    :label="normalBtnLabel"
+                    @btnAddOnClickBtn="handleEventClickNormalBtn"  >
                 </MButton>
             </div>
         </div>
@@ -45,7 +45,19 @@ export default {
     props: {
         content: {
             type:String,
-            default:null
+            default: ""
+        },
+        mainBtnLabel: {
+            type:String,
+            default: ""
+        },
+        normalBtnLabel: {
+            type:String,
+            default: ""
+        },
+        supportBtnLabel: {
+            type:String,
+            default: ""
         }
     },
     mounted() {
@@ -70,22 +82,22 @@ export default {
          * Hàm xử lý sự kiện lưu asset
          * @author LTVIET (02/03/2023)
          */
-         handleEventBtnClickSave(){
-            this.$emit('onCloseDialogCancelSave');
+         handleEventClickMainBtn(){
+            this.$emit('onClickMainBtn');
         },
         /**
          * Hàm xử lý sự kiện không lưu asset
          * @author LTVIET (02/03/2023)
          */
-         handleEventBtnClickCancel(){
-            this.$emit('onCloseDialogCancelNoSave');
+         handleEventClickSupportBtn(){
+            this.$emit('onClickSupportBtn');
         },
         /**
          * Hàm xử lý sự kiện hủy bỏ việc thoát ra form 
          * @author LTVIET (02/03/2023)
          */
-         handleEventBtnClickClose(){
-            this.$emit('onCloseDialogCancelChange')
+         handleEventClickNormalBtn(){
+            this.$emit('onClickNormalBtn')
         }
     },
 }

@@ -5,7 +5,7 @@
             <div class="toast__left">
                 <div class="dialog-icon"></div>
                 <div class="toast__text--left">{{ notify }} 
-                    <span class="toast-text--success">{{ content }}</span> 
+                    <span class="toast-text--success" v-html="content"></span> 
                 </div>
             </div>
             <!-- phần button (nếu có)  -->

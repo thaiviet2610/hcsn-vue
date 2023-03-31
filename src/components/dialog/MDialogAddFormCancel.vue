@@ -12,17 +12,17 @@
             </div>
             <!-- footer của dialog  -->
             <div class="dialog-footer">
-                <!-- nút hủy của dialog  -->
+                <!-- button chính của dialog  -->
                 <MButton
-                    ref="mButtonCancel"
+                    ref="mButtonMain"
                     :isDefault="isDefault"
-                    :label="labelButtonDefault"
-                    @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                    :label="mainBtnLabel"
+                    @btnAddOnClickBtn="handleEventClickMainBtn"  >
                 </MButton>
-                <!-- không hủy của dialog  -->
+                <!-- button phụ của dialog  -->
                 <MButton
-                    label="Không"
-                    @btnAddOnClickBtn="handleEventBtnClickNoCancel"  >
+                    :label="normalBtnLabel"
+                    @btnAddOnClickBtn="handleEventClickNormalBtn"  >
                 </MButton>
             </div>
         </div>
@@ -39,27 +39,11 @@ export default {
             type: String,
             default: null
         },
-        type: {
-            type: String,
-            default: null
-        },
-        contentColorBefore: {
+        normalBtnLabel: {
             type: String,
             default: ""
         },
-        contentColorAfter: {
-            type: String,
-            default: ""
-        },
-        colorTextBefore: {
-            type: String,
-            default: ""
-        },
-        colorTextAfter: {
-            type: String,
-            default: ""
-        },
-        contentAfter:{
+        mainBtnLabel: {
             type: String,
             default: ""
         }
@@ -71,17 +55,10 @@ export default {
         this.setFocus();
     },
     created() {
-        // hiển thị label button theo type cảu dialog
-        if(this.type == "delete"){
-            this.labelButtonDefault = "Xóa";
-        }else if(this.type == "cancel"){
-            this.labelButtonDefault = "Hủy bỏ";
-        }
     },
     data() {
         return {
             isDefault: true,
-            labelButtonDefault: null
         }
     },
     methods: {
@@ -91,32 +68,23 @@ export default {
         */
         setFocus() {
             this.$nextTick(function() {
-                this.$refs["mButtonCancel"].setFocus();
+                this.$refs["mButtonMain"].setFocus();
             })
         }, 
         /**
-         * Hàm gọi đến asset detail để đóng dialog
+         * Hàm xử lý sự kiện click vào btn phụ
          * @author LTVIET (02/03/2023)
          */
-        handleEventBtnClickNoCancel(){
-            if(this.type == "cancel"){
-                this.$emit('onCloseDialogNoCancel');
-            }else if(this.type == "delete"){
-                this.$emit('onCloseDialogNoDelete');
-            }
-            
+        handleEventClickNormalBtn(){
+            this.$emit('onClickNormalBtn');
         },
         /**
          * Hàm gọi đến asset detail để đóng dialog và 
          * từ asset detail gọi đến asset list để đóng asset detail
          * @author LTVIET (02/03/2023)
          */
-        handleEventBtnClickCancel() {
-            if(this.type == "cancel"){
-                this.$emit('onCloseDialogCancel');
-            }else if(this.type == "delete"){
-                this.$emit('onCloseDialogDelete');
-            }
+        handleEventClickMainBtn() {
+            this.$emit('onClickMainBtn');
         }
     },
 }

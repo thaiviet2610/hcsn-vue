@@ -97,9 +97,10 @@ const resourceJS = {
         multiCantDeleteAsset: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",
         cancelFormAsset: "Bạn có muốn hủy bỏ khai báo tài sản này?",
         changeCancelFormAsset: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
+        exportExcel: "Bạn có muốn xuất dữ liệu ra file excel ?"
     },
     toastSuccess: {
-        exportExcel: "<div>Dữ liệu đã được xuất ra file excel thành công tại địa chỉ: <u>{0}</u></div> ",
+        exportExcel: "<div>Dữ liệu đã được xuất ra file excel <b> {0} </b> </div>",
         success: "Thành công!",
         saveSuccess: "Lưu dữ liệu thành công",
         deleteSuccess: "Tài sản đã được xóa",

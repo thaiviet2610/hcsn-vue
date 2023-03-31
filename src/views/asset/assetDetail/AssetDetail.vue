@@ -255,23 +255,28 @@
         <MDialogNotify 
             v-if="isShowDialogNotify" 
             :content="contentDialogNotifyErrorValidate"
+            btnLabel="Đóng"
             @onClose="handleEventCloseDialogNotify">
         </MDialogNotify>
         <!-- dialog xác nhận sự kiện hủy (không có thay đổi dữ liệu) -->
         <MDialogAddFormCancel 
             :content="contentDialogAddFormCancel"
-            type="cancel"
+            normalBtnLabel="Không"
+            mainBtnLabel="Hủy bỏ"
             v-if="isShowDialogAddFormCancel"
-            @onCloseDialogNoCancel="handleEventCloseDialogFormNoCancel"
-            @onCloseDialogCancel="handleEventCloseDialogFormCancel">
+            @onClickNormalBtn="handleEventCloseDialogFormNoCancel"
+            @onClickMainBtn="handleEventCloseDialogFormCancel">
         </MDialogAddFormCancel>
         <!-- dialog xác nhận sự kiện hủy (có thay đổi dữ liệu) -->
         <MDialogEditFormCancel
             :content="contentDialogEditFormCancel"
             v-if="isShowDialogEditFormCancel"
-            @onCloseDialogCancelNoSave="handleEventCloseDialogCancelNoSave"
-            @onCloseDialogCancelChange="handleEventCloseDialogCancelChange"
-            @onCloseDialogCancelSave="handleEventCloseDialogCancelSave">
+            normalBtnLabel="Hủy bỏ"
+            mainBtnLabel="Lưu"
+            supportBtnLabel="Không lưu"
+            @onClickSupportBtn="handleEventCloseDialogCancelNoSave"
+            @onClickNormalBtn="handleEventCloseDialogCancelChange"
+            @onClickMainBtn="handleEventCloseDialogCancelSave">
         </MDialogEditFormCancel>
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>

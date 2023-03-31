@@ -14,7 +14,7 @@
         <MButton ref="mButton"
         @btnAddOnClickBtn = "addOnClickBtn"
         class="btn-dialog btn--default"
-        label="Đóng"></MButton>
+        :label="btnLabel"></MButton>
         <!-- <button ref="mButton" @click="this.$emit('onClose')" class="btn-dialog btn--default">
           Đóng
         </button> -->
@@ -36,6 +36,10 @@ export default {
       default: ""
     },
     tooltip: {
+      type: String,
+      default: ""
+    },
+    btnLabel: {
       type: String,
       default: ""
     }
