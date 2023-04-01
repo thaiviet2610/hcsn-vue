@@ -1,6 +1,6 @@
 <template>
-  <div class="table">
-    <table class="content__table" >
+  <div class="table"  @keydown="handleEventKeyDown">
+    <table  class="content__table"  >
       <!-- phần title của table  -->
       <thead>
         <tr>
@@ -32,10 +32,12 @@
       <!-- phần body của table  -->
       <tbody>
         <tr style="position: relative;"
+          :ref="`mRow_${index+1}`"
           @contextmenu="handleEventClickRightMouse($event,item)"
           @dblclick="btnAddOnDblClickRowTable(item,index+1)"
           @click="btnAddOnClickRowTable(index + 1)"
           @mouseup="handleEventMouseUp(index+1)"
+          
           v-for="(item, index) in this.assets"
           :key="index"
           :class="{
@@ -257,6 +259,7 @@ import resourceJS from "@/js/resourceJS.js";
 import MDialogLoadData from "../dialog/MDialogLoadData.vue";
 import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
+import enumJS from '@/js/enumJS';
 export default {
   name: "MTable",
   components: {
@@ -343,9 +346,15 @@ export default {
   computed: {
   },
   methods: {
+    /**
+     * Hàm xử lý sự kiện click chuột vào table
+     * @param {*} index vị trí dòng dữ liệu được click của table
+     * @author LTVIET (01/04/2023)
+     */
     handleEventMouseUp(index){
       this.$emit('addOnEventMouseUp',index);
     },
+
     /**
      * Hàm xử lý sự kiện click vào 1 item trong contextmenu
      * @param {*} values dữ liệu được truyền vào (item,index)
@@ -491,6 +500,7 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     btnAddOnClickRowTable(index) {
+      this.$refs[`mCheckbox_${index}`][0].setFocus();
       if (!this.checkbox[index]) {
         if (!this.clickFunction&&!this.clickCheckbox) {
           this.isSelectedRow[index] = !this.isSelectedRow[index];
@@ -505,6 +515,28 @@ export default {
       }
       this.clickFunction = false;
       this.clickCheckbox = false;
+    },
+
+    /**
+     * Hàm xử lý sự kiện lên xuống dòng dữ liệu trong table bằng phím lên, xuống
+     * @param {*} event sự kiện cần xử lý
+     * @author LTVIET (01/04/2023)
+     */
+    handleEventKeyDown(event){
+      const keyCode = event.keyCode;
+      if(keyCode == enumJS.arrowDown && this.indexRowClick != 0){
+        let index = (this.indexRowClick + 1) > this.pageSize ? this.pageSize : (this.indexRowClick + 1);
+        if(this.isSelectedRow[index]){
+          this.isSelectedRow[index] = false;
+        }
+        this.btnAddOnClickRowTable(index);
+      }else if(keyCode == enumJS.arrowUp && this.indexRowClick != 0){
+        let index = (this.indexRowClick - 1) > 0 ? (this.indexRowClick - 1) : 1;
+        if(this.isSelectedRow[index]){
+          this.isSelectedRow[index] = false;
+        }
+        this.btnAddOnClickRowTable(index);
+      }
     },
     /**
      * Hàm xử lý sự kiện click vòa checkboxAll
