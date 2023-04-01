@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import MTooltip from './components/tooltip/MTooltip.vue'
 import MInput from './components/input/MInput.vue'
 import MInputNumber from './components/input/MInputNumber.vue'
 import MInputDisable from './components/input/MInputDisable.vue'
@@ -50,7 +49,6 @@ app.use(router);
 
 
 app.component("MCheckbox",MCheckbox);
-app.component("MTooltip",MTooltip);
 app.component("MInput",MInput);
 app.component("MInputNumber",MInputNumber);
 app.component("MInputDisable",MInputDisable);

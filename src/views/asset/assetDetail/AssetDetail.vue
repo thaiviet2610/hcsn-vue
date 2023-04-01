@@ -16,7 +16,7 @@
                     </MButtonIcon>
                 </div>
                 <!-- phần body của form  -->
-                <div id="formBody" class="form-body"></div>
+                <div id="formBody" class="form-body">
                     <div class="form-body__up">
                         <div class="m-row">
                             <div class="up-left">
