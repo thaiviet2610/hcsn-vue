@@ -138,7 +138,6 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         onValidateBlur(){
-            
             if(this.required && (this.value == null || this.value == undefined || this.value == "")){
                 //1. nếu input required và có giá trị rỗng 
                 //1.1. set invalid = true và hiện thị thông báo lỗi không được để trống
@@ -178,7 +177,6 @@ export default {
                             this.value = `0${this.value}`;
                         }
                     }
-                    console.log("value:",this.value,typeof this.value);
                 }
                 
             }

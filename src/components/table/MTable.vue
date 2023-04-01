@@ -61,7 +61,6 @@
             {{ item.fixed_asset_category_name }}
           </td>
           <td class="column6 text-align-left column6--text"
-            @mousemove="abc"
             >{{ item.department_name }}</td>
           <td class="column7 text-align-right">
             {{ formatValue(item.quantity, "money") }}
@@ -349,9 +348,6 @@ export default {
   computed: {
   },
   methods: {
-    abc(event){
-      console.log(event);
-    },
     /**
      * Hàm xử lý sự kiện click chuột vào table
      * @param {*} index vị trí dòng dữ liệu được click của table

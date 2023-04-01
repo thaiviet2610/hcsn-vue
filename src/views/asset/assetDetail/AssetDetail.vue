@@ -850,6 +850,9 @@ export default {
          * @author LTVIET(14/03/2023)
          */
         getValueCostInput(value){
+            if((typeof value == "string") && value.indexOf(".") != -1){
+                value = this.getMoney(value);
+            }
             this.asset.cost = value;
             this.depreciationValueYear = this.getDepreciationValueYear;
             this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
