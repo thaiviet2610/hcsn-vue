@@ -10,6 +10,7 @@
             style="background-color: #f5f5f5;"
             :disabled="true"
             :value="value"
+            tabindex="-1"
             :placeholder="placeholder">  
     </div>
 </template>

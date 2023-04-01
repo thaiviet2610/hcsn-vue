@@ -11,6 +11,7 @@
                 v-model="txtInputDate" type="date"
                 :key="keyValue"
                 @change="handleEventChangeDatePicker"
+                tabindex="-1"
                 >
             <input 
                 class="input__date-container" 

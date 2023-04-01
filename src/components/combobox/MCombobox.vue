@@ -21,6 +21,7 @@
             class="combobox__button"
             @mousedown="onMouseDownInput" 
             classIcon="combobox__button--image-open"
+            tabindex="-1"
             @addOnClickBtnIcon="btnOpenDropdown">
         </MButtonIcon>
         <!-- thẻ buton thực hiện chức năng ẩn combobox-data  -->
@@ -28,6 +29,7 @@
             v-if="isShow"
             class="combobox__button"
             @mousedown="onMouseDownInput" 
+            tabindex="-1"
             classIcon="combobox__button--image-close"
             @addOnClickBtnIcon="btnCloseDropdown">
         </MButtonIcon>
@@ -278,6 +280,9 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         onSearchItem() {
+            if(this.value){
+                this.inValid = false;
+            }
             let me = this;
             this.indexItemSelect = -1;
             if(!this.value){

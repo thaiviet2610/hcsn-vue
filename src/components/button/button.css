@@ -8,6 +8,7 @@
     background-color: #097894 !important;
 }
 
+
 .btn{
     width: 110px;
     min-width: 80px;
@@ -79,4 +80,20 @@
 
 .btn-default:hover{
     background-color: #097894;
+}
+
+.btn-header__icon{
+    width: 24px;
+    height: 24px;
+    display: flex;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-header__icon:hover{
+    background-color: white;
 }

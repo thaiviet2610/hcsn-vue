@@ -20,12 +20,14 @@
                 @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown1"
+                tabindex="-1"
                 @addOnClickBtnIcon="handleEventIncreaseValue">
             </MButtonIcon>
             <MButtonIcon
                 @mousedown="$event.preventDefault()"
                 class="input__icon2--image"
                 classIcon="input__icon--dropdown2"
+                tabindex="-1"
                 @addOnClickBtnIcon="handleEventDecreaseValue">
             </MButtonIcon>
         </div>

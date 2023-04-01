@@ -128,6 +128,9 @@ export default {
         },
         
         handleEventInput(){
+            // if(this.value){
+            //     this.inValid = false;
+            // }
             this.$emit("getValueEventInput",this.value);
         }
     },

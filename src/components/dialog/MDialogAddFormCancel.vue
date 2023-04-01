@@ -22,8 +22,10 @@
                 <!-- button phụ của dialog  -->
                 <MButton
                     :label="normalBtnLabel"
-                    @btnAddOnClickBtn="handleEventClickNormalBtn"  >
+                    @btnAddOnClickBtn="handleEventClickNormalBtn" 
+                    >
                 </MButton>
+                
             </div>
         </div>
     </div>
@@ -46,7 +48,7 @@ export default {
         mainBtnLabel: {
             type: String,
             default: ""
-        }
+        },
     },
     components:{
 
@@ -55,6 +57,7 @@ export default {
         this.setFocus();
     },
     created() {
+
     },
     data() {
         return {

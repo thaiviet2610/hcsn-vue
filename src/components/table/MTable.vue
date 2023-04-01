@@ -1,5 +1,5 @@
 <template>
-  <div class="table"  @keydown="handleEventKeyDown">
+  <div class="table"  @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
     <table  class="content__table"  >
       <!-- phần title của table  -->
       <thead>
@@ -36,7 +36,7 @@
           @contextmenu="handleEventClickRightMouse($event,item)"
           @dblclick="btnAddOnDblClickRowTable(item,index+1)"
           @click="btnAddOnClickRowTable(index + 1)"
-          @mouseup="handleEventMouseUp(index+1)"
+          @mousedown="handleEventMouseDown($event,index+1)"
           
           v-for="(item, index) in this.assets"
           :key="index"
@@ -61,6 +61,7 @@
             {{ item.fixed_asset_category_name }}
           </td>
           <td class="column6 text-align-left column6--text"
+            @mousemove="abc"
             >{{ item.department_name }}</td>
           <td class="column7 text-align-right">
             {{ formatValue(item.quantity, "money") }}
@@ -340,19 +341,25 @@ export default {
       keyContextMenu: 0,
       contextMenuEnity: null,
       previousKeyShift: false,
+      indexDeleteStart: 0,
+      indexDeleteEnd: 0,
     };
   },
 
   computed: {
   },
   methods: {
+    abc(event){
+      console.log(event);
+    },
     /**
      * Hàm xử lý sự kiện click chuột vào table
      * @param {*} index vị trí dòng dữ liệu được click của table
      * @author LTVIET (01/04/2023)
      */
-    handleEventMouseUp(index){
-      this.$emit('addOnEventMouseUp',index);
+    handleEventMouseDown(event,index){
+      event.preventDefault();
+      this.$emit('addOnEventMouseDown',index);
     },
 
     /**
@@ -394,6 +401,7 @@ export default {
      */
     async loadData() {
       this.isShowLoad = true;
+      
        axios
         .get(
           `${this.api}/filter?fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}&pageSize=${this.pageSize}&pageNumber=${this.pageNumber}`
@@ -407,6 +415,12 @@ export default {
           this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
           this.getTotalPage();
           this.cancelCheckbox();
+          this.checkbox.fill(false);
+          this.clickCheckbox = false;
+          this.clickFunction = false;
+          this.indexDeleteStart = 0;
+          this.indexDeleteEnd = 0;
+          this.indexRowClick = 0;
           this.isShowLoad = false;
         })
         .catch((error) => {
@@ -501,6 +515,7 @@ export default {
      */
     btnAddOnClickRowTable(index) {
       this.$refs[`mCheckbox_${index}`][0].setFocus();
+      
       if (!this.checkbox[index]) {
         if (!this.clickFunction&&!this.clickCheckbox) {
           this.isSelectedRow[index] = !this.isSelectedRow[index];
@@ -510,9 +525,10 @@ export default {
         }
         if (this.isSelectedRow[index]) {
           this.indexRowClick = index;
+          this.indexDeleteMultiple = index;
         }
-
       }
+      
       this.clickFunction = false;
       this.clickCheckbox = false;
     },
@@ -522,22 +538,95 @@ export default {
      * @param {*} event sự kiện cần xử lý
      * @author LTVIET (01/04/2023)
      */
-    handleEventKeyDown(event){
+     handleEventKeyDown(event){
       const keyCode = event.keyCode;
-      if(keyCode == enumJS.arrowDown && this.indexRowClick != 0){
-        let index = (this.indexRowClick + 1) > this.pageSize ? this.pageSize : (this.indexRowClick + 1);
-        if(this.isSelectedRow[index]){
-          this.isSelectedRow[index] = false;
-        }
-        this.btnAddOnClickRowTable(index);
-      }else if(keyCode == enumJS.arrowUp && this.indexRowClick != 0){
-        let index = (this.indexRowClick - 1) > 0 ? (this.indexRowClick - 1) : 1;
-        if(this.isSelectedRow[index]){
-          this.isSelectedRow[index] = false;
-        }
-        this.btnAddOnClickRowTable(index);
+      switch (keyCode) {
+        case enumJS.arrowDown:
+          if(this.indexRowClick != 0){
+            let index = (this.indexRowClick + 1) > this.pageSize ? this.pageSize : (this.indexRowClick + 1);
+            if(this.isSelectedRow[index]){
+              this.isSelectedRow[index] = false;
+            }
+            if(this.previousKeyShift){
+              if(this.indexDeleteStart == 0){
+                this.indexDeleteStart = index - 1;
+                this.indexDeleteEnd = index;
+              }else{
+                this.indexDeleteEnd = ++this.indexDeleteEnd;
+                if(this.indexDeleteEnd > this.pageSize){
+                  this.indexDeleteEnd = this.pageSize;
+                }
+              }
+              this.checkbox.fill(false);
+              if(this.indexDeleteStart <= this.indexDeleteEnd){
+                for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
+                  this.setFocusCheckbox(i);
+                }
+              }else{
+                for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
+                  this.setFocusCheckbox(i);
+                }
+              }
+            }else{
+              this.btnAddOnClickRowTable(index);
+            }
+          }
+          break;
+        case enumJS.arrowUp:
+          if(this.indexRowClick != 0){
+            let index = (this.indexRowClick - 1) > 0 ? (this.indexRowClick - 1) : 1;
+            if(this.isSelectedRow[index]){
+              this.isSelectedRow[index] = false;
+            }
+            if(this.previousKeyShift){
+              if(this.indexDeleteStart == 0){
+                this.indexDeleteEnd = index;
+                this.indexDeleteStart = index + 1;
+              }else{
+                this.indexDeleteEnd = --this.indexDeleteEnd;
+                if(this.indexDeleteEnd < 1){
+                  this.indexDeleteEnd = 1;
+                }
+              }
+              this.checkbox.fill(false);
+              // console.log("this.indexDeleteStart:",this.indexDeleteStart);
+              // console.log("this.indexDeleteEnd:",this.indexDeleteEnd);
+              if(this.indexDeleteStart <= this.indexDeleteEnd){
+                for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
+                  this.setFocusCheckbox(i);
+                }
+              }else{
+                for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
+                  this.setFocusCheckbox(i);
+                }
+              }
+              
+            }else{
+              this.btnAddOnClickRowTable(index);
+            }
+          }
+          break;
+        case enumJS.keyShift:
+          this.previousKeyShift = true;
+          break;
+
+        default:
+          break;
       }
     },
+
+    handleEventKeyUp(event){
+      const keyCode = event.keyCode;
+      if(keyCode == enumJS.keyShift){
+        this.previousKeyShift = false;
+        this.indexDeleteStart = 0;
+        this.indexDeleteEnd = 0;
+      }
+      
+    },
+
+    
+
     /**
      * Hàm xử lý sự kiện click vòa checkboxAll
      * @author LTVIET (05/03/2023)
@@ -551,18 +640,23 @@ export default {
       if (this.checkboxAll) {
         //2.1. nếu checkboxAll = true
         //--> gán giá trị true cho tất cả cac checkbox
-        this.quantityCheckbox = length;
         check = true;
         
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
         check = false;
-        this.quantityCheckbox = 0;
+        
       }
+
       for (let i = 1; i <= length; i++) {
         this.checkbox[i] = check;
+        this.isSelectedRow[i] = check; 
       }
+      this.indexCheckbox = -1;
+      this.indexRowClick = 0;
+      this.clickCheckbox = false;
+      this.clickFunction = false;
       this.$refs["mCheckboxAll"].setFocus();
     },
     /**
@@ -579,8 +673,6 @@ export default {
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
-        //2.1.1. tăng giá trị số checkbox = true lên 1
-        this.quantityCheckbox += 1;
         //2.1.2 duyệt từng giá trị của checkbox
         for (let i = 1; i <= length; i++) {
           //2.1.3. nếu có 1 checkbox = false thì set checkboxAll = false
@@ -590,18 +682,17 @@ export default {
             break;
           }
         }
-        this.$refs[`mCheckbox_${index}`][0].setFocus();
+        
         //2.1.4. nếu tất cả checkbox = true thì set checkboxAll = true
         if(check){
           this.checkboxAll = true;
         }
       } else {
-        //2.2. nếu checkbox = false thì giảm số lượng của checkbox = true giảm đi 1 đơn vị
-        // và set checkboxAll = false
-        this.quantityCheckbox -= 1;
+        //2.2. nếu checkbox = false 
         this.checkboxAll = false;
         this.isSelectedRow[index] = false;
       }
+      this.$refs[`mCheckbox_${index}`][0].setFocus();
       this.clickCheckbox = true;
     },
 
@@ -614,6 +705,17 @@ export default {
         return this.indexCheckbox;
       }
     },
+
+    getQuantityCheckbox(){
+      let quantity = 0;
+      for(let i=1; i <= this.pageSize; i++){
+        if(this.checkbox[i]){
+          quantity += 1;
+        }
+      }
+      this.quantityCheckbox = quantity;
+    },
+
     getItemSelected() {
       let checkboxSelected = [];
       for (let i = 0; i < this.assets.length; i++) {
@@ -689,7 +791,6 @@ export default {
     cancelCheckbox(){
       this.checkbox.fill(false);
       this.isSelectedRow.fill(false);
-      this.quantityCheckbox = 0;
       this.checkboxAll = false;
       this.indexCheckbox = -1;
     },
@@ -703,6 +804,7 @@ export default {
       if(index == 0){
         this.markCheckboxAll();
       }else{
+        // this.checkbox[index] = false;
         this.markCheckbox(index);
       }
     }
@@ -713,7 +815,6 @@ export default {
     if (this.api) {
       this.pageSize = Number(this.dataPageSize[0]);
       this.loadData();
-      this.quantityCheckbox = this.modelValue;
       
     }
     for(let i=0;i<=this.pageSize;i++){
@@ -729,6 +830,13 @@ export default {
     pageSize: function () {
       this.pageNumber = 1;
       this.loadData();
+    },
+
+    checkbox: {
+      handler: function(){
+        this.getQuantityCheckbox();
+      },
+      deep:true
     },
 
     /** 

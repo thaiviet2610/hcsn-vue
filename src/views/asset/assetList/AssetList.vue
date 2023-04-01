@@ -54,9 +54,10 @@
                         <MButtonIcon
                             class="item2"
                             classIcon="item2__icon--image"
-                            data_tooltip_bottom="Xuất ra Excel  (Ctrl+P)"
+                            data_tooltip_bottom="Xuất ra Excel(Ctrl+P)"
                             @addOnClickBtnIcon="addOnClicKBtnExportExcel">
                         </MButtonIcon>
+                        
                         <!-- button xóa tài sản  -->
                         <MButtonIcon
                             class="item3"
@@ -77,9 +78,8 @@
                         :assetCategoryId="assetCategoryId"
                         :keyword="keyword"
                         :key="keyTable"
-                        v-model="quantityCheckbox"
                         @addOnClickContextMenu="handleEventClickContextMenu"
-                        @addOnEventMouseUp="handleEventTableMouseUp"
+                        @addOnEventMouseDown="handleEventTableMouseDown"
                         :api="this.assetApi"></Mtable>
                 </div>
             </div>
@@ -326,7 +326,6 @@ export default {
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
                 this.isShowDialogNotifyDelete = true;
                 this.contentDialogNotifyDelete = resourceJS.notify.noAssetDelete;
-                // this.$refs["mDialogNotifyDelete"].setFocus();
             }else if(this.quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
                 //2.2.1. lấy thông tin của tài sản đó
@@ -448,7 +447,6 @@ export default {
          * @author LTVIET (06/03/2023) 
          */
          deleteMultipleAsset(assetsId){
-            console.log("assetsID:",assetsId);
             axios.delete(this.deleteMultipleAssetApi,{
                 data: Object.values(assetsId)
             })
@@ -557,13 +555,14 @@ export default {
                 const blob = new Blob([res.data], {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 });
-                
                 const fileName = `Assets(${this.getCurrentDate()}).xlsx`;
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
+                this.$refs["txtSearchAsset"].setFocus();
                 this.isShowToastSucess = true;
                 this.contentToastSuccess = resourceJS.toastSuccess.exportExcel.replace("{0}",fileName);
+                this.buttonUndo = false;
                 setTimeout(() => {
                     this.isShowToastSucess = false;
                 }, 3000);
@@ -812,7 +811,7 @@ export default {
         //     // }
         // },
 
-        handleEventTableMouseUp(value){
+        handleEventTableMouseDown(value){
             if(this.previousKeyShift && value > 0){
                 if(this.indexDeleteStart == 0){
                     this.indexDeleteStart = value;
@@ -838,7 +837,7 @@ export default {
         },
 
         /**
-         * Hàm xử lsy sự kiện khi bấm tổ hợp phím Ctrl + keycode
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + keycode
          * @param {*} event Sự kiện khi bấm phím
          * @param {*} keyCode Ký tự bấm cùng phím Ctrl
          * @author LTVIET (29/03/2023)
