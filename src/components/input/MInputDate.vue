@@ -80,7 +80,7 @@ export default {
             this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
             this.txtMonth = date.getMonth()+1;
             this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
-            
+            this.txtYear = date.getFullYear();
             this.value = this.getFormatDate(this.propValue,"yyyy-mm-dd",this.format);
             this.txtInputDate = this.propValue;
         }else{
@@ -111,6 +111,7 @@ export default {
                 this.$emit("getValueInputDate",this.txtInputDate);
             }
         },
+
         /**
          * Hàm xử lý sự kiện blur khỏi input
          * @author LTVIET (12/03/2023)
@@ -146,13 +147,9 @@ export default {
                         // format lại giá trị date
                         this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
                         this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
-                        while(this.txtYear < 1000){
-                            this.txtYear = `0${this.txtYear}`;
-                        }
                         let result = this.format.replace("dd",this.txtDate);
                         result = result.replace("mm",this.txtMonth);
                         result = result.replace("yyyy",this.txtYear);
-
                         this.value = result;
                         this.txtInputDate = this.getFormatDate(this.value,this.format,"yyyy-mm-dd");
                         this.keyValueInput = ++this.keyValueInput;
@@ -244,9 +241,6 @@ export default {
             let txtMonth = currentDate.getMonth() + 1;
             txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
             let txtYear = currentDate.getFullYear();
-            while(txtYear < 1000){
-                txtYear = `0${txtYear}`;
-            }
             return `${txtYear}-${txtMonth}-${txtDate}`;
         },
 
@@ -270,9 +264,6 @@ export default {
                 // 2.2. format lại giá trị ngày, tháng, năm
                 this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
                 this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
-                while(this.txtYear < 1000){
-                    this.txtYear = `0${this.txtYear}`;
-                }
                 // 2.3. validate giá trị ngày, tháng, năm
                 if(this.validateValueDate()){
                     // 2.3.1. nếu giá trị ngày, tháng, năm hợp lệ thì truyền dữ liệu ra ngoài
@@ -304,9 +295,6 @@ export default {
             // format lại giá trị ngày , tháng, năm
             txtDate = Number(txtDate) < 10 ? `0${Number(txtDate)}` : txtDate;
             txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
-            while(txtYear < 1000){
-                txtYear = `0${txtYear}`;
-            }
             // gán giá trị ngày , tháng, năm của format ban đầu vào định dạng muốn format
             let result = formatAfter.replace("dd",txtDate);
             result = result.replace("mm",txtMonth);

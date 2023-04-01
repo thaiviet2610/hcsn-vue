@@ -439,10 +439,6 @@ export default {
          */
         handleEventBtnClickCancel(){
             let newValueAsset = JSON.stringify(this.asset);
-            let value = JSON.parse(this.oldValueAseet);
-            value.purchase_date = commonJS.formatDate(value.purchase_date);
-            value.production_year = commonJS.formatDate(value.production_year);
-            this.oldValueAseet = JSON.stringify(value);
             if(this.typeForm == "add"){
                 this.isShowDialogAddFormCancel = true;
             }
