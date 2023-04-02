@@ -4,6 +4,7 @@
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
         <!-- input nhập dữ liệu -->    
         <input
+            :id="idInput"
             ref="mInput"
             :class="{'input--error':inValid}" 
             class="classInput" :style="styleInput"
@@ -11,6 +12,7 @@
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"
+            @focus="handleEventFocus"
             :placeholder="placeholder">    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>
@@ -54,6 +56,10 @@ export default {
             type: String,
             default: ""
         },
+        idInput: {
+            type: String,
+            default: ""
+        }
     },
     components:{
 
@@ -66,7 +72,7 @@ export default {
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
-            classInput: null
+            classInput: null,
         }
     },
     watch: {
@@ -89,6 +95,14 @@ export default {
         
     },
     methods: {
+        /**
+         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
+         * @param {*} event sự kiện focus
+         * @author LTVIET (02/04/2023)
+         */
+        handleEventFocus(event){
+            this.$emit("handleEventFocus",event.target.id);
+        },
         /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)

@@ -4,13 +4,15 @@
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
         <!-- input nhập dữ liệu -->    
         <input 
-            ref="mInput"
+            ref="mInputNumber"
+            :id="idInput"
             :class="[{'input--error':inValid}]" 
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"
+            @focus="handleEventFocus"
             :placeholder="placeholder">    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>  
@@ -83,6 +85,10 @@ export default {
         stepValue: {
             type: Number,
             default: 0
+        },
+        idInput: {
+            type: String,
+            default: ""
         }
 
 
@@ -134,6 +140,15 @@ export default {
     },
     methods: {
         /**
+         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
+         * @param {*} event sự kiện focus
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventFocus(event){
+            this.$emit("handleEventFocus",event.target.id);
+        },
+
+        /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)
          */
@@ -168,11 +183,9 @@ export default {
                         //--> nếu ngược lại thì set invalid = false
                         this.inValid = false;
                     }
-                    // console.log("value:",this.value,typeof this.value);
                     if(this.value && String(this.value).indexOf(".") == -1){
                         this.value = Number(this.value);
                         if(this.value > 0 && this.value<10){
-                            console.log(1);
                             this.value = Number(this.value);
                             this.value = `0${this.value}`;
                         }
@@ -191,9 +204,6 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventIncreaseValue() {
-            // let step = Number(this.stepValue);
-            //1. set focus vào input
-            //this.setFocus();
             //2. nếu giá trị rỗng thì gán bằng 0
             if(this.value == "" || this.value == null || this.value == undefined){
                 this.value = 0;
@@ -219,8 +229,6 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventDecreaseValue(){
-            //1. set focus vào input
-            // this.setFocus();
             //2. nếu giá trị rỗng thì gán bằng 0
             if(this.value == "" || this.value == null || this.value == undefined){
                 this.value = 0;
@@ -248,7 +256,7 @@ export default {
          */
         setFocus() {
             this.$nextTick(function() {
-                this.$refs["mInput"].focus();
+                this.$refs["mInputNumber"].focus();
             })
         }, 
         

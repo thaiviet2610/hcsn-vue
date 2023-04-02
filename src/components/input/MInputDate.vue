@@ -14,10 +14,13 @@
                 tabindex="-1"
                 >
             <input 
+                ref="mInputDate"
+                :id="idInput"
                 class="input__date-container" 
                 :placeholder="placeholder"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
+                @focus="handleEventFocus"
                 :key="keyValueInput"
                 v-model="value">
         </div> 
@@ -48,6 +51,10 @@ export default {
             default: "dd/mm/yyyy"
         },
         valueInputDate: {
+            type: String,
+            default: ""
+        },
+        idInput: {
             type: String,
             default: ""
         }
@@ -98,6 +105,29 @@ export default {
         }
     },
     methods: {
+        /**
+         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
+         * @param {*} event sự kiện focus
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventFocus(event){
+            this.$emit("handleEventFocus",event.target.id);
+        },
+
+        /**
+         * Hàm set focus vào input
+         * @author LTVIET (05/03/2023)
+         */
+         setFocus() {
+            this.$nextTick(function() {
+                this.$refs["mInputDate"].focus();
+            })
+        }, 
+
+        /**
+         * Hàm xử lý sự kiện khi thay đổi giá trị trong date picker thì giá trị trong input cũng thay đổi theo
+         * @author LTVIET (25/03/2023)
+         */
         handleEventChangeDatePicker(){
             if(this.txtInputDate == ""){
                 this.placeholder = this.format;
@@ -108,7 +138,6 @@ export default {
             }else{
                 this.inValid = false;
                 this.value = this.getFormatDate(this.txtInputDate,"yyyy-mm-dd",this.format);
-                console.log("this.txtInputDate:",this.txtInputDate);
                 this.$emit("getValueInputDate",this.txtInputDate);
             }
         },

@@ -7,6 +7,7 @@
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
+            :id="idInput"
             type="text" 
             v-model="value"
             :placeholder="this.placeholder" 
@@ -14,6 +15,7 @@
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
+            @focus="handleEventFocus"
             :style="this.styleInput">
         <!-- thẻ buton thực hiện chức năng hiện combobox-data  -->
         <MButtonIcon
@@ -127,6 +129,10 @@ export default {
             type: Number,
             default: 0
         },
+        idInput: {
+            type: String,
+            default: ""
+        }
     },
     data() {
         return {
@@ -208,6 +214,14 @@ export default {
         }
     },
     methods: {
+        /**
+         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
+         * @param {*} event sự kiện focus
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventFocus(event){
+            this.$emit("handleEventFocus",event.target.id);
+        },
         /**
          * Hàm thêm sự kiện click hiển thị combobox-data
          * @author LTVIET (02/03/2023)
