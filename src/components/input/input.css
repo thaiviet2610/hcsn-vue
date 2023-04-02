@@ -4,7 +4,7 @@
 }
 
 input:focus{
-    border: 1px solid rgba(84, 173, 225, 0.829);
+    border: 1px solid rgba(84, 173, 225, 0.829) !important;
 }
 
 .input__icon2--image:hover{

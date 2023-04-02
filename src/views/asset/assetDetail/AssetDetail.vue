@@ -24,7 +24,7 @@
                             <div class="up-left">
                                 <!-- input nhập mã tài sản  -->
                                 <MInput 
-                                    idInput="mInput00"
+                                    :idInput="idElemnts[0][0]"
                                     ref="txtAssetCode"
                                     :required="true"
                                     @getValueEventInput="GetValueAssetCode"
@@ -41,7 +41,7 @@
                                 <!-- input nhập tên tài sản  -->
                                 <MInput 
                                     ref="txtAssetName"
-                                    idInput="mInput01"
+                                    :idInput="idElemnts[0][1]"
                                     :required="true"
                                     placeholder="Nhập tên tài sản"
                                     @handleEventFocus="handleEventFocusInput"
@@ -59,7 +59,7 @@
                                     <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                     <MCombobox  
                                         :is-icon="false" 
-                                        idInput="mInput10"
+                                        :idInput="idElemnts[1][0]"
                                         ref="txtDepartmentCode"
                                         :required="true"
                                         :api="this.departApi"
@@ -93,7 +93,7 @@
                                 <!-- combobox nhập mã loại tài sản  -->
                                 <MCombobox  
                                     :is-icon="false"
-                                    idInput="mInput20"
+                                    :idInput="idElemnts[2][0]"
                                     ref="txtAssetCategoryCode"
                                     :required="true" 
                                     :api="this.assetCategoryApi"
@@ -128,7 +128,7 @@
                                 <!-- input nhập số lượng  -->
                                 <MInputNumber
                                     ref="txtQuantity"
-                                    idInput="mInput30"
+                                    :idInput="idElemnts[3][0]"
                                     :required="true"
                                     placeholder="Nhập số lượng"
                                     :valueInput="asset.quantity"
@@ -146,7 +146,7 @@
                                 <!-- input nhập nguyên giá  -->
                                 <MInputNumber
                                     ref="txtCost"
-                                    idInput="mInput31"
+                                    :idInput="idElemnts[3][1]"
                                     :required="true"
                                     placeholder="Nhập nguyên giá"
                                     isFormat="money"
@@ -164,7 +164,7 @@
                                 <!-- input nhập số năm sử dụng  -->
                                 <MInputNumber
                                     ref="txtLifeTime"
-                                    idInput="mInput32"
+                                    :idInput="idElemnts[3][2]"
                                     :required="true"
                                     placeholder="Nhập số năm sử dụng"
                                     label="Số năm sử dụng"
@@ -224,7 +224,7 @@
                                 
                                 <MInputDate
                                     ref="txtPurchaseDate"
-                                    idInput="mInput40"
+                                    :idInput="idElemnts[4][0]"
                                     label="Ngày mua"
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.purchase_date"
@@ -239,7 +239,7 @@
                                 <!-- input nhập ngày bắt đầu sử dụng  -->
                                 <MInputDate
                                     ref="txtProductionYear"
-                                    idInput="mInput41"
+                                    :idInput="idElemnts[4][1]"
                                     label="Ngày bắt đầu sử dụng"
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.production_year"
@@ -258,13 +258,17 @@
                 <div class="form-footer">
                     <!-- button lưu form  -->
                     <MButton
+                        ref="btnSave"
                         :isDefault="true"
+                        :idButton="idElemnts[5][0]"
                         label="Lưu"
                         @btnAddOnClickBtn="handleEventBtnClickSave">
                     </MButton>
                     <!-- button hủy form  -->
                     <MButton
+                        ref="btnCancel"
                         label="Hủy"
+                        :idButton="idElemnts[5][1]"
                         style="border: 0;"
                         @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                     </MButton>
@@ -376,8 +380,8 @@ export default {
             previousKey: "",
             previousKeyCtrl: false,
             idInputFocus: "",
-            idElemnts: [["mInput00","mInput01"],["mInput10"],["mInput20"],["mInput30","mInput31","mInput32"],["mInput40","mInput41"]],
-            refElemnts: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],["txtQuantity","txtCost","txtLifeTime"],["txtPurchaseDate","txtProductionYear"]],
+            idElemnts: [["mElement00","mElement01"],["mElement10"],["mElement20"],["mElement30","mElement31","mElement32"],["mElement40","mElement41"],["mElement50","mElement51"]],
+            refElemnts: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],["txtQuantity","txtCost","txtLifeTime"],["txtPurchaseDate","txtProductionYear"],["btnSave","btnCancel"]],
         }
     },
 
@@ -905,7 +909,7 @@ export default {
          */
         getValueLifeTime(value){
             if(value != null && value != "" && value != undefined && value != 0){
-                this.asset.life_time = value;
+                this.asset.life_time = Number(value);
                 this.asset.depreciation_rate = this.getRoundValue(1/value,1000);
                 this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
                 this.depreciationValueYear = this.getDepreciationValueYear;
@@ -974,7 +978,7 @@ export default {
          * @author LTVIET (29/03/2023)
          */
         getValueQuantity(value){
-            this.asset.quantity = value;
+            this.asset.quantity = Number(value);
         },
 
         /**
@@ -1006,8 +1010,8 @@ export default {
                 let index1 = -1;
                 let index2 = -1;
                 if(this.idInputFocus){
-                    index1 = Number(this.idInputFocus.slice(6,7));
-                    index2 = Number(this.idInputFocus.slice(7,8));
+                    index1 = Number(this.idInputFocus.slice(8,9));
+                    index2 = Number(this.idInputFocus.slice(9,10));
                 }
                 switch (keyCode) {
                     case enumJS.keyS:
@@ -1018,11 +1022,12 @@ export default {
                         if(this.idInputFocus && this.previousKeyCtrl){
                             index1 += 1;
                             if(index1 >= this.idElemnts.lenth){
-                                index1 = this.idElemnts.length -1;
+                                index1 = 0;
                             }
                             if(index2 >= this.idElemnts[index1].length){
                                 index2 = this.idElemnts[index1].length - 1;
                             }
+                            this.idInputFocus = this.idElemnts[index1][index2];
                             this.$refs[this.refElemnts[index1][index2]].setFocus();
                         }
                         break;
@@ -1030,11 +1035,12 @@ export default {
                         if(this.idInputFocus && this.previousKeyCtrl){
                             index1 -= 1;
                             if(index1 < 0){
-                                index1 = 0;
+                                index1 = this.idElemnts.length - 1;
                             }
                             if(index2 >= this.idElemnts[index1].length){
                                 index2 = this.idElemnts[index1].length - 1;
                             }
+                            this.idInputFocus = this.idElemnts[index1][index2];
                             this.$refs[this.refElemnts[index1][index2]].setFocus();
                         }
                         break;
@@ -1045,9 +1051,10 @@ export default {
                                 index2 = 0;
                                 index1 += 1;
                                 if(index1 >= this.idElemnts.length){
-                                    index1 = this.idElemnts.length-1;
+                                    index1 = 0;
                                 }
                             }
+                            this.idInputFocus = this.idElemnts[index1][index2];
                             this.$refs[this.refElemnts[index1][index2]].setFocus();
                         }
                         break;
@@ -1057,10 +1064,11 @@ export default {
                             if(index2 < 0){
                                 index1 -= 1;
                                 if(index1 < 0){
-                                    index1 = 0;
+                                    index1 = this.idElemnts.length - 1;
                                 }
                                 index2 = this.idElemnts[index1].length - 1;
                             }
+                            this.idInputFocus = this.idElemnts[index1][index2];
                             this.$refs[this.refElemnts[index1][index2]].setFocus();
                         }
                         break;

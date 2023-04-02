@@ -1,9 +1,13 @@
 <template>
     <button 
         ref="mButton"
+        :id="idButton"
         class="btn"
-        :class="{'btn--default':isDefault}"
-        @click="addEventClickBtn">
+        :class="[{'btn--default': isDefault},{'btn_focus':isFocus}]"
+        @focusout="isFocus = false"
+        @click="addEventClickBtn"
+        @focus="handleEventFocus"
+        >
             {{ label }}
     </button>
 </template>
@@ -24,10 +28,14 @@ export default {
             type: Boolean,
             default: false
         },
-        
+        idButton: {
+            type: String,
+            default: ""
+        }
     },
     data() {
         return {
+            isFocus: false
         }
     },
     created() {
@@ -36,7 +44,7 @@ export default {
 
     },
     mounted() {
-        this.setFocus();
+        // this.setFocus();
     },
     methods: {
         /**
@@ -55,6 +63,16 @@ export default {
                 this.$refs["mButton"].focus();
             })
         }, 
+
+        /**
+         * Hàm bắt sự kiện focus vào button rồi gửi ra cho lớp cha xử lý
+         * @param {*} event sự kiện focus
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventFocus(event){
+            this.isFocus = true;
+            this.$emit("handleEventFocus",event.target.id);
+        },
     },
 }
 </script>
