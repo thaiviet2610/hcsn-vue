@@ -380,8 +380,8 @@ export default {
             previousKey: "",
             previousKeyCtrl: false,
             idInputFocus: "",
-            idElemnts: [["mElement00","mElement01"],["mElement10"],["mElement20"],["mElement30","mElement31","mElement32"],["mElement40","mElement41"],["mElement50","mElement51"]],
-            refElemnts: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],["txtQuantity","txtCost","txtLifeTime"],["txtPurchaseDate","txtProductionYear"],["btnSave","btnCancel"]],
+            idElemnts: resourceJS.idElementAssetDetail,
+            refElemnts: resourceJS.refElementAssetDetail,
         }
     },
 
@@ -445,6 +445,7 @@ export default {
         handleEventFocusInput(value){
             this.idInputFocus = value;
         },
+
         /**
          * Hàm thay đổi tăng, giảm giá trị của input số lượng
          * @param {*} check check=true thì tăng, check=false thì giảm
@@ -475,10 +476,10 @@ export default {
          */
         handleEventBtnClickCancel(){
             let newValueAsset = JSON.stringify(this.asset);
-            if(this.typeForm == "add"){
+            if(this.typeForm == resourceJS.typeForm.add || this.typeForm == resourceJS.typeForm.clone){
                 this.isShowDialogAddFormCancel = true;
             }
-            if(this.typeForm == "edit" || this.typeForm == "clone"){
+            if(this.typeForm == resourceJS.typeForm.edit ){
                 if(newValueAsset != this.oldValueAseet){
                     this.isShowDialogEditFormCancel = true;
                 }else{
@@ -628,13 +629,11 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateEmptyValue(){
-            var refs = ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',
-                        'txtQuantity','txtCost','txtLifeTime','txtDepreciationRate',
-                        'txtDepreciationValueYear','txtPurchaseDate','txtProductionYear'];
+            var refs = resourceJS.refAssetDetail;
             let txt = "";
             for(let i = 0 ;i<refs.length;i++){
                 let item = this.$refs[refs[i]];
-                if(refs[i] == 'txtPurchaseDate' || refs[i] == 'txtProductionYear'){
+                if(i == 9 || i == 10){
                     if(!item.txtInputDate){
                         txt = refs[i];
                         item.inValid = true;
@@ -658,7 +657,6 @@ export default {
                     }
                     
                 }
-                
             }
             return txt;
         },
@@ -668,6 +666,50 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateProfessional(){
+            // validate độ dài ký tự của dữ liệu
+            this.validateMaxLength();
+
+            // validate giá trị hao mòn năm phải nhỏ hơn nguyên giá
+            this.validateCostGreaterThanDepreciationValueYear();
+
+            // validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
+            this.validateDepreciationEqualPartOfLifeTime();
+
+            // validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
+            this.validateProcductionYearGreaterThanPurchaseDate();
+            
+            return true;
+        },
+
+        /**
+         * Hàm validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
+         */
+        validateProcductionYearGreaterThanPurchaseDate(){
+            let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
+            if(valueTime > 0){
+                this.isShowDialogNotify = true;
+                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                return false;
+            }
+        },
+        
+        /**
+         * Validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
+         */
+        validateDepreciationEqualPartOfLifeTime(){
+            if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
+                this.isShowDialogNotify = true;
+                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
+                
+                return false;
+            }
+        },
+
+        /**
+         * Hàm validate độ dài tối đa của ký tự
+         * @author LTVIET (17/03/2023)
+         */
+        validateMaxLength(){
             // validate độ dài mã tài sản (không được quá 100 ký tự)
             if(this.asset.fixed_asset_code.length > 100){
                 this.isShowDialogNotify = true;
@@ -682,7 +724,13 @@ export default {
                 return false;
             }
 
-            // validate giá trị hao mòn năm phải nhỏ hơn nguyên giá
+        },
+
+        /**
+         * Hàm validate tỷ lệ hao mòn phải nhỏ hơn nguyên giá
+         * @author LTVIET (17/03/2023)
+         */
+        validateCostGreaterThanDepreciationValueYear(){
             let depreciationValueYear;
             if(typeof this.depreciationValueYear == "string"){
                 depreciationValueYear = this.getMoney(this.depreciationValueYear);
@@ -695,24 +743,6 @@ export default {
                 this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
                 return false;
             }
-
-            // validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
-            if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-                
-                return false;
-            }
-
-            // validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
-            let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
-            if(valueTime > 0){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
-                return false;
-            }
-            
-            return true;
         },
         
         /**
@@ -1006,6 +1036,19 @@ export default {
                 event.preventDefault();
                 this.handleEventBtnClickSave();
             }
+            if(keyCode == enumJS.keyEsc){
+                event.preventDefault();
+                this.$emit('onClose');
+            }
+            this.handleEventKeyStrokesCtrlFocus(keyCode);
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + key để di chuyển lên xuống giauwx các dòng dữ liệu
+         * @param {*} keyCode mã ký tự khi nhấn phím
+         * @author LTVIET (02/04/2023)
+         */
+        handleEventKeyStrokesCtrlFocus(keyCode){
             if(this.previousKeyCtrl){
                 let index1 = -1;
                 let index2 = -1;
@@ -1015,74 +1058,113 @@ export default {
                 }
                 switch (keyCode) {
                     case enumJS.keyS:
-                        event.preventDefault();
                         this.handleEventBtnClickSave();
                         break;
                     case enumJS.arrowDown:
-                        if(this.idInputFocus && this.previousKeyCtrl){
-                            index1 += 1;
-                            if(index1 >= this.idElemnts.lenth){
-                                index1 = 0;
-                            }
-                            if(index2 >= this.idElemnts[index1].length){
-                                index2 = this.idElemnts[index1].length - 1;
-                            }
-                            this.idInputFocus = this.idElemnts[index1][index2];
-                            this.$refs[this.refElemnts[index1][index2]].setFocus();
-                        }
+                        this.handleEventKeyStrokesCtrlDown(index1,index2);
                         break;
                     case enumJS.arrowUp:
-                        if(this.idInputFocus && this.previousKeyCtrl){
-                            index1 -= 1;
-                            if(index1 < 0){
-                                index1 = this.idElemnts.length - 1;
-                            }
-                            if(index2 >= this.idElemnts[index1].length){
-                                index2 = this.idElemnts[index1].length - 1;
-                            }
-                            this.idInputFocus = this.idElemnts[index1][index2];
-                            this.$refs[this.refElemnts[index1][index2]].setFocus();
-                        }
+                        this.handleEventKeyStrokesCtrlUp(index1,index2);
                         break;
                     case enumJS.keyRight:
-                        if(this.idInputFocus && this.previousKeyCtrl){
-                            index2 +=1;
-                            if(index2 >= this.idElemnts[index1].length){
-                                index2 = 0;
-                                index1 += 1;
-                                if(index1 >= this.idElemnts.length){
-                                    index1 = 0;
-                                }
-                            }
-                            this.idInputFocus = this.idElemnts[index1][index2];
-                            this.$refs[this.refElemnts[index1][index2]].setFocus();
-                        }
+                        this.handleEventKeyStrokesCtrlRight(index1,index2);
                         break;
                     case enumJS.keyLeft:
-                    if(this.idInputFocus && this.previousKeyCtrl){
-                            index2 -=1;
-                            if(index2 < 0){
-                                index1 -= 1;
-                                if(index1 < 0){
-                                    index1 = this.idElemnts.length - 1;
-                                }
-                                index2 = this.idElemnts[index1].length - 1;
-                            }
-                            this.idInputFocus = this.idElemnts[index1][index2];
-                            this.$refs[this.refElemnts[index1][index2]].setFocus();
-                        }
+                        this.handleEventKeyStrokesCtrlLeft(index1,index2);
                         break;
                     default:
                         break;
                 }
             }
-            if(keyCode == enumJS.keyEsc){
-                event.preventDefault();
-                this.$emit('onClose');
-            }
-            
         },
 
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang phải thì focus vào đối tượng bên phải
+         * @param {*} index1 vị trí của id của input trong mảng idElements
+         * @param {*} index2 vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlRight(index1, index2){
+            if(this.idInputFocus && this.previousKeyCtrl){
+                index2 +=1;
+                if(index2 >= this.idElemnts[index1].length){
+                    index2 = 0;
+                    index1 += 1;
+                    if(index1 >= this.idElemnts.length){
+                        index1 = 0;
+                    }
+                }
+                this.idInputFocus = this.idElemnts[index1][index2];
+                this.$refs[this.refElemnts[index1][index2]].setFocus();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang trái thì focus vào đối tượng bên trái
+         * @param {*} index1 vị trí của id của input trong mảng idElements
+         * @param {*} index2 vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+        handleEventKeyStrokesCtrlLeft(index1, index2){
+            if(this.idInputFocus && this.previousKeyCtrl){
+                index2 -=1;
+                if(index2 < 0){
+                    index1 -= 1;
+                    if(index1 < 0){
+                        index1 = this.idElemnts.length - 1;
+                    }
+                    index2 = this.idElemnts[index1].length - 1;
+                }
+                this.idInputFocus = this.idElemnts[index1][index2];
+                this.$refs[this.refElemnts[index1][index2]].setFocus();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím lên thì focus vào đối tượng bên trên
+         * @param {*} index1 vị trí của id của input trong mảng idElements
+         * @param {*} index2 vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlUp(index1, index2){
+            if(this.idInputFocus && this.previousKeyCtrl){
+                index1 -= 1;
+                if(index1 < 0){
+                    index1 = this.idElemnts.length - 1;
+                }
+                if(index2 >= this.idElemnts[index1].length){
+                    index2 = this.idElemnts[index1].length - 1;
+                }
+                this.idInputFocus = this.idElemnts[index1][index2];
+                this.$refs[this.refElemnts[index1][index2]].setFocus();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím xuống thì focus vào đối tượng bên dưới
+         * @param {*} index1 vị trí của id của input trong mảng idElements
+         * @param {*} index2 vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlDown(index1, index2){
+            if(this.idInputFocus && this.previousKeyCtrl){
+                index1 += 1;
+                if(index1 >= this.idElemnts.lenth){
+                    index1 = 0;
+                }
+                if(index2 >= this.idElemnts[index1].length){
+                    index2 = this.idElemnts[index1].length - 1;
+                }
+                this.idInputFocus = this.idElemnts[index1][index2];
+                this.$refs[this.refElemnts[index1][index2]].setFocus();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần sử lý
+         * @author LTVIET (26/03/2023)
+         */
         handleEventKeyup(event){
             let keyCode = event.keyCode;
             if(keyCode == enumJS.keyCtrl){

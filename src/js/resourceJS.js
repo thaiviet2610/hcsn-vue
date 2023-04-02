@@ -1,61 +1,61 @@
 const resourceJS = {
-    assetDetail: [
-        {
+    assetDetail: {
+        assetCode : {
             label: "Mã tài sản ",
-            placeholder: "Mã tài sản"
+            placeholder: "Nhập mã tài sản"
         },
-        {
+        assetName:{
             label: "Tên tài sản",
-            placeholder: "Tên tài sản"
+            placeholder: "Nhập tên tài sản"
         },
-        {
+        departmentCode:{
             label: "Mã bộ phận sử dụng",
-            placeholder: "Mã bộ phận sử dụng"
+            placeholder: "Nhập mã bộ phận sử dụng"
         },
-        {
+        departmentName:{
             label: "Tên bộ phận sử dụng",
-            placeholder: "Tên bộ phận sử dụng"
+            placeholder: "Nhập tên bộ phận sử dụng"
         },
-        {
+        assetCategoryCode:{
             label: "Mã loại tài sản",
-            placeholder: "Mã loại tài sản"
+            placeholder: "Nhập mã loại tài sản"
         },
-        {
+        assetCategoryName:{
             label: "Tên loại tài sản",
-            placeholder: "Tên loại tài sản"
+            placeholder: "Nhập tên loại tài sản"
         },
-        {
+        quantity:{
             label: "Số lượng",
-            placeholder: "Số lượng"
+            placeholder: "Nhập số lượng"
         },
-        {
+        cost:{
             label: "Nguyên giá",
-            placeholder: "Nguyên giá"
+            placeholder: "Nhập nguyên giá"
         },
-        {
+        lifeTime:{
             label: "Số năm sử dụng",
-            placeholder: "Số năm sử dụng"
+            placeholder: "Nhập số năm sử dụng"
         },
-        {
+        depreciationRate:{
             label: "Tỷ lệ hao mòn",
-            placeholder: "Tỷ lệ hao mòn"
+            placeholder: "Nhập tỷ lệ hao mòn"
         },
-        {
+        depreciationValueYear:{
             label: "Giá trị hao mòn năm",
-            placeholder: "Giá trị hao mòn năm"
+            placeholder: "Nhập giá trị hao mòn năm"
         },
-        {
+        trackedYear:{
             label: "Năm theo dõi",
-            placeholder: "Năm theo dõi"
+            placeholder: "Nhập năm theo dõi"
         },
-        {
+        purchaseDate:{
             label: "Ngày mua"
         },
-        {
+        productionYear:{
             label: "Năm bắt đầu sử dụng"
         },
         
-    ],
+    },
     validateProfessionalAssetDetail: {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá.",
         depreciationRateDifferentLifeTimeValue: "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng",
@@ -134,7 +134,17 @@ const resourceJS = {
         inValidFormat: " sai định dạng! VD: {0}",
         inValidFormatMonth: "Giá trị tháng phải nằm trong khoảng từ 1-12!",
         invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
-    }
+    },
+    refAssetDetail: ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',
+                    'txtQuantity','txtCost','txtLifeTime','txtDepreciationRate',
+                    'txtDepreciationValueYear','txtPurchaseDate','txtProductionYear'],
+    idElementAssetDetail: [["mElement00","mElement01"],["mElement10"],["mElement20"],
+                        ["mElement30","mElement31","mElement32"],
+                        ["mElement40","mElement41"],["mElement50","mElement51"]],
+    refElementAssetDetail: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],
+                        ["txtQuantity","txtCost","txtLifeTime"],
+                        ["txtPurchaseDate","txtProductionYear"],["btnSave","btnCancel"]],
+    
 }
 
 export default resourceJS;
