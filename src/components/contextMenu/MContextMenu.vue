@@ -54,5 +54,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(./contextMenu.css);
+@import url(./context-menu.css);
 </style>

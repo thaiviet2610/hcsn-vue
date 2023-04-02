@@ -19,5 +19,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(./dialogLoadData.css);
+@import url(./dialog-load-data.css);
 </style>

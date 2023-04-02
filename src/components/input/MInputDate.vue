@@ -336,7 +336,7 @@ export default {
 </script>
 
 <style scoped>
-@import url(./inputDate.css);
+@import url(./input-date.css);
 input:focus{
     border: none !important;
 }

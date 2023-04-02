@@ -1113,5 +1113,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(./assetDetail.css);
+@import url(./asset-detail.css);
 </style>
