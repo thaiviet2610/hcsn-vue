@@ -410,13 +410,7 @@ export default {
           this.depreciationValueTotal = await res.data.DepreciationValueTotal;
           this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
           this.getTotalPage();
-          this.cancelCheckbox();
-          this.checkbox.fill(false);
-          this.clickCheckbox = false;
-          this.clickFunction = false;
-          this.indexDeleteStart = 0;
-          this.indexDeleteEnd = 0;
-          this.indexRowClick = 0;
+          this.reloadTable();
           this.isShowLoad = false;
         })
         .catch((error) => {
@@ -781,14 +775,19 @@ export default {
     },
 
     /**
-     * Hàm set trạng thái tất cả checkbox thành false;
+     * Hàm set tất cả trạng thái của table về lại ban đầu;
      * @author LTVIET (26/03/2023)
      */
-    cancelCheckbox(){
+    reloadTable(){
       this.checkbox.fill(false);
       this.isSelectedRow.fill(false);
       this.checkboxAll = false;
       this.indexCheckbox = -1;
+      this.clickCheckbox = false;
+      this.clickFunction = false;
+      this.indexDeleteStart = 0;
+      this.indexDeleteEnd = 0;
+      this.indexRowClick = 0;
     },
 
     /**
