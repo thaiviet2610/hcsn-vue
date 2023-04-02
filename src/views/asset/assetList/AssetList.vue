@@ -405,7 +405,7 @@ export default {
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 this.handleEventCloseDialogDeleteOne(checkboxSelected);
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
-                thí.handleEventCloseDialogDeleteMultiple(checkboxSelected);
+                this.handleEventCloseDialogDeleteMultiple(checkboxSelected);
             }
             this.$refs["txtSearchAsset"].setFocus();
         },
@@ -850,7 +850,6 @@ export default {
         handleEventKeyStrokesCtrl(event,keyCode){
             if(this.previousKeyCtrl){
                 let table = this.$refs["mTable"];
-                let quantityCheckbox = table.quantityCheckbox;
                 switch (keyCode) {
                     // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:
@@ -912,6 +911,7 @@ export default {
          * @author LTVIET (29/03/2023)
          */
          handleEventKeyStrokesCtrlE(event,table){
+            let quantityCheckbox = table.quantityCheckbox;
             event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();
