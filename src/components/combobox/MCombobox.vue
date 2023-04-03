@@ -7,7 +7,7 @@
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
-            :id="idInput"
+            :id="idCombobox"
             type="text" 
             v-model="value"
             :placeholder="this.placeholder" 
@@ -129,7 +129,7 @@ export default {
             type: Number,
             default: 0
         },
-        idInput: {
+        idCombobox: {
             type: String,
             default: ""
         }

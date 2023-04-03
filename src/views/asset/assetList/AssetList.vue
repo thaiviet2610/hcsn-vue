@@ -10,9 +10,11 @@
                     <div class="input1">
                         <MInput 
                             @keydownEnter ="handleEventKeydownEnterInputSearch"
-                            ref="txtSearchAsset"
+                            :idInput="idElements[0]"
+                            :ref="refElements[0]"
                             placeholder="Tìm kiếm tài sản"
                             :iconInput="true"
+                            @handleEventFocus="handleEventFocusInput"
                             typeValue="text">
                         </MInput>
                     </div>
@@ -20,29 +22,37 @@
                     <MCombobox  
                         :isIcon="true" 
                         :api="this.assetCategoryApi"
+                        :idCombobox="idElements[1]"
+                        :ref="refElements[1]"
                         propName="fixed_asset_category_name" 
                         placeholder="Loại tài sản" 
-                        :itemHeight = 36
+                        :itemHeight = "36"
                         propValue="fixed_asset_category_id"
-                        :quantityItem = 4
+                        @handleEventFocus="handleEventFocusInput"
+                        :quantityItem = "4"
                         @getInputCombobox="getValueAssetCategory">
                     </MCombobox>
                     <!-- combobox lọc bộ phận sử dụng  -->
                     <MCombobox  
                         :is-icon="true" 
                         :api="this.departApi"
+                        :idCombobox="idElements[2]"
+                        :ref="refElements[2]"
                         propName="department_name" 
                         placeholder="Bộ phận sử dụng" 
                         propValue="department_id"
-                        :itemHeight = 36
-                        :quantityItem = 4
-                        @getInputCombobox="getValueDepartment" >
+                        :itemHeight = "36"
+                        :quantityItem = "4"
+                        @getInputCombobox="getValueDepartment"
+                        @handleEventFocus="handleEventFocusInput" >
                     </MCombobox>
                 </div>
                 <div class="content-header__right">
                     <!-- button thêm tài sản  -->
                     <MButton
                         :isDefault="true"
+                        :idButton="idElements[3]"
+                        :ref="refElements[3]"
                         label=" + Thêm tài sản"
                         data_tooltip_bottom="Ctrl+1"
                         class="item1"
@@ -51,6 +61,8 @@
                     <!-- button xuất dữu liệu ra excel  -->
                     <MButtonIcon
                         class="item2"
+                        :idButtonIcon="idElements[4]"
+                        :ref="refElements[4]"
                         classIcon="item2__icon--image"
                         data_tooltip_bottom="Xuất ra Excel(Ctrl+P)"
                         @addOnClickBtnIcon="addOnClicKBtnExportExcel">
@@ -59,8 +71,10 @@
                     <!-- button xóa tài sản  -->
                     <MButtonIcon
                         class="item3"
+                        :idButtonIcon="idElements[5]"
+                        :ref="refElements[5]"
                         classIcon="item3__icon--image"
-                        data_tooltip_bottom="Xóa tài sản (Ctrl+D)"
+                        data_tooltip_bottom="Xóa tài sản(Ctrl+D)"
                         @addOnClickBtnIcon="btnOnClick">
                     </MButtonIcon>
                 </div>
@@ -211,6 +225,9 @@ export default {
             previousKeyShift: false,
             indexDeleteStart: 0,
             indexDeleteEnd: 0,
+            idElementFocus: "",
+            idElements: resourceJS.assetList.idElementAssetList,
+            refElements: resourceJS.assetList.refElementAssetList 
         }
     },
 
@@ -218,12 +235,21 @@ export default {
     },
     methods: {
         /**
+         * Hàm xử lý sự kiện lấy ra id của input đang được focus
+         * @param {*} value giá trị id của input đang được focus
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventFocusInput(value){
+            this.idElementFocus = value;
+        },
+
+        /**
          * Hàm xử lý sự kiện click button đóng form
          * @author LTVIET (06/03/2023)
          */
         addOnClickCloseForm(){
             this.isShowForm = false;
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         },
         /**
          * Hàm gọi api để lấy ra mã tài sản mới từ lần nhập gần nhất + 1
@@ -390,11 +416,16 @@ export default {
                 //-->ẩn đi dialog xác nhận xóa nhiều tái sản
                 this.isShowDialogConfirmDeleteMultiAsset = false;
             }
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         },
 
-        
-
+        /**
+         * Hàm set focus vào input đầu tiên của asset lít khi load lại trang
+         * @author LTVIET (26/03/2023)
+         */
+        setFocusDefault(){
+            this.$refs[this.refElements[0]].setFocus();
+        },
 
         /**
          * Hàm xử lý sự kiện click vào button xóa của dialog xác nhận hành động xóa
@@ -408,7 +439,7 @@ export default {
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 this.handleEventCloseDialogDeleteMultiple(checkboxSelected);
             }
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         },
 
         /**
@@ -545,7 +576,7 @@ export default {
          */
         closeToastSucess(){
             this.isShowToastSucess = false;
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         },
 
         /**
@@ -567,7 +598,7 @@ export default {
          * @author LTVIET (06/03/2023) 
          */
         showToastSucess(message){
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
             this.isButtonUndo = false;
             this.contentToastSuccess = message;
             this.isShowToastSucess = true;
@@ -680,7 +711,7 @@ export default {
          */
         handleEventCloseDialogNotifyDelete(){
             this.isShowDialogNotifyDelete = false;
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         },
 
         /**
@@ -793,6 +824,103 @@ export default {
             }
             this.handleEventKeyStrokesCtrl(event,keyCode);
             this.handleEventKeyStrokesShift(event,keyCode);
+            this.handleEventKeyStrokesMoveFocus(keyCode);
+        },
+
+        handleEventKeyStrokesMoveFocus(keyCode){
+            if(this.previousKeyCtrl){
+                let index = -1;
+                
+                if(this.idElementFocus){
+                    index = Number(this.idElementFocus.slice(8,9));
+                }
+                switch (keyCode) {
+                    case enumJS.keyRight:
+                        this.handleEventKeyStrokesCtrlRight(index);
+                        break;
+                    case enumJS.keyLeft:
+                        this.handleEventKeyStrokesCtrlLeft(index);
+                        break;
+                    case enumJS.arrowDown:
+                        if(index>=0 && index < this.idElements.length - 1){
+                            this.handleEventKeyStrokesCtrlDown();
+                        }
+                        break;
+                    case enumJS.arrowUp:
+                        if(index == this.idElements.length - 1){
+                            this.handleEventKeyStrokesCtrlUp();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím lên thì focus vào đối tượng input tìm kiếm
+         * @param {*} index vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlUp(){
+            if(this.idElementFocus && this.previousKeyCtrl){
+                this.idElementFocus = this.idElements[0];
+                this.$refs[this.refElements[0]].setFocus();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím xuống thì focus vào đối tượng table
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlDown(){
+            if(this.idElementFocus && this.previousKeyCtrl){
+                let index = this.idElements.length-1;
+                this.idElementFocus = this.idElements[index];
+                this.$refs[this.refElements[index]].setFocusCheckboxAll();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang phải thì focus vào đối tượng bên phải
+         * @param {*} index vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlRight(index){
+            if(this.idElementFocus && this.previousKeyCtrl){
+                index += 1;
+                if(index >= this.idElements.length){
+                    index = 0;
+                }
+                this.idElementFocus = this.idElements[index];
+                if(index == this.idElements.length - 1){
+                    this.$refs[this.refElements[index]].setFocusCheckboxAll();
+                }else{
+                    this.$refs[this.refElements[index]].setFocus();
+                }
+                
+
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang phải thì focus vào đối tượng bên phải
+         * @param {*} index vị trí của id của input trong mảng idElements
+         * @author LTVIET (02/04/2023)
+         */
+         handleEventKeyStrokesCtrlLeft(index){
+            if(this.idElementFocus && this.previousKeyCtrl){
+                index -= 1;
+                if(index < 0 ){
+                    index = this.idElements.length - 1;
+                }
+                this.idElementFocus = this.idElements[index];
+                if(index == this.idElements.length - 1){
+                    this.$refs[this.refElements[index]].setFocusCheckboxAll();
+                }else{
+                    this.$refs[this.refElements[index]].setFocus();
+                }
+            }
         },
 
         /**
@@ -803,7 +931,6 @@ export default {
          */
         handleEventKeyStrokesShift(event,keyCode){
             if(this.previousKeyShift){
-                console.log(keyCode);
                 switch (keyCode) {
                     case enumJS.keyAlt:
                         event.preventDefault();
@@ -951,7 +1078,7 @@ export default {
     mounted() {
         // mặc định focus vào input tìm kiếm khi load trang
         this.$nextTick(function() {
-            this.$refs["txtSearchAsset"].setFocus();
+            this.setFocusDefault();
         })
         
     },

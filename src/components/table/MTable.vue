@@ -305,7 +305,7 @@ export default {
       contentDialogNotifyLoadError: "",
       isSelectedRow: [],
       pageSize: 10,
-      dataPageSize: resourceJS.dataPageSize,
+      dataPageSize: resourceJS.table.dataPageSize,
       pageNumber: 1,
       indexRowClick: 0,
       totalRecord: 0,
@@ -317,7 +317,7 @@ export default {
       depreciationValueTotal: 0,
       residualValueTotal: 0,
       isShowContextMenu: false,
-      dataContextMenu: resourceJS.dataContextMenu,
+      dataContextMenu: resourceJS.table.dataContextMenu,
       contextMenuPageX: 0,
       contextMenuPageY: 0,
       keyContextMenu: 0,
@@ -472,13 +472,15 @@ export default {
       this.$emit("btnDblClickRow", item);
     },
 
+
+
     /**
      * Hàm xử lý sự kiện click 1 dòng của table
      * @param {*} index vị trí dòng của table được dblclick
      * @author LTVIET (02/03/2023)
      */
     btnAddOnClickRowTable(index) {
-      this.$refs[`mCheckbox_${index}`][0].setFocus();
+      this.setFocusCheckbox(index);
       
       if (!this.checkbox[index]) {
         if (!this.clickFunction&&!this.clickCheckbox) {
@@ -524,11 +526,11 @@ export default {
               this.checkbox.fill(false);
               if(this.indexDeleteStart <= this.indexDeleteEnd){
                 for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
-                  this.setFocusCheckbox(i);
+                  this.setClickCheckbox(i);
                 }
               }else{
                 for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
-                  this.setFocusCheckbox(i);
+                  this.setClickCheckbox(i);
                 }
               }
             }else{
@@ -553,15 +555,13 @@ export default {
                 }
               }
               this.checkbox.fill(false);
-              // console.log("this.indexDeleteStart:",this.indexDeleteStart);
-              // console.log("this.indexDeleteEnd:",this.indexDeleteEnd);
               if(this.indexDeleteStart <= this.indexDeleteEnd){
                 for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
-                  this.setFocusCheckbox(i);
+                  this.setClickCheckbox(i);
                 }
               }else{
                 for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
-                  this.setFocusCheckbox(i);
+                  this.setClickCheckbox(i);
                 }
               }
               
@@ -621,8 +621,26 @@ export default {
       this.indexRowClick = 0;
       this.clickCheckbox = false;
       this.clickFunction = false;
+      this.setFocusCheckboxAll();
+    },
+
+    /**
+     * Hàm set focus vào checkboxAll
+     * @author LTVIET (26/03/2023)
+     */
+    setFocusCheckboxAll(){
       this.$refs["mCheckboxAll"].setFocus();
     },
+
+    /**
+     * Hàm set focus vào checkbox 
+     * @param {*} index vị trí của checkbox
+     * @author LTVIET (26/03/2023)
+     */
+    setFocusCheckbox(index){
+      this.$refs[`mCheckbox_${index}`][0].setFocus();
+    },
+
     /**
      * Hàm xử lý sựu kiện khi click vào checkbox
      * @param {*} index vị trí dòng của checkbox trong table
@@ -656,7 +674,7 @@ export default {
         this.checkboxAll = false;
         this.isSelectedRow[index] = false;
       }
-      this.$refs[`mCheckbox_${index}`][0].setFocus();
+      this.setFocusCheckbox(index);
       this.clickCheckbox = true;
     },
 
@@ -765,11 +783,11 @@ export default {
     },
 
     /**
-     * Hàm set focus vào checkbox
+     * Hàm set click vào checkbox
      * @param {*} index vị trí của checkbox muốn focus
      * @author LTVIET (29/03/2023)
      */
-    setFocusCheckbox(index){
+     setClickCheckbox(index){
       if(index == 0){
         this.markCheckboxAll();
       }else{

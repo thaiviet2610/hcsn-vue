@@ -59,7 +59,7 @@
                                     <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                     <MCombobox  
                                         :is-icon="false" 
-                                        :idInput="idElemnts[1][0]"
+                                        :idCombobox="idElemnts[1][0]"
                                         ref="txtDepartmentCode"
                                         :required="true"
                                         :api="this.departApi"
@@ -93,7 +93,7 @@
                                 <!-- combobox nhập mã loại tài sản  -->
                                 <MCombobox  
                                     :is-icon="false"
-                                    :idInput="idElemnts[2][0]"
+                                    :idCombobox="idElemnts[2][0]"
                                     ref="txtAssetCategoryCode"
                                     :required="true" 
                                     :api="this.assetCategoryApi"
@@ -380,8 +380,8 @@ export default {
             previousKey: "",
             previousKeyCtrl: false,
             idInputFocus: "",
-            idElemnts: resourceJS.idElementAssetDetail,
-            refElemnts: resourceJS.refElementAssetDetail,
+            idElemnts: resourceJS.assetDetail.idElementAssetDetail,
+            refElemnts: resourceJS.assetDetail.refElementAssetDetail,
         }
     },
 
@@ -583,7 +583,6 @@ export default {
          * @author LTVIET(04/03/2023)
          */
         handleEventErrorAPI(error){
-            console.log(1);
             console.log(error);
             this.isShowLoad = false;
             if(error.code == "ERR_NETWORK"){
@@ -629,7 +628,7 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateEmptyValue(){
-            var refs = resourceJS.refAssetDetail;
+            var refs = resourceJS.assetDetail.refAssetDetail;
             let txt = "";
             for(let i = 0 ;i<refs.length;i++){
                 let item = this.$refs[refs[i]];

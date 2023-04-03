@@ -1,60 +1,57 @@
 const resourceJS = {
-    assetDetail: {
-        assetCode : {
-            label: "Mã tài sản ",
-            placeholder: "Nhập mã tài sản"
-        },
-        assetName:{
-            label: "Tên tài sản",
-            placeholder: "Nhập tên tài sản"
-        },
-        departmentCode:{
-            label: "Mã bộ phận sử dụng",
-            placeholder: "Nhập mã bộ phận sử dụng"
-        },
-        departmentName:{
-            label: "Tên bộ phận sử dụng",
-            placeholder: "Nhập tên bộ phận sử dụng"
-        },
-        assetCategoryCode:{
-            label: "Mã loại tài sản",
-            placeholder: "Nhập mã loại tài sản"
-        },
-        assetCategoryName:{
-            label: "Tên loại tài sản",
-            placeholder: "Nhập tên loại tài sản"
-        },
-        quantity:{
-            label: "Số lượng",
-            placeholder: "Nhập số lượng"
-        },
-        cost:{
-            label: "Nguyên giá",
-            placeholder: "Nhập nguyên giá"
-        },
-        lifeTime:{
-            label: "Số năm sử dụng",
-            placeholder: "Nhập số năm sử dụng"
-        },
-        depreciationRate:{
-            label: "Tỷ lệ hao mòn",
-            placeholder: "Nhập tỷ lệ hao mòn"
-        },
-        depreciationValueYear:{
-            label: "Giá trị hao mòn năm",
-            placeholder: "Nhập giá trị hao mòn năm"
-        },
-        trackedYear:{
-            label: "Năm theo dõi",
-            placeholder: "Nhập năm theo dõi"
-        },
-        purchaseDate:{
-            label: "Ngày mua"
-        },
-        productionYear:{
-            label: "Năm bắt đầu sử dụng"
-        },
-        
+    assetCode : {
+        label: "Mã tài sản ",
+        placeholder: "Nhập mã tài sản"
+    },
+    assetName:{
+        label: "Tên tài sản",
+        placeholder: "Nhập tên tài sản"
+    },
+    departmentCode:{
+        label: "Mã bộ phận sử dụng",
+        placeholder: "Nhập mã bộ phận sử dụng"
+    },
+    departmentName:{
+        label: "Tên bộ phận sử dụng",
+        placeholder: "Nhập tên bộ phận sử dụng"
+    },
+    assetCategoryCode:{
+        label: "Mã loại tài sản",
+        placeholder: "Nhập mã loại tài sản"
+    },
+    assetCategoryName:{
+        label: "Tên loại tài sản",
+        placeholder: "Nhập tên loại tài sản"
+    },
+    quantity:{
+        label: "Số lượng",
+        placeholder: "Nhập số lượng"
+    },
+    cost:{
+        label: "Nguyên giá",
+        placeholder: "Nhập nguyên giá"
+    },
+    lifeTime:{
+        label: "Số năm sử dụng",
+        placeholder: "Nhập số năm sử dụng"
+    },
+    depreciationRate:{
+        label: "Tỷ lệ hao mòn",
+        placeholder: "Nhập tỷ lệ hao mòn"
+    },
+    depreciationValueYear:{
+        label: "Giá trị hao mòn năm",
+        placeholder: "Nhập giá trị hao mòn năm"
+    },
+    trackedYear:{
+        label: "Năm theo dõi",
+        placeholder: "Nhập năm theo dõi"
+    },
+    purchaseDate:{
+        label: "Ngày mua"
+    },
+    productionYear:{
+        label: "Năm bắt đầu sử dụng"
     },
     validateProfessionalAssetDetail: {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá!",
@@ -136,35 +133,43 @@ const resourceJS = {
         inValidFormatMonth: "Giá trị tháng phải nằm trong khoảng từ 1-12!",
         invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
     },
-    refAssetDetail: ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',
+    assetDetail:{
+        refAssetDetail: ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',
                     'txtQuantity','txtCost','txtLifeTime','txtDepreciationRate',
                     'txtDepreciationValueYear','txtPurchaseDate','txtProductionYear'],
-    idElementAssetDetail: [["mElement00","mElement01"],["mElement10"],["mElement20"],
-                        ["mElement30","mElement31","mElement32"],
-                        ["mElement40","mElement41"],["mElement50","mElement51"]],
-    refElementAssetDetail: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],
-                        ["txtQuantity","txtCost","txtLifeTime"],
-                        ["txtPurchaseDate","txtProductionYear"],["btnSave","btnCancel"]],
-    dataContextMenu: 
-    [
-        {
-        icon: "context__menu--icon-add",
-        text: "Thêm tài sản"
-        },
-        {
-        icon: "context__menu--icon-clone",
-        text: "Nhân bản tài sản"
-        },
-        {
-        icon: "context__menu--icon-edit",
-        text: "Sửa tài sản"
-        },
-        {
-        icon: "context__menu--icon-delete",
-        text: "Xóa tài sản"
-        }
-    ],
-    dataPageSize: ["10", "20", "50", "100"],
+        idElementAssetDetail: [["mElement00","mElement01"],["mElement10"],["mElement20"],
+                            ["mElement30","mElement31","mElement32"],
+                            ["mElement40","mElement41"],["mElement50","mElement51"]],
+        refElementAssetDetail: [["txtAssetCode","txtAssetName"],["txtDepartmentCode"],["txtAssetCategoryCode"],
+                            ["txtQuantity","txtCost","txtLifeTime"],
+                            ["txtPurchaseDate","txtProductionYear"],["btnSave","btnCancel"]],
+    },
+    table: {
+        dataContextMenu: 
+        [
+            {
+            icon: "context__menu--icon-add",
+            text: "Thêm tài sản"
+            },
+            {
+            icon: "context__menu--icon-clone",
+            text: "Nhân bản tài sản"
+            },
+            {
+            icon: "context__menu--icon-edit",
+            text: "Sửa tài sản"
+            },
+            {
+            icon: "context__menu--icon-delete",
+            text: "Xóa tài sản"
+            }
+        ],
+        dataPageSize: ["10", "20", "50", "100"],
+    },
+    assetList: {
+        idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],
+        refElementAssetList: ["mInputSearch","mComboboxAssetCategory","mComboboxDepartment","mButtonAdd","mButtonExport","mButtonDelete","mTable"],
+    }
 }
 
 export default resourceJS;
