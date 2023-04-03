@@ -241,14 +241,17 @@
       @onClose="handleEventCloseDialogNotifyLoadError"
     >
     </MDialogNotify>
+    <!-- contextmenu của table  -->
     <MContextMenu  
-          v-show="isShowContextMenu"
-          :data="dataContextMenu"
-          :pageX="contextMenuPageX"
-          :pageY="contextMenuPageY"
-          :key="keyContextMenu"
-          :entity="contextMenuEnity"
-          @addOnClickItem="addOnClickItemContextMenu"></MContextMenu>
+      v-show="isShowContextMenu"
+      :data="dataContextMenu"
+      :pageX="contextMenuPageX"
+      :pageY="contextMenuPageY"
+      :key="keyContextMenu"
+      :entity="contextMenuEnity"
+      @addOnClickItem="addOnClickItemContextMenu"
+      >
+    </MContextMenu>
   </div>
   
 </template>
@@ -285,12 +288,9 @@ export default {
     },
   },
   data() {
-    
     return {
-      
       titleEditAssetForm: resourceJS.titlteForm.editAssetForm,
       titleCloneAssetForm: resourceJS.titlteForm.cloneAssetForm,
-      labelForm: "",
       isShowForm: false,
       assetInput: null,
       assets: [],
@@ -305,7 +305,7 @@ export default {
       contentDialogNotifyLoadError: "",
       isSelectedRow: [],
       pageSize: 10,
-      dataPageSize: ["10", "20", "50", "100"],
+      dataPageSize: resourceJS.dataPageSize,
       pageNumber: 1,
       indexRowClick: 0,
       totalRecord: 0,
@@ -317,24 +317,7 @@ export default {
       depreciationValueTotal: 0,
       residualValueTotal: 0,
       isShowContextMenu: false,
-      dataContextMenu: [
-        {
-          icon: "context__menu--icon-add",
-          text: "Thêm tài sản"
-        },
-        {
-          icon: "context__menu--icon-clone",
-          text: "Nhân bản tài sản"
-        },
-        {
-          icon: "context__menu--icon-edit",
-          text: "Sửa tài sản"
-        },
-        {
-          icon: "context__menu--icon-delete",
-          text: "Xóa tài sản"
-        }
-      ],
+      dataContextMenu: resourceJS.dataContextMenu,
       contextMenuPageX: 0,
       contextMenuPageY: 0,
       keyContextMenu: 0,
@@ -392,16 +375,27 @@ export default {
     },
 
     /**
+     * Hàm nhận dữu liệu truyền vào từ bên ngoài và chuyển thanh api filter
+     * @author LTVIET (02/03/2023)
+     */
+    getApiFilter(){
+      let api = this.api.replace("{0}",this.keyword);
+      api = api.replace("{1}",this.assetCategoryId);
+      api = api.replace("{2}",this.departmentId);
+      api = api.replace("{3}",this.pageSize);
+      api = api.replace("{4}",this.pageNumber);
+      return api;
+    },
+
+    /**
      * Hàm xử lý sự kiện gọi api load dữ liệu mTable
      * @author LTVIET (02/03/2023)
      */
     async loadData() {
       this.isShowLoad = true;
-      
+      let api = this.getApiFilter();
        axios
-        .get(
-          `${this.api}/filter?fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}&pageSize=${this.pageSize}&pageNumber=${this.pageNumber}`
-        )
+        .get(api)
         .then(async (res) => {
           this.assets = await res.data.Data;
           this.totalRecord = await res.data.TotalRecord;
@@ -417,11 +411,8 @@ export default {
           console.log(error);
           this.isShowLoad = false;
           this.isShowDialogNotifyLoadError = true;
-          this.contentDialogNotifyLoadError =
-            "Đã có lỗi khi load data table. Vui lòng thử lại sau!";
+          this.contentDialogNotifyLoadError = resourceJS.errorMsg.errorLoadDataTable;
         });
-        
-
     },
 
 
@@ -445,29 +436,12 @@ export default {
     },
 
     /**
-     * Hàm thêm sự kiện click thêm tài sản
-     * @param {*} title tiêu đề của form
-     * @param {*} index id của đối tượng
-     * @author LTVIET (02/03/2023)
-     */
-    btnClickOpenForm(title, item) {
-      this.isShowForm = true;
-      this.labelForm = title;
-      if (item) {
-        this.assetInput = item;
-      } else {
-        this.assetInput = null;
-      }
-    },
-
-    /**
      * Hàm format lại định dạng tiền
      * @param {*} value giá trị cần format
      * @param {*} type loại định dạng muốn format
      * @author LTVIET (02/03/2023)
      */
     formatValue(value, type) {
-      
       if (type == "money") {
         return commonJS.formatMoney(value);
       } else if (type == "date") {
@@ -806,6 +780,7 @@ export default {
   },
 
   async created() {
+    this.getApiFilter();
     // lấy api để load danh sách asset
     if (this.api) {
       this.pageSize = Number(this.dataPageSize[0]);

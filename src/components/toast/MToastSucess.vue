@@ -12,11 +12,11 @@
             <div class="toast__right">
                 <!-- button hoàn tác  -->
                 <MButton v-if="buttonUndo"
-                    :label="label"
+                    label="Hoàn tác"
                     class="toast__text--right"></MButton>
                     <!-- button đóng  -->
                 <MButtonIcon v-if="buttonClose"
-                    :classIcon="classIcon"
+                    classIcon="btn__toast--close"
                     class="toast--close"
                     @addOnClickBtnIcon="addOnClickBtnClose">
                 </MButtonIcon>
@@ -56,8 +56,6 @@ export default {
     },
     data() {
         return {
-            label: "Hoàn tác",
-            classIcon: "btn__toast--close",
         }
     },
     methods: {

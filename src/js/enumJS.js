@@ -3,7 +3,7 @@ const enumJS = {
     keyEnter: 13,
     keyShift: 16,
     keyCtrl: 17,
-    ketAlt: 18,
+    keyAlt: 18,
     keyEsc: 27,
     keyLeft: 37,
     arrowUp: 38,

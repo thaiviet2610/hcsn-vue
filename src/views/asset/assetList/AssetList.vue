@@ -78,7 +78,7 @@
                     :key="keyTable"
                     @addOnClickContextMenu="handleEventClickContextMenu"
                     @addOnEventMouseDown="handleEventTableMouseDown"
-                    :api="this.assetApi"></Mtable>
+                    :api="this.assetFilterApi"></Mtable>
             </div>
         </div>
     </div>
@@ -183,6 +183,7 @@ export default {
             contentDialogConfirmDeleteOneAsset: "",
             contentDialogConfirmDeleteMultiAsset: "",
             assets : [],
+            assetFilterApi: resourceJS.api.assetFilterApi,
             assetApi: resourceJS.api.assetApi,
             departApi: resourceJS.api.departmentApi,
             assetCategoryApi: resourceJS.api.assetCategoryApi,
@@ -429,7 +430,7 @@ export default {
             if(id){
                 this.deleteAsset(id);
             }
-            this.$refs['mTable'].cancelCheckbox();
+            this.$refs['mTable'].reloadTable();
         },
 
         /**
@@ -448,7 +449,7 @@ export default {
                 assetsId.push(id);
             }
             this.deleteMultipleAsset(assetsId);
-            this.$refs['mTable'].cancelCheckbox();
+            this.$refs['mTable'].reloadTable();
         },
 
         /**
@@ -771,6 +772,7 @@ export default {
             }
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
+                console.log(this.previousKeyShift);
                 this.indexDeleteStart = 0;
                 this.indexDeleteEnd = 0;
             }
@@ -801,9 +803,11 @@ export default {
          */
         handleEventKeyStrokesShift(event,keyCode){
             if(this.previousKeyShift){
+                console.log(keyCode);
                 switch (keyCode) {
-                    case enumJS.key1:
+                    case enumJS.keyAlt:
                         event.preventDefault();
+                        console.log(keyCode);
                         this.$refs["mTable"].markCheckboxAll();
                         break;
                     default:

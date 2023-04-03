@@ -10,7 +10,8 @@
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
             @input="handleEventInput"
-            @keydown.enter="onKeyDownSelecte"
+            @keydown="handleEventKeydown"
+            @keyup="handleEventKeyup"
             @blur="onValidateBlur"
             @focus="handleEventFocus"
             :placeholder="placeholder">    
@@ -45,6 +46,7 @@
 <script>
 import resourceJS from '../../js/resourceJS.js'
 import commonJS from '@/js/common';
+import enumJS from '@/js/enumJS.js';
 export default {
     name:"MInputNumber",
     props: {
@@ -104,7 +106,8 @@ export default {
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
-            classInput: null
+            classInput: null,
+            previousKeyShift: false
         }
     },
     watch: {
@@ -250,6 +253,7 @@ export default {
                 }
             }
         },
+
         /**
          * Hàm set focus vào input
          * @author LTVIET (05/03/2023)
@@ -259,13 +263,46 @@ export default {
                 this.$refs["mInputNumber"].focus();
             })
         }, 
-        
+
         /**
-         * Hàm xử lý sự kiện nhập phím trong input
-         * @author LTVIET(16/03/2023)
+         * Hàm xử lý sự kiện keydown
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (05/03/2023)
          */
-        onKeyDownSelecte(){
-            this.$emit("keydownEnter",this.value);
+        handleEventKeydown(event){
+            let keyCode = event.keyCode;
+            switch (keyCode) {
+                case enumJS.arrowDown:
+                    if(this.previousKeyShift){
+                        event.preventDefault();
+                        this.handleEventDecreaseValue();
+                    }
+                    break;
+                case enumJS.arrowUp:
+                    if(this.previousKeyShift){
+                        event.preventDefault();
+                        this.handleEventIncreaseValue();
+                    }
+                    break;
+                case enumJS.keyShift:
+                    this.previousKeyShift = true;
+                    break;
+            
+                default:
+                    break;
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeyup(event){
+            let keyCode = event.keyCode;
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = false;
+            }
         },
         
         /**
@@ -275,7 +312,6 @@ export default {
          */
          getMoney(value){
             return String(this.value).indexOf(".") == -1 ? value : Number(value.replaceAll('.',''));
-            
         },
 
         /**
@@ -285,8 +321,12 @@ export default {
          */
         getRoundValue(value){
             return Math.round(value*10)/10;
-        }
-        ,
+        },
+
+        /**
+         * Hàm truyền dữ liệu ra lớp cha khi nhập dữ liệu mới vào input
+         * @author LTVIET(06/03/2023)
+         */
         handleEventInput(){
             this.$emit("getValueEventInput",this.value);
         }
