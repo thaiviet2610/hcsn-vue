@@ -3,6 +3,9 @@
         ref="mCheckbox"
         v-if="checked"
         @click="addOnClick" 
+        @focus="handleEventFocus"
+        @focusout="isFocus = true"
+        :class="{'checkbox_focus':isFocus}"
         class="checkbox">
         <div class="checkbox__true"></div>
     </button>
@@ -11,6 +14,9 @@
         ref="mCheckbox"
         v-else  
         @click="addOnClick" 
+        @focus="isFocus = true"
+        :class="{'checkbox_focus':isFocus}"
+        @focusout="isFocus = false"
         class="checkbox">
         <div class="checkbox__false"></div>
     </button>
@@ -23,6 +29,10 @@ export default {
         checked: {
             type: Boolean,
             default: false
+        },
+        idCheckbox: {
+            type: String,
+            default: ""
         }
     },
     components:{
@@ -30,16 +40,27 @@ export default {
     },
     data() {
         return {
-            
+            isFocus: false
         }
     },
     watch: {
     },
+    created() {
+    },
     methods: {
+        /**
+         * Hàm xử lý sự kiện click vào checkbox
+         * @author LTVIET (26/03/2023)
+         */
         addOnClick(){
             this.$emit('addOnClick');
             this.setFocus();
         },
+
+        /**
+         * Hàm xử lý sự kiện set focus vào checkbox
+         * @author LTVIET (26/03/2023)
+         */
         setFocus(){
             this.$nextTick(function() {
                 this.$refs["mCheckbox"].focus();

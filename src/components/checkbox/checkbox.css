@@ -17,3 +17,7 @@
 	width: 14px;
 	height: 14px;
 }
+
+.checkbox_focus{
+    outline: 0.5px solid black;
+}

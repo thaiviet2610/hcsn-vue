@@ -6,8 +6,10 @@
         <tr>
           <th class="column1 text-align-center">
             <MCheckbox 
-              ref="mCheckboxAll"
+              ref="mCheckbox_0"
+              idCheckbox="idCheckbox_0"
               :checked="checkboxAll"
+              @handleEventFocus="handleEventFocusCheckbox"
               @addOnClick="markCheckboxAll"
               >
             </MCheckbox>
@@ -47,7 +49,9 @@
           <td class="column1 text-align-center">
             <MCheckbox 
               :ref="`mCheckbox_${index+1}`"
+              :idCheckbox="`idCheckbox_${index+1}`"
               :checked="checkbox[index + 1]"
+              @handleEventFocus="handleEventFocusCheckbox"
               @addOnClick="markCheckbox(index + 1)"
               >
             </MCheckbox>
@@ -286,6 +290,10 @@ export default {
       type: String,
       default: "",
     },
+    idTable: {
+      type: String,
+      default: ""
+    }
   },
   data() {
     return {
@@ -323,14 +331,19 @@ export default {
       keyContextMenu: 0,
       contextMenuEnity: null,
       previousKeyShift: false,
+      previousKeyCtrl: false,
       indexDeleteStart: 0,
       indexDeleteEnd: 0,
+      indexCheckboxFocus: -1,
     };
   },
 
   computed: {
   },
   methods: {
+    handleEventFocusCheckbox(value){
+      this.indexCheckboxFocus = value.slice(11,12);
+    },
     /**
      * Hàm xử lý sự kiện click chuột vào table
      * @param {*} index vị trí dòng dữ liệu được click của table
@@ -508,70 +521,16 @@ export default {
       const keyCode = event.keyCode;
       switch (keyCode) {
         case enumJS.arrowDown:
-          if(this.indexRowClick != 0){
-            let index = (this.indexRowClick + 1) > this.pageSize ? this.pageSize : (this.indexRowClick + 1);
-            if(this.isSelectedRow[index]){
-              this.isSelectedRow[index] = false;
-            }
-            if(this.previousKeyShift){
-              if(this.indexDeleteStart == 0){
-                this.indexDeleteStart = index - 1;
-                this.indexDeleteEnd = index;
-              }else{
-                this.indexDeleteEnd = ++this.indexDeleteEnd;
-                if(this.indexDeleteEnd > this.pageSize){
-                  this.indexDeleteEnd = this.pageSize;
-                }
-              }
-              this.checkbox.fill(false);
-              if(this.indexDeleteStart <= this.indexDeleteEnd){
-                for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
-                  this.setClickCheckbox(i);
-                }
-              }else{
-                for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
-                  this.setClickCheckbox(i);
-                }
-              }
-            }else{
-              this.btnAddOnClickRowTable(index);
-            }
-          }
+          this.handleEventKeyArrowDown();
           break;
         case enumJS.arrowUp:
-          if(this.indexRowClick != 0){
-            let index = (this.indexRowClick - 1) > 0 ? (this.indexRowClick - 1) : 1;
-            if(this.isSelectedRow[index]){
-              this.isSelectedRow[index] = false;
-            }
-            if(this.previousKeyShift){
-              if(this.indexDeleteStart == 0){
-                this.indexDeleteEnd = index;
-                this.indexDeleteStart = index + 1;
-              }else{
-                this.indexDeleteEnd = --this.indexDeleteEnd;
-                if(this.indexDeleteEnd < 1){
-                  this.indexDeleteEnd = 1;
-                }
-              }
-              this.checkbox.fill(false);
-              if(this.indexDeleteStart <= this.indexDeleteEnd){
-                for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
-                  this.setClickCheckbox(i);
-                }
-              }else{
-                for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
-                  this.setClickCheckbox(i);
-                }
-              }
-              
-            }else{
-              this.btnAddOnClickRowTable(index);
-            }
-          }
+          this.handleEventKeyArrowUp();
           break;
         case enumJS.keyShift:
           this.previousKeyShift = true;
+          break;
+        case enumJS.keyCtrl:
+          this.previousKeyCtrl = true;
           break;
 
         default:
@@ -579,12 +538,126 @@ export default {
       }
     },
 
+    /**
+     * Hàm xử lý sự kiện bấm phím xuống 
+     * @author LTVIET (01/04/2023)
+     */
+     handleEventKeyArrowUp(){
+      if(this.indexRowClick != 0){
+        let index = (this.indexRowClick - 1) > 0 ? (this.indexRowClick - 1) : 1;
+        if(this.isSelectedRow[index]){
+          this.isSelectedRow[index] = false;
+        }
+        if(this.previousKeyShift){
+          this.handleEventKeyStrokesShiftUp(index);
+        }else if(this.previousKeyCtrl){
+          this.handleEventKeyStrokesCtrlUp();
+        }
+        else{
+          this.btnAddOnClickRowTable(index);
+        }
+      }
+      else{
+        this.indexCheckboxFocus -= 1;
+        if(this.indexCheckboxFocus < 0){
+          this.indexCheckboxFocus = this.pageSize;
+        }
+        this.setFocusCheckbox(this.indexCheckboxFocus);
+      }
+    },
+
+    // handleEventKeyStrokesCtrlUp(){
+
+    // },
+
+    /**
+     * Hàm xử lý sự kiện bấm phím xuống 
+     * @author LTVIET (01/04/2023)
+     */
+    handleEventKeyArrowDown(){
+      if(this.indexRowClick != 0){
+        let index = (this.indexRowClick + 1) > this.pageSize ? this.pageSize : (this.indexRowClick + 1);
+        if(this.isSelectedRow[index]){
+          this.isSelectedRow[index] = false;
+        }
+        if(this.previousKeyShift){
+          this.handleEventKeyStrokesShiftDown(index);
+        }else{
+          this.btnAddOnClickRowTable(index);
+        }
+      }
+      else{
+        this.indexCheckboxFocus += 1;
+        if(this.indexCheckboxFocus > this.pageSize){
+          this.indexCheckboxFocus = 0;
+        }
+        this.setFocusCheckbox(this.indexCheckboxFocus);
+      }
+    },
+
+    /**
+     * Hàm xử lý sự kiện bấm tổ hợp phím Shift + phím xuống để chọn nhiều dòng dữ liệu
+     * @author LTVIET (01/04/2023)
+     */
+     handleEventKeyStrokesShiftUp(index){
+      if(this.indexDeleteStart == 0){
+        this.indexDeleteEnd = index;
+        this.indexDeleteStart = index + 1;
+      }else{
+        this.indexDeleteEnd = --this.indexDeleteEnd;
+        if(this.indexDeleteEnd < 1){
+          this.indexDeleteEnd = 1;
+        }
+      }
+      this.setTrueForMultipleCheckbox();
+    },
+
+    /**
+     * Hàm xử lý sự kiện bấm tổ hợp phím Shift + phím xuống để chọn nhiều dòng dữ liệu
+     * @author LTVIET (01/04/2023)
+     */
+    handleEventKeyStrokesShiftDown(index){
+      if(this.indexDeleteStart == 0){
+        this.indexDeleteStart = index - 1;
+        this.indexDeleteEnd = index;
+      }else{
+        this.indexDeleteEnd = ++this.indexDeleteEnd;
+        if(this.indexDeleteEnd > this.pageSize){
+          this.indexDeleteEnd = this.pageSize;
+        }
+      }
+      this.setTrueForMultipleCheckbox();
+    },
+
+    /**
+     * Hàm xử lý sự kiện set trạng thái true vào các checkbox cho trước
+     * @author LTVIET (01/04/2023)
+     */
+    setTrueForMultipleCheckbox(){
+      this.checkbox.fill(false);
+      if(this.indexDeleteStart <= this.indexDeleteEnd){
+        for(let i=this.indexDeleteStart; i<= this.indexDeleteEnd;i++){
+          this.setClickCheckbox(i);
+        }
+      }else{
+        for(let i=this.indexDeleteEnd; i<= this.indexDeleteStart;i++){
+          this.setClickCheckbox(i);
+        }
+      }
+    },
+    /**
+     * Hàm sử lý sự kiện keyup trong table
+     * @param {*} event 
+     */
     handleEventKeyUp(event){
       const keyCode = event.keyCode;
       if(keyCode == enumJS.keyShift){
         this.previousKeyShift = false;
         this.indexDeleteStart = 0;
         this.indexDeleteEnd = 0;
+      }
+      if(keyCode == enumJS.keyCtrl){
+        this.previousKeyCtrl = false;
       }
       
     },
@@ -621,15 +694,7 @@ export default {
       this.indexRowClick = 0;
       this.clickCheckbox = false;
       this.clickFunction = false;
-      this.setFocusCheckboxAll();
-    },
-
-    /**
-     * Hàm set focus vào checkboxAll
-     * @author LTVIET (26/03/2023)
-     */
-    setFocusCheckboxAll(){
-      this.$refs["mCheckboxAll"].setFocus();
+      this.setFocusCheckbox(0);
     },
 
     /**
@@ -638,7 +703,13 @@ export default {
      * @author LTVIET (26/03/2023)
      */
     setFocusCheckbox(index){
-      this.$refs[`mCheckbox_${index}`][0].setFocus();
+      if(index != 0){
+        this.$refs[`mCheckbox_${index}`][0].setFocus();
+      }else{
+        this.$refs["mCheckbox_0"].setFocus();
+      }
+      this.indexCheckboxFocus = index;
+      this.$emit('handleEventFocusCheckbox',this.idTable);
     },
 
     /**
@@ -780,6 +851,7 @@ export default {
       this.indexDeleteStart = 0;
       this.indexDeleteEnd = 0;
       this.indexRowClick = 0;
+      this.indexCheckboxFocus = -1;
     },
 
     /**

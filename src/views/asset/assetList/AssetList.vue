@@ -14,7 +14,7 @@
                             :ref="refElements[0]"
                             placeholder="Tìm kiếm tài sản"
                             :iconInput="true"
-                            @handleEventFocus="handleEventFocusInput"
+                            @handleEventFocus="handleEventFocusElement"
                             typeValue="text">
                         </MInput>
                     </div>
@@ -28,7 +28,7 @@
                         placeholder="Loại tài sản" 
                         :itemHeight = "36"
                         propValue="fixed_asset_category_id"
-                        @handleEventFocus="handleEventFocusInput"
+                        @handleEventFocus="handleEventFocusElement"
                         :quantityItem = "4"
                         @getInputCombobox="getValueAssetCategory">
                     </MCombobox>
@@ -44,7 +44,7 @@
                         :itemHeight = "36"
                         :quantityItem = "4"
                         @getInputCombobox="getValueDepartment"
-                        @handleEventFocus="handleEventFocusInput" >
+                        @handleEventFocus="handleEventFocusElement" >
                     </MCombobox>
                 </div>
                 <div class="content-header__right">
@@ -56,6 +56,7 @@
                         label=" + Thêm tài sản"
                         data_tooltip_bottom="Ctrl+1"
                         class="item1"
+                        @handleEventFocus="handleEventFocusElement"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
                     <!-- button xuất dữu liệu ra excel  -->
@@ -65,6 +66,7 @@
                         :ref="refElements[4]"
                         classIcon="item2__icon--image"
                         data_tooltip_bottom="Xuất ra Excel(Ctrl+P)"
+                        @handleEventFocus="handleEventFocusElement"
                         @addOnClickBtnIcon="addOnClicKBtnExportExcel">
                     </MButtonIcon>
                     
@@ -75,6 +77,7 @@
                         :ref="refElements[5]"
                         classIcon="item3__icon--image"
                         data_tooltip_bottom="Xóa tài sản(Ctrl+D)"
+                        @handleEventFocus="handleEventFocusElement"
                         @addOnClickBtnIcon="btnOnClick">
                     </MButtonIcon>
                 </div>
@@ -83,13 +86,15 @@
             <div class="content-body">
                 <!-- table hiển thị danh sách tài sản  -->
                 <Mtable 
-                    ref="mTable"
+                    :ref="refElements[6]"
+                    :idTable="idElements[6]"
                     @btnDblClickRow="handleEventDblClickRow"
                     @btnClickFunctionOpenForm="handleEventOpenForm"
                     :departmentId="departmentId"
                     :assetCategoryId="assetCategoryId"
                     :keyword="keyword"
                     :key="keyTable"
+                    @handleEventFocusCheckbox="handleEventFocusElement"
                     @addOnClickContextMenu="handleEventClickContextMenu"
                     @addOnEventMouseDown="handleEventTableMouseDown"
                     :api="this.assetFilterApi"></Mtable>
@@ -235,11 +240,11 @@ export default {
     },
     methods: {
         /**
-         * Hàm xử lý sự kiện lấy ra id của input đang được focus
-         * @param {*} value giá trị id của input đang được focus
+         * Hàm xử lý sự kiện lấy ra id của element đang được focus
+         * @param {*} value giá trị id của element đang được focus
          * @author LTVIET (02/04/2023)
          */
-         handleEventFocusInput(value){
+         handleEventFocusElement(value){
             this.idElementFocus = value;
         },
 
@@ -345,7 +350,7 @@ export default {
          */
         btnOnClick(){
             //1. lấy số lượng checkbox = true từ table
-            this.quantityCheckbox = this.$refs["mTable"].quantityCheckbox;
+            this.quantityCheckbox = this.$refs[this.refElements[6]].quantityCheckbox;
             //2. kiểm tra số lượng 
             if(this.quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
@@ -374,7 +379,7 @@ export default {
          */
         showDialogConfirmDeleteOne(){
             // 1. lấy thông tin của tài sản đó
-            let asset = this.$refs['mTable'].getItemSelected();
+            let asset = this.$refs[this.refElements[6]].getItemSelected();
             let codeAsset = asset.fixed_asset_code;
             let nameAsset = asset.fixed_asset_name;
             // 2. hiển thị thông báo xác nhận có muốn xóa không
@@ -391,7 +396,7 @@ export default {
          showDialogConfirmDeleteMultiple(){
             this.isShowDialogConfirmDeleteMultiAsset = true;
             let quantity = this.quantityCheckbox;
-            let length = this.$refs["mTable"].assets.length;
+            let length = this.$refs[this.refElements[6]].assets.length;
             if(quantity==length){
                 //--> Trường hợp xóa tất cả tài sản
                 this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.allAssetDelete;
@@ -432,7 +437,7 @@ export default {
          * @author LTVIET (02/03/2023)
          */
         handleEventCloseDialogDelete() {
-            let checkboxSelected = this.$refs['mTable'].getItemSelected();
+            let checkboxSelected = this.$refs[this.refElements[6]].getItemSelected();
             //1.thực hiện ẩn đi dialog và xóa tài sản trong database
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 this.handleEventCloseDialogDeleteOne(checkboxSelected);
@@ -461,7 +466,7 @@ export default {
             if(id){
                 this.deleteAsset(id);
             }
-            this.$refs['mTable'].reloadTable();
+            this.$refs[this.refElements[6]].reloadTable();
         },
 
         /**
@@ -480,7 +485,7 @@ export default {
                 assetsId.push(id);
             }
             this.deleteMultipleAsset(assetsId);
-            this.$refs['mTable'].reloadTable();
+            this.$refs[this.refElements[6]].reloadTable();
         },
 
         /**
@@ -493,8 +498,8 @@ export default {
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
                 // this.keyTable = ++this.keyTable;
-                this.$refs["mTable"].pageNumber = 1;
-                await this.$refs["mTable"].loadData();
+                this.$refs[this.refElements[6]].pageNumber = 1;
+                await this.$refs[this.refElements[6]].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -527,8 +532,8 @@ export default {
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
                 // this.keyTable = ++this.keyTable;
-                this.$refs["mTable"].pageNumber = 1;
-                this.$refs["mTable"].loadData();
+                this.$refs[this.refElements[6]].pageNumber = 1;
+                this.$refs[this.refElements[6]].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -585,8 +590,8 @@ export default {
          */
         async handleEventSaveForm(){
             this.isShowForm = false;
-            this.$refs['mTable'].pageNumber = 1;
-            await this.$refs['mTable'].loadData();
+            this.$refs[this.refElements[6]].pageNumber = 1;
+            await this.$refs[this.refElements[6]].loadData();
             let message = resourceJS.toastSuccess.saveSuccess;
             this.showToastSucess(message);
             
@@ -719,7 +724,7 @@ export default {
          * @author LTVIET (26/06/2023)
          */
         addOnClickAssetList(){
-            this.$refs["mTable"].isShowContextMenu = false;
+            this.$refs[this.refElements[6]].isShowContextMenu = false;
         },
         
         /**
@@ -877,7 +882,7 @@ export default {
             if(this.idElementFocus && this.previousKeyCtrl){
                 let index = this.idElements.length-1;
                 this.idElementFocus = this.idElements[index];
-                this.$refs[this.refElements[index]].setFocusCheckboxAll();
+                this.$refs[this.refElements[index]].setFocusCheckbox(0);
             }
         },
 
@@ -894,7 +899,7 @@ export default {
                 }
                 this.idElementFocus = this.idElements[index];
                 if(index == this.idElements.length - 1){
-                    this.$refs[this.refElements[index]].setFocusCheckboxAll();
+                    this.$refs[this.refElements[index]].setFocusCheckbox(0);
                 }else{
                     this.$refs[this.refElements[index]].setFocus();
                 }
@@ -916,7 +921,7 @@ export default {
                 }
                 this.idElementFocus = this.idElements[index];
                 if(index == this.idElements.length - 1){
-                    this.$refs[this.refElements[index]].setFocusCheckboxAll();
+                    this.$refs[this.refElements[index]].setFocusCheckbox(0);
                 }else{
                     this.$refs[this.refElements[index]].setFocus();
                 }
@@ -935,7 +940,7 @@ export default {
                     case enumJS.keyAlt:
                         event.preventDefault();
                         console.log(keyCode);
-                        this.$refs["mTable"].markCheckboxAll();
+                        this.$refs[this.refElements[6]].markCheckboxAll();
                         break;
                     default:
                         break;
@@ -955,7 +960,7 @@ export default {
                         this.indexDeleteStart = value;
                     }
                     this.indexDeleteEnd = value;
-                    let table = this.$refs["mTable"];
+                    let table = this.$refs[this.refElements[6]];
                     table.checkbox.fill(false);
                     if(this.indexDeleteStart <= this.indexDeleteEnd){
                         for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
@@ -980,7 +985,7 @@ export default {
          */
         handleEventKeyStrokesCtrl(event,keyCode){
             if(this.previousKeyCtrl){
-                let table = this.$refs["mTable"];
+                let table = this.$refs[this.refElements[6]];
                 switch (keyCode) {
                     // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:
