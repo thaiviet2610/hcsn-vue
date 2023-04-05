@@ -263,7 +263,11 @@ export default {
          */
         handleEventKeydown(event){
             let keyCode = event.keyCode;
-            if(keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode < 96 || keyCode > 105)){
+            console.log(event.key);
+            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
+                event.preventDefault();
+            }
+            if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
                 event.preventDefault();
             }
             switch (keyCode) {

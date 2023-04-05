@@ -491,7 +491,9 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     btnAddOnClickRowTable(index) {
-      this.setFocusCheckbox(index);
+      if(!this.clickFunction){
+        this.setFocusCheckbox(index);
+      }
       
       if (!this.checkbox[index]) {
         if (!this.clickFunction&&!this.clickCheckbox) {

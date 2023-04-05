@@ -11,9 +11,8 @@
             <!-- phần button (nếu có)  -->
             <div class="toast__right">
                 <!-- button hoàn tác  -->
-                <MButton v-if="buttonUndo"
-                    label="Hoàn tác"
-                    class="toast__text--right"></MButton>
+                <div v-if="buttonUndo"
+                    class="toast__text--right">Hoàn tác</div>
                     <!-- button đóng  -->
                 <MButtonIcon v-if="buttonClose"
                     classIcon="btn__toast--close"
@@ -26,11 +25,9 @@
 </template>
 
 <script>
-import MButton from '../button/MButton.vue';
 export default {
     name:"MToastSucess",
     components:{
-        MButton,
     },
     props: {
         notify: {

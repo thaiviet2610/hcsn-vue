@@ -61,7 +61,7 @@ const resourceJS = {
         maxLengthName: "Tên tài sản vượt quá độ dài cho phép 255 ký tự!"
     },
     error: {
-        validateData: "<div><span><b><< {0} >></b></span> cần phải nhập thông tin!</div> ",
+        validateData: "<div><b><< {0} >></b> cần phải nhập thông tin!</div> ",
         emptyInput: "  không được phép để trống! ",
         errorFormatNumber: " chỉ được nhập số!",
         errorMaxLengthNumber: "Độ dài số nhập vào không được quá 14 ký tự!",
@@ -87,7 +87,7 @@ const resourceJS = {
         errorLoadDataTable: "Đã có lỗi khi tải dữ liệu trong bảng. Vui lòng thử lại sau!",
     },
     confirm: {
-        oneAssetDelete: "Bạn có muốn xóa tài sản <b><< {0} - {1} >></b>?",
+        oneAssetDelete: "<div>Bạn có muốn xóa tài sản <b><< {0} - {1} >></b>?</div>",
         multiAssetDelete: "<div><b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?</div>",
         allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này?",
         cantDeleteAsset: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
@@ -129,9 +129,9 @@ const resourceJS = {
     },
     searchAssetPlaceholder: "Tìm kiếm tài sản",
     inputDate: {
-        inValidFormat: " sai định dạng! VD: {0}.",
+        inValidFormat: "{0} sai định dạng {1} !",
         inValidFormatMonth: "Giá trị tháng phải nằm trong khoảng từ 1-12!",
-        invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
+        invalidFormatDate: "<div>Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!</div>"
     },
     assetDetail:{
         refAssetDetail: ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',

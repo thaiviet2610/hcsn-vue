@@ -25,7 +25,7 @@
                                 <!-- input nhập mã tài sản  -->
                                 <MInput 
                                     :idInput="idElemnts[0][0]"
-                                    ref="txtAssetCode"
+                                    :ref="refElemnts[0][0]"
                                     :required="true"
                                     @getValueEventInput="GetValueAssetCode"
                                     @handleEventFocus="handleEventFocusInput"
@@ -40,7 +40,7 @@
                             <div class="up-right">
                                 <!-- input nhập tên tài sản  -->
                                 <MInput 
-                                    ref="txtAssetName"
+                                    :ref="refElemnts[0][1]"
                                     :idInput="idElemnts[0][1]"
                                     :required="true"
                                     placeholder="Nhập tên tài sản"
@@ -60,7 +60,7 @@
                                     <MCombobox  
                                         :is-icon="false" 
                                         :idCombobox="idElemnts[1][0]"
-                                        ref="txtDepartmentCode"
+                                        :ref="refElemnts[1][0]"
                                         :required="true"
                                         :api="this.departApi"
                                         propName="department_code" 
@@ -94,7 +94,7 @@
                                 <MCombobox  
                                     :is-icon="false"
                                     :idCombobox="idElemnts[2][0]"
-                                    ref="txtAssetCategoryCode"
+                                    :ref="refElemnts[2][0]"
                                     :required="true" 
                                     :api="this.assetCategoryApi"
                                     propName="fixed_asset_category_code" 
@@ -127,7 +127,7 @@
                             <div class="down-left">
                                 <!-- input nhập số lượng  -->
                                 <MInputNumber
-                                    ref="txtQuantity"
+                                    :ref="refElemnts[3][0]"
                                     :idInput="idElemnts[3][0]"
                                     :required="true"
                                     placeholder="Nhập số lượng"
@@ -145,7 +145,7 @@
                             <div class="down-center">
                                 <!-- input nhập nguyên giá  -->
                                 <MInputNumber
-                                    ref="txtCost"
+                                    :ref="refElemnts[3][1]"
                                     :idInput="idElemnts[3][1]"
                                     :required="true"
                                     placeholder="Nhập nguyên giá"
@@ -163,7 +163,7 @@
                             <div class="down-right">
                                 <!-- input nhập số năm sử dụng  -->
                                 <MInputNumber
-                                    ref="txtLifeTime"
+                                    :ref="refElemnts[3][2]"
                                     :idInput="idElemnts[3][2]"
                                     :required="true"
                                     placeholder="Nhập số năm sử dụng"
@@ -223,7 +223,7 @@
                                 <!-- input nhập ngày mua  -->
                                 
                                 <MInputDate
-                                    ref="txtPurchaseDate"
+                                    :ref="refElemnts[4][0]"
                                     :idInput="idElemnts[4][0]"
                                     label="Ngày mua"
                                     format="dd/mm/yyyy"
@@ -238,7 +238,7 @@
                             <div class="down-center">
                                 <!-- input nhập ngày bắt đầu sử dụng  -->
                                 <MInputDate
-                                    ref="txtProductionYear"
+                                    :ref="refElemnts[4][1]"
                                     :idInput="idElemnts[4][1]"
                                     label="Ngày bắt đầu sử dụng"
                                     format="dd/mm/yyyy"
@@ -914,7 +914,7 @@ export default {
          * @author LTVIET(02/03/2023)
          */
         setFocus(){
-            this.$refs["txtAssetCode"].setFocus();
+            this.$refs[this.refElemnts[0][0]].setFocus();
         },
 
         /**
