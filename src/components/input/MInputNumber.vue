@@ -135,9 +135,8 @@ export default {
             //4. nếu input có icon thì set style cho input
             this.styleInput = 'padding-left: 38px';
         }
-        if(this.isFormat=="money"){
-            this.value = commonJS.formatMoney(this.value);
-        }
+        this.value = this.formatMoney(this.value);
+        
         
         
     },
@@ -175,7 +174,7 @@ export default {
                     this.inValid = true;
                     this.notifyError = resourceJS.error.errorMaxLengthNumber;
                 }else{
-                    this.value = commonJS.formatMoney(this.getMoney(this.value));
+                    this.value = this.formatMoney(this.value);
                     //--> nếu ngược lại thì set invalid = false
                     this.inValid = false;
                 }
@@ -209,14 +208,14 @@ export default {
                 valueInput = Math.round(valueInput*(1/valueInput))/(1/this.stepValue);
             }
             this.$emit('getValueInput',valueInput);
-            this.value = valueInput;
-            if(this.value && String(this.value).indexOf(".") == -1){
-                this.value = Number(this.value);
-                if(this.value<10){
-                    this.value = Number(this.value);
-                    this.value = `0${this.value}`;
-                }
-            }
+            this.value = this.formatMoney(valueInput);
+            // if(this.value && String(this.value).indexOf(".") == -1){
+            //     this.value = Number(this.value);
+            //     if(this.value<10){
+            //         this.value = Number(this.value);
+            //         this.value = `0${this.value}`;
+            //     }
+            // }
         },
 
         /**
@@ -238,14 +237,14 @@ export default {
                 valueInput = 0;
             }
             this.$emit('getValueInput',valueInput);
-            this.value = valueInput;
-            if(valueInput && String(this.value).indexOf(".") == -1){
-                this.value = Number(this.value);
-                if(this.value<10){
-                    this.value = Number(this.value);
-                    this.value = `0${this.value}`;
-                }
-            }
+            this.value = this.formatMoney(valueInput);
+            // if(valueInput && String(this.value).indexOf(".") == -1){
+            //     this.value = Number(this.value);
+            //     if(this.value<10){
+            //         this.value = Number(this.value);
+            //         this.value = `0${this.value}`;
+            //     }
+            // }
         },
 
         /**
@@ -313,7 +312,7 @@ export default {
          * @author LTVIET(14/03/2023)
          */
          getMoney(value){
-            return String(this.value).indexOf(".") == -1 ? value : Number(value.replaceAll('.',''));
+            return String(value).indexOf(".") == -1 ? value : Number(value.replaceAll('.',''));
         },
 
         /**
@@ -330,8 +329,23 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         handleEventInput(){
-            
+            let value = this.getMoney(this.value);
+            this.value = this.formatMoney(value);
             this.$emit("getValueEventInput",this.value);
+        },
+
+        /**
+         * Hàm format lại giá trị theo định dạng tiền
+         * @param {*} value giá trị của input
+         * @author LTVIET(06/03/2023)
+         */
+        formatMoney(value){
+            let valueMoney = this.getMoney(value);
+            valueMoney = commonJS.formatMoney(valueMoney);
+            if(Number(valueMoney) < 10){
+                valueMoney = `0${valueMoney}`;
+            }
+            return valueMoney;
         }
     },
     

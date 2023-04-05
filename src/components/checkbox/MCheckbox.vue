@@ -3,9 +3,6 @@
         ref="mCheckbox"
         v-if="checked"
         @click="addOnClick" 
-        @focus="handleEventFocus"
-        @focusout="isFocus = true"
-        :class="{'checkbox_focus':isFocus}"
         class="checkbox">
         <div class="checkbox__true"></div>
     </button>
@@ -14,9 +11,6 @@
         ref="mCheckbox"
         v-else  
         @click="addOnClick" 
-        @focus="isFocus = true"
-        :class="{'checkbox_focus':isFocus}"
-        @focusout="isFocus = false"
         class="checkbox">
         <div class="checkbox__false"></div>
     </button>
@@ -72,4 +66,5 @@ export default {
 
 <style scoped>
 @import url(./checkbox.css);
+
 </style>

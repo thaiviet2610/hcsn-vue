@@ -88,6 +88,6 @@ button{
 }
 
 button:focus{
-    outline: 1px solid rgb(169, 168, 168);
+    outline: 3px solid #bce7f1 !important;
 }
 </style>

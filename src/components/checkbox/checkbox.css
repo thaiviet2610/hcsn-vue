@@ -19,6 +19,7 @@
 	height: 14px;
 }
 
-.checkbox_focus{
-    outline: 0.5px solid black;
+
+.checkbox:focus{
+    outline: 3px solid #bce7f1 !important;
 }

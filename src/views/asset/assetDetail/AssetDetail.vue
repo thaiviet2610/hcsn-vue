@@ -150,7 +150,6 @@
                                     :required="true"
                                     :stepValue="1"
                                     placeholder="Nhập nguyên giá"
-                                    isFormat="money"
                                     typeValue="number"
                                     @getValueInput="getValueCostInput"
                                     @handleEventFocus="handleEventFocusInput"
@@ -621,36 +620,38 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateEmptyValue(){
-            var refs = resourceJS.assetDetail.refAssetDetail;
+            var refs = resourceJS.assetDetail.refElementAssetDetail;
             let txt = "";
-            for(let i = 0 ;i<refs.length;i++){
-                let item = this.$refs[refs[i]];
-                if(i == 9 || i == 10){
-                    if(!item.txtInputDate){
-                        txt = refs[i];
-                        item.inValid = true;
-                        break;
+            for(let i = 0 ; i < refs.length ; i++){
+                for(let j = 0 ; j < refs[i].length ; j ++){
+                    let item = this.$refs[refs[i][j]];
+                    if(i == 4){
+                        if(!item.txtInputDate){
+                            txt = refs[i][j];
+                            item.inValid = true;
+                            return txt;
+                        }
                     }
-                }
-                if(i>=0 && i < 4){
-                    if(!item.value){
-                        txt = refs[i];
-                        item.inValid = true;
-                        item.notifyError = item.label + resourceJS.error.emptyInput;
-                        break;
+                    if(i >= 0 && i < 3){
+                        if(!item.value){
+                            txt = refs[i][j];
+                            item.inValid = true;
+                            item.notifyError = item.label + resourceJS.error.emptyInput;
+                            return txt;
+                        }
                     }
-                }
-                if(i>=4 && i < 9){
-                    if(!item.value && item.value != 0){
-                        txt = refs[i];
-                        item.inValid = true;
-                        item.notifyError = item.label + resourceJS.error.emptyInput;
-                        break;
+                    if( i == 3 ){
+                        if(!item.value && item.value != 0){
+                            txt = refs[i][j];
+                            item.inValid = true;
+                            item.notifyError = item.label + resourceJS.error.emptyInput;
+                            return txt;
+                        }
+                        
                     }
-                    
                 }
             }
-            return txt;
+            
         },
         
         /**
@@ -702,15 +703,15 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateMaxLength(){
-            // validate độ dài mã tài sản (không được quá 100 ký tự)
-            if(this.asset.fixed_asset_code.length > 100){
+            // validate độ dài mã tài sản (không được quá 10 ký tự)
+            if(this.asset.fixed_asset_code.length > 10){
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
                 return false;
             }
 
-            // validate độ dài mã tài sản (không được quá 255 ký tự)
-            if(this.asset.fixed_asset_code.length > 255){
+            // validate độ dài mã tài sản (không được quá 100 ký tự)
+            if(this.asset.fixed_asset_code.length > 100){
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthName;
                 return false;

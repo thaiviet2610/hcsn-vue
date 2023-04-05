@@ -57,8 +57,8 @@ const resourceJS = {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá!",
         depreciationRateDifferentLifeTimeValue: "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng!",
         purchaseDateGreaterThanProductionYear: "Ngày bắt đầu sử dụng phải là ngày sau ngày mua!",
-        maxLengthCode: "Mã tài sản vượt quá độ dài cho phép 100 ký tự!",
-        maxLengthName: "Tên tài sản vượt quá độ dài cho phép 255 ký tự!"
+        maxLengthCode: "Mã tài sản vượt quá độ dài cho phép 10 ký tự!",
+        maxLengthName: "Tên tài sản vượt quá độ dài cho phép 100 ký tự!"
     },
     error: {
         validateData: "<div><b><< {0} >></b> cần phải nhập thông tin!</div> ",
@@ -87,9 +87,9 @@ const resourceJS = {
         errorLoadDataTable: "Đã có lỗi khi tải dữ liệu trong bảng. Vui lòng thử lại sau!",
     },
     confirm: {
-        oneAssetDelete: "<div>Bạn có muốn xóa tài sản <b><< {0} - {1} >></b>?</div>",
+        oneAssetDelete: "<div>Bạn có muốn xóa tài sản <b><< {0} - {1} >></b> ?</div>",
         multiAssetDelete: "<div><b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?</div>",
-        allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này?",
+        allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này ?",
         cantDeleteAsset: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
         multiCantDeleteAsset: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",
         cancelFormAsset: "Bạn có muốn hủy bỏ khai báo tài sản này?",
