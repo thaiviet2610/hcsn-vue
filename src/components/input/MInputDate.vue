@@ -22,6 +22,7 @@
                 @blur="addEventBlurInput"
                 @focus="handleEventFocus"
                 @keydown="handleEventKeydown"
+                @keyup="handleEventKeyup"
                 :key="keyValueInput"
                 v-model="value">
         </div> 
@@ -34,6 +35,7 @@
 <script>
 import commonJS from '@/js/common';
 import resourceJS from '@/js/resourceJS';
+import enumJS from '@/js/enumJS';
 export default {
     name:"TheSidebar",
     components:{},
@@ -76,7 +78,8 @@ export default {
             placeholder: "",
             regex: Object,
             keyValueInput: 0,
-            keyValue: 0
+            keyValue: 0,
+            previousKeyShift: false,
         }
     },
     created() {
@@ -167,8 +170,8 @@ export default {
                 if(!this.regex.test(this.value)){
                     // 2.1. nếu không đúng định dạng thì thông báo lỗi
                     this.inValid = true;
-                    this.notifyError = this.label + resourceJS.inputDate.inValidFormat;
-                    this.notifyError = this.notifyError.replace("{0}",this.format);
+                    let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
+                    this.notifyError = message;
                 }else{
                     // 2.2. nếu đúng định dạng
                     // 2.2.1. validate lại giá trị ngày, tháng, năm
@@ -340,8 +343,26 @@ export default {
          */
         handleEventKeydown(event){
             const keyCode = event.keyCode;
-            if(keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode < 96 || keyCode > 105) && keyCode != 191){
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = true;
+            }
+            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
                 event.preventDefault();
+            }
+            if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
+                event.preventDefault();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup trong input
+         * @param {*} event sự kiện cần sử lý
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeyup(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = false;
             }
         }
     },
