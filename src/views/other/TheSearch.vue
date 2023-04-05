@@ -6,11 +6,9 @@
 </template>
 
 <script>
-import MDialogLoadData from '@/components/dialog/MDialogLoadData.vue';
 export default {
     name:"TheSearch",
     components:{
-        MDialogLoadData
     },
     data() {
         return {

@@ -103,6 +103,7 @@ export default {
         handleEventFocus(event){
             this.$emit("handleEventFocus",event.target.id);
         },
+
         /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)
@@ -141,10 +142,14 @@ export default {
             this.$emit("keydownEnter",this.value);
         },
         
+        /**
+         * Hàm xử lý sự kiện khi nhập giá trị vào input thì gửi giá trị đó ra lớp cha
+         * @author LTVIET (15/03/2023)
+         */
         handleEventInput(){
-            // if(this.value){
-            //     this.inValid = false;
-            // }
+            if(this.value){
+                this.inValid = false;
+            }
             this.$emit("getValueEventInput",this.value);
         }
     },
@@ -154,4 +159,7 @@ export default {
 
 <style scoped>
 @import url(./input.css);
+.input--error{
+    border-color: #ff0000 !important;
+}
 </style>

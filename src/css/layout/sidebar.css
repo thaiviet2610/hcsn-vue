@@ -53,6 +53,7 @@
     height: calc(100vh - 50px - 49px);
     box-sizing: border-box;
     padding: 15px 11px;
+    
 }
 
 .sidebar-body__item{
@@ -65,6 +66,7 @@
     column-gap: 8px;
     margin-bottom: 4px;
     cursor: pointer;
+    text-decoration: none !important;
 }
 
 .sidebar-body__item:hover{

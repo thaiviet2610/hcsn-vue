@@ -3,7 +3,7 @@
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header" >
                 <div class="sidebar-header__item"></div>
-                <div class="sidebar-header__text" data_tooltip_right="MISA QUẢN LÝ ĐÀO TẠO">MISA QLTS</div>
+                <div class="sidebar-header__text" data_tooltip_right="MISA QUẢN LÝ TÀI SẢN">MISA QLTS</div>
             </div>
             <div class="sidebar__body">
                 <router-link to="/customer" 

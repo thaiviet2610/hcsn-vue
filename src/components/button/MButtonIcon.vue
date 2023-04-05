@@ -2,7 +2,7 @@
     <button 
         ref="mButtonIcon"
         :id="idButtonIcon"
-        :class="[{'btn--default':isDefault},{'btn_focus':isFocus}]"
+        :class="[{'btn--main':isDefault},{'btn_focus':isFocus}]"
         @focusout="isFocus = false"
         @click="addEventClickBtnIcon"
         @focus="handleEventFocus">
@@ -83,4 +83,11 @@ export default {
 
 <style scoped>
 @import url(./button.css);
+button{
+    outline: none;
+}
+
+button:focus{
+    outline: 1px solid rgb(169, 168, 168);
+}
 </style>

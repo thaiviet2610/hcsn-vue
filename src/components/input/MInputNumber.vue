@@ -167,41 +167,32 @@ export default {
                 }
             }
             else{
-                //2.1. kiểu tra xem giá trị nhập vào có phải là số không
-                if(!(/^[0-9]+([.]?[0-9]+)*([,][0-9]+)?$/.test(this.value))){
-                    //2.2. nếu không phải thì set invalid = true và
-                    // hiện thị thông báo lỗi giá trị nhập vào không phải là số
+                //2. nếu giá trị nhập vào là số
+                let length = this.value.length;
+                if(length > 14){
+                    //2.1. nếu độ dài số nhập vào dài quá 14 ký tự thì không cho nhập vào
+                    //--> set invalid = true và hiện thị thông báo lỗi không được nhấp giá trị quá dài
                     this.inValid = true;
-                    this.notifyError = this.label + resourceJS.error.errorFormatNumber;
+                    this.notifyError = resourceJS.error.errorMaxLengthNumber;
                 }else{
-                    //2.3. nếu giá trị nhập vào là số
-                    let length = this.value.length;
-                    if(length > 14){
-                        //2.3.1. nếu độ dài số nhập vào dài quá 14 ký tự thì không cho nhập vào
-                        //--> set invalid = true và hiện thị thông báo lỗi không được nhấp giá trị quá dài
-                        this.inValid = true;
-                        this.notifyError = resourceJS.error.errorMaxLengthNumber;
-                    }else{
-                        this.value = commonJS.formatMoney(this.getMoney(this.value));
-                        //--> nếu ngược lại thì set invalid = false
-                        this.inValid = false;
-                    }
-                    if(this.value && String(this.value).indexOf(".") == -1){
+                    this.value = commonJS.formatMoney(this.getMoney(this.value));
+                    //--> nếu ngược lại thì set invalid = false
+                    this.inValid = false;
+                }
+                if(this.value && String(this.value).indexOf(".") == -1){
+                    this.value = Number(this.value);
+                    if(this.value > 0 && this.value<10){
                         this.value = Number(this.value);
-                        if(this.value > 0 && this.value<10){
-                            this.value = Number(this.value);
-                            this.value = `0${this.value}`;
-                        }
+                        this.value = `0${this.value}`;
                     }
                 }
-                
             }
-            
             if(!this.inValid){
                 let value = this.getMoney(this.value);
                 this.$emit('getValueInput',value);
             }
         },
+
         /**
          * Hàm xử lý sự kiện click vào button tăng giá trị
          * @author LTVIET (05/03/2023)
@@ -227,6 +218,7 @@ export default {
                 }
             }
         },
+
         /**
          * Hàm xử lý sự kiện click vào button giảm giá trị
          * @author LTVIET (05/03/2023)
@@ -271,6 +263,9 @@ export default {
          */
         handleEventKeydown(event){
             let keyCode = event.keyCode;
+            if(keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode < 96 || keyCode > 105)){
+                event.preventDefault();
+            }
             switch (keyCode) {
                 case enumJS.arrowDown:
                     if(this.previousKeyShift){
@@ -328,6 +323,7 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         handleEventInput(){
+            
             this.$emit("getValueEventInput",this.value);
         }
     },

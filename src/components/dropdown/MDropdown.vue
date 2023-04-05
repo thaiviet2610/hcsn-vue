@@ -41,12 +41,12 @@
             @addOnClickBtnIcon="btnCloseDropdown">
         </MButtonIcon>
         <!-- dialog thông báo giá trị input không có trong danh sách dữ liệu-->
-        <MDialogNotify 
+        <MDialog
             :content="contentDialogNotify"
             btnLabel="Đóng"
             v-if="isShowDialogNotify" 
             @onClose="addEventClickBtnCloseDialogNotify">
-        </MDialogNotify>
+        </MDialog>
     </div>
 </template>
 
@@ -126,6 +126,7 @@ export default {
             this.isShowData = false;
             this.setFocus();
         },
+
         /**
          * Hàm xử lý sự kiến click chon data item
          * @author LTVIET (11/03/2023)
@@ -137,6 +138,7 @@ export default {
             this.isShowData = false;
             this.$emit("update:modelValue",Number(this.valueSelected));
         },
+
         /**
          * Hàm hiển thị icon của item được chọn trong data
          * @param {*} index vị trí của item được chọn
@@ -148,6 +150,7 @@ export default {
                 return "display: block;";
             }
         },
+
         /**
          * Hàm xử lý sự kiện hiển thị danh sách search theo ký tự nhập vào
          * @author LTVIET (11/03/2023)
@@ -157,8 +160,8 @@ export default {
             //tìm item tương ứng với modelValue
             this.dataSearch = this.data.filter(item=>item.includes(me.valueSelected));
             this.isShowData = true;
-            
         },
+
         /**
          * Hàm xử lý sự kiện blur khỏi input
          * @author LTVIET (11/03/2023)
@@ -186,6 +189,7 @@ export default {
                 this.$emit("update:modelValue",Number(this.valueSelected));
             }
         },
+
         /**
          * Hàm xử lý sự kiện xóa bỏ mặc định của data khi blur input
          * @param {*} event sự kiện cần xửu lý
@@ -194,6 +198,7 @@ export default {
         onMouseDownInput(event){
             event.preventDefault();
         },
+
         /**
          * Hàm xử lý sự kiện bấm các phím để lựa chọn item
          * @param {*} event thông tin sự kiện key down
@@ -266,6 +271,7 @@ export default {
             }
             
         },
+        
         /**
          * Hàm xử lý sự kiện focus vào input
          * @author LTVIET (11/03/2023)
@@ -273,6 +279,7 @@ export default {
         AddEventFocusInput(){
             this.isShowData = true;
         },
+
         /**
          * Hàm xử lý sự kiện đóng dialog thông báo 
          * @author LTVIET (11/03/2023)
@@ -280,6 +287,7 @@ export default {
         addEventClickBtnCloseDialogNotify(){
             this.isShowDialogNotify = false;
         },
+        
         /**
          * Hàm set focus vào input của combobox
          * @author LTVIET (05/03/2023)

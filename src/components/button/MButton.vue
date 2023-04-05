@@ -2,8 +2,8 @@
     <button 
         ref="mButton"
         :id="idButton"
-        class="btn"
-        :class="[{'btn--default': isDefault},{'btn_focus':isFocus}]"
+        class="btn--outline"
+        :class="{'btn_focus':isFocus}"
         @focusout="isFocus = false"
         @click="addEventClickBtn"
         @focus="handleEventFocus"
@@ -44,7 +44,7 @@ export default {
 
     },
     mounted() {
-        // this.setFocus();
+        this.setFocus();
     },
     methods: {
         /**
@@ -54,6 +54,7 @@ export default {
         addEventClickBtn() {
             this.$emit('btnAddOnClickBtn');
         },
+        
         /**
         * Hàm set focus vào button
         * @author LTVIET (05/03/2023)

@@ -95,15 +95,12 @@ tfoot{
 
 
 
-.checkbox{
+/* .checkbox{
     width: 14px;
     height: 14px;
     margin: 0;
-    /* padding-left: 16px;
-    padding-right: 20px; */
     color: #001031;
-    /* background: url('../../assets/icon/qlts-icon.png') no-repeat -113px -377px; */
-}
+} */
 
 .text-align-left{
     text-align: left;
@@ -291,9 +288,7 @@ tfoot{
     background-color: rgba(162, 240, 243, 0.829);
 }
 
-.checkbox__selected{
-    background-color: rgba(162, 240, 243, 0.829);
-}
+
 
 tbody tr:hover{
     height: 38px;

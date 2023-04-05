@@ -259,7 +259,7 @@
                     <!-- button lưu form  -->
                     <MButton
                         ref="btnSave"
-                        :isDefault="true"
+                        class="btn--main"
                         :idButton="idElemnts[5][0]"
                         label="Lưu"
                         @btnAddOnClickBtn="handleEventBtnClickSave">
@@ -276,32 +276,27 @@
             </div>
         </div>
         <!-- dialog thông báo  -->
-        <MDialogNotify 
+        <MDialog 
             v-if="isShowDialogNotify" 
             :content="contentDialogNotifyErrorValidate"
-            btnLabel="Đóng"
-            @onClose="handleEventCloseDialogNotify">
-        </MDialogNotify>
-        <!-- dialog xác nhận sự kiện hủy (không có thay đổi dữ liệu) -->
-        <MDialogAddFormCancel 
+            :buttonInfo="btnDialogNotify"
+            @onClickBtn="handleEventCloseDialogNotify">
+        </MDialog>
+        <!-- dialog xác nhận sự kiện hủy của form thêm mới hoặc nhân bản -->
+        <MDialog 
             :content="contentDialogAddFormCancel"
-            normalBtnLabel="Không"
-            mainBtnLabel="Hủy bỏ"
+            :buttonInfo="btnDialogCancelAddForm"
             v-if="isShowDialogAddFormCancel"
-            @onClickNormalBtn="handleEventCloseDialogFormNoCancel"
-            @onClickMainBtn="handleEventCloseDialogFormCancel">
-        </MDialogAddFormCancel>
-        <!-- dialog xác nhận sự kiện hủy (có thay đổi dữ liệu) -->
-        <MDialogEditFormCancel
+            @onClickBtn="handleEventCloseDialogCancelAddForm">
+        </MDialog>
+        <!-- dialog xác nhận sự kiện hủy của form sửa -->
+        <MDialog
             :content="contentDialogEditFormCancel"
             v-if="isShowDialogEditFormCancel"
-            normalBtnLabel="Hủy bỏ"
-            mainBtnLabel="Lưu"
-            supportBtnLabel="Không lưu"
-            @onClickSupportBtn="handleEventCloseDialogCancelNoSave"
-            @onClickNormalBtn="handleEventCloseDialogCancelChange"
-            @onClickMainBtn="handleEventCloseDialogCancelSave">
-        </MDialogEditFormCancel>
+            :buttonInfo="btnDialogCancelEditForm"
+            @onClickBtn="handleEventCloseDialogCancelEditForm"
+            >
+        </MDialog>
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     </div>
@@ -309,9 +304,6 @@
 
 <script>
 import MCombobox from '@/components/combobox/MCombobox.vue';
-import MDialogNotify from '@/components/dialog/MDialogNotify.vue';
-import MDialogAddFormCancel from '@/components/dialog/MDialogAddFormCancel.vue';
-import MDialogEditFormCancel from '@/components/dialog/MDialogEditFormCancel.vue';
 import MInput from '@/components/input/MInput.vue';
 import resourceJS from '@/js/resourceJS.js'
 import axios from 'axios'
@@ -342,9 +334,6 @@ export default {
     },
     components:{
     MCombobox,
-    MDialogNotify,
-    MDialogAddFormCancel,
-    MDialogEditFormCancel,
     MInput,
     MInputDisable
 },
@@ -382,6 +371,9 @@ export default {
             idInputFocus: "",
             idElemnts: resourceJS.assetDetail.idElementAssetDetail,
             refElemnts: resourceJS.assetDetail.refElementAssetDetail,
+            btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
+            btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
+            btnDialogNotify: resourceJS.buttonDialog.notify
         }
     },
 
@@ -611,13 +603,12 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateForm(){
-            // this.validateEmptyValue();
             let itemRef = this.validateEmptyValue();
             if(itemRef!=""){
                 this.itemError = this.$refs[itemRef];
                 let label = this.itemError.label;
                 this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.error.validateData + `<<${label}>>`;
+                this.contentDialogNotifyErrorValidate = resourceJS.error.validateData.replace("{0}",label);
                 return false;
             }
             return this.validateProfessional();
@@ -753,45 +744,40 @@ export default {
         },
 
         /**
-         * Hàm đóng dialog khi không muốn hủy form
+         * Hàm xử lý sự kiện khi click các button của dialog xác nhận hủy form thêm mới
+         * @param {*} label label của button muốn click
          * @author LTVIET (03/03/2023)
          */
-        handleEventCloseDialogFormNoCancel() {
-            this.isShowDialogAddFormCancel = false;
-        },
-
-        /**
-         * Hàm đóng dialog và form khi muốn hủy form
-         * @author LTVIET (03/03/2023)
-         */
-        handleEventCloseDialogFormCancel() {
+         handleEventCloseDialogCancelAddForm(label) {
+            // Nếu click button "không" thì ẩn dialog đi
+            if(label == this.btnDialogCancelAddForm[1][0]){
+                this.isShowDialogAddFormCancel = false;
+            }
+            // Nếu click button "Hủy bỏ" thì ẩn dialog và form đi
             this.isShowDialogAddFormCancel = false;
             this.$emit('onClose');
         },
 
         /**
-         * Hàm xử lý sự kiện đóng dialog và form khi không lưu dữ liệu của form edit
+         * Hàm xử lý sự kiện khi click button của dialog xác nhận hủy của form sửa
+         * @param {*} label của button muốn click
          * @author LTVIET (02/03/2023)
          */
-        handleEventCloseDialogCancelNoSave(){
-            this.isShowDialogEditFormCancel = false;
-            this.$emit('onClose');
-            
-        },
+         handleEventCloseDialogCancelEditForm(label){
+            // Nếu click button "Không lưu" thì đóng dialog và form sửa lại và không lưu dữ liệu
+            if(label == this.btnDialogCancelEditForm[1][0]){
+                this.isShowDialogEditFormCancel = false;
+                this.$emit('onClose');
+                return;
+            }
 
-        /**
-         * Hàm xử lý sự kiện đóng dialog khi không lưu dữ liệu thay đổi 
-         * @author LTVIET (02/03/2023)
-         */
-        handleEventCloseDialogCancelChange(){
-            this.isShowDialogEditFormCancel = false;
-        },
+            // Nếu click button "Hủy" thì đóng dialog lại
+            if(label == this.btnDialogCancelEditForm[2][0]){
+                this.isShowDialogEditFormCancel = false;
+                return;
+            }
 
-        /**
-         * Hàm xử lý sự kiện đóng dialog khi không lưu dữ liệu thay đổi 
-         * @author LTVIET (02/03/2023)
-         */
-         handleEventCloseDialogCancelSave(){
+            // Nếu click button "Lưu" thì đóng dialog và form sửa lại và lưu dữ liệu
             this.handleEventBtnClickSave();
         },
 

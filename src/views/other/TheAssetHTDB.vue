@@ -6,11 +6,10 @@
 </template>
 
 <script>
-import MDialogLoadData from '@/components/dialog/MDialogLoadData.vue';
 export default {
     name:"TheAssetHTDB",
     components:{
-        MDialogLoadData
+        
     },
     data() {
         return {

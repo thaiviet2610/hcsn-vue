@@ -6,11 +6,10 @@
 </template>
 
 <script>
-import MDialogLoadData from '@/components/dialog/MDialogLoadData.vue';
 export default {
     name:"TheCategory",
     components:{
-        MDialogLoadData
+        
     },
     data() {
         return {

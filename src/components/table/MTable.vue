@@ -238,13 +238,13 @@
     <!-- dialog load dữ liệu  -->
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
-    <MDialogNotify
+    <MDialog
       :content="contentDialogNotifyLoadError"
-      btnLabel="Đóng"
+      :buttonInfo="btnDialogNotify"
       v-if="isShowDialogNotifyLoadError"
-      @onClose="handleEventCloseDialogNotifyLoadError"
+      @onClickBtn="handleEventCloseDialogNotifyLoadError"
     >
-    </MDialogNotify>
+    </MDialog>
     <!-- contextmenu của table  -->
     <MContextMenu  
       v-show="isShowContextMenu"
@@ -263,14 +263,13 @@
 <script>
 import commonJS from "@/js/common.js";
 import resourceJS from "@/js/resourceJS.js";
-import MDialogLoadData from "../dialog/MDialogLoadData.vue";
 import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enumJS';
 export default {
   name: "MTable",
   components: {
-    MDialogLoadData,MContextMenu
+    MContextMenu
   },
   props: {
     api: {
@@ -335,6 +334,7 @@ export default {
       indexDeleteStart: 0,
       indexDeleteEnd: 0,
       indexCheckboxFocus: -1,
+      btnDialogNotify: resourceJS.buttonDialog.notify
     };
   },
 
@@ -363,7 +363,6 @@ export default {
       let index = values[0];
       let item = values[1];
       this.$emit("addOnClickContextMenu",[item,index]);
-      
     },
 
     /**
@@ -427,7 +426,6 @@ export default {
           this.contentDialogNotifyLoadError = resourceJS.errorMsg.errorLoadDataTable;
         });
     },
-
 
     /**
      * Hàm tính tổng số trang của table
@@ -566,10 +564,6 @@ export default {
       }
     },
 
-    // handleEventKeyStrokesCtrlUp(){
-
-    // },
-
     /**
      * Hàm xử lý sự kiện bấm phím xuống 
      * @author LTVIET (01/04/2023)
@@ -645,6 +639,7 @@ export default {
         }
       }
     },
+
     /**
      * Hàm sử lý sự kiện keyup trong table
      * @param {*} event 
@@ -662,8 +657,6 @@ export default {
       
     },
 
-    
-
     /**
      * Hàm xử lý sự kiện click vòa checkboxAll
      * @author LTVIET (05/03/2023)
@@ -673,19 +666,16 @@ export default {
       this.checkboxAll = !this.checkboxAll;
       let length = this.assets.length;
       let check = false;
-
       if (this.checkboxAll) {
         //2.1. nếu checkboxAll = true
         //--> gán giá trị true cho tất cả cac checkbox
         check = true;
-        
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
         check = false;
         
       }
-
       for (let i = 1; i <= length; i++) {
         this.checkbox[i] = check;
         this.isSelectedRow[i] = check; 
@@ -759,6 +749,10 @@ export default {
       }
     },
 
+    /**
+     * Hàm lấy ra số lượng checkbox có trạng thái là true trong table
+     * @author LTVIET (15/03/2023)
+     */
     getQuantityCheckbox(){
       let quantity = 0;
       for(let i=1; i <= this.pageSize; i++){
@@ -769,6 +763,10 @@ export default {
       this.quantityCheckbox = quantity;
     },
 
+    /**
+     * Hàm lấy ra danh sách các đối tượng được chọn trong table
+     * @author LTVIET (15/03/2023)
+     */
     getItemSelected() {
       let checkboxSelected = [];
       for (let i = 0; i < this.assets.length; i++) {
@@ -863,7 +861,6 @@ export default {
       if(index == 0){
         this.markCheckboxAll();
       }else{
-        // this.checkbox[index] = false;
         this.markCheckbox(index);
       }
     }
@@ -875,12 +872,12 @@ export default {
     if (this.api) {
       this.pageSize = Number(this.dataPageSize[0]);
       this.loadData();
-      
     }
     for(let i=0;i<=this.pageSize;i++){
       this.checkbox[i] = false;
     }
   },
+
   watch: {
     /** 
      * Hàm theo dõi số bản ghi trong 1 trang (pageSize),
@@ -892,6 +889,10 @@ export default {
       this.loadData();
     },
 
+    /**
+     * Hàm theo dõi trạng thái checkbox trong table
+     * @author LTVIET (15/03/2023)
+     */
     checkbox: {
       handler: function(){
         this.getQuantityCheckbox();

@@ -115,7 +115,10 @@ input[type=date]{
     background: url(../../assets/icon/qlts-icon.png) no-repeat -287px -67px;
 	width: 18px;
 	height: 18px;
+    cursor: pointer;
 }
+
+
 
 
 

@@ -12,6 +12,8 @@
             v-model="value"
             :placeholder="this.placeholder" 
             class="combobox_input combobox__text" 
+            :class="{'input--error':inValid}" 
+            autocomplete="off"
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
@@ -68,18 +70,17 @@
     <div v-if="inValid" class="error--info">{{ notifyError }}</div> 
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
-    <MDialogNotify 
+    <MDialog
         :content="contentDialogNotifyLoadError"
-        btnLabel="Đóng"
+        :buttonInfo="btnDialgNotify"
         v-if="isShowDialogNotifyLoadError" 
-        @onClose="handleEventCloseDialogNotifyLoadError">
-    </MDialogNotify>
+        @onClickBtn="handleEventCloseDialogNotifyLoadError">
+    </MDialog>
 </template>
 
 <script>
 import resourceJS from '@/js/resourceJS.js'
 import enumJS from '@/js/enumJS.js'
-import MDialogLoadData from '../dialog/MDialogLoadData.vue'
 import axios from 'axios'
 export default {
     name:"TheCombobox",
@@ -152,10 +153,11 @@ export default {
             contentDialogNotifyLoadError: "",
             scrollHeight: 0,
             scrollY: 0,
+            btnDialgNotify: resourceJS.buttonDialog.notify
         }
     },
     components:{
-        MDialogLoadData
+        
     },
     async created(){
         /**
@@ -222,6 +224,7 @@ export default {
          handleEventFocus(event){
             this.$emit("handleEventFocus",event.target.id);
         },
+
         /**
          * Hàm thêm sự kiện click hiển thị combobox-data
          * @author LTVIET (02/03/2023)
@@ -277,6 +280,7 @@ export default {
             })
             
         }, 
+
         /**
          * Hàm tìm item tương ứng với giá trị truyền từ ngoài vào và gán vòa value
          * @author LTVIET (05/03/2023)
@@ -289,6 +293,7 @@ export default {
                 this.value = entitySelected[this.propName];
             }
         },
+
         /**
          * Hàm tìm kiếm giá trị tương ứng với giá trị nhập vào input và gán vào mảng tìm kiếm
          * @author LTVIET (05/03/2023)
@@ -308,8 +313,12 @@ export default {
                 this.isShow = true;
                 this.zIndex = 2;
             }
-            
+            if(this.entitiesSearch.length == 0){
+                this.inValid = true;
+                this.notifyError = this.label + resourceJS.error.errorDontFindInData;
+            }
         },
+
         /**
          * Hàm hiển thị icon của item được chọn trong combobox-data
          * @param {*} index vị trí của item được chọn
@@ -321,6 +330,7 @@ export default {
                 return "display: block;";
             }
         },
+
         /**
          * Hàm xử lý sự kiện bấm các phím để lựa chọn item trong combobox
          * @param {*} event thông tin sự kiện key down
@@ -421,9 +431,8 @@ export default {
                     break;
             
                 }
-            
-            
         },
+        
         /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)
@@ -486,4 +495,7 @@ export default {
 
 <style scoped>
 @import url(./combobox.css);
+.input--error{
+    border-color: #ff0000 !important;
+}
 </style>

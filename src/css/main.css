@@ -86,7 +86,7 @@ body::-webkit-scrollbar {
 
 .body{
     width: calc(100% - 66px);
-    min-width: 837px;
+    min-width: 876px;
     height: 100%;
 }
 

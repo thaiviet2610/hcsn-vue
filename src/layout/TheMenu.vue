@@ -2,7 +2,7 @@
     <div>
         <menu v-if="isShow">
         <div class="menu-header">
-            <div class="menu-header__item menu__item--selected" data_tooltip_right="MISA QUẢN LÝ ĐÀO TẠO"></div>
+            <div class="menu-header__item menu__item--selected" data_tooltip_right="MISA QUẢN LÝ TÀI SẢN"></div>
         </div>
         <div class="menu__body">
             <router-link to="/overview"

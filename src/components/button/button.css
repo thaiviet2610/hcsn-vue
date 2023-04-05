@@ -1,15 +1,21 @@
-.btn--default {
+.btn--main {
     background-color: #1aa4c8 !important;
     color: white !important;
     border: none !important;
 }
 
-.btn--default:hover{
+.btn--main:focus{
     background-color: #097894 !important;
+    outline: 3px solid #bce7f1 !important;
+}
+
+.btn--main:hover{
+    background-color: #097894 !important;
+    outline: none !important;
 }
 
 
-.btn{
+.btn--outline{
     width: 110px;
     min-width: 80px;
     height: 36px;
@@ -21,51 +27,33 @@
     cursor: pointer;
 }
 
-.btn:hover{
-    background-color: rgb(153, 151, 151);
+.btn--outline:focus{
+    background-color: #1aa4c8;
+    outline: 3px solid #bce7f1 !important;
+    color: white !important;
 }
 
-.btn--no-save{
-    background-color: rgb(230, 233, 235) !important;
+.btn--outline:hover{
+    background-color: #1aa4c8;
+    outline: none !important;
+}
+
+.btn--sub{
+    background-color: white !important;
+    border: 1px solid rgba(14, 143, 179, 0.904) !important; 
+    color: rgba(65, 152, 177, 0.904) !important;
+}
+
+.btn--sub:focus{
+    outline: 3px solid #b1e3ef !important;
     border: 1px solid rgba(14, 143, 179, 0.904) !important; 
     color: rgba(14, 143, 179, 0.904) !important;
 }
 
-.btn_focus{
-    outline: 1.5px solid black;
-}
-
-.btn--no-save:hover{
-    background-color: rgba(25, 192, 238, 0.904) !important;
-}
-
-
-.btn-dialog__no{
-    background-color: white;
-    border: 1px solid rgba(206, 205, 205, 0.384); 
-    
-}
-
-.btn-dialog__no:hover{
-    background-color: rgba(156, 153, 153, 0.349);
-}
-
-.btn-dialog__no-save{
-    background-color: rgba(136, 219, 242, 0.904);
-    border: 1px solid rgba(14, 143, 179, 0.904); 
-}
-
-.btn-dialog__no-save:hover{
-    background-color: rgba(25, 192, 238, 0.904);
-}
-
-.btn-dialog__cancel,.btn-dialog__delete,.btn-dialog__close{
-    background-color: #50B83C;
-    border: none;
-}
-
-.btn-dialog__cancel:hover,.btn-dialog__delete:hover,.btn-dialog__close:hover{
-    background-color: #177a03;
+.btn--sub:hover{
+    background-color: rgba(98, 217, 249, 0.858) !important;
+    opacity: 80%;
+    outline: none !important;
 }
 
 .btn-dialog{
@@ -76,15 +64,6 @@
     cursor: pointer;
 }
 
-
-.btn-default{
-    background-color: #1aa4c8;
-    border: none;
-}
-
-.btn-default:hover{
-    background-color: #097894;
-}
 
 .btn-header__icon{
     width: 24px;

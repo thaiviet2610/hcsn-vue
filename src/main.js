@@ -7,7 +7,7 @@ import MButton from './components/button/MButton.vue'
 import MInputDate from './components/input/MInputDate.vue'
 import MDropdown from './components/dropdown/MDropdown.vue'
 import MButtonIcon from './components/button/MButtonIcon.vue'
-import MDialogNotify from './components/dialog/MDialogNotify.vue'
+import MDialog from './components/dialog/MDialog.vue'
 import MDialogLoadData from './components/dialog/MDialogLoadData.vue'
 import MCheckbox from './components/checkbox/MCheckbox.vue'
 
@@ -57,7 +57,7 @@ app.component("MButton",MButton);
 app.component("MDropdown",MDropdown);
 app.component("MButtonIcon",MButtonIcon);
 app.component("MDialogLoadData",MDialogLoadData);
-app.component("MDialogNotify",MDialogNotify);
+app.component("MDialog",MDialog);
 app.mount('#app')
 
 

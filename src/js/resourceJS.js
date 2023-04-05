@@ -61,8 +61,8 @@ const resourceJS = {
         maxLengthName: "Tên tài sản vượt quá độ dài cho phép 255 ký tự!"
     },
     error: {
-        validateData: "Cần phải nhập thông tin! ",
-        emptyInput: " không được phép để trống! ",
+        validateData: "<div><span><b><< {0} >></b></span> cần phải nhập thông tin!</div> ",
+        emptyInput: "  không được phép để trống! ",
         errorFormatNumber: " chỉ được nhập số!",
         errorMaxLengthNumber: "Độ dài số nhập vào không được quá 14 ký tự!",
         errorFormatRate: "Tỷ lệ chỉ được cho phép trong khoảng từ 0 -> 100%!",
@@ -169,6 +169,13 @@ const resourceJS = {
     assetList: {
         idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],
         refElementAssetList: ["mInputSearch","mComboboxAssetCategory","mComboboxDepartment","mButtonAdd","mButtonExport","mButtonDelete","mTable"],
+    },
+    buttonDialog: {
+        exportExcel: [['Tải xuống','btn--main'],['Không','btn--outline']],
+        delete: [['Xóa','btn--main'],['Không','btn--outline']],
+        cancelEditForm: [['Lưu','btn--main'],['Không lưu','btn--sub'],['Hủy bỏ','btn--outline']],
+        cancelAddForm: [['Hủy bỏ','btn--main'],['Không','btn--outline']],
+        notify: [['Đóng','btn--outline']]
     }
 }
 

@@ -21,6 +21,7 @@
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
                 @focus="handleEventFocus"
+                @keydown="handleEventKeydown"
                 :key="keyValueInput"
                 v-model="value">
         </div> 
@@ -331,6 +332,18 @@ export default {
             result = result.replace("yyyy",txtYear);
             return result;
         },
+
+        /**
+         * Hàm xử lý sự kiện khi nhấn phím mà đó là ký tự không phải là số hoặc ký tự "/" thì ngăn chặn sự kiện đó
+         * @param {*} event sự kiện cần sử lý
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeydown(event){
+            const keyCode = event.keyCode;
+            if(keyCode > 31 && (keyCode < 48 || keyCode > 57) && (keyCode < 96 || keyCode > 105) && keyCode != 191){
+                event.preventDefault();
+            }
+        }
     },
 }
 </script>
@@ -340,4 +353,5 @@ export default {
 input:focus{
     border: none !important;
 }
+
 </style>

@@ -12,20 +12,17 @@
             </div>
             <!-- footer của dialog  -->
             <div class="dialog-footer">
-                <!-- button chính của dialog  -->
-                <MButton
-                    ref="mButtonMain"
-                    :isDefault="isDefault"
-                    :label="mainBtnLabel"
-                    @btnAddOnClickBtn="handleEventClickMainBtn"  >
-                </MButton>
-                <!-- button phụ của dialog  -->
-                <MButton
-                    :label="normalBtnLabel"
-                    @btnAddOnClickBtn="handleEventClickNormalBtn" 
-                    >
-                </MButton>
-                
+                    <!-- button chính của dialog  -->
+                    <div v-for="(item,index) in buttonInfo" :key="index">
+                        <MButton
+                            :ref="`mButton_${index}`"
+                            :class="item[1]"
+                            :label="item[0]"
+                            @btnAddOnClickBtn="handleEventClickBtn(item[0])" 
+                            >
+                        </MButton>
+                    </div>
+                    
             </div>
         </div>
     </div>
@@ -35,7 +32,7 @@
 
 <script>
 export default {
-    name:"MDialogAddFormCancel",
+    name:"MDialog",
     props: {
         content: {
             type: String,
@@ -49,6 +46,10 @@ export default {
             type: String,
             default: ""
         },
+        buttonInfo: {
+            type: Array,
+            default: null
+        },
     },
     components:{
 
@@ -57,7 +58,6 @@ export default {
         this.setFocus();
     },
     created() {
-
     },
     data() {
         return {
@@ -71,24 +71,17 @@ export default {
         */
         setFocus() {
             this.$nextTick(function() {
-                this.$refs["mButtonMain"].setFocus();
+                this.$refs["mButton_0"][0].setFocus();
             })
         }, 
+
         /**
          * Hàm xử lý sự kiện click vào btn phụ
          * @author LTVIET (02/03/2023)
          */
-        handleEventClickNormalBtn(){
-            this.$emit('onClickNormalBtn');
+        handleEventClickBtn(label){
+            this.$emit('onClickBtn',label);
         },
-        /**
-         * Hàm gọi đến asset detail để đóng dialog và 
-         * từ asset detail gọi đến asset list để đóng asset detail
-         * @author LTVIET (02/03/2023)
-         */
-        handleEventClickMainBtn() {
-            this.$emit('onClickMainBtn');
-        }
     },
 }
 </script>

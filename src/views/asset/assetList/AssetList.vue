@@ -1,6 +1,6 @@
 <template>
     <!-- <div class="body"> -->
-    <div class="main" @click="addOnClickAssetList" @keydown="HandleEventKeyDown" @keypress="abc"
+    <div class="main" @click="addOnClickAssetList" @keydown="HandleEventKeyDown"
         @keyup="handleEventKeyUp">
         <!-- phần content  -->
         <div class="content">
@@ -55,7 +55,7 @@
                         :ref="refElements[3]"
                         label=" + Thêm tài sản"
                         data_tooltip_bottom="Ctrl+1"
-                        class="item1"
+                        class="item1 btn--main"
                         @handleEventFocus="handleEventFocusElement"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
@@ -114,45 +114,38 @@
     </AssetDetail>
     
     <!-- dialog thông báo hành động không có tài sản nào được chọn để xóa -->
-    <MDialogNotify 
+    <MDialog 
         ref="mDialogNotifyDelete"
         :content="contentDialogNotifyDelete"
-        btnLabel="Đóng"
+        :buttonInfo="btnDialogNotify"
         v-if="isShowDialogNotifyDelete" 
-        @onClose="handleEventCloseDialogNotifyDelete">
-    </MDialogNotify>
+        @onClickBtn="handleEventCloseDialogNotifyDelete">
+    </MDialog>
     
     <!-- dialog xác nhận hành động xóa 1 tài sản -->
-    <MDialogFormConfirm 
+    <MDialog 
         ref="mDialogConfirmDeleteOneAsset"
         :content="contentDialogConfirmDeleteOneAsset"
-        normalBtnLabel="Không"
-        mainBtnLabel="Xóa"
+        :buttonInfo="btnDialogDelete"
         v-if="isShowDialogConfirmDeleteOneAsset"
-        @onClickNormalBtn="handleEventCloseDialogNoDelete"
-        @onClickMainBtn="handleEventCloseDialogDelete">
-    </MDialogFormConfirm>
+        @onClickBtn="handleEventCloseDialogDelete">
+    </MDialog>
     <!-- dialog xác nhận hành động xóa nhiều tài sản -->
-    <MDialogFormConfirm 
+    <MDialog 
         ref="mDialogConfirmDeleteMultiAsset"
         :content="contentDialogConfirmDeleteMultiAsset"
-        normalBtnLabel="Không"
-        mainBtnLabel="Xóa"
+        :buttonInfo="btnDialogDelete"
         v-if="isShowDialogConfirmDeleteMultiAsset"
-        @onClickNormalBtn="handleEventCloseDialogNoDelete"
-        @onClickMainBtn="handleEventCloseDialogDelete">
-    </MDialogFormConfirm>
+        @onClickBtn="handleEventCloseDialogDelete">
+    </MDialog>
     <!-- dialog xác nhận hành động xuất dữ liệu ra file excel -->
-    <MDialogFormConfirm 
+    <MDialog 
         ref="mDialogConfirmExportExcel"
         :content="contentDialogConfirmExportExcel"
-        type="delete"
-        normalBtnLabel="Không"
-        mainBtnLabel="Tải xuống"
+        :buttonInfo="btnDialogExcel"
         v-if="isShowDialogConfirmExportExcel"
-        @onClickNormalBtn="handleEventCloseDialogNoExportExcel"
-        @onClickMainBtn="handleEventClickBtnExcel">
-    </MDialogFormConfirm>
+        @onClickBtn="handleEventClickBtnDialogExcel">
+    </MDialog>
     <!-- dialog loading dữ liệu  -->
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     <!-- toast message thông báo xóa thành công  -->
@@ -173,8 +166,6 @@
 import AssetDetail from '../assetDetail/AssetDetail.vue'
 import MCombobox from '../../../components/combobox/MCombobox.vue'
 import Mtable from '../../../components/table/MTable.vue'
-import MDialogNotify from '@/components/dialog/MDialogNotify.vue';
-import MDialogFormConfirm from '@/components/dialog/MDialogAddFormCancel.vue';
 import commonJS from '@/js/common.js';
 import resourceJS from '@/js/resourceJS.js';
 import MToastSucess from '@/components/toast/MToastSucess.vue';
@@ -185,7 +176,7 @@ import { saveAs } from 'file-saver';
 export default {
     name: "AssetList",
     components:{
-        AssetDetail,MCombobox,Mtable,MDialogFormConfirm,MDialogNotify,MToastSucess,MButtonIcon,
+        AssetDetail,MCombobox,Mtable,MToastSucess,MButtonIcon,
     },
     data() {
         return {
@@ -232,7 +223,10 @@ export default {
             indexDeleteEnd: 0,
             idElementFocus: "",
             idElements: resourceJS.assetList.idElementAssetList,
-            refElements: resourceJS.assetList.refElementAssetList 
+            refElements: resourceJS.assetList.refElementAssetList ,
+            btnDialogExcel: resourceJS.buttonDialog.exportExcel,
+            btnDialogDelete: resourceJS.buttonDialog.delete,
+            btnDialogNotify: resourceJS.buttonDialog.notify
         }
     },
 
@@ -410,21 +404,6 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện click vào button không xóa của dialog xác nhận hành động xóa
-         * @author LTVIET (02/03/2023)
-         */
-        handleEventCloseDialogNoDelete() {
-            if(this.isShowDialogConfirmDeleteOneAsset==true){
-                //--> ẩn đi dialog xác nhận xóa 1 tái sản
-                this.isShowDialogConfirmDeleteOneAsset = false;
-            }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
-                //-->ẩn đi dialog xác nhận xóa nhiều tái sản
-                this.isShowDialogConfirmDeleteMultiAsset = false;
-            }
-            this.setFocusDefault();
-        },
-
-        /**
          * Hàm set focus vào input đầu tiên của asset lít khi load lại trang
          * @author LTVIET (26/03/2023)
          */
@@ -433,15 +412,30 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện click vào button xóa của dialog xác nhận hành động xóa
+         * Hàm xử lý sự kiện click vào button của dialog xác nhận hành động xóa
+         * @param {*} label label của button muốn click
          * @author LTVIET (02/03/2023)
          */
-        handleEventCloseDialogDelete() {
+        handleEventCloseDialogDelete(label) {
+            // 1.Nếu click button "Không"
+            if(label == this.btnDialogDelete[1][0]){
+                if(this.isShowDialogConfirmDeleteOneAsset==true){
+                    //--> ẩn đi dialog xác nhận xóa 1 tái sản
+                    this.isShowDialogConfirmDeleteOneAsset = false;
+                }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
+                    //-->ẩn đi dialog xác nhận xóa nhiều tái sản
+                    this.isShowDialogConfirmDeleteMultiAsset = false;
+                }
+                this.setFocusDefault();
+                return;
+            }
+            // 2.Nếu click button "Xóa"
             let checkboxSelected = this.$refs[this.refElements[6]].getItemSelected();
-            //1.thực hiện ẩn đi dialog và xóa tài sản trong database
             if(this.isShowDialogConfirmDeleteOneAsset==true){
+                // 2.1. Nếu xóa 1 tài sản
                 this.handleEventCloseDialogDeleteOne(checkboxSelected);
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
+                // 2.2. Nếu xóa nhiều tài sản
                 this.handleEventCloseDialogDeleteMultiple(checkboxSelected);
             }
             this.setFocusDefault();
@@ -622,18 +616,17 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện click btn không xuất file excel trong dialog thông báo xác nhận xuất file excel
-         * @author LTVIET (06/03/2023)
-         */
-        handleEventCloseDialogNoExportExcel(){
-            this.isShowDialogConfirmExportExcel = false;
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi click btn xuất ra file excel
+         * Hàm xử lý sự kiện khi click btn của dialog xác nhận xuất ra file excel
+         * @param {*} label label của button muốn click
          * @author LTVIET (06/03/2023) 
          */
-        handleEventClickBtnExcel(){
+         handleEventClickBtnDialogExcel(label){
+            // Nếu click button "Không" thì ẩn dialog đi
+            if(label == this.btnDialogExcel[1][0]){
+                this.isShowDialogConfirmExportExcel = false;
+                return;
+            }
+            // Nếu click button "Tải xuống" thì gọi api xuất dữ liệu ra file excel
             this.isShowLoad = true;
             axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`,
             { responseType: "blob" })
@@ -645,8 +638,9 @@ export default {
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
-                let message = resourceJS.toastSuccess.exportExcel.replace("{0}",fileName);
-                this.showToastSucess(message);
+                this.setFocusDefault();
+                // let message = resourceJS.toastSuccess.exportExcel.replace("{0}",fileName);
+                // this.showToastSucess(message);
             })
             .catch(error => {
                 console.log(error);
