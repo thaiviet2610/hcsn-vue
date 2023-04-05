@@ -198,18 +198,18 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventIncreaseValue() {
+            let valueInput = this.getMoney(this.value);
             //2. nếu giá trị rỗng thì gán bằng 0
-            if(this.value == "" || this.value == null || this.value == undefined){
+            if(valueInput == "" || valueInput == null || valueInput == undefined){
                 this.value = 0;
-                let value = this.getMoney(this.value);
-                this.$emit('getValueInput',value);
+                this.$emit('getValueInput',0);
             }
-            this.value = Number(this.value) + Number(this.stepValue);
+            valueInput = Number(valueInput) + Number(this.stepValue);
             if(this.stepValue < 1){
-                this.value = Math.round(this.value*(1/this.stepValue))/(1/this.stepValue);
+                valueInput = Math.round(valueInput*(1/valueInput))/(1/this.stepValue);
             }
-            let value = this.getMoney(this.value);
-            this.$emit('getValueInput',value);
+            this.$emit('getValueInput',valueInput);
+            this.value = valueInput;
             if(this.value && String(this.value).indexOf(".") == -1){
                 this.value = Number(this.value);
                 if(this.value<10){
@@ -224,20 +224,22 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventDecreaseValue(){
+            let valueInput = this.getMoney(this.value);
             //2. nếu giá trị rỗng thì gán bằng 0
-            if(this.value == "" || this.value == null || this.value == undefined){
+            if(valueInput == "" || valueInput == null || valueInput == undefined){
                 this.value = 0;
+                this.$emit('getValueInput',0);
             }
-            this.value = Number(this.value) - this.stepValue;
+            valueInput = Number(valueInput) - this.stepValue;
             if(this.stepValue < 1){
-                this.value = Math.round(this.value*(1/this.stepValue))/(1/this.stepValue);
+                valueInput = Math.round(valueInput*(1/this.stepValue))/(1/this.stepValue);
             }
-            if(this.value < 0){
-                this.value = 0;
+            if(valueInput < 0){
+                valueInput = 0;
             }
-            let value = this.getMoney(this.value);
-            this.$emit('getValueInput',value);
-            if(this.value && String(this.value).indexOf(".") == -1){
+            this.$emit('getValueInput',valueInput);
+            this.value = valueInput;
+            if(valueInput && String(this.value).indexOf(".") == -1){
                 this.value = Number(this.value);
                 if(this.value<10){
                     this.value = Number(this.value);
@@ -263,14 +265,15 @@ export default {
          */
         handleEventKeydown(event){
             let keyCode = event.keyCode;
-            console.log(event.key);
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
                 event.preventDefault();
             }
             if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
                 event.preventDefault();
             }
+            
             switch (keyCode) {
+                
                 case enumJS.arrowDown:
                     if(this.previousKeyShift){
                         event.preventDefault();

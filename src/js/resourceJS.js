@@ -129,9 +129,9 @@ const resourceJS = {
     },
     searchAssetPlaceholder: "Tìm kiếm tài sản",
     inputDate: {
-        inValidFormat: "{0} sai định dạng {1} !",
+        inValidFormat: "{0} sai định dạng {1}!",
         inValidFormatMonth: "Giá trị tháng phải nằm trong khoảng từ 1-12!",
-        invalidFormatDate: "<div>Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!</div>"
+        invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
     },
     assetDetail:{
         refAssetDetail: ['txtAssetCode','txtAssetName','txtDepartmentCode','txtAssetCategoryCode',
