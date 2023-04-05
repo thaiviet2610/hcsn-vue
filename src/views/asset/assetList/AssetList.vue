@@ -878,16 +878,12 @@ export default {
                 let index = this.idElements.length-1;
                 this.idElementFocus = this.idElements[index];
                 let indexCheckbox = this.$refs[this.refElements[index]].indexCheckbox;
-                console.log(indexCheckbox);
                 if(indexCheckbox != -1){
                     this.$refs[this.refElements[index]].setFocusCheckbox(indexCheckbox);
                 }else{
-                    console.log(2);
                     let indexRowClick = this.$refs[this.refElements[index]].indexRowClick;
                     this.$refs[this.refElements[index]].setFocusCheckbox(indexRowClick);
                 }
-                
-                
             }
         },
 
@@ -908,8 +904,6 @@ export default {
                 }else{
                     this.$refs[this.refElements[index]].setFocus();
                 }
-                
-
             }
         },
 

@@ -25,7 +25,7 @@
             class="combobox__button"
             @mousedown="onMouseDownInput" 
             classIcon="combobox__button--image-open"
-            tabindex="-1"
+            
             @addOnClickBtnIcon="btnOpenDropdown">
         </MButtonIcon>
         <!-- thẻ buton thực hiện chức năng ẩn combobox-data  -->
@@ -33,7 +33,6 @@
             v-if="isShow"
             class="combobox__button"
             @mousedown="onMouseDownInput" 
-            tabindex="-1"
             classIcon="combobox__button--image-close"
             @addOnClickBtnIcon="btnCloseDropdown">
         </MButtonIcon>
@@ -313,7 +312,7 @@ export default {
                 this.isShow = true;
                 this.zIndex = 2;
             }
-            if(this.entitiesSearch.length == 0){
+            if(this.entitiesSearch.length == 0 && this.required){
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.errorDontFindInData;
             }
