@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum';
 export default {
     name:"MDialog",
     props: {

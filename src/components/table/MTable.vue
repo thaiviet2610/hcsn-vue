@@ -1,6 +1,6 @@
 <template>
-  <div class="table"  @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
-    <table  class="content__table"  >
+  <div  class="table"  @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
+    <table :key="keyTable" class="content__table"  >
       <!-- phần title của table  -->
       <thead>
         <tr>
@@ -265,7 +265,7 @@ import commonJS from "@/js/common.js";
 import resourceJS from "@/js/resourceJS.js";
 import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum.js';
 export default {
   name: "MTable",
   components: {
@@ -311,8 +311,8 @@ export default {
       isShowDialogNotifyLoadError: false,
       contentDialogNotifyLoadError: "",
       isSelectedRow: [],
-      pageSize: 10,
       dataPageSize: resourceJS.table.dataPageSize,
+      pageSize: Number(resourceJS.table.dataPageSize[0]),
       pageNumber: 1,
       indexRowClick: 0,
       totalRecord: 0,
@@ -334,7 +334,8 @@ export default {
       indexDeleteStart: 0,
       indexDeleteEnd: 0,
       indexCheckboxFocus: -1,
-      btnDialogNotify: resourceJS.buttonDialog.notify
+      btnDialogNotify: resourceJS.buttonDialog.notify,
+      keyTable: 0
     };
   },
 
@@ -409,21 +410,23 @@ export default {
      * Hàm xử lý sự kiện gọi api load dữ liệu mTable
      * @author LTVIET (02/03/2023)
      */
-    async loadData() {
+    loadData() {
       this.isShowLoad = true;
       let api = this.getApiFilter();
        axios
         .get(api)
-        .then(async (res) => {
-          this.assets = await res.data.Data;
-          this.totalRecord = await res.data.TotalRecord;
-          this.quantityTotal = await res.data.QuantityTotal;
-          this.costTotal = await res.data.CostTotal;
-          this.depreciationValueTotal = await res.data.DepreciationValueTotal;
-          this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
+        .then( (res) => {
+          this.assets =  res.data.Data;
+          this.totalRecord =  res.data.TotalRecord;
+          this.quantityTotal =  res.data.QuantityTotal;
+          this.costTotal =  res.data.CostTotal;
+          this.depreciationValueTotal =  res.data.DepreciationValueTotal;
+          // this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
+          this.residualValueTotal =  res.data.ResidualValueTotal;
           this.getTotalPage();
           this.reloadTable();
           this.isShowLoad = false;
+          this.keyTable = ++this.keyTable;
         })
         .catch((error) => {
           console.log(error);
@@ -860,11 +863,10 @@ export default {
     }
   },
 
-  async created() {
+  created() {
     this.getApiFilter();
     // lấy api để load danh sách asset
     if (this.api) {
-      this.pageSize = Number(this.dataPageSize[0]);
       this.loadData();
     }
     for(let i=0;i<=this.pageSize;i++){
@@ -878,8 +880,9 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    pageSize: function () {
+    pageSize: function (newValue) {
       this.pageNumber = 1;
+      this.pageSize = newValue;
       this.loadData();
     },
 
@@ -908,10 +911,8 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    assetCategoryId: function (newValue) {
-      if (!newValue) {
-        this.loadData();
-      }
+    assetCategoryId: function () {
+      this.loadData();
     },
 
     /** 
@@ -919,7 +920,10 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    departmentId: function () {
+    departmentId: function (newValue) {
+      console.log(newValue);
+      console.log(this.departmentId);
+      console.log(1);
       this.loadData();
     },
   },

@@ -1,8 +1,6 @@
 <template>
     <div>
         <div class="form editForm" 
-            @keydown="handleEventKeydown"
-            @keyup="handleEventKeyup"
         >
             <div class="form-data" >
                 <!-- phần header của form  -->
@@ -308,10 +306,11 @@ import MCombobox from '@/components/combobox/MCombobox.vue';
 import MInput from '@/components/input/MInput.vue';
 import resourceJS from '@/js/resourceJS.js'
 import axios from 'axios'
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum.js';
 import commonJS from '@/js/common';
 import moment from 'moment';
 import MInputDisable from '@/components/input/MInputDisable.vue';
+import configJS from '@/js/config';
 export default {
     name:"assetDetail",
     props: {
@@ -347,10 +346,10 @@ export default {
             contentDialogNotifyErrorValidate: "",
             contentDialogAddFormCancel: resourceJS.confirm.cancelFormAsset,
             contentDialogEditFormCancel: resourceJS.confirm.changeCancelFormAsset,
-            departApi: resourceJS.api.departmentApi,
-            assetApi: resourceJS.api.assetApi,
-            assetCategoryApi: resourceJS.api.assetCategoryApi,
-            generateNewCodeApi: resourceJS.api.assetGenerateNewCodeApi,
+            departApi: configJS.api.departmentApi,
+            assetApi: configJS.api.assetApi,
+            assetCategoryApi: configJS.api.assetCategoryApi,
+            generateNewCodeApi: configJS.api.assetGenerateNewCodeApi,
             depart: [],
             assetCategory: [],
             isShowLoad: false,
@@ -389,6 +388,8 @@ export default {
     },
     
     created() {
+        document.addEventListener('keydown',this.handleEventKeydown);
+        document.addEventListener('keyup',this.handleEventKeyup);
         if(this.typeForm == "add"){
             // Nếu là form thêm tài sản (chưa có dữ liệu)
             this.getDefaultAsset();
@@ -420,6 +421,7 @@ export default {
             this.assetCategoryId = this.asset.fixed_asset_category_id;
             this.depreciationValueYear = this.getDepreciationValueYear;
             this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
+            
         }
     },
     mounted() {
@@ -606,10 +608,12 @@ export default {
          */
         validateForm(){
             let itemRef = this.validateEmptyValue();
-            if(itemRef!=""){
-                console.log(itemRef);
-                this.itemError = this.$refs[itemRef];
-                let label = this.itemError.label;
+            if(itemRef.length != 0){
+                this.itemError = this.$refs[itemRef[0]];
+                let label = itemRef.map(element => {
+                    return this.$refs[element].label;
+                });
+                label = label.join(", ");
                 this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.error.validateData.replace("{0}",label);
                 return false;
@@ -623,31 +627,29 @@ export default {
          */
         validateEmptyValue(){
             var refs = resourceJS.assetDetail.refElementAssetDetail;
-            let txt = "";
+            let txt = [];
             for(let i = 0 ; i < refs.length - 1; i++){
                 for(let j = 0 ; j < refs[i].length ; j ++){
                     let item = this.$refs[refs[i][j]];
                     if(i == 4){
                         if(!item.txtInputDate){
-                            txt = refs[i][j];
+                            txt.push(refs[i][j]);
                             item.inValid = true;
-                            return txt;
+                            
                         }
                     }
                     if(i >= 0 && i < 3){
                         if(!item.value){
-                            txt = refs[i][j];
+                            txt.push(refs[i][j]);
                             item.inValid = true;
                             item.notifyError = item.label + resourceJS.error.emptyInput;
-                            return txt;
                         }
                     }
                     if( i == 3 ){
                         if(!item.value && item.value != 0){
-                            txt = refs[i][j];
+                            txt.push(refs[i][j]);
                             item.inValid = true;
                             item.notifyError = item.label + resourceJS.error.emptyInput;
-                            return txt;
                         }
                         
                     }
@@ -757,6 +759,7 @@ export default {
             // Nếu click button "không" thì ẩn dialog đi
             if(label == this.btnDialogCancelAddForm[1][0]){
                 this.isShowDialogAddFormCancel = false;
+                return;
             }
             // Nếu click button "Hủy bỏ" thì ẩn dialog và form đi
             this.isShowDialogAddFormCancel = false;
@@ -811,9 +814,9 @@ export default {
          * Hàm lấy giá trị của loại tài sản theo assetCategoryId
          * @author LTVIET (05/03/2023)
          */
-        async getAssetCategory() {
+        getAssetCategory() {
             if(this.assetCategoryApi && this.asset.fixed_asset_category_id){
-               await axios.get(`${this.assetCategoryApi}/${this.asset.fixed_asset_category_id}`)
+                axios.get(`${this.assetCategoryApi}/${this.asset.fixed_asset_category_id}`)
                 .then(res =>{
                     this.assetCategory = res.data;
                     // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới

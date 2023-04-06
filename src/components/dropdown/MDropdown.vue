@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum';
 import resourceJS from '@/js/resourceJS';
 export default {
     name:"TheSidebar",

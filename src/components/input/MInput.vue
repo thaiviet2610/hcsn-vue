@@ -9,6 +9,7 @@
             :class="{'input--error':inValid}" 
             class="classInput" :style="styleInput"
             v-model="value"
+            autocomplete="off"
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"

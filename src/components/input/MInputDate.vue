@@ -18,6 +18,7 @@
                 :id="idInput"
                 class="input__date-container" 
                 :placeholder="placeholder"
+                autocomplete="off"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
                 @focus="handleEventFocus"
@@ -35,7 +36,7 @@
 <script>
 import commonJS from '@/js/common';
 import resourceJS from '@/js/resourceJS';
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum';
 export default {
     name:"TheSidebar",
     components:{},
@@ -346,7 +347,7 @@ export default {
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = true;
             }
-            if(this.value.length == 10 && keyCode != enumJS.keyBackSpace){
+            if(this.value.length == 10 && keyCode > 31){
                 event.preventDefault();
             }
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){

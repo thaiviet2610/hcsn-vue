@@ -91,6 +91,11 @@ tfoot{
     opacity: 100%;
 }
 
+th .column7{
+    resize: horizontal;
+    overflow: auto;
+}
+
 
 
 

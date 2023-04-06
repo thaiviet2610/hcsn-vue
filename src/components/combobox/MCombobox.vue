@@ -79,7 +79,7 @@
 
 <script>
 import resourceJS from '@/js/resourceJS.js'
-import enumJS from '@/js/enumJS.js'
+import enumJS from '@/js/enum.js'
 import axios from 'axios'
 export default {
     name:"TheCombobox",
@@ -153,7 +153,7 @@ export default {
     components:{
         
     },
-    async created(){
+    created(){
 
         /**
          * gọi api để lấy dữ liệu của đối tượng asset
@@ -248,6 +248,9 @@ export default {
             // set index của item được chọn
             this.indexItemSelect = me.findIndexSelected;
             this.value = item[this.propName];
+            if(this.value){
+                this.inValid = false;
+            }
             this.isShow = false;
             this.scrollY = 0;
             this.zIndex = 0;
@@ -400,6 +403,9 @@ export default {
                         this.itemSelected = this.entitiesSearch[this.indexItemSelect];
                         //2.4.2. gán giá trị tương ứng vào value
                         this.value = this.itemSelected[this.propName];
+                        if(this.value){
+                            this.inValid = false;
+                        }
                         //2.4.3. ẩn đi combobox-data
                         this.isShow = false;
                         this.scrollY = 0;

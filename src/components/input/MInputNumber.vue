@@ -9,6 +9,7 @@
             :class="[{'input--error':inValid}]" 
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
+            autocomplete="off"
             @input="handleEventInput"
             @keydown="handleEventKeydown"
             @keyup="handleEventKeyup"
@@ -46,7 +47,7 @@
 <script>
 import resourceJS from '../../js/resourceJS.js'
 import commonJS from '@/js/common';
-import enumJS from '@/js/enumJS.js';
+import enumJS from '@/js/enum.js';
 export default {
     name:"MInputNumber",
     props: {

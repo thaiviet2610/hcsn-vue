@@ -1,7 +1,6 @@
 <template>
     <!-- <div class="body"> -->
-    <div class="main" @click="addOnClickAssetList" @keydown="HandleEventKeyDown"
-        @keyup="handleEventKeyUp">
+    <div class="main" @click="addOnClickAssetList" >
         <!-- phần content  -->
         <div class="content">
             <div class="content-header">
@@ -170,12 +169,17 @@ import resourceJS from '@/js/resourceJS.js';
 import MToastSucess from '@/components/toast/MToastSucess.vue';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import axios from 'axios'
-import enumJS from '@/js/enumJS';
+import enumJS from '@/js/enum.js';
 import { saveAs } from 'file-saver';
+import configJS from '@/js/config';
 export default {
     name: "AssetList",
     components:{
         AssetDetail,MCombobox,Mtable,MToastSucess,MButtonIcon,
+    },
+    created() {
+        document.addEventListener('keydown',this.handleEventKeyDown);
+        document.addEventListener('keyup',this.handleEventKeyUp);
     },
     data() {
         return {
@@ -192,12 +196,12 @@ export default {
             contentDialogConfirmDeleteOneAsset: "",
             contentDialogConfirmDeleteMultiAsset: "",
             assets : [],
-            assetFilterApi: resourceJS.api.assetFilterApi,
-            assetApi: resourceJS.api.assetApi,
-            departApi: resourceJS.api.departmentApi,
-            assetCategoryApi: resourceJS.api.assetCategoryApi,
-            exportExcelApi: resourceJS.api.exportExcelApi,
-            deleteMultipleAssetApi: resourceJS.api.deleteMultipleAsset,
+            assetFilterApi: configJS.api.assetFilterApi,
+            assetApi: configJS.api.assetApi,
+            departApi: configJS.api.departmentApi,
+            assetCategoryApi: configJS.api.assetCategoryApi,
+            exportExcelApi: configJS.api.exportExcelApi,
+            deleteMultipleAssetApi: configJS.api.deleteMultipleAsset,
             isShowLoad: false,
             isShowToastSucess: false,
             isButtonUndo: false,
@@ -210,7 +214,7 @@ export default {
             keyword: "",
             keyTable: 0,
             newCode: "",
-            generateNewCodeApi: resourceJS.api.assetGenerateNewCodeApi,
+            generateNewCodeApi: configJS.api.assetGenerateNewCodeApi,
             keyAssetDetail: 0,
             invalid: false,
             contextMenuDelete: false,
@@ -488,12 +492,12 @@ export default {
          */
         deleteAsset(id){
             axios.delete(`${this.assetApi}/${id}`)
-            .then(async res=>{
+            .then(res=>{
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
                 // this.keyTable = ++this.keyTable;
                 this.$refs[this.refElements[6]].pageNumber = 1;
-                await this.$refs[this.refElements[6]].loadData();
+                this.$refs[this.refElements[6]].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -582,10 +586,10 @@ export default {
          * Hàm đóng đóng form lưu và hiển thị toast message thông báo lưu thành công
          * @author LTVIET (06/03/2023) 
          */
-        async handleEventSaveForm(){
+        handleEventSaveForm(){
             this.isShowForm = false;
             this.$refs[this.refElements[6]].pageNumber = 1;
-            await this.$refs[this.refElements[6]].loadData();
+            this.$refs[this.refElements[6]].loadData();
             let message = resourceJS.toastSuccess.saveSuccess;
             this.showToastSucess(message);
             
@@ -686,8 +690,7 @@ export default {
             if(!value){
                 this.assetCategoryId = "";
             }
-            
-            this.keyTable = ++this.keyTable;
+            this.$refs["mTable"].loadData();
         },
 
         /**
@@ -700,8 +703,7 @@ export default {
             if(!value){
                 this.departmentId = "";
             }
-            
-            this.keyTable = ++this.keyTable;
+            this.$refs["mTable"].loadData();
         },
 
         /**
@@ -802,7 +804,6 @@ export default {
             }
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
-                console.log(this.previousKeyShift);
                 this.indexDeleteStart = 0;
                 this.indexDeleteEnd = 0;
             }
@@ -813,7 +814,7 @@ export default {
          * @param {*} event sự kiếm bấm các phím tắt
          * @author LTVIET (28/03/2023)
          */
-        HandleEventKeyDown(event){
+        handleEventKeyDown(event){
             let keyCode = event.keyCode;
             if(keyCode == enumJS.keyCtrl){
                 this.previousKeyCtrl = true;
