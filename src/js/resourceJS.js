@@ -105,15 +105,12 @@ const resourceJS = {
         deleteSuccess: "Tài sản đã được xóa.",
     },
     api: {
-        departmentApi: "https://localhost:7123/api/v1/Departments",
-        employeeApi: "https://apidemo.laptrinhweb.edu.vn/api/v1/Employees",
         assetCategoryApi: "https://localhost:7123/api/v1/AssetCategories",
         assetApi: "https://localhost:7123/api/v1/Assets",
         assetFilterApi: "https://localhost:7123/api/v1/Assets/Filter?fixedAssetCatagortId={1}&keyword={0}&departmentId={2}&pageSize={3}&pageNumber={4}",
-        assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/GetNewCode",
-        exportExcelApi: "https://localhost:7123/api/v1/Assets/Export?",
-        deleteMultipleAsset: "https://localhost:7123/api/v1/Assets/DeleteMultiple",
-
+        assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/NewCode",
+        exportExcelApi: "https://localhost:7123/api/v1/Assets/Excel?",
+        deleteMultipleAsset: "https://localhost:7123/api/v1/Assets",
     },
     titlteForm: {
         addAssetForm: "Thêm tài sản",
