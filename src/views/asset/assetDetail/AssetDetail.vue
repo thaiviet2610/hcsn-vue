@@ -486,6 +486,7 @@ export default {
          * @author LTVIET (04/03/2023)
          */
         handleEventBtnClickSave(){
+            this.previousKeyCtrl = false;
             if(this.validateForm()){
                 this.asset.quantity = Number(this.asset.quantity);
                 let entity = {
@@ -606,6 +607,7 @@ export default {
         validateForm(){
             let itemRef = this.validateEmptyValue();
             if(itemRef!=""){
+                console.log(itemRef);
                 this.itemError = this.$refs[itemRef];
                 let label = this.itemError.label;
                 this.isShowDialogNotify = true;
@@ -622,7 +624,7 @@ export default {
         validateEmptyValue(){
             var refs = resourceJS.assetDetail.refElementAssetDetail;
             let txt = "";
-            for(let i = 0 ; i < refs.length ; i++){
+            for(let i = 0 ; i < refs.length - 1; i++){
                 for(let j = 0 ; j < refs[i].length ; j ++){
                     let item = this.$refs[refs[i][j]];
                     if(i == 4){
@@ -651,7 +653,7 @@ export default {
                     }
                 }
             }
-            
+            return txt;
         },
         
         /**
@@ -834,6 +836,7 @@ export default {
                 })
             }
         },
+        
         /**
          * Hàm kiểm tra xem input có rỗng hay không
          * @param {*} refsInput giá trị ref của input cần sử lý
@@ -1045,9 +1048,6 @@ export default {
                     index2 = Number(this.idInputFocus.slice(9,10));
                 }
                 switch (keyCode) {
-                    case enumJS.keyS:
-                        this.handleEventBtnClickSave();
-                        break;
                     case enumJS.arrowDown:
                         this.handleEventKeyStrokesCtrlDown(index1,index2);
                         break;
@@ -1084,6 +1084,7 @@ export default {
                 }
                 this.idInputFocus = this.idElemnts[index1][index2];
                 this.$refs[this.refElemnts[index1][index2]].setFocus();
+                this.previousKeyCtrl = false;
             }
         },
 
@@ -1105,6 +1106,7 @@ export default {
                 }
                 this.idInputFocus = this.idElemnts[index1][index2];
                 this.$refs[this.refElemnts[index1][index2]].setFocus();
+                this.previousKeyCtrl = false;
             }
         },
 
@@ -1125,6 +1127,7 @@ export default {
                 }
                 this.idInputFocus = this.idElemnts[index1][index2];
                 this.$refs[this.refElemnts[index1][index2]].setFocus();
+                this.previousKeyCtrl = false;
             }
         },
 
@@ -1145,6 +1148,7 @@ export default {
                 }
                 this.idInputFocus = this.idElemnts[index1][index2];
                 this.$refs[this.refElemnts[index1][index2]].setFocus();
+                this.previousKeyCtrl = false;
             }
         },
 

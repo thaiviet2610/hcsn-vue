@@ -112,11 +112,6 @@ export default {
             type: Boolean,
             default: false
         },
-        data: {
-            type: Array,
-            default: null,
-            required: false
-        },
         valueInput: {
             type: String,
             default: ""
@@ -159,11 +154,11 @@ export default {
         
     },
     async created(){
+
         /**
          * gọi api để lấy dữ liệu của đối tượng asset
          * @author LTVIET (05/03/2023)
          */
-        
         if(this.api){
             this.isShowLoad = true;
             axios.get(this.api)
@@ -177,13 +172,8 @@ export default {
                 console.log(error);
                 this.isShowLoad = false;
                 this.scrollY = 0;
-                this.contentDialogNotifyLoadError = `Đã có lỗi khi load data của combobox ${this.placeholder}. vui lòng thử lại sau!`;
+                this.contentDialogNotifyLoadError = resourceJS.notify.errorLoadCombobox.replace("{0}",this.label);
             })
-            
-        }else if(this.data){
-            this.entities = this.data;
-            this.entitiesSearch = this.data;
-            this.setItemSelected();
         }
 
         
@@ -199,9 +189,6 @@ export default {
         
     },
     watch: {
-        data: function(newValue){
-            this.entities = newValue;
-        },
     },
     computed: {
         /**
@@ -264,7 +251,6 @@ export default {
             this.isShow = false;
             this.scrollY = 0;
             this.zIndex = 0;
-            // this.indexItemSelect = index;
             this.setFocus();
             const value = item[this.propValue];
             this.$emit("getInputCombobox",value);
@@ -277,7 +263,6 @@ export default {
             this.$nextTick(function() {
                 this.$refs["mInputCombobox"].focus();
             })
-            
         }, 
 
         /**
@@ -341,11 +326,8 @@ export default {
             let length = this.entitiesSearch.length;
             this.scrollHeight = this.$refs["mComboboxData"].scrollHeight - 2;
             const comboboxDataHeight = this.quantityItem*this.itemHeight;
-            // let me = this;
-            // var check = false;
             switch (key) {
                 case enumJS.arrowDown:
-                    // console.log(this.$refs["mComboboxData"].scroll);
                     //2.1. nếu là phím xuống:
                     if(this.isShow){
                         //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
@@ -454,7 +436,6 @@ export default {
                 //1.2.1. nếu có thì set invalid = true và hiển thị thêm thông báo lỗi 
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.errorDontFindInData;
-                
                 return;
             }
             else if(findIndex >= 0){

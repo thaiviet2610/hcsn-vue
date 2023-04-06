@@ -77,6 +77,8 @@ const resourceJS = {
         errorValidateInput: "Vui lòng điền đúng định dạng tất cả thông tin trước khi lưu!",
         errorPriceLessThanDepre: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá!",
         errorLoadData: "Đã có lỗi khi load data. Vui lòng thử lại!",
+        errorLoadCombobox: "Đã có lỗi khi load data của combobox {0}. vui lòng thử lại sau!",
+        notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",

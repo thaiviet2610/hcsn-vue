@@ -2,8 +2,6 @@
     <button 
         ref="mButtonIcon"
         :id="idButtonIcon"
-        :class="[{'btn--main':isDefault},{'btn_focus':isFocus}]"
-        @focusout="isFocus = false"
         @click="addEventClickBtnIcon"
         @focus="handleEventFocus">
             <div :class="classIcon"></div>
@@ -23,10 +21,6 @@ export default {
             type: String,
             required: false,
             default: null
-        },
-        isDefault: {
-            type: Boolean,
-            default: false
         },
         classIcon: {
             type: String,

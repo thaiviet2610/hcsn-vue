@@ -341,9 +341,15 @@ export default {
   computed: {
   },
   methods: {
+    /**
+     * Hàm xử lý sự kiện lấy ra giá trị vị trí checkbox đang được focus
+     * @param {*} value vị trị của checkbox
+     * @author LTVIET (06/03/2023)
+     */
     handleEventFocusCheckbox(value){
       this.indexCheckboxFocus = value.slice(11,12);
     },
+    
     /**
      * Hàm xử lý sự kiện click chuột vào table
      * @param {*} index vị trí dòng dữ liệu được click của table
@@ -666,7 +672,6 @@ export default {
     markCheckboxAll() {
       //1. set giá trị của checkboxAll: false-->true hoặc true-->false
       this.checkboxAll = !this.checkboxAll;
-      let length = this.assets.length;
       let check = false;
       if (this.checkboxAll) {
         //2.1. nếu checkboxAll = true
@@ -678,10 +683,9 @@ export default {
         check = false;
         
       }
-      for (let i = 1; i <= length; i++) {
-        this.checkbox[i] = check;
-        this.isSelectedRow[i] = check; 
-      }
+
+      this.checkbox.fill(check);
+      this.isSelectedRow.fill(check);
       this.indexCheckbox = -1;
       this.indexRowClick = 0;
       this.clickCheckbox = false;
@@ -712,26 +716,14 @@ export default {
     markCheckbox(index) {
       //1. set giá trị của checkbox: false-->true hoặc true-->false
       this.checkbox[index] = !this.checkbox[index];
-      let length = this.pageSize;
       if (this.checkbox[index]) {
-        let check = true;
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
         //2.1.2 duyệt từng giá trị của checkbox
-        for (let i = 1; i <= length; i++) {
-          //2.1.3. nếu có 1 checkbox = false thì set checkboxAll = false
-          if (!this.checkbox[i]) {
-            this.checkboxAll = false;
-            check = false;
-            break;
-          }
-        }
-        
-        //2.1.4. nếu tất cả checkbox = true thì set checkboxAll = true
-        if(check){
-          this.checkboxAll = true;
-        }
+        this.checkboxAll = this.checkbox.every(cb => {
+          return cb;
+        });
       } else {
         //2.2. nếu checkbox = false 
         this.checkboxAll = false;

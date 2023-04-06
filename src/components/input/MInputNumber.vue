@@ -209,13 +209,6 @@ export default {
             }
             this.$emit('getValueInput',valueInput);
             this.value = this.formatMoney(valueInput);
-            // if(this.value && String(this.value).indexOf(".") == -1){
-            //     this.value = Number(this.value);
-            //     if(this.value<10){
-            //         this.value = Number(this.value);
-            //         this.value = `0${this.value}`;
-            //     }
-            // }
         },
 
         /**
@@ -238,13 +231,6 @@ export default {
             }
             this.$emit('getValueInput',valueInput);
             this.value = this.formatMoney(valueInput);
-            // if(valueInput && String(this.value).indexOf(".") == -1){
-            //     this.value = Number(this.value);
-            //     if(this.value<10){
-            //         this.value = Number(this.value);
-            //         this.value = `0${this.value}`;
-            //     }
-            // }
         },
 
         /**
@@ -312,7 +298,7 @@ export default {
          * @author LTVIET(14/03/2023)
          */
          getMoney(value){
-            return String(value).indexOf(".") == -1 ? value : Number(value.replaceAll('.',''));
+            return String(value).indexOf(".") == -1 ? Number(value) : Number(value.replaceAll('.',''));
         },
 
         /**
@@ -342,8 +328,11 @@ export default {
         formatMoney(value){
             let valueMoney = this.getMoney(value);
             valueMoney = commonJS.formatMoney(valueMoney);
-            if(Number(valueMoney) < 10){
+            if(this.getMoney(valueMoney) < 10){
                 valueMoney = `0${valueMoney}`;
+            }
+            if(Number(valueMoney)==0){
+                valueMoney = 0;
             }
             return valueMoney;
         }

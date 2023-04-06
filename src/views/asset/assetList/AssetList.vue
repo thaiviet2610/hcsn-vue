@@ -50,7 +50,6 @@
                 <div class="content-header__right">
                     <!-- button thêm tài sản  -->
                     <MButton
-                        :isDefault="true"
                         :idButton="idElements[3]"
                         :ref="refElements[3]"
                         label=" + Thêm tài sản"

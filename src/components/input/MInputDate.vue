@@ -212,7 +212,6 @@ export default {
                 //1. nếu tháng hiện tại là tháng 2
                 case 2:
                     //1.1. nếu là năm nhuận
-                    console.log(1);
                     if((this.txtDate > 29 || this.txtDate < 1) && this.txtYear % 4 == 0){
                         // nếu date > 29 hoặc date < 1 thì thông báo lỗi
                         this.inValid = true;
@@ -347,6 +346,9 @@ export default {
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = true;
             }
+            if(this.value.length == 10 && keyCode != enumJS.keyBackSpace){
+                event.preventDefault();
+            }
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
                 event.preventDefault();
             }
@@ -365,7 +367,7 @@ export default {
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
             }
-        }
+        },
     },
 }
 </script>

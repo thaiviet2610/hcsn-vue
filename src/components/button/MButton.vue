@@ -3,8 +3,6 @@
         ref="mButton"
         :id="idButton"
         class="btn--outline"
-        :class="{'btn_focus':isFocus}"
-        @focusout="isFocus = false"
         @click="addEventClickBtn"
         @focus="handleEventFocus"
         >
@@ -24,10 +22,6 @@ export default {
             type: String,
             required: false
         },
-        isDefault: {
-            type: Boolean,
-            default: false
-        },
         idButton: {
             type: String,
             default: ""
@@ -35,7 +29,6 @@ export default {
     },
     data() {
         return {
-            isFocus: false
         }
     },
     created() {
@@ -71,7 +64,6 @@ export default {
          * @author LTVIET (02/04/2023)
          */
          handleEventFocus(event){
-            this.isFocus = true;
             this.$emit("handleEventFocus",event.target.id);
         },
     },

@@ -41,6 +41,11 @@ export default {
         }
     },
     methods: {
+        /**
+         * Hàm xử lý sự kiện click vào item của contextmenu thì gửi giá trị đó ra ngoài lớp cha
+         * @param {*} index vị tí item được chọn
+         * @author LTVIET (06/03/2023)
+         */
         addOnClick(index){
             if(this.entity){
                 this.$emit("addOnClickItem",[index,this.entity]);

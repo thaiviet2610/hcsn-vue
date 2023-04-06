@@ -1,4 +1,5 @@
 const enumJS = {
+    keyBackSpace: 8,
     keyTab: 9,
     keyEnter: 13,
     keyShift: 16,

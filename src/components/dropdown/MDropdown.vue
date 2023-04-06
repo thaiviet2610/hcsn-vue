@@ -52,6 +52,7 @@
 
 <script>
 import enumJS from '@/js/enumJS';
+import resourceJS from '@/js/resourceJS';
 export default {
     name:"TheSidebar",
     components:{},
@@ -82,7 +83,7 @@ export default {
             indexItemSelected: 0,
             dataSearch: [],
             isShowDialogNotify: false,
-            contentDialogNotify: "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
+            contentDialogNotify: resourceJS.notify.notData,
         }
     },
     created() {
