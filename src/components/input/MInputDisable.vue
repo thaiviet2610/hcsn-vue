@@ -1,5 +1,5 @@
 <template>
-    <div class="input-wrapper" >
+    <div class="input__container" >
         <!-- label của input  -->
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
         <!-- input hiển thị dư liệu, không được nhập (nếu disable)  -->

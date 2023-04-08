@@ -163,7 +163,7 @@ const resourceJS = {
             text: "Xóa tài sản"
             }
         ],
-        dataPageSize: ["10", "20", "50", "100"],
+        dataPageSize: ["15", "50", "100","150"],
     },
     assetList: {
         idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],

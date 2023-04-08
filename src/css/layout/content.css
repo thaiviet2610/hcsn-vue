@@ -31,73 +31,11 @@
 }
 
 .input1{
-    min-width: 179px;
+    width: calc((100% - 22px)/3);
     height: 35px;
     display: flex;
     align-items: center;
 }
-
-.input1__text{
-    width: 140px;
-    height: 15px;
-    margin-left: 8px;
-    font-size: 13px;
-    font-style: italic;
-    overflow: hidden;
-}
-
-
-
-.input2{
-    border-radius: 2.5px;
-    border: 1px solid #afafaf;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    background-color: #ffffff;
-}
-
-
-.input2-up{
-    height: 35px;
-    display: flex;
-    align-items: center;
-    position: relative;
-
-}
-
-.input2__icon1{
-	width: 17px;
-	height: 16px;
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -68px;
-
-}
-
-.input2__text{
-    min-width: 160px;
-    margin-left: 8px;
-    overflow: hidden;
-}
-
-.input2__text input{
-    width: 130px;
-    overflow: hidden;
-    padding-left: 8px;
-}
-
-
-
-.input1__text input{
-    width: 120px;
-    height: 15px;
-    font-size: 13px;
-    font-style: italic;
-    border: none;
-}
-
-
-
 
 .content-header__right{
     height: 36px;
@@ -124,12 +62,6 @@
     background-color: #097894;
 }
 
-.content-header__right .item1__text{
-    min-width: 79px;
-    height: 15px;
-    font-size: 13px;
-    color: #ffffff;
-}
 
 .item2{
     border: none;
@@ -143,15 +75,6 @@
     justify-content: center;
     padding: 0;
     cursor: pointer;
-}
-
-.item2__icon{
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
 }
 
 .item2__icon--image{
@@ -178,15 +101,6 @@
     background-color: #dacece;
 }
 
-.item3__icon{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    
-}
-
 .item3__icon--image{
     width: 18px;
 	height: 18px;
@@ -195,7 +109,8 @@
 
 .content-body{
     width: 100%;
-    height: calc(100% - 38px - 13px);
+    height: max-content;
+    max-height: calc(100% - 38px - 13px);
     border-radius: 3.5px;
     border: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);

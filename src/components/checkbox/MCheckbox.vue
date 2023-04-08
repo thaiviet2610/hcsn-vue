@@ -56,9 +56,7 @@ export default {
          * @author LTVIET (26/03/2023)
          */
         setFocus(){
-            this.$nextTick(function() {
-                this.$refs["mCheckbox"].focus();
-            })
+            this.$refs["mCheckbox"].focus();
         },
     },
 }

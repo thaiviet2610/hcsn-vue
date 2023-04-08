@@ -33,10 +33,6 @@ input[type=date]{
     color: red !important;
 }
 
-/* .input__date input{
-    border: none;
-    outline: none;
-} */
 
 
 .input__date-container{
@@ -98,8 +94,6 @@ input[type=date]{
     width: 29px;
     height: 18px;
     background-color: white;
-    /* position: absolute;
-    left: 56px; */
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,5 +1,5 @@
 <template>
-    <div class="input-wrapper" >
+    <div class="input__container" >
         <!-- label của input  -->
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
         <!-- input nhập dữ liệu -->    
@@ -14,7 +14,6 @@
             @keydown="handleEventKeydown"
             @keyup="handleEventKeyup"
             @blur="onValidateBlur"
-            @focus="handleEventFocus"
             :placeholder="placeholder">    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>  
@@ -142,14 +141,6 @@ export default {
         
     },
     methods: {
-        /**
-         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
-         * @param {*} event sự kiện focus
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventFocus(event){
-            this.$emit("handleEventFocus",event.target.id);
-        },
 
         /**
          * Hàm xử lý sự kiện blur input

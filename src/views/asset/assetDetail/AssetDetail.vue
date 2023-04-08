@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="form editForm" 
+        <div class="form editForm" :key="keyAssetDetail" @keydown="handleEventKeydown" @keyup="handleEventKeyup"
         >
             <div class="form-data" >
                 <!-- phần header của form  -->
@@ -26,7 +26,6 @@
                                     :ref="refElemnts[0][0]"
                                     :required="true"
                                     @getValueEventInput="GetValueAssetCode"
-                                    @handleEventFocus="handleEventFocusInput"
                                     :valueInput="asset.fixed_asset_code"
                                     placeholder="Nhập mã tài sản"
                                     typeValue="text"
@@ -42,7 +41,6 @@
                                     :idInput="idElemnts[0][1]"
                                     :required="true"
                                     placeholder="Nhập tên tài sản"
-                                    @handleEventFocus="handleEventFocusInput"
                                     @getValueEventInput="GetValueAssetName"
                                     :valueInput="asset.fixed_asset_name"
                                     typeValue="text"
@@ -53,7 +51,7 @@
                         </div>
                         <div class="m-row">
                             <div class="up-left">
-                                <div class="input-wrapper">
+                                <div class="input__container">
                                     <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                     <MCombobox  
                                         :is-icon="false" 
@@ -68,7 +66,6 @@
                                         :itemHeight = 36
                                         :quantityItem = 4
                                         :valueInput="asset.department_id"
-                                        @handleEventFocus="handleEventFocusInput"
                                         @getInputCombobox="getValueDepartmentId"
                                         :key="keyDepartment">
                                     </MCombobox>
@@ -87,7 +84,7 @@
                             </div>
                         </div>
                         <div class="m-row">
-                            <div class="input-wrapper up-left">
+                            <div class="input__container up-left">
                                 <!-- combobox nhập mã loại tài sản  -->
                                 <MCombobox  
                                     :is-icon="false"
@@ -102,7 +99,6 @@
                                     :quantityItem = 4
                                     propValue="fixed_asset_category_id" 
                                     :valueInput="asset.fixed_asset_category_id"
-                                    @handleEventFocus="handleEventFocusInput"
                                     @getInputCombobox="getValueAssetCategoryId">
                                 </MCombobox>
                                 
@@ -132,7 +128,6 @@
                                     :valueInput="asset.quantity"
                                     @getValueInput="getValueQuantity"
                                     @getValueEventInput="getValueQuantity"
-                                    @handleEventFocus="handleEventFocusInput"
                                     :buttonInput="true"
                                     :stepValue= 1
                                     label="Số lượng"
@@ -150,7 +145,6 @@
                                     placeholder="Nhập nguyên giá"
                                     typeValue="number"
                                     @getValueInput="getValueCostInput"
-                                    @handleEventFocus="handleEventFocusInput"
                                     @getValueEventInput="getValueCostInput"
                                     :valueInput="asset.cost"
                                     label="Nguyên giá"
@@ -169,7 +163,6 @@
                                     label="Số năm sử dụng"
                                     typeValue="number"
                                     @getValueInput="getValueLifeTime"
-                                    @handleEventFocus="handleEventFocusInput"
                                     @getValueEventInput="getValueLifeTime"
                                     :key="keyLifeTime"
                                     :valueInput="this.asset.life_time"
@@ -228,7 +221,6 @@
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.purchase_date"
                                     @getValueInputDate="getValuePurchaseDate"
-                                    @handleEventFocus="handleEventFocusInput"
                                     :required="true"
                                     >
                                 </MInputDate>
@@ -243,13 +235,12 @@
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.production_year"
                                     @getValueInputDate="getValueProductionYear"
-                                    @handleEventFocus="handleEventFocusInput"
                                     :required="true"
                                     >
                                 </MInputDate>
                             </div>
 
-                            <div class="input-wrapper down-center"></div>
+                            <div class="input__container down-center"></div>
                         </div> 
                     </div>
                 </div>
@@ -373,7 +364,8 @@ export default {
             refElemnts: resourceJS.assetDetail.refElementAssetDetail,
             btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
-            btnDialogNotify: resourceJS.buttonDialog.notify
+            btnDialogNotify: resourceJS.buttonDialog.notify,
+            keyAssetDetail: 0
         }
     },
 
@@ -388,8 +380,7 @@ export default {
     },
     
     created() {
-        document.addEventListener('keydown',this.handleEventKeydown);
-        document.addEventListener('keyup',this.handleEventKeyup);
+        
         if(this.typeForm == "add"){
             // Nếu là form thêm tài sản (chưa có dữ liệu)
             this.getDefaultAsset();
@@ -399,7 +390,7 @@ export default {
             // Nếu là form sửa haocjw nhân bản (đã có sẵn dư liệu)
             //1. nếu có dữ liệu từ bên ngoài gửi vào
             if(this.assetInput){
-                //--> lưu dữ liệu vào 1 biến lưu trữ
+                // --> lưu dữ liệu vào 1 biến lưu trữ
                 this.oldValueAseet = JSON.stringify(this.assetInput);
                 //--> khai báo 1 biến mới và gán giá trị lưu trữ vào biến mới đó
                 this.asset = JSON.parse(this.oldValueAseet);
@@ -429,18 +420,9 @@ export default {
         this.$nextTick(function() {
             this.setFocus();
         })
-        
     },
+    
     methods: {
-        /**
-         * Hàm xử lý sự kiện lấy ra id của input đang được focus
-         * @param {*} value giá trị id của input đang được focus
-         * @author LTVIET (02/04/2023)
-         */
-        handleEventFocusInput(value){
-            this.idInputFocus = value;
-        },
-
         /**
          * Hàm thay đổi tăng, giảm giá trị của input số lượng
          * @param {*} check check=true thì tăng, check=false thì giảm
@@ -635,7 +617,6 @@ export default {
                         if(!item.txtInputDate){
                             txt.push(refs[i][j]);
                             item.inValid = true;
-                            
                         }
                     }
                     if(i >= 0 && i < 3){
@@ -1034,7 +1015,7 @@ export default {
                 event.preventDefault();
                 this.$emit('onClose');
             }
-            this.handleEventKeyStrokesCtrlFocus(keyCode);
+            // this.handleEventKeyStrokesCtrlFocus(keyCode);
         },
 
         /**

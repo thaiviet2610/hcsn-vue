@@ -72,9 +72,12 @@
                 </router-link>
             </div>
             <div class="sidebar-footer">
-                <div class="sidebar-footer__item" data_tooltip_right="Thu gọn">
-                    <button @click="this.$emit('onClose',this.isSelected)" class="sidebar-footer__item--image"></button>
-                </div>
+                <MButtonIcon
+                    class="sidebar-footer__item"
+                    data_tooltip_right="Mở rộng"
+                    classIcon="sidebar-footer__item--image"
+                    @addOnClickBtnIcon="handleEventClickBtnCollapseSidebar">
+                </MButtonIcon>
             </div>
         </div>
     </div>
@@ -93,6 +96,10 @@ export default {
         }
     },
     methods: {
+        handleEventClickBtnCollapseSidebar(){
+            this.$emit('onClose',this.isSelected);
+        }
+
     },
 }
 </script>

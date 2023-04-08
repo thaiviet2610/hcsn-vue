@@ -86,14 +86,15 @@ body::-webkit-scrollbar {
 
 .body{
     width: calc(100% - 66px);
-    min-width: 876px;
+    /* min-width: 876px; */
     height: 100%;
 }
 
 
 .main{
     width: 100%;
-    min-width: 882px;
+    /* min-width: 882px; */
+    min-width: 618px;
     height: calc(100% - 44px);
 }
 

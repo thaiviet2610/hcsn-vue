@@ -3,7 +3,7 @@
         ref="mButtonIcon"
         :id="idButtonIcon"
         @click="addEventClickBtnIcon"
-        @focus="handleEventFocus">
+        class="btn__icon">
             <div :class="classIcon"></div>
     </button>
 </template>
@@ -29,7 +29,7 @@ export default {
         idButtonIcon: {
             type: String,
             default: ""
-        }
+        },
         
     },
     data() {
@@ -38,6 +38,7 @@ export default {
         }
     },
     created() {
+        
     },
     components:{
 
@@ -62,15 +63,7 @@ export default {
             })
         },
 
-        /**
-         * Hàm bắt sự kiện focus vào button rồi gửi ra cho lớp cha xử lý
-         * @param {*} event sự kiện focus
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventFocus(event){
-            this.isFocus = true;
-            this.$emit("handleEventFocus",event.target.id);
-        },
+        
     }
 }
 </script>
@@ -81,7 +74,7 @@ button{
     outline: none;
 }
 
-button:focus{
+/* button:focus{
     outline: 3px solid #bce7f1 !important;
-}
+} */
 </style>

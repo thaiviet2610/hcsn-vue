@@ -120,7 +120,7 @@ menu{
     border-top: 1px solid rgba(212, 208, 208, 0.678);
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .menu_footer__item{
@@ -129,7 +129,7 @@ menu{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    /* margin-right: 12px; */
     border-radius: 8px;
     border: none;
     padding: 0;

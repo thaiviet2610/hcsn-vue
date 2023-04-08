@@ -21,7 +21,6 @@
                 autocomplete="off"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
-                @focus="handleEventFocus"
                 @keydown="handleEventKeydown"
                 @keyup="handleEventKeyup"
                 :key="keyValueInput"
@@ -110,14 +109,6 @@ export default {
         }
     },
     methods: {
-        /**
-         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
-         * @param {*} event sự kiện focus
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventFocus(event){
-            this.$emit("handleEventFocus",event.target.id);
-        },
 
         /**
          * Hàm set focus vào input

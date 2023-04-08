@@ -1,5 +1,4 @@
 <template>
-    
     <!-- thẻ label của combobox  -->
     <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
     <!-- combobox  -->
@@ -17,7 +16,6 @@
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
-            @focus="handleEventFocus"
             :style="this.styleInput">
         <!-- thẻ buton thực hiện chức năng hiện combobox-data  -->
         <MButtonIcon
@@ -202,14 +200,6 @@ export default {
         }
     },
     methods: {
-        /**
-         * Hàm bắt sự kiện focus vào input rồi gửi ra cho lớp cha xử lý
-         * @param {*} event sự kiện focus
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventFocus(event){
-            this.$emit("handleEventFocus",event.target.id);
-        },
 
         /**
          * Hàm thêm sự kiện click hiển thị combobox-data

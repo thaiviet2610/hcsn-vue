@@ -4,7 +4,6 @@
         :id="idButton"
         class="btn--outline"
         @click="addEventClickBtn"
-        @focus="handleEventFocus"
         >
             {{ label }}
     </button>
@@ -58,14 +57,7 @@ export default {
             })
         }, 
 
-        /**
-         * Hàm bắt sự kiện focus vào button rồi gửi ra cho lớp cha xử lý
-         * @param {*} event sự kiện focus
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventFocus(event){
-            this.$emit("handleEventFocus",event.target.id);
-        },
+        
     },
 }
 </script>

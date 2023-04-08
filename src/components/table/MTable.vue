@@ -9,7 +9,6 @@
               ref="mCheckbox_0"
               idCheckbox="idCheckbox_0"
               :checked="checkboxAll"
-              @handleEventFocus="handleEventFocusCheckbox"
               @addOnClick="markCheckboxAll"
               >
             </MCheckbox>
@@ -51,7 +50,6 @@
               :ref="`mCheckbox_${index+1}`"
               :idCheckbox="`idCheckbox_${index+1}`"
               :checked="checkbox[index + 1]"
-              @handleEventFocus="handleEventFocusCheckbox"
               @addOnClick="markCheckbox(index + 1)"
               >
             </MCheckbox>
@@ -103,9 +101,149 @@
         </tr>
 
       </tbody>
-    <!-- phần footer của table  -->
+      <!-- phần footer của table  -->
+            <tfoot>
+                <td colspan="6">
+                  <div class="content-footer__left">
+                    <div class="content-footer__item1">
+                      <div class="content-footer__item1--text">
+                        Tổng số:
+                        <span style="font-family: Roboto-Bold">
+                          {{ formatValue(totalRecord, "money") }}</span
+                        >
+                        bản ghi
+                      </div>
+                    </div>
+                    <div class="dropdown_table">
+                      <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
+                    </div>
+                    <div class="content-footer__item3"> 
+                      <MButtonIcon
+                        v-if="pageNumber==1"
+                        class="content-footer__item3--icon1 cursor--disable"
+                        classIcon="item3__icon1--image"
+                      >
+                      </MButtonIcon>
+                      <MButtonIcon
+                        v-else
+                        @addOnClickBtnIcon="addOnDecreaseNumberPage"
+                        class="content-footer__item3--icon1"
+                        classIcon="item3__icon1--image"
+                      >
+                      </MButtonIcon>
+                      <div v-if="totalPage <= 5" class="content-footer__item3--icon2">
+                        <div
+                          v-for="(item, index) in totalPage"
+                          :key="index"
+                          class="page__index"
+                          @click="addOnClickPageNumber(item)"
+                          :class="{ 'page--selected': item == pageNumber }"
+                        >
+                          <div class="text">{{ item }}</div>
+                        </div>
+                      </div>
+                      <div v-if="totalPage > 5" class="content-footer__item3--icon2">
+                        <div
+                          :class="{ 'page--selected': pageNumber == 1 }"
+                          class="page__index"
+                          @click="addOnClickPageNumber(1)"
+                        >
+                          <div class="text">1</div>
+                        </div>
+                        <div
+                          v-if="pageNumber == 1 || pageNumber == 2 || pageNumber == 3"
+                          :class="{ 'page--selected': pageNumber == 2 }"
+                          @click="addOnClickPageNumber(2)"
+                          class="page__index"
+                        >
+                          <div class="text">2</div>
+                        </div>
+                        <div
+                          v-if="pageNumber == 1 || pageNumber == 2 || pageNumber == 3"
+                          :class="{ 'page--selected': pageNumber == 3 }"
+                          @click="addOnClickPageNumber(3)"
+                          class="page__index"
+                        >
+                          <div class="text">3</div>
+                        </div>
+                        <div v-if="pageNumber > 3" class="item3__icon2--icon">
+                          <div class="icon__ellipsis"></div>
+                        </div>
+                        <div
+                          v-if="pageNumber > 3 && pageNumber < totalPage - 2"
+                          :class="{
+                            'page--selected':
+                              pageNumber > 3 && pageNumber < totalPage - 2,
+                          }"
+                          @click="addOnClickPageNumber(pageNumber)"
+                          class="page__index"
+                        >
+                          <div class="text">{{ pageNumber }}</div>
+                        </div>
+                        <div
+                          v-if="pageNumber < totalPage - 2"
+                          class="item3__icon2--icon"
+                        >
+                          <div class="icon__ellipsis"></div>
+                        </div>
+                        <div
+                          v-if="
+                            pageNumber == totalPage ||
+                            pageNumber == totalPage - 1 ||
+                            pageNumber == totalPage - 2
+                          "
+                          :class="{ 'page--selected': pageNumber == totalPage - 2 }"
+                          @click="addOnClickPageNumber(totalPage - 2)"
+                          class="page__index"
+                        >
+                          <div class="text">{{ totalPage - 2 }}</div>
+                        </div>
+                        <div
+                          v-if="
+                            pageNumber == totalPage ||
+                            pageNumber == totalPage - 1 ||
+                            pageNumber == totalPage - 2
+                          "
+                          :class="{ 'page--selected': pageNumber == totalPage - 1 }"
+                          @click="addOnClickPageNumber(totalPage - 1)"
+                          class="page__index"
+                        >
+                          <div class="text">{{ totalPage - 1 }}</div>
+                        </div>
+                        <div
+                          :class="{ 'page--selected': pageNumber == totalPage }"
+                          @click="addOnClickPageNumber(totalPage)"
+                          class="page__index"
+                        >
+                          <div class="text">{{ totalPage }}</div>
+                        </div>
+                      </div>
+                      <MButtonIcon
+                        v-if="pageNumber==totalPage"
+                        @addOnClickBtnIcon="addOnIncreaseNumberPage"
+                        class="content-footer__item3--icon1 cursor--disable"
+                        classIcon="item3__icon3--image"
+                      >
+                      </MButtonIcon>
+                      <MButtonIcon
+                        v-else
+                        @addOnClickBtnIcon="addOnIncreaseNumberPage"
+                        class="content-footer__item3--icon1"
+                        classIcon="item3__icon3--image"
+                      >
+                      </MButtonIcon>
+                    </div>
+                  </div>
+                </td>
+                <td class="footer_right">{{ formatValue(quantityTotal, "money") }}</td>
+                <td class="column8 footer_right">{{ formatValue(costTotal, "money") }}</td>
+                <td class="footer_right">{{ formatValue(depreciationValueTotal, "money") }}</td>
+                <td class="footer_right">{{ formatValue(residualValueTotal, "money") }}</td>
+                <td></td>
+            </tfoot>
+      
     </table>
-    <table class="footer__table">
+    <!-- <table class="footer__table">
       <tfoot>
         <tr>
           <th class="footer__left">
@@ -234,7 +372,8 @@
           <th class="column12"></th>
         </tr>
       </tfoot>
-    </table>
+    </table> -->
+    
     <!-- dialog load dữ liệu  -->
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
@@ -304,6 +443,8 @@ export default {
       toolTipDepreciation: resourceJS.tooltip.toolTipDepreciation,
       checkboxAll: false,
       checkbox: [],
+      checkboxActive: [],
+      entityCheckboxActive:[],
       quantityCheckbox: 0,
       indexCheckbox: -1,
       itemSelected: null,
@@ -335,21 +476,14 @@ export default {
       indexDeleteEnd: 0,
       indexCheckboxFocus: -1,
       btnDialogNotify: resourceJS.buttonDialog.notify,
-      keyTable: 0
+      keyTable: 0,
     };
   },
 
   computed: {
   },
   methods: {
-    /**
-     * Hàm xử lý sự kiện lấy ra giá trị vị trí checkbox đang được focus
-     * @param {*} value vị trị của checkbox
-     * @author LTVIET (06/03/2023)
-     */
-    handleEventFocusCheckbox(value){
-      this.indexCheckboxFocus = value.slice(11,12);
-    },
+    
     
     /**
      * Hàm xử lý sự kiện click chuột vào table
@@ -421,12 +555,27 @@ export default {
           this.quantityTotal =  res.data.QuantityTotal;
           this.costTotal =  res.data.CostTotal;
           this.depreciationValueTotal =  res.data.DepreciationValueTotal;
-          // this.residualValueTotal =  this.costTotal - this.depreciationValueTotal;
           this.residualValueTotal =  res.data.ResidualValueTotal;
+          
           this.getTotalPage();
           this.reloadTable();
           this.isShowLoad = false;
           this.keyTable = ++this.keyTable;
+          if(!this.checkboxActive[this.pageNumber]){
+            this.checkboxActive[this.pageNumber] = [];
+            this.entityCheckboxActive[this.pageNumber] = [];
+          }
+          if(this.checkboxActive[this.pageNumber].length != 0){
+            if(this.checkboxActive[this.pageNumber].length == this.pageSize){
+              this.markCheckboxAll();
+            }else{
+              this.checkboxActive[this.pageNumber].forEach(element => {
+                this.checkbox[element] = true;
+              });
+            }
+            
+          }
+          
         })
         .catch((error) => {
           console.log(error);
@@ -451,8 +600,7 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     getResidualCost(item) {
-      let value = item.cost - item.depreciation_value;
-      return value > 0 ? value : 0;
+      return item.residual_value > 0 ? item.residual_value : 0;
     },
 
     /**
@@ -477,7 +625,7 @@ export default {
      */
     handleEventClickFunction(title, item) {
       this.clickFunction = true;
-      this.$emit("btnClickFunctionOpenForm", [title, item]);
+      this.$emit("btnClickFunctionOpenForm", [title, item.fixed_asset_id]);
     },
 
     /**
@@ -489,7 +637,7 @@ export default {
     btnAddOnDblClickRowTable(item,index) {
       this.isSelectedRow[index] = false;
       this.indexRowClick = -1;
-      this.$emit("btnDblClickRow", item);
+      this.$emit("btnDblClickRow", item.fixed_asset_id);
     },
 
 
@@ -680,13 +828,16 @@ export default {
         //2.1. nếu checkboxAll = true
         //--> gán giá trị true cho tất cả cac checkbox
         check = true;
+        for(let i = 1;i<=this.pageSize;i++){
+          this.pushCheckboxActive(i);
+        }
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
         check = false;
-        
+        this.checkboxActive[this.pageNumber] = [];
+        this.entityCheckboxActive[this.pageNumber] = [];
       }
-
       this.checkbox.fill(check);
       this.isSelectedRow.fill(check);
       this.indexCheckbox = -1;
@@ -708,7 +859,6 @@ export default {
         this.$refs["mCheckbox_0"].setFocus();
       }
       this.indexCheckboxFocus = index;
-      this.$emit('handleEventFocusCheckbox',this.idTable);
     },
 
     /**
@@ -723,17 +873,52 @@ export default {
         //2.1. nếu checkbox = true thì gán index cho indexCheckbox
         this.indexCheckbox = index;
         this.itemSelected = this.assets[index - 1];
+        this.pushCheckboxActive(index);
         //2.1.2 duyệt từng giá trị của checkbox
         this.checkboxAll = this.checkbox.every(cb => {
           return cb;
         });
+        if(this.checkboxAll){
+          for(let i=1;i<this.pageSize;i++){
+            this.pushCheckboxActive(i);
+          }
+        }
       } else {
         //2.2. nếu checkbox = false 
         this.checkboxAll = false;
         this.isSelectedRow[index] = false;
+        this.popCheckboxActive(index);
       }
       this.setFocusCheckbox(index);
       this.clickCheckbox = true;
+    },
+
+    /**
+     * Hàm thêm các index của chechkbox được tích vào mảng đánh dấu
+     * @param {*} index vị trí của checkbox được tích của từng trang
+     * @author (26/03/2023)
+     */
+    pushCheckboxActive(index){
+      const asset = this.assets[index-1];
+      if(this.checkboxActive[this.pageNumber].indexOf(index) == -1){
+        this.checkboxActive[this.pageNumber].push(index);
+        this.entityCheckboxActive[this.pageNumber].push(asset);
+      }
+    },
+
+    /**
+     * Hàm loại bỏ các index của chechkbox vừa được bỏ tích ra khỏi mảng đánh dấu
+     * @param {*} value vị trí của checkbox được tích của từng trang
+     * @author (26/03/2023)
+     */
+    popCheckboxActive(value){
+      // tìm vị trí của checkbox trong mảng đánh dấu
+      const index = this.checkboxActive[this.pageNumber].indexOf(value);
+      if(index != -1){
+        // nếu tìm thấy thì xóa phần tử đó đi
+        this.checkboxActive[this.pageNumber].splice(index,1);
+        this.entityCheckboxActive[this.pageNumber].splice(index,1);
+      }
     },
 
     /**
@@ -752,9 +937,9 @@ export default {
      */
     getQuantityCheckbox(){
       let quantity = 0;
-      for(let i=1; i <= this.pageSize; i++){
-        if(this.checkbox[i]){
-          quantity += 1;
+      for(let i=1; i < this.checkboxActive.length; i++){
+        for(let j=0; j < this.checkboxActive[i].length; j++){
+          quantity+=1;
         }
       }
       this.quantityCheckbox = quantity;
@@ -765,17 +950,13 @@ export default {
      * @author LTVIET (15/03/2023)
      */
     getItemSelected() {
-      let checkboxSelected = [];
-      for (let i = 0; i < this.assets.length; i++) {
-        if (this.checkbox[i + 1]) {
-          checkboxSelected.push(this.assets[i]);
+      let entitiesCheckboxActive = [];
+      for(let i=1; i<this.entityCheckboxActive.length;i++){
+        for(let j=0;j<this.entityCheckboxActive[i].length;j++){
+          entitiesCheckboxActive.push(this.entityCheckboxActive[i][j]);
         }
       }
-      if (checkboxSelected.length == 1) {
-        return this.itemSelected;
-      } else {
-        return checkboxSelected;
-      }
+      return entitiesCheckboxActive;
     },
     /**
      * Hàm set style cho icon function khi click vào checkbox

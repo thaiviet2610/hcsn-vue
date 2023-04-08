@@ -80,3 +80,7 @@
 .btn-header__icon:hover{
     background-color: white;
 }
+
+.btn__icon:focus{
+    outline: 3px solid #bce7f1 ;
+}
