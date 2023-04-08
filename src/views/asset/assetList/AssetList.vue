@@ -9,8 +9,7 @@
                     <div class="input1">
                         <MInput 
                             @keydownEnter ="handleEventKeydownEnterInputSearch"
-                            :idInput="idElements[0]"
-                            :ref="refElements[0]"
+                            :ref="refElements.inputSearch"
                             placeholder="Tìm kiếm tài sản"
                             :iconInput="true"
                             typeValue="text">
@@ -21,8 +20,7 @@
                         <MCombobox  
                             :isIcon="true" 
                             :api="this.assetCategoryApi"
-                            :idCombobox="idElements[1]"
-                            :ref="refElements[1]"
+                            :ref="refElements.comboboxAssetCategory"
                             propName="fixed_asset_category_name" 
                             placeholder="Loại tài sản" 
                             :itemHeight = "36"
@@ -36,8 +34,7 @@
                         <MCombobox  
                             :is-icon="true" 
                             :api="this.departApi"
-                            :idCombobox="idElements[2]"
-                            :ref="refElements[2]"
+                            :ref="refElements.comboboxDepartment"
                             propName="department_name" 
                             placeholder="Bộ phận sử dụng" 
                             propValue="department_id"
@@ -50,30 +47,27 @@
                 <div class="content-header__right">
                     <!-- button thêm tài sản  -->
                     <MButton
-                        :idButton="idElements[3]"
-                        :ref="refElements[3]"
+                        :ref="refElements.buttonAdd"
                         label=" + Thêm tài sản"
-                        data_tooltip_bottom="Ctrl+1"
+                        :data_tooltip_bottom="tootltipBtnAdd"
                         class="item1 btn--main"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
                     <!-- button xuất dữu liệu ra excel  -->
                     <MButtonIcon
                         class="item2"
-                        :idButtonIcon="idElements[4]"
-                        :ref="refElements[4]"
+                        :ref="refElements.buttonExport"
                         classIcon="item2__icon--image"
-                        data_tooltip_bottom="Xuất ra Excel(Ctrl+P)"
+                        :data_tooltip_bottom="tootltipBtnExcel"
                         @addOnClickBtnIcon="addOnClicKBtnExportExcel">
                     </MButtonIcon>
                     
                     <!-- button xóa tài sản  -->
                     <MButtonIcon
                         class="item3"
-                        :idButtonIcon="idElements[5]"
-                        :ref="refElements[5]"
+                        :ref="refElements.buttonDelete"
                         classIcon="item3__icon--image"
-                        data_tooltip_bottom="Xóa tài sản(Ctrl+D)"
+                        :data_tooltip_bottom="tootltipBtnDelete"
                         @addOnClickBtnIcon="btnOnClick">
                     </MButtonIcon>
                 </div>
@@ -82,8 +76,7 @@
             <div class="content-body">
                 <!-- table hiển thị danh sách tài sản  -->
                 <Mtable 
-                    :ref="refElements[6]"
-                    :idTable="idElements[6]"
+                    :ref="refElements.table"
                     @btnDblClickRow="handleEventDblClickRow"
                     @btnClickFunctionOpenForm="handleEventOpenForm"
                     :departmentId="departmentId"
@@ -221,11 +214,13 @@ export default {
             previousKeyShift: false,
             indexDeleteStart: 0,
             indexDeleteEnd: 0,
-            idElements: resourceJS.assetList.idElementAssetList,
             refElements: resourceJS.assetList.refElementAssetList ,
             btnDialogExcel: resourceJS.buttonDialog.exportExcel,
             btnDialogDelete: resourceJS.buttonDialog.delete,
-            btnDialogNotify: resourceJS.buttonDialog.notify
+            btnDialogNotify: resourceJS.buttonDialog.notify,
+            tootltipBtnExcel: resourceJS.tooltip.assetList.buttonExcel,
+            tootltipBtnDelete: resourceJS.tooltip.assetList.buttonDelete,
+            tootltipBtnAdd: resourceJS.tooltip.assetList.buttonAdd,
         }
     },
 
@@ -268,7 +263,7 @@ export default {
         btnClickOpenForm() {
             this.isShowToastSucess = false;
             this.isShowForm = true;
-            this.typeForm = enumJS.typeForm.add;
+            this.typeForm = enumJS.type.add;
             this.labelForm = resourceJS.titlteForm.addAssetForm;
             this.getNewCode();
         },
@@ -296,9 +291,9 @@ export default {
             this.isShowToastSucess = false;
             this.labelForm = values[0];
             if(this.labelForm == resourceJS.titlteForm.editAssetForm){
-                this.typeForm = enumJS.typeForm.edit;
+                this.typeForm = enumJS.type.edit;
             }else{
-                this.typeForm = enumJS.typeForm.clone;
+                this.typeForm = enumJS.type.clone;
                 this.getNewCode();
             }
             this.isShowToastSucess = false;
@@ -333,7 +328,7 @@ export default {
             this.isShowToastSucess = false;
             this.isShowForm = true;
             this.getAssetById(id);
-            this.typeForm = enumJS.typeForm.edit;
+            this.typeForm = enumJS.type.edit;
             this.labelForm = resourceJS.titlteForm.editAssetForm;
         },
 
@@ -343,7 +338,7 @@ export default {
          */
         btnOnClick(){
             //1. lấy số lượng checkbox = true từ table
-            this.quantityCheckbox = this.$refs[this.refElements[6]].quantityCheckbox;
+            this.quantityCheckbox = this.$refs[this.refElements.table].quantityCheckbox;
             //2. kiểm tra số lượng 
             if(this.quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
@@ -372,7 +367,7 @@ export default {
          */
         showDialogConfirmDeleteOne(){
             // 1. lấy thông tin của tài sản đó
-            let asset = this.$refs[this.refElements[6]].getItemSelected();
+            let asset = this.$refs[this.refElements.table].getItemSelected();
             let codeAsset = asset[0].fixed_asset_code;
             let nameAsset = asset[0].fixed_asset_name;
             // 2. hiển thị thông báo xác nhận có muốn xóa không
@@ -400,7 +395,7 @@ export default {
          * @author LTVIET (26/03/2023)
          */
         setFocusDefault(){
-            this.$refs[this.refElements[0]].setFocus();
+            this.$refs[this.refElements.inputSearch].setFocus();
         },
 
         /**
@@ -422,7 +417,7 @@ export default {
                 return;
             }
             // 2.Nếu click button "Xóa"
-            let checkboxSelected = this.$refs[this.refElements[6]].getItemSelected();
+            let checkboxSelected = this.$refs[this.refElements.table].getItemSelected();
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 // 2.1. Nếu xóa 1 tài sản
                 this.handleEventCloseDialogDeleteOne(checkboxSelected[0]);
@@ -452,8 +447,8 @@ export default {
             if(id){
                 this.deleteAsset(id);
             }
-            this.$refs[this.refElements[6]].reloadTable();
-            this.$refs[this.refElements[6]].checkboxActive = [];
+            this.$refs[this.refElements.table].reloadTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
         },
 
         /**
@@ -472,8 +467,8 @@ export default {
                 assetsId.push(id);
             }
             this.deleteMultipleAsset(assetsId);
-            this.$refs[this.refElements[6]].reloadTable();
-            this.$refs[this.refElements[6]].checkboxActive = [];
+            this.$refs[this.refElements.table].reloadTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
         },
 
         /**
@@ -485,8 +480,8 @@ export default {
             .then(res=>{
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
-                this.$refs[this.refElements[6]].pageNumber = 1;
-                this.$refs[this.refElements[6]].loadData();
+                this.$refs[this.refElements.table].pageNumber = 1;
+                this.$refs[this.refElements.table].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -518,8 +513,8 @@ export default {
             .then( res=>{
                 console.log(res);
                 //gọi hàm load lại dữ liệu table
-                this.$refs[this.refElements[6]].pageNumber = 1;
-                this.$refs[this.refElements[6]].loadData();
+                this.$refs[this.refElements.table].pageNumber = 1;
+                this.$refs[this.refElements.table].loadData();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -575,10 +570,10 @@ export default {
          */
         handleEventSaveForm(){
             this.isShowForm = false;
-            this.$refs[this.refElements[6]].pageNumber = 1;
-            this.$refs[this.refElements[6]].loadData();
+            this.$refs[this.refElements.table].pageNumber = 1;
+            this.$refs[this.refElements.table].loadData();
             let message = resourceJS.toastSuccess.saveSuccess;
-            this.$refs["mTable"].checkboxActive = [];
+            this.$refs[this.refElementAssetList.table].checkboxActive = [];
             this.showToastSucess(message);
             
         },
@@ -630,6 +625,9 @@ export default {
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
+                this.$refs[this.refElementAssetList.table].checkboxActive = [];
+                this.$refs[this.refElementAssetList.table].entityCheckboxActive = [];
+                this.$refs[this.refElementAssetList.table].checkbox.fill(false);
                 this.setFocusDefault();
             })
             .catch(error => {
@@ -717,7 +715,7 @@ export default {
          * @author LTVIET (26/06/2023)
          */
         addOnClickAssetList(){
-            this.$refs[this.refElements[6]].isShowContextMenu = false;
+            this.$refs[this.refElements.table].isShowContextMenu = false;
         },
         
         /**
@@ -729,16 +727,16 @@ export default {
             let index = values[1];
             let item = values[0];
             switch (index) {
-                case enumJS.contextMenu.add:
+                case enumJS.type.add:
                     this.btnClickOpenForm();
                     break;
-                case enumJS.contextMenu.clone:
+                case enumJS.type.clone:
                     this.addOnClickContextMenuClone(item);
                     break;
-                case enumJS.contextMenu.edit:
+                case enumJS.type.edit:
                     this.addOnClickContextMenuEdit(item);
                     break;
-                case enumJS.contextMenu.delete:
+                case enumJS.type.delete:
                     this.addOnClickContextMenuDelete(item)
                     break;
                 default:
@@ -752,7 +750,7 @@ export default {
          */
         addOnClickContextMenuClone(item){
             this.labelForm = resourceJS.titlteForm.cloneAssetForm;
-            this.typeForm = enumJS.typeForm.clone;
+            this.typeForm = enumJS.type.clone;
             this.getNewCode();
             this.isShowToastSucess = false;
             this.isShowForm = true;
@@ -766,7 +764,7 @@ export default {
          */
         addOnClickContextMenuEdit(item){
             this.labelForm = resourceJS.titlteForm.editAssetForm;
-            this.typeForm = enumJS.typeForm.edit;
+            this.typeForm = enumJS.type.edit;
             this.isShowToastSucess = false;
             this.isShowForm = true;
             this.getAssetById(item.fixed_asset_id);
@@ -834,7 +832,7 @@ export default {
                     case enumJS.keyAlt:
                         event.preventDefault();
                         console.log(keyCode);
-                        this.$refs[this.refElements[6]].markCheckboxAll();
+                        this.$refs[this.refElements.table].markCheckboxAll();
                         break;
                     default:
                         break;
@@ -854,7 +852,7 @@ export default {
                         this.indexDeleteStart = value;
                     }
                     this.indexDeleteEnd = value;
-                    let table = this.$refs[this.refElements[6]];
+                    let table = this.$refs[this.refElements.table];
                     table.checkbox.fill(false);
                     if(this.indexDeleteStart <= this.indexDeleteEnd){
                         for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
@@ -879,7 +877,7 @@ export default {
          */
         handleEventKeyStrokesCtrl(event,keyCode){
             if(this.previousKeyCtrl){
-                let table = this.$refs[this.refElements[6]];
+                let table = this.$refs[this.refElements.table];
                 switch (keyCode) {
                     // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:

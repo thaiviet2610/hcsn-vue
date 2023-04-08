@@ -3,7 +3,7 @@
         :style="styleContextMenu">
         <div class="context__menu--item"
             v-for="(item,index) in data" :key="index"
-            @click="addOnClick(index)">
+            @click="addOnClick(item)">
                 <div class="item--icon">
                     <div :class="item.icon"></div>
                 </div>
@@ -43,12 +43,12 @@ export default {
     methods: {
         /**
          * Hàm xử lý sự kiện click vào item của contextmenu thì gửi giá trị đó ra ngoài lớp cha
-         * @param {*} index vị tí item được chọn
+         * @param {*} item item được chọn
          * @author LTVIET (06/03/2023)
          */
-        addOnClick(index){
+        addOnClick(item){
             if(this.entity){
-                this.$emit("addOnClickItem",[index,this.entity]);
+                this.$emit("addOnClickItem",[item.type,this.entity]);
             }
         }
     },

@@ -23,7 +23,11 @@ th{
     height: 38px;
     box-sizing: border-box;
     border-bottom: 1px solid #afafaf;
+    /* resize: horizontal;
+    overflow: auto; */
 }
+
+
 
 td{
     height: 40px;
@@ -83,10 +87,6 @@ tfoot{
     opacity: 100%;
 }
 
-th .column7{
-    resize: horizontal;
-    overflow: auto;
-}
 
 
 
@@ -127,7 +127,7 @@ th .column7{
 
 .column3{
     /* width: 80px; */
-    min-width: min-content;
+    min-width: 70px;
     padding-right: 10px;
 }
 

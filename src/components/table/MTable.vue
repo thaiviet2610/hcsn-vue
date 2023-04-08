@@ -22,7 +22,7 @@
           <th class="column8 text-align-right">Nguyên giá</th>
           <th
             class="column9 text-align-right"
-            :data_tooltip_bottom="toolTipDepreciation"
+            :data_tooltip_bottom="tooltipDepreciation"
           >
             HM/KH lũy kế
           </th>
@@ -55,7 +55,7 @@
             </MCheckbox>
           </td>
           <td class="column2 text-align-center" type="stt">
-            {{ (pageNumber - 1) * pageSize + index + 1 }}
+            {{ item.index }}
           </td>
           <td class="column3 text-align-left">{{ item.fixed_asset_code }}</td>
           <td class="column4 text-align-left">{{ item.fixed_asset_name }}</td>
@@ -65,23 +65,23 @@
           <td class="column6 text-align-left column6--text"
             >{{ item.department_name }}</td>
           <td class="column7 text-align-right">
-            {{ formatValue(item.quantity, "money") }}
+            {{ formatValue(item.quantity, typeMoney) }}
           </td>
           <td class="column8 text-align-right">
-            {{ formatValue(item.cost, "money") }}
+            {{ formatValue(item.cost, typeMoney) }}
           </td>
           <td class="column9 text-align-right">
-            {{ formatValue(item.depreciation_value, "money") }}
+            {{ formatValue(item.depreciation_value, typeMoney) }}
           </td>
           <td class="column10 text-align-right">
-            {{ formatValue(getResidualCost(item), "money") }}
+            {{ formatValue(getResidualCost(item), typeMoney) }}
           </td>
           <td class="column11 text-align-center">
             <div class="function" :style="styleFunction(index + 1)">
               <!-- chức năng sửa tài sản trong table  -->
               <MButtonIcon
                 class="function__edit"
-                data_tooltip_bottom="Sửa (Ctrl+E)"
+                :data_tooltip_bottom= "tooltipFunctionEdit"
                 @addOnClickBtnIcon="
                   handleEventClickFunction(titleEditAssetForm, item)
                 "
@@ -90,7 +90,7 @@
               <!-- chức năng nhân bản tài sản trong table  -->
               <MButtonIcon
                 class="function__clone"
-                data_tooltip_bottom="Nhân bản (Ctrl+0)"
+                :data_tooltip_bottom="tooltipFunctionClone"
                 @addOnClickBtnIcon="
                   handleEventClickFunction(titleCloneAssetForm, item)
                 "
@@ -109,7 +109,7 @@
                       <div class="content-footer__item1--text">
                         Tổng số:
                         <span style="font-family: Roboto-Bold">
-                          {{ formatValue(totalRecord, "money") }}</span
+                          {{ formatValue(totalRecord, typeMoney) }}</span
                         >
                         bản ghi
                       </div>
@@ -235,10 +235,10 @@
                     </div>
                   </div>
                 </td>
-                <td class="footer_right">{{ formatValue(quantityTotal, "money") }}</td>
-                <td class="column8 footer_right">{{ formatValue(costTotal, "money") }}</td>
-                <td class="footer_right">{{ formatValue(depreciationValueTotal, "money") }}</td>
-                <td class="footer_right">{{ formatValue(residualValueTotal, "money") }}</td>
+                <td class="footer_right">{{ formatValue(quantityTotal, typeMoney) }}</td>
+                <td class="column8 footer_right">{{ formatValue(costTotal, typeMoney) }}</td>
+                <td class="footer_right">{{ formatValue(depreciationValueTotal, typeMoney) }}</td>
+                <td class="footer_right">{{ formatValue(residualValueTotal, typeMoney) }}</td>
                 <td></td>
             </tfoot>
       
@@ -310,7 +310,9 @@ export default {
       isShowForm: false,
       assetInput: null,
       assets: [],
-      toolTipDepreciation: resourceJS.tooltip.toolTipDepreciation,
+      tooltipDepreciation: resourceJS.tooltip.table.tooltipDepreciation,
+      tooltipFunctionEdit: resourceJS.tooltip.table.functionEdit,
+      tooltipFunctionClone: resourceJS.tooltip.table.functionClone,
       checkboxAll: false,
       checkbox: [],
       checkboxActive: [],
@@ -347,6 +349,7 @@ export default {
       indexCheckboxFocus: -1,
       btnDialogNotify: resourceJS.buttonDialog.notify,
       keyTable: 0,
+      typeMoney: enumJS.typeValue.money
     };
   },
 
@@ -435,6 +438,7 @@ export default {
             this.checkboxActive[this.pageNumber] = [];
             this.entityCheckboxActive[this.pageNumber] = [];
           }
+
           if(this.checkboxActive[this.pageNumber].length != 0){
             if(this.checkboxActive[this.pageNumber].length == this.pageSize){
               this.markCheckboxAll();
@@ -443,7 +447,6 @@ export default {
                 this.checkbox[element] = true;
               });
             }
-            
           }
           
         })
@@ -480,9 +483,9 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     formatValue(value, type) {
-      if (type == "money") {
+      if (type == enumJS.typeValue.money) {
         return commonJS.formatMoney(value);
-      } else if (type == "date") {
+      } else if (type == enumJS.typeValue.date) {
         return commonJS.formatDate(value);
       }
     },
@@ -769,6 +772,10 @@ export default {
      * @author (26/03/2023)
      */
     pushCheckboxActive(index){
+      if(!this.checkboxActive[this.pageNumber]){
+        this.checkboxActive[this.pageNumber] = [];
+        this.entityCheckboxActive[this.pageNumber] = [];
+      }
       const asset = this.assets[index-1];
       if(this.checkboxActive[this.pageNumber].indexOf(index) == -1){
         this.checkboxActive[this.pageNumber].push(index);

@@ -5,7 +5,7 @@
         <!-- input hiển thị dư liệu, không được nhập (nếu disable)  -->
         <input 
             ref="mInput"
-            :class="[{'inputNumber':typeValue=='number'}]"
+            :class="[{'inputNumber':typeValue==typeNumber}]"
             class="classInput" 
             style="background-color: #f5f5f5;"
             :disabled="true"
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import enumJS from '@/js/enum'
 export default {
     name:"MInputDisable",
     props: {
@@ -49,6 +50,7 @@ export default {
     },
     data() {
         return {
+            typeNumber: enumJS.typeValue.number
         }
     },
     created() {

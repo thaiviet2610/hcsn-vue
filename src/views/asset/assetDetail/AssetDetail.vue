@@ -11,7 +11,7 @@
                     <MButtonIcon
                         class="btn-header__icon"
                         classIcon="form-header__icon"
-                        data_tooltip_bottom="Đóng (Esc)"
+                        :data_tooltip_bottom="tootltipBtnCloseForm"
                         @addOnClickBtnIcon="handleEventBtnClickCancel">
                     </MButtonIcon>
                 </div>
@@ -26,9 +26,8 @@
                                     :required="true"
                                     @getValueEventInput="GetValueAssetCode"
                                     :valueInput="asset.fixed_asset_code"
-                                    placeholder="Nhập mã tài sản"
-                                    typeValue="text"
-                                    label="Mã tài sản"
+                                    :placeholder="assetDetailInfo.assetCode.placeholder"
+                                    :label="assetDetailInfo.assetCode.label"
                                     :key="keyAssetCode">
                                 </MInput>
                             </div>
@@ -38,11 +37,10 @@
                                 <MInput 
                                     :ref="refElemnts.assetName"
                                     :required="true"
-                                    placeholder="Nhập tên tài sản"
+                                    :placeholder="assetDetailInfo.assetName.placeholder"
                                     @getValueEventInput="GetValueAssetName"
                                     :valueInput="asset.fixed_asset_name"
-                                    typeValue="text"
-                                    label="Tên tài sản">
+                                    :label="assetDetailInfo.assetName.label">
                                 </MInput>
                                 <!-- <input type="number" class="classInput"> -->
                             </div>
@@ -57,8 +55,8 @@
                                         :required="true"
                                         :api="this.departApi"
                                         propName="department_code" 
-                                        placeholder="Nhập mã bộ phận sử dụng" 
-                                        label="Mã bộ phận sử dụng"
+                                        :placeholder="assetDetailInfo.departmentCode.placeholder" 
+                                        :label="assetDetailInfo.departmentCode.label"
                                         propValue="department_id" 
                                         :itemHeight = 36
                                         :quantityItem = 4
@@ -72,10 +70,9 @@
                             <div class="up-right">
                                 <!-- input nhập tên bộ phận sử dụng  -->
                                 <MInputDisable
-                                    ref="txtDepartmentName"
-                                    placeholder="Nhập tên bộ phận sử dụng"
+                                    :placeholder="assetDetailInfo.departmentName.placeholder"
                                     :value="this.asset.department_name"
-                                    label="Tên bộ phận sử dụng"
+                                    :label="assetDetailInfo.departmentName.label"
                                     >
                                 </MInputDisable>
                             </div>
@@ -89,8 +86,8 @@
                                     :required="true" 
                                     :api="this.assetCategoryApi"
                                     propName="fixed_asset_category_code" 
-                                    placeholder="Nhập mã loại tài sản" 
-                                    label="Mã loại tài sản"
+                                    :placeholder="assetDetailInfo.assetCategoryCode.placeholder" 
+                                    :label="assetDetailInfo.assetCategoryCode.label"
                                     :itemHeight = 36
                                     :quantityItem = 4
                                     propValue="fixed_asset_category_id" 
@@ -103,9 +100,8 @@
                             <div class="up-right">
                                 <!-- input nhập tên loại tài sản  -->
                                 <MInputDisable 
-                                    ref="txtAssetCategoryName"
-                                    placeholder="Nhập tên loại tài sản"
-                                    label="Tên loại tài sản"
+                                    :placeholder="assetDetailInfo.assetCategoryName.placeholder"
+                                    :label="assetDetailInfo.assetCategoryName.label"
                                     :value="this.asset.fixed_asset_category_name"
                                     >
                                 </MInputDisable>
@@ -119,13 +115,13 @@
                                 <MInputNumber
                                     :ref="refElemnts.quantity"
                                     :required="true"
-                                    placeholder="Nhập số lượng"
+                                    :placeholder="assetDetailInfo.quantity.placeholder"
                                     :valueInput="asset.quantity"
                                     @getValueInput="getValueQuantity"
                                     @getValueEventInput="getValueQuantity"
                                     :buttonInput="true"
-                                    :stepValue= 1
-                                    label="Số lượng"
+                                    :stepValue= "1"
+                                    :label="assetDetailInfo.quantity.label"
                                     >
                                 </MInputNumber>
                             </div>
@@ -136,12 +132,11 @@
                                     :ref="refElemnts.cost"
                                     :required="true"
                                     :stepValue="1"
-                                    placeholder="Nhập nguyên giá"
-                                    typeValue="number"
+                                    :placeholder="assetDetailInfo.cost.placeholder"
                                     @getValueInput="getValueCostInput"
                                     @getValueEventInput="getValueCostInput"
                                     :valueInput="asset.cost"
-                                    label="Nguyên giá"
+                                    :label="assetDetailInfo.cost.label"
                                     >
                                 </MInputNumber>
                             </div>
@@ -152,9 +147,8 @@
                                     :ref="refElemnts.lifeTime"
                                     :required="true"
                                     :stepValue="1"
-                                    placeholder="Nhập số năm sử dụng"
-                                    label="Số năm sử dụng"
-                                    typeValue="number"
+                                    :placeholder="assetDetailInfo.lifeTime.placeholder"
+                                    :label="assetDetailInfo.lifeTime.label"
                                     @getValueInput="getValueLifeTime"
                                     @getValueEventInput="getValueLifeTime"
                                     :key="keyLifeTime"
@@ -167,38 +161,35 @@
                             <div class="down-left">
                                 <!-- input nhập tỷ lệ hao mòn  -->
                                 <MInputDisable
-                                    ref="txtDepreciationRate"
                                     :required="true"
-                                    placeholder="Nhập tỷ lệ hao mòn (%)"
-                                    label="Tỷ lệ hao mòn (%)"
+                                    :placeholder="assetDetailInfo.depreciationRate.placeholder"
+                                    :label="assetDetailInfo.depreciationRate.label"
                                     :value="depreciationRate"
                                     :key="keyDepreciationRate"
-                                    typeValue="number"
+                                    :typeValue="typeNumber"
                                     >
                                 </MInputDisable>
                             </div>
                             <div class="down-center">
                                 <!-- input nhập giá trị hao mòn  -->
                                 <MInputDisable
-                                    ref="txtDepreciationValueYear"
                                     :required="true"
-                                    placeholder="Nhập giá trị hao mòn năm"
-                                    label="Giá trị hao mòn năm"
+                                    :placeholder="assetDetailInfo.depreciationValueYear.placeholder"
+                                    :label="assetDetailInfo.depreciationValueYear.label"
                                     :value="depreciationValueYear"
                                     :key="keyDepreciationValueYear"
-                                    typeValue="number"
+                                    :typeValue="typeNumber"
                                     >
                                 </MInputDisable>
                             </div>
                             <div class="down-right">
                                 <!-- inptu nhập năm theo dõi  -->
                                 <MInputDisable
-                                    ref="txtTrackedYear"
                                     :required="true"
-                                    placeholder="Nhập năm theo dõi"
-                                    label="Năm theo dõi"
+                                    :placeholder="assetDetailInfo.trackedYear.placeholder"
+                                    :label="assetDetailInfo.trackedYear.label"
                                     :value="asset.tracked_year"
-                                    typeValue="number"
+                                    :typeValue="typeNumber"
                                     >
                                 </MInputDisable>
                             </div>
@@ -209,8 +200,8 @@
                                 
                                 <MInputDate
                                     :ref="refElemnts.purchaseDate"
-                                    label="Ngày mua"
-                                    format="dd/mm/yyyy"
+                                    :label="assetDetailInfo.purchaseDate.label"
+                                    :format="formatDate"
                                     :valueInputDate="asset.purchase_date"
                                     @getValueInputDate="getValuePurchaseDate"
                                     :required="true"
@@ -222,8 +213,8 @@
                                 <!-- input nhập ngày bắt đầu sử dụng  -->
                                 <MInputDate
                                     :ref="refElemnts.productionYear"
-                                    label="Ngày bắt đầu sử dụng"
-                                    format="dd/mm/yyyy"
+                                    :label="assetDetailInfo.productionYear.label"
+                                    :format="formatDate"
                                     :valueInputDate="asset.production_year"
                                     @getValueInputDate="getValueProductionYear"
                                     :required="true"
@@ -239,15 +230,15 @@
                 <div class="form-footer">
                     <!-- button lưu form  -->
                     <MButton
-                        ref="btnSave"
                         class="btn--main"
-                        label="Lưu"
+                        :label="assetDetailInfo.buttonSave.label"
+                        :data_tooltip_bottom="tootltipSaveForm"
                         @btnAddOnClickBtn="handleEventBtnClickSave">
                     </MButton>
                     <!-- button hủy form  -->
                     <MButton
-                        ref="btnCancel"
-                        label="Hủy"
+                        :label="assetDetailInfo.buttonCancel.label"
+                        :data_tooltip_bottom="tootltipCancelForm"
                         style="border: 0;"
                         @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                     </MButton>
@@ -352,7 +343,13 @@ export default {
             btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
             btnDialogNotify: resourceJS.buttonDialog.notify,
-            keyAssetDetail: 0
+            keyAssetDetail: 0,
+            tootltipBtnCloseForm: resourceJS.tooltip.assetDetail.btnCloseForm,
+            tootltipSaveForm: resourceJS.tooltip.assetDetail.saveForm,
+            tootltipCancelForm: resourceJS.tooltip.assetDetail.cancelForm,
+            assetDetailInfo: resourceJS.assetDetail,
+            formatDate: resourceJS.date.format.ddMMyyyy,
+            typeNumber: enumJS.typeValue.number
         }
     },
 
@@ -368,7 +365,7 @@ export default {
     
     created() {
         
-        if(this.typeForm == enumJS.typeForm.add){
+        if(this.typeForm == enumJS.type.add){
             // Nếu là form thêm tài sản (chưa có dữ liệu)
             this.getDefaultAsset();
             this.asset.fixed_asset_code = this.propAssetCode;
@@ -381,7 +378,7 @@ export default {
                 this.oldValueAseet = JSON.stringify(this.assetInput);
                 //--> khai báo 1 biến mới và gán giá trị lưu trữ vào biến mới đó
                 this.asset = JSON.parse(this.oldValueAseet);
-                if(this.typeForm==enumJS.typeForm.clone){
+                if(this.typeForm==enumJS.type.clone){
                     this.asset.fixed_asset_code = this.propAssetCode;
                     this.oldValueAseet = JSON.stringify(this.asset);
                     //--> khai báo 1 biến mới và gán giá trị lưu trũ vào biến mới đó
@@ -440,10 +437,10 @@ export default {
          */
         handleEventBtnClickCancel(){
             let newValueAsset = JSON.stringify(this.asset);
-            if(this.typeForm == enumJS.typeForm.add || this.typeForm == enumJS.typeForm.clone){
+            if(this.typeForm == enumJS.type.add || this.typeForm == enumJS.type.clone){
                 this.isShowDialogAddFormCancel = true;
             }
-            if(this.typeForm == enumJS.typeForm.edit ){
+            if(this.typeForm == enumJS.type.edit ){
                 if(newValueAsset != this.oldValueAseet){
                     this.isShowDialogEditFormCancel = true;
                 }else{
@@ -482,9 +479,9 @@ export default {
                     active: false
                 }
                 this.isShowLoad = true;
-                if(this.typeForm==enumJS.typeForm.add || this.typeForm == enumJS.typeForm.clone){
+                if(this.typeForm==enumJS.type.add || this.typeForm == enumJS.type.clone){
                     this.addAsset(entity);
-                }else if(this.typeForm == enumJS.typeForm.edit){
+                }else if(this.typeForm == enumJS.type.edit){
                     this.updateAsset(entity);
                 }
             }  

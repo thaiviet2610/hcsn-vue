@@ -34,17 +34,19 @@ const enumJS = {
         deleteFailed : 6,
         notFound : 7,
     },
-    contextMenu:{
-        add: 0,
-        clone: 1,
-        edit: 2,
-        delete: 3,
-    },
-    typeForm: {
+    type: {
         add: 1,
         clone: 2,
         edit: 3,
+        delete: 4
     },
+    typeValue: {
+        text: 1,
+        number: 2,
+        boolean: 3,
+        date: 4,
+        money: 5
+    }
 }
 
 export default enumJS;

@@ -2,7 +2,7 @@
     <!-- thẻ label của combobox  -->
     <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
     <!-- combobox  -->
-    <div class="combobox" :style="'z-index:'+this.zIndex" :data_tooltip_top="value.length>24?value:null">
+    <div class="combobox" :style="'z-index:'+this.zIndex" :data_tooltip_top="value.length>23?value:null">
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
@@ -23,7 +23,7 @@
             class="combobox__button"
             @mousedown="onMouseDownInput" 
             classIcon="combobox__button--image-open"
-            
+            tabindex="-1"
             @addOnClickBtnIcon="btnOpenDropdown">
         </MButtonIcon>
         <!-- thẻ buton thực hiện chức năng ẩn combobox-data  -->
@@ -32,6 +32,7 @@
             class="combobox__button"
             @mousedown="onMouseDownInput" 
             classIcon="combobox__button--image-close"
+            tabindex="-1"
             @addOnClickBtnIcon="btnCloseDropdown">
         </MButtonIcon>
         <!-- thẻ button thực hiện chức năng lọc (nếu có)  -->

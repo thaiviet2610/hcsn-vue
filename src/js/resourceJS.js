@@ -1,3 +1,5 @@
+import enumJS from "./enum";
+
 const resourceJS = {
     assetDetail: {
         assetCode : {
@@ -53,6 +55,12 @@ const resourceJS = {
         },
         productionYear:{
             label: "Năm bắt đầu sử dụng"
+        },
+        buttonSave:{
+            label: "Lưu"
+        },
+        buttonCancel:{
+            label: "Hủy"
         },
         refAssetDetail: {
             assetCode: 'txtAssetCode',
@@ -123,8 +131,21 @@ const resourceJS = {
         cloneAssetForm: "Nhân bản tài sản"
     },
     tooltip: {
-        toolTipDepreciation: "Hao mòn/Khấu hao lũy kế",
-
+        table:{
+            tooltipDepreciation: "Hao mòn/Khấu hao lũy kế",
+            functionEdit: "Sửa (Ctrl+E)",
+            functionClone: "Nhân bản (Ctrl+0)"
+        },
+        assetList:{
+            buttonExcel: "Xuất ra Excel(Ctrl+P)",
+            buttonDelete: "Xóa tài sản(Ctrl+D)",
+            buttonAdd: "Ctrl+1"
+        },
+        assetDetail:{
+            btnCloseForm: "Đóng (Esc)",
+            saveForm: "Ctrl+s",
+            cancelForm: "Esc"
+        }
     },
     searchAssetPlaceholder: "Tìm kiếm tài sản",
     inputDate: {
@@ -134,36 +155,110 @@ const resourceJS = {
     },
     table: {
         dataContextMenu: 
-        [
-            {
-            icon: "context__menu--icon-add",
-            text: "Thêm tài sản"
+        {
+            add: {
+                icon: "context__menu--icon-add",
+                text: "Thêm tài sản",
+                type: 1
             },
-            {
-            icon: "context__menu--icon-clone",
-            text: "Nhân bản tài sản"
+            clone: {
+                icon: "context__menu--icon-clone",
+                text: "Nhân bản tài sản",
+                type: 2
             },
-            {
-            icon: "context__menu--icon-edit",
-            text: "Sửa tài sản"
+            edit: {
+                icon: "context__menu--icon-edit",
+                text: "Sửa tài sản",
+                type: 3
             },
-            {
-            icon: "context__menu--icon-delete",
-            text: "Xóa tài sản"
+            delete: {
+                icon: "context__menu--icon-delete",
+                text: "Xóa tài sản",
+                type: 4
             }
-        ],
+        },
         dataPageSize: ["15", "50", "100","150"],
+        dataTitleColumn:[
+            {
+                titlte: "STT",
+                propName: "index",
+                columnClass: "column2",
+                typeValue: enumJS.typeValue.number
+            },
+            {
+                titlte: "Mã tài sản",
+                propName: "fixed_asset_code",
+                columnClass: "column3",
+                typeValue: enumJS.typeValue.text
+            },
+            {
+                titlte: "Tên tài sản",
+                propName: "fixed_asset_name",
+                columnClass: "column4",
+                typeValue: enumJS.typeValue.text
+            },
+            {
+                titlte: "Loại tài sản",
+                propName: "fixed_asset_category_name",
+                columnClass: "column5",
+                typeValue: enumJS.typeValue.text
+            },
+            {
+                titlte: "Bộ phận sử dụng",
+                propName: "deparment_name",
+                columnClass: "column6",
+                typeValue: enumJS.typeValue.text
+            },
+            {
+                titlte: "Số lượng",
+                propName: "quantity",
+                columnClass: "column7",
+                typeValue: enumJS.typeValue.number
+            },
+            {
+                titlte: "Nguyên giá",
+                propName: "cost",
+                columnClass: "column8",
+                typeValue: enumJS.typeValue.number
+            },
+            {
+                titlte: "KH/HM lũy kế",
+                propName: "depreciation_value",
+                columnClass: "column9",
+                typeValue: enumJS.typeValue.number
+            },
+            {
+                titlte: "Giá trị còn lại",
+                propName: "residual_value",
+                columnClass: "column10",
+                typeValue: enumJS.typeValue.number
+            },
+        ]
     },
     assetList: {
         idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],
-        refElementAssetList: ["mInputSearch","mComboboxAssetCategory","mComboboxDepartment","mButtonAdd","mButtonExport","mButtonDelete","mTable"],
+        refElementAssetList: {
+            inputSearch:"mInputSearch",
+            comboboxAssetCategory:"mComboboxAssetCategory",
+            comboboxDepartment:"mComboboxDepartment",
+            buttonAdd:"mButtonAdd",
+            buttonExport:"mButtonExport",
+            buttonDelete:"mButtonDelete",
+            table:"mTable"
+        }
     },
+    
     buttonDialog: {
         exportExcel: [['Tải xuống','btn--main'],['Không','btn--outline']],
         delete: [['Xóa','btn--main'],['Không','btn--outline']],
         cancelEditForm: [['Lưu','btn--main'],['Không lưu','btn--sub'],['Hủy bỏ','btn--outline']],
         cancelAddForm: [['Hủy bỏ','btn--main'],['Không','btn--outline']],
         notify: [['Đóng','btn--outline']]
+    },
+    date: {
+        format:{
+            ddMMyyyy: "dd/mm/yyyy"
+        }
     }
 }
 
