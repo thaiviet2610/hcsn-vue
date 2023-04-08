@@ -207,7 +207,7 @@ export default {
             contentToastSuccess: "",
             departmentId:"",
             assetCategoryId: "",
-            typeForm: "",
+            typeForm: 0,
             keyword: "",
             keyTable: 0,
             newCode: "",
@@ -257,19 +257,7 @@ export default {
             })
         },
 
-        /**
-         * Hàm xử lý sự kiện click phím enter để gửi keyword tìm kiếm vào table để lọc
-         * @param {*} value giá trị cần tìm kiếm
-         * @author LTVIET (16/03/2023)
-         */
-         handleEventKeydownEnterInputSearch(value){
-            this.keyword = value;
-            console.log("keyword:",this.keyword);
-            if(!value){
-                this.keyword = "";
-            }
-            this.$refs["mTable"].loadData();
-        },
+        
         
         /**
          * Hàm thêm sự kiện click thêm tài sản
@@ -280,7 +268,7 @@ export default {
         btnClickOpenForm() {
             this.isShowToastSucess = false;
             this.isShowForm = true;
-            this.typeForm = resourceJS.typeForm.add;
+            this.typeForm = enumJS.typeForm.add;
             this.labelForm = resourceJS.titlteForm.addAssetForm;
             this.getNewCode();
         },
@@ -308,9 +296,9 @@ export default {
             this.isShowToastSucess = false;
             this.labelForm = values[0];
             if(this.labelForm == resourceJS.titlteForm.editAssetForm){
-                this.typeForm = resourceJS.typeForm.edit;
+                this.typeForm = enumJS.typeForm.edit;
             }else{
-                this.typeForm = resourceJS.typeForm.clone;
+                this.typeForm = enumJS.typeForm.clone;
                 this.getNewCode();
             }
             this.isShowToastSucess = false;
@@ -345,7 +333,7 @@ export default {
             this.isShowToastSucess = false;
             this.isShowForm = true;
             this.getAssetById(id);
-            this.typeForm = resourceJS.typeForm.edit;
+            this.typeForm = enumJS.typeForm.edit;
             this.labelForm = resourceJS.titlteForm.editAssetForm;
         },
 
@@ -688,7 +676,6 @@ export default {
             if(!value){
                 this.assetCategoryId = "";
             }
-            this.$refs["mTable"].loadData();
         },
 
         /**
@@ -701,7 +688,19 @@ export default {
             if(!value){
                 this.departmentId = "";
             }
-            this.$refs["mTable"].loadData();
+        },
+
+        /**
+         * Hàm xử lý sự kiện click phím enter để gửi keyword tìm kiếm vào table để lọc
+         * @param {*} value giá trị cần tìm kiếm
+         * @author LTVIET (16/03/2023)
+         */
+         handleEventKeydownEnterInputSearch(value){
+            this.keyword = value;
+            console.log("keyword:",this.keyword);
+            if(!value){
+                this.keyword = "";
+            }
         },
 
         /**
@@ -753,7 +752,7 @@ export default {
          */
         addOnClickContextMenuClone(item){
             this.labelForm = resourceJS.titlteForm.cloneAssetForm;
-            this.typeForm = resourceJS.typeForm.clone;
+            this.typeForm = enumJS.typeForm.clone;
             this.getNewCode();
             this.isShowToastSucess = false;
             this.isShowForm = true;
@@ -767,7 +766,7 @@ export default {
          */
         addOnClickContextMenuEdit(item){
             this.labelForm = resourceJS.titlteForm.editAssetForm;
-            this.typeForm = resourceJS.typeForm.edit;
+            this.typeForm = enumJS.typeForm.edit;
             this.isShowToastSucess = false;
             this.isShowForm = true;
             this.getAssetById(item.fixed_asset_id);

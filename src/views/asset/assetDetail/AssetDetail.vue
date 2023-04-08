@@ -22,8 +22,7 @@
                             <div class="up-left">
                                 <!-- input nhập mã tài sản  -->
                                 <MInput 
-                                    :idInput="idElemnts[0][0]"
-                                    :ref="refElemnts[0][0]"
+                                    :ref="refElemnts.assetCode"
                                     :required="true"
                                     @getValueEventInput="GetValueAssetCode"
                                     :valueInput="asset.fixed_asset_code"
@@ -37,8 +36,7 @@
                             <div class="up-right">
                                 <!-- input nhập tên tài sản  -->
                                 <MInput 
-                                    :ref="refElemnts[0][1]"
-                                    :idInput="idElemnts[0][1]"
+                                    :ref="refElemnts.assetName"
                                     :required="true"
                                     placeholder="Nhập tên tài sản"
                                     @getValueEventInput="GetValueAssetName"
@@ -55,8 +53,7 @@
                                     <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                     <MCombobox  
                                         :is-icon="false" 
-                                        :idCombobox="idElemnts[1][0]"
-                                        :ref="refElemnts[1][0]"
+                                        :ref="refElemnts.departmentCode"
                                         :required="true"
                                         :api="this.departApi"
                                         propName="department_code" 
@@ -88,8 +85,7 @@
                                 <!-- combobox nhập mã loại tài sản  -->
                                 <MCombobox  
                                     :is-icon="false"
-                                    :idCombobox="idElemnts[2][0]"
-                                    :ref="refElemnts[2][0]"
+                                    :ref="refElemnts.assetCategoryCode"
                                     :required="true" 
                                     :api="this.assetCategoryApi"
                                     propName="fixed_asset_category_code" 
@@ -121,8 +117,7 @@
                             <div class="down-left">
                                 <!-- input nhập số lượng  -->
                                 <MInputNumber
-                                    :ref="refElemnts[3][0]"
-                                    :idInput="idElemnts[3][0]"
+                                    :ref="refElemnts.quantity"
                                     :required="true"
                                     placeholder="Nhập số lượng"
                                     :valueInput="asset.quantity"
@@ -138,8 +133,7 @@
                             <div class="down-center">
                                 <!-- input nhập nguyên giá  -->
                                 <MInputNumber
-                                    :ref="refElemnts[3][1]"
-                                    :idInput="idElemnts[3][1]"
+                                    :ref="refElemnts.cost"
                                     :required="true"
                                     :stepValue="1"
                                     placeholder="Nhập nguyên giá"
@@ -155,8 +149,7 @@
                             <div class="down-right">
                                 <!-- input nhập số năm sử dụng  -->
                                 <MInputNumber
-                                    :ref="refElemnts[3][2]"
-                                    :idInput="idElemnts[3][2]"
+                                    :ref="refElemnts.lifeTime"
                                     :required="true"
                                     :stepValue="1"
                                     placeholder="Nhập số năm sử dụng"
@@ -215,8 +208,7 @@
                                 <!-- input nhập ngày mua  -->
                                 
                                 <MInputDate
-                                    :ref="refElemnts[4][0]"
-                                    :idInput="idElemnts[4][0]"
+                                    :ref="refElemnts.purchaseDate"
                                     label="Ngày mua"
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.purchase_date"
@@ -229,8 +221,7 @@
                             <div class="down-center">
                                 <!-- input nhập ngày bắt đầu sử dụng  -->
                                 <MInputDate
-                                    :ref="refElemnts[4][1]"
-                                    :idInput="idElemnts[4][1]"
+                                    :ref="refElemnts.productionYear"
                                     label="Ngày bắt đầu sử dụng"
                                     format="dd/mm/yyyy"
                                     :valueInputDate="asset.production_year"
@@ -250,7 +241,6 @@
                     <MButton
                         ref="btnSave"
                         class="btn--main"
-                        :idButton="idElemnts[5][0]"
                         label="Lưu"
                         @btnAddOnClickBtn="handleEventBtnClickSave">
                     </MButton>
@@ -258,7 +248,6 @@
                     <MButton
                         ref="btnCancel"
                         label="Hủy"
-                        :idButton="idElemnts[5][1]"
                         style="border: 0;"
                         @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                     </MButton>
@@ -314,8 +303,8 @@ export default {
             default: ""
         },
         typeForm: {
-            type: String,
-            default: null
+            type: Number,
+            default: 0
         },
         propAssetCode: {
             type: String,
@@ -359,9 +348,7 @@ export default {
             itemError: null,
             previousKey: "",
             previousKeyCtrl: false,
-            idInputFocus: "",
-            idElemnts: resourceJS.assetDetail.idElementAssetDetail,
-            refElemnts: resourceJS.assetDetail.refElementAssetDetail,
+            refElemnts: resourceJS.assetDetail.refAssetDetail,
             btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
             btnDialogNotify: resourceJS.buttonDialog.notify,
@@ -381,7 +368,7 @@ export default {
     
     created() {
         
-        if(this.typeForm == "add"){
+        if(this.typeForm == enumJS.typeForm.add){
             // Nếu là form thêm tài sản (chưa có dữ liệu)
             this.getDefaultAsset();
             this.asset.fixed_asset_code = this.propAssetCode;
@@ -394,7 +381,7 @@ export default {
                 this.oldValueAseet = JSON.stringify(this.assetInput);
                 //--> khai báo 1 biến mới và gán giá trị lưu trữ vào biến mới đó
                 this.asset = JSON.parse(this.oldValueAseet);
-                if(this.typeForm=="clone"){
+                if(this.typeForm==enumJS.typeForm.clone){
                     this.asset.fixed_asset_code = this.propAssetCode;
                     this.oldValueAseet = JSON.stringify(this.asset);
                     //--> khai báo 1 biến mới và gán giá trị lưu trũ vào biến mới đó
@@ -453,10 +440,10 @@ export default {
          */
         handleEventBtnClickCancel(){
             let newValueAsset = JSON.stringify(this.asset);
-            if(this.typeForm == resourceJS.typeForm.add || this.typeForm == resourceJS.typeForm.clone){
+            if(this.typeForm == enumJS.typeForm.add || this.typeForm == enumJS.typeForm.clone){
                 this.isShowDialogAddFormCancel = true;
             }
-            if(this.typeForm == resourceJS.typeForm.edit ){
+            if(this.typeForm == enumJS.typeForm.edit ){
                 if(newValueAsset != this.oldValueAseet){
                     this.isShowDialogEditFormCancel = true;
                 }else{
@@ -495,9 +482,9 @@ export default {
                     active: false
                 }
                 this.isShowLoad = true;
-                if(this.typeForm=="add" || this.typeForm == "clone"){
+                if(this.typeForm==enumJS.typeForm.add || this.typeForm == enumJS.typeForm.clone){
                     this.addAsset(entity);
-                }else if(this.typeForm == "edit"){
+                }else if(this.typeForm == enumJS.typeForm.edit){
                     this.updateAsset(entity);
                 }
             }  
@@ -608,34 +595,25 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateEmptyValue(){
-            var refs = resourceJS.assetDetail.refElementAssetDetail;
+            var refs = resourceJS.assetDetail.refAssetDetail;
             let txt = [];
-            for(let i = 0 ; i < refs.length - 1; i++){
-                for(let j = 0 ; j < refs[i].length ; j ++){
-                    let item = this.$refs[refs[i][j]];
-                    if(i == 4){
-                        if(!item.txtInputDate){
-                            txt.push(refs[i][j]);
-                            item.inValid = true;
-                        }
+            for (let ref in refs) {
+                let item = this.$refs[refs[ref]];
+                if(ref == "purchaseDate" || ref == "productionYear"){
+                    if(!item.txtInputDate){
+                        txt.push(refs[ref]);
+                        item.inValid = true;
                     }
-                    if(i >= 0 && i < 3){
-                        if(!item.value){
-                            txt.push(refs[i][j]);
-                            item.inValid = true;
-                            item.notifyError = item.label + resourceJS.error.emptyInput;
-                        }
-                    }
-                    if( i == 3 ){
-                        if(!item.value && item.value != 0){
-                            txt.push(refs[i][j]);
-                            item.inValid = true;
-                            item.notifyError = item.label + resourceJS.error.emptyInput;
-                        }
-                        
+                }
+                else{
+                    if(!item.value){
+                        txt.push(refs[ref]);
+                        item.inValid = true;
+                        item.notifyError = item.label + resourceJS.error.emptyInput;
                     }
                 }
             }
+            
             return txt;
         },
         
@@ -644,71 +622,108 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateProfessional(){
+            let message = "";
+            var refs = resourceJS.assetDetail.refAssetDetail;
             // validate độ dài ký tự của dữ liệu
-            this.validateMaxLength();
-
+            message = this.validateMaxLength(message,refs);
             // validate giá trị hao mòn năm phải nhỏ hơn nguyên giá
-            this.validateCostGreaterThanDepreciationValueYear();
-
+            message = this.validateCostGreaterThanDepreciationValueYear(message,refs);
             // validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
-            this.validateDepreciationEqualPartOfLifeTime();
-
+            message = this.validateDepreciationEqualPartOfLifeTime(message,refs);
             // validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
-            this.validateProcductionYearGreaterThanPurchaseDate();
-            
+            message = this.validateProcductionYearGreaterThanPurchaseDate(message,refs);
+            if(message){
+                this.isShowDialogNotify = true;
+                this.contentDialogNotifyErrorValidate = message;
+                return false;
+            }
             return true;
         },
 
         /**
          * Hàm validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
+         * @author LTVIET (17/03/2023)
          */
-        validateProcductionYearGreaterThanPurchaseDate(){
+        validateProcductionYearGreaterThanPurchaseDate(message,refs){
+            const itemProductionYear = this.$refs[refs.productionYear];
+            const itemPurchaseDate = this.$refs[refs.purchaseDate];
             let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
             if(valueTime > 0){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
-                return false;
+                if(message){
+                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                }else{
+                    message = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                }
+                itemPurchaseDate.inValid = true;
+                itemPurchaseDate.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                itemProductionYear.inValid = true;
+                itemProductionYear.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+            }else{
+                itemPurchaseDate.inValid = false;
+                itemProductionYear.inValid = false;
             }
+            return message;
         },
         
         /**
          * Validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
+         * @author LTVIET (17/03/2023)
          */
-        validateDepreciationEqualPartOfLifeTime(){
+        validateDepreciationEqualPartOfLifeTime(message,refs){
+            const item = this.$refs[refs.lifeTime];
             if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-                
-                return false;
+                if(message){
+                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
+                }else{
+                    message = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
+                }
+                item.inValid = true;
+                item.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
+
+            }else{
+                item.inValid = false;
             }
+            return message;
         },
 
         /**
          * Hàm validate độ dài tối đa của ký tự
          * @author LTVIET (17/03/2023)
          */
-        validateMaxLength(){
+        validateMaxLength(message,refs){
+            const itemCode = this.$refs[refs.assetCode];
+            const itemName = this.$refs[refs.assetName];
             // validate độ dài mã tài sản (không được quá 10 ký tự)
             if(this.asset.fixed_asset_code.length > 10){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
-                return false;
+                message = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
+                itemCode.inValid = true;
+                itemCode.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
+            }else{
+                itemCode.inValid = false;
             }
 
             // validate độ dài mã tài sản (không được quá 100 ký tự)
-            if(this.asset.fixed_asset_code.length > 100){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.maxLengthName;
-                return false;
+            if(this.asset.fixed_asset_name.length > 100){
+                if(message){
+                    message = message + "<br>" + resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                }else{
+                    message = resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                }
+                itemName.inValid = true;
+                itemName.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                
+            }else{
+                itemName.inValid = false;
             }
-
+            return message;
         },
 
         /**
          * Hàm validate tỷ lệ hao mòn phải nhỏ hơn nguyên giá
          * @author LTVIET (17/03/2023)
          */
-        validateCostGreaterThanDepreciationValueYear(){
+        validateCostGreaterThanDepreciationValueYear(message,refs){
+            const itemCost = this.$refs[refs.cost];
             let depreciationValueYear;
             if(typeof this.depreciationValueYear == "string"){
                 depreciationValueYear = this.getMoney(this.depreciationValueYear);
@@ -717,10 +732,17 @@ export default {
             }
 
             if(this.asset.cost < depreciationValueYear){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
-                return false;
+                if(message){
+                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+                }else{
+                    message = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+                }
+                itemCost.inValid = true;
+                itemCost.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+            }else{
+                itemCost.inValid = false;
             }
+            return message;
         },
         
         /**
@@ -904,7 +926,7 @@ export default {
          * @author LTVIET(02/03/2023)
          */
         setFocus(){
-            this.$refs[this.refElemnts[0][0]].setFocus();
+            this.$refs[this.refElemnts.assetCode].setFocus();
         },
 
         /**
@@ -1015,126 +1037,8 @@ export default {
                 event.preventDefault();
                 this.$emit('onClose');
             }
-            // this.handleEventKeyStrokesCtrlFocus(keyCode);
         },
 
-        /**
-         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + key để di chuyển lên xuống giauwx các dòng dữ liệu
-         * @param {*} keyCode mã ký tự khi nhấn phím
-         * @author LTVIET (02/04/2023)
-         */
-        handleEventKeyStrokesCtrlFocus(keyCode){
-            if(this.previousKeyCtrl){
-                let index1 = -1;
-                let index2 = -1;
-                if(this.idInputFocus){
-                    index1 = Number(this.idInputFocus.slice(8,9));
-                    index2 = Number(this.idInputFocus.slice(9,10));
-                }
-                switch (keyCode) {
-                    case enumJS.arrowDown:
-                        this.handleEventKeyStrokesCtrlDown(index1,index2);
-                        break;
-                    case enumJS.arrowUp:
-                        this.handleEventKeyStrokesCtrlUp(index1,index2);
-                        break;
-                    case enumJS.keyRight:
-                        this.handleEventKeyStrokesCtrlRight(index1,index2);
-                        break;
-                    case enumJS.keyLeft:
-                        this.handleEventKeyStrokesCtrlLeft(index1,index2);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang phải thì focus vào đối tượng bên phải
-         * @param {*} index1 vị trí của id của input trong mảng idElements
-         * @param {*} index2 vị trí của id của input trong mảng idElements
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventKeyStrokesCtrlRight(index1, index2){
-            if(this.idInputFocus && this.previousKeyCtrl){
-                index2 +=1;
-                if(index2 >= this.idElemnts[index1].length){
-                    index2 = 0;
-                    index1 += 1;
-                    if(index1 >= this.idElemnts.length){
-                        index1 = 0;
-                    }
-                }
-                this.idInputFocus = this.idElemnts[index1][index2];
-                this.$refs[this.refElemnts[index1][index2]].setFocus();
-                this.previousKeyCtrl = false;
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím sang trái thì focus vào đối tượng bên trái
-         * @param {*} index1 vị trí của id của input trong mảng idElements
-         * @param {*} index2 vị trí của id của input trong mảng idElements
-         * @author LTVIET (02/04/2023)
-         */
-        handleEventKeyStrokesCtrlLeft(index1, index2){
-            if(this.idInputFocus && this.previousKeyCtrl){
-                index2 -=1;
-                if(index2 < 0){
-                    index1 -= 1;
-                    if(index1 < 0){
-                        index1 = this.idElemnts.length - 1;
-                    }
-                    index2 = this.idElemnts[index1].length - 1;
-                }
-                this.idInputFocus = this.idElemnts[index1][index2];
-                this.$refs[this.refElemnts[index1][index2]].setFocus();
-                this.previousKeyCtrl = false;
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím lên thì focus vào đối tượng bên trên
-         * @param {*} index1 vị trí của id của input trong mảng idElements
-         * @param {*} index2 vị trí của id của input trong mảng idElements
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventKeyStrokesCtrlUp(index1, index2){
-            if(this.idInputFocus && this.previousKeyCtrl){
-                index1 -= 1;
-                if(index1 < 0){
-                    index1 = this.idElemnts.length - 1;
-                }
-                if(index2 >= this.idElemnts[index1].length){
-                    index2 = this.idElemnts[index1].length - 1;
-                }
-                this.idInputFocus = this.idElemnts[index1][index2];
-                this.$refs[this.refElemnts[index1][index2]].setFocus();
-                this.previousKeyCtrl = false;
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + phím xuống thì focus vào đối tượng bên dưới
-         * @param {*} index1 vị trí của id của input trong mảng idElements
-         * @param {*} index2 vị trí của id của input trong mảng idElements
-         * @author LTVIET (02/04/2023)
-         */
-         handleEventKeyStrokesCtrlDown(index1, index2){
-            if(this.idInputFocus && this.previousKeyCtrl){
-                index1 += 1;
-                if(index1 >= this.idElemnts.lenth){
-                    index1 = 0;
-                }
-                if(index2 >= this.idElemnts[index1].length){
-                    index2 = this.idElemnts[index1].length - 1;
-                }
-                this.idInputFocus = this.idElemnts[index1][index2];
-                this.$refs[this.refElemnts[index1][index2]].setFocus();
-                this.previousKeyCtrl = false;
-            }
-        },
 
         /**
          * Hàm xử lý sự kiện keyup

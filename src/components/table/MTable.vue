@@ -243,136 +243,6 @@
             </tfoot>
       
     </table>
-    <!-- <table class="footer__table">
-      <tfoot>
-        <tr>
-          <th class="footer__left">
-            <div class="content-footer__left">
-              <div class="content-footer__item1">
-                <div class="content-footer__item1--text">
-                  Tổng số:
-                  <span style="font-family: Roboto-Bold">
-                    {{ totalRecord }}</span
-                  >
-                  bản ghi
-                </div>
-              </div>
-              <div class="dropdown_table">
-                <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
-              </div>
-              <div class="content-footer__item3"> 
-                <MButtonIcon
-                  @addOnClickBtnIcon="addOnDecreaseNumberPage"
-                  class="content-footer__item3--icon1"
-                  classIcon="item3__icon1--image"
-                >
-                </MButtonIcon>
-                <div v-if="totalPage <= 5" class="content-footer__item3--icon2">
-                  <div
-                    v-for="(item, index) in totalPage"
-                    :key="index"
-                    class="page__index"
-                    @click="addOnClickPageNumber(item)"
-                    :class="{ 'page--selected': item == pageNumber }"
-                  >
-                    <div class="text">{{ item }}</div>
-                  </div>
-                </div>
-                <div v-if="totalPage > 5" class="content-footer__item3--icon2">
-                  <div
-                    :class="{ 'page--selected': pageNumber == 1 }"
-                    class="page__index"
-                    @click="addOnClickPageNumber(1)"
-                  >
-                    <div class="text">1</div>
-                  </div>
-                  <div
-                    v-if="pageNumber == 1 || pageNumber == 2 || pageNumber == 3"
-                    :class="{ 'page--selected': pageNumber == 2 }"
-                    @click="addOnClickPageNumber(2)"
-                    class="page__index"
-                  >
-                    <div class="text">2</div>
-                  </div>
-                  <div
-                    v-if="pageNumber == 1 || pageNumber == 2 || pageNumber == 3"
-                    :class="{ 'page--selected': pageNumber == 3 }"
-                    @click="addOnClickPageNumber(3)"
-                    class="page__index"
-                  >
-                    <div class="text">3</div>
-                  </div>
-                  <div v-if="pageNumber > 3" class="item3__icon2--icon">
-                    <div class="icon__ellipsis"></div>
-                  </div>
-                  <div
-                    v-if="pageNumber > 3 && pageNumber < totalPage - 2"
-                    :class="{
-                      'page--selected':
-                        pageNumber > 3 && pageNumber < totalPage - 2,
-                    }"
-                    @click="addOnClickPageNumber(pageNumber)"
-                    class="page__index"
-                  >
-                    <div class="text">{{ pageNumber }}</div>
-                  </div>
-                  <div
-                    v-if="pageNumber < totalPage - 2"
-                    class="item3__icon2--icon"
-                  >
-                    <div class="icon__ellipsis"></div>
-                  </div>
-                  <div
-                    v-if="
-                      pageNumber == totalPage ||
-                      pageNumber == totalPage - 1 ||
-                      pageNumber == totalPage - 2
-                    "
-                    :class="{ 'page--selected': pageNumber == totalPage - 2 }"
-                    @click="addOnClickPageNumber(totalPage - 2)"
-                    class="page__index"
-                  >
-                    <div class="text">{{ totalPage - 2 }}</div>
-                  </div>
-                  <div
-                    v-if="
-                      pageNumber == totalPage ||
-                      pageNumber == totalPage - 1 ||
-                      pageNumber == totalPage - 2
-                    "
-                    :class="{ 'page--selected': pageNumber == totalPage - 1 }"
-                    @click="addOnClickPageNumber(totalPage - 1)"
-                    class="page__index"
-                  >
-                    <div class="text">{{ totalPage - 1 }}</div>
-                  </div>
-                  <div
-                    :class="{ 'page--selected': pageNumber == totalPage }"
-                    @click="addOnClickPageNumber(totalPage)"
-                    class="page__index"
-                  >
-                    <div class="text">{{ totalPage }}</div>
-                  </div>
-                </div>
-                <MButtonIcon
-                  @addOnClickBtnIcon="addOnIncreaseNumberPage"
-                  class="content-footer__item3--icon1"
-                  classIcon="item3__icon3--image"
-                >
-                </MButtonIcon>
-              </div>
-            </div>
-          </th>
-          <th class="column7 text-align-right">{{ formatValue(quantityTotal, "money") }}</th>
-          <th class="column8 text-align-right">{{ formatValue(costTotal, "money") }}</th>
-          <th class="column9 text-align-right">
-            {{ formatValue(depreciationValueTotal, "money") }}
-          </th>
-          <th class="column10 text-align-right">{{ formatValue(residualValueTotal, "money") }}</th>
-          <th class="column12"></th>
-        </tr>
-      </tfoot>
-    </table> -->
     
     <!-- dialog load dữ liệu  -->
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
@@ -1101,12 +971,18 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    departmentId: function (newValue) {
-      console.log(newValue);
-      console.log(this.departmentId);
-      console.log(1);
+    departmentId: function () {
       this.loadData();
     },
+
+    /** 
+     * Hàm theo dõi từ khóa tìm kiếm,
+     * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
+     * @author LTVIET (15/03/2023)
+     */
+    keyword: function(){
+      this.loadData();
+    }
   },
 };
 </script>

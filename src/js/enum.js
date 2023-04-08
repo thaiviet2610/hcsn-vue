@@ -39,7 +39,12 @@ const enumJS = {
         clone: 1,
         edit: 2,
         delete: 3,
-    }
+    },
+    typeForm: {
+        add: 1,
+        clone: 2,
+        edit: 3,
+    },
 }
 
 export default enumJS;
