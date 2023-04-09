@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="form editForm" :key="keyAssetDetail" @keydown="handleEventKeydown" @keyup="handleEventKeyup"
+    <div id="idAssetDetail">
+        <div  class="form editForm" :key="keyAssetDetail"
         >
             <div class="form-data" >
                 <!-- phần header của form  -->
@@ -359,7 +359,7 @@ export default {
          */
         getDepreciationValueYear: function(){
             let value = this.asset.cost*this.asset.depreciation_rate;
-            return commonJS.formatMoney(value);
+            return commonJS.formatNumber(value);
         }
     },
     
@@ -404,6 +404,13 @@ export default {
         this.$nextTick(function() {
             this.setFocus();
         })
+        document.addEventListener('keydown',this.handleEventKeydown);
+        document.addEventListener('keyup',this.handleEventKeyup);
+    },
+
+    unmounted() {
+        document.removeEventListener('keydown',this.handleEventKeydown);
+        document.removeEventListener('keyup',this.handleEventKeyup);
     },
     
     methods: {
@@ -513,8 +520,7 @@ export default {
          */
         addAsset(entity){
             axios.post(this.assetApi,entity)
-            .then(res=>{
-                console.log(res);
+            .then(()=>{
                 this.isShowLoad = false;
                 this.$emit('addOnClickBtnSave');
                 
@@ -530,8 +536,7 @@ export default {
          */
         updateAsset(entity){
             axios.put(`${this.assetApi}/${this.asset.fixed_asset_id}`,entity)
-            .then(res=>{
-                console.log(res);
+            .then(()=>{
                 this.$emit('addOnClickBtnSave');
                 this.isShowLoad = false;
             }).catch(error=>{
@@ -643,7 +648,6 @@ export default {
          */
         validateProcductionYearGreaterThanPurchaseDate(message,refs){
             const itemProductionYear = this.$refs[refs.productionYear];
-            const itemPurchaseDate = this.$refs[refs.purchaseDate];
             let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
             if(valueTime > 0){
                 if(message){
@@ -651,12 +655,12 @@ export default {
                 }else{
                     message = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
                 }
-                itemPurchaseDate.inValid = true;
-                itemPurchaseDate.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
                 itemProductionYear.inValid = true;
                 itemProductionYear.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                if(!this.itemError){
+                    this.itemError = itemProductionYear;
+                }
             }else{
-                itemPurchaseDate.inValid = false;
                 itemProductionYear.inValid = false;
             }
             return message;
@@ -676,7 +680,9 @@ export default {
                 }
                 item.inValid = true;
                 item.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-
+                if(!this.itemError){
+                    this.itemError = item;
+                }
             }else{
                 item.inValid = false;
             }
@@ -695,6 +701,9 @@ export default {
                 message = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
                 itemCode.inValid = true;
                 itemCode.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
+                if(!this.itemError){
+                    this.itemError = itemCode;
+                }
             }else{
                 itemCode.inValid = false;
             }
@@ -708,7 +717,9 @@ export default {
                 }
                 itemName.inValid = true;
                 itemName.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthName;
-                
+                if(!this.itemError){
+                    this.itemError = itemName;
+                }
             }else{
                 itemName.inValid = false;
             }
@@ -736,6 +747,9 @@ export default {
                 }
                 itemCost.inValid = true;
                 itemCost.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+                if(!this.itemError){
+                    this.itemError = itemCost;
+                }
             }else{
                 itemCost.inValid = false;
             }
@@ -1012,6 +1026,7 @@ export default {
         handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
             if(this.itemError!=null){
+                this.itemError.inValid = true;
                 this.itemError.setFocus();
             }
         },
