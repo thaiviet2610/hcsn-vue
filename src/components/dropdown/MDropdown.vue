@@ -9,7 +9,6 @@
             @input="addEventInputSearch"
             @blur="addEventBlurInput"
             @keydown="onKeyDownSelecte"
-            @focus="AddEventFocusInput"
             class="dropdown__input">
         <!-- phần data của dropdown  -->
         <div 
@@ -262,23 +261,15 @@ export default {
                         //2.4.3. nếu độ dài danh sách tìm kiếm > 0
                         // gán giá trị cho biến valueSelected
                         this.valueSelected = this.dataSearch[this.indexItemSelected];
-                        
                     }
                     //2.4.4. ẩn đi combobox-data
                     this.isShowData = false;
+                    this.setFocus();
                     //2.4.5. binding dữ liệu mới ra bên ngoài
                     this.$emit("update:modelValue",Number(this.valueSelected));
                     break;
             }
             
-        },
-        
-        /**
-         * Hàm xử lý sự kiện focus vào input
-         * @author LTVIET (11/03/2023)
-         */
-        AddEventFocusInput(){
-            this.isShowData = true;
         },
 
         /**

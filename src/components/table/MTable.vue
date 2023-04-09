@@ -1,6 +1,98 @@
+
 <template>
-  <div  class="table"  @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
-    <table :key="keyTable" class="content__table"  >
+  <div  class="table"   ref="mTable">
+    
+    <!-- Khi table không có dữ liệu phù hợp  -->
+    <div v-if="assets.length == 0" >
+      <table style="position: relative;">
+        <!-- phần title của table  -->
+        <thead>
+          <tr>
+            <th class="column1 text-align-center">
+              <MCheckbox 
+                ref="mCheckbox_0"
+                idCheckbox="idCheckbox_0"
+                :checked="checkboxAll"
+                @addOnClick="markCheckboxAll"
+                >
+              </MCheckbox>
+            </th>
+            <th class="column2 text-align-center">{{ titleColumn.index }}</th>
+            <th class="column3 text-align-left">{{ titleColumn.assetCode }}</th>
+            <th class="column4 text-align-left">{{ titleColumn.assetName }}</th>
+            <th class="column5 text-align-left">{{ titleColumn.assetCategoryName }}</th>
+            <th class="column6 text-align-left">{{ titleColumn.departmentName }}</th>
+            <th class="column7 text-align-right">{{ titleColumn.quantity }}</th>
+            <th class="column8 text-align-right">{{ titleColumn.cost }}</th>
+            <th
+              class="column9 text-align-right"
+              :data_tooltip_bottom="tooltipDepreciation"
+            >
+            {{ titleColumn.depreciationValue }}
+            </th>
+            <th class="column10 text-align-right">{{ titleColumn.residualValue }}</th>
+            <th class="column11 text-align-center">{{ titleColumn.function }}</th>
+          </tr>
+        </thead>
+        <!-- phần body của table  -->
+        <tbody>
+          <tr style="cursor: unset !important;">
+            <td style="cursor: unset !important;"></td>
+            <td style="cursor: unset !important;"></td>
+            <td style="cursor: unset !important;"></td>
+            <td style="cursor: unset !important;"></td>
+            <td class="no_data" style="cursor: unset !important;"></td>
+          </tr>
+        </tbody>
+        <tbody class="no_data--content">
+          <div class="no_data--icon"></div>
+          <div class="no_data--text">{{ notitfyNoDataTable }}</div>
+        </tbody>
+        <!-- phần footer của table  -->
+        <tfoot>
+            <td colspan="6">
+              <div class="content-footer__left">
+                <div class="content-footer__item1">
+                  <div class="content-footer__item1--text">
+                    {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
+                  </div>
+                </div>
+                <div class="dropdown_table">
+                  <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
+                </div>
+                <div class="content-footer__item3"> 
+                  <MButtonIcon
+                    class="content-footer__item3--icon1 cursor--disable"
+                    classIcon="item3__icon1--image"
+                  >
+                  </MButtonIcon>
+                  <div class="content-footer__item3--icon2">
+                    <div
+                      class="page__index page--selected"
+                    >
+                      <div class="text">1</div>
+                    </div>
+                  </div>
+                  <MButtonIcon
+                    @addOnClickBtnIcon="addOnIncreaseNumberPage"
+                    class="content-footer__item3--icon1 cursor--disable"
+                    classIcon="item3__icon3--image"
+                  >
+                  </MButtonIcon>
+                </div>
+              </div>
+            </td>
+            <td class="footer_right">0</td>
+            <td class="column8 footer_right">0</td>
+            <td class="footer_right">0</td>
+            <td class="footer_right">0</td>
+            <td></td>
+        </tfoot>
+      </table>
+    </div>
+    
+    <!-- Khi table có dữ liệu phù hợp  -->
+    <table id="idTable" v-else :key="keyTable" class="content__table"  >
       <!-- phần title của table  -->
       <thead>
         <tr>
@@ -13,25 +105,25 @@
               >
             </MCheckbox>
           </th>
-          <th class="column2 text-align-center">STT</th>
-          <th class="column3 text-align-left">Mã tài sản</th>
-          <th class="column4 text-align-left">Tên tài sản</th>
-          <th class="column5 text-align-left">Loại tài sản</th>
-          <th class="column6 text-align-left">Bộ phận sử dụng</th>
-          <th class="column7 text-align-right">Số lượng</th>
-          <th class="column8 text-align-right">Nguyên giá</th>
+          <th class="column2 text-align-center">{{ titleColumn.index }}</th>
+          <th class="column3 text-align-left">{{ titleColumn.assetCode }}</th>
+          <th class="column4 text-align-left">{{ titleColumn.assetName }}</th>
+          <th class="column5 text-align-left">{{ titleColumn.assetCategoryName }}</th>
+          <th class="column6 text-align-left">{{ titleColumn.departmentName }}</th>
+          <th class="column7 text-align-right">{{ titleColumn.quantity }}</th>
+          <th class="column8 text-align-right">{{ titleColumn.cost }}</th>
           <th
             class="column9 text-align-right"
             :data_tooltip_bottom="tooltipDepreciation"
           >
-            HM/KH lũy kế
+          {{ titleColumn.depreciationValue }}
           </th>
-          <th class="column10 text-align-right">Giá trị còn lại</th>
-          <th class="column11 text-align-center">Chức năng</th>
+          <th class="column10 text-align-right">{{ titleColumn.residualValue }}</th>
+          <th class="column11 text-align-center">{{ titleColumn.function }}</th>
         </tr>
       </thead>
       <!-- phần body của table  -->
-      <tbody>
+      <tbody @keyup="handleEventKeyUp" @keydown="handleEventKeyDown">
         <tr style="position: relative;"
           :ref="`mRow_${index+1}`"
           @contextmenu="handleEventClickRightMouse($event,item)"
@@ -65,16 +157,16 @@
           <td class="column6 text-align-left column6--text"
             >{{ item.department_name }}</td>
           <td class="column7 text-align-right">
-            {{ formatValue(item.quantity, typeMoney) }}
+            {{ formatValue(item.quantity, typeNumber) }}
           </td>
           <td class="column8 text-align-right">
-            {{ formatValue(item.cost, typeMoney) }}
+            {{ formatValue(item.cost, typeNumber) }}
           </td>
           <td class="column9 text-align-right">
-            {{ formatValue(item.depreciation_value, typeMoney) }}
+            {{ formatValue(item.depreciation_value, typeNumber) }}
           </td>
           <td class="column10 text-align-right">
-            {{ formatValue(getResidualCost(item), typeMoney) }}
+            {{ formatValue(item.residual_value, typeNumber) }}
           </td>
           <td class="column11 text-align-center">
             <div class="function" :style="styleFunction(index + 1)">
@@ -83,7 +175,7 @@
                 class="function__edit"
                 :data_tooltip_bottom= "tooltipFunctionEdit"
                 @addOnClickBtnIcon="
-                  handleEventClickFunction(titleEditAssetForm, item)
+                  handleEventClickFunction(typeForm.edit, item)
                 "
               >
               </MButtonIcon>
@@ -92,7 +184,7 @@
                 class="function__clone"
                 :data_tooltip_bottom="tooltipFunctionClone"
                 @addOnClickBtnIcon="
-                  handleEventClickFunction(titleCloneAssetForm, item)
+                  handleEventClickFunction(typeForm.clone, item)
                 "
               >
               </MButtonIcon>
@@ -107,11 +199,7 @@
                   <div class="content-footer__left">
                     <div class="content-footer__item1">
                       <div class="content-footer__item1--text">
-                        Tổng số:
-                        <span style="font-family: Roboto-Bold">
-                          {{ formatValue(totalRecord, typeMoney) }}</span
-                        >
-                        bản ghi
+                        {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
                       </div>
                     </div>
                     <div class="dropdown_table">
@@ -122,6 +210,7 @@
                         v-if="pageNumber==1"
                         class="content-footer__item3--icon1 cursor--disable"
                         classIcon="item3__icon1--image"
+                        tabindex="-1"
                       >
                       </MButtonIcon>
                       <MButtonIcon
@@ -223,6 +312,7 @@
                         @addOnClickBtnIcon="addOnIncreaseNumberPage"
                         class="content-footer__item3--icon1 cursor--disable"
                         classIcon="item3__icon3--image"
+                        tabindex="-1"
                       >
                       </MButtonIcon>
                       <MButtonIcon
@@ -235,10 +325,10 @@
                     </div>
                   </div>
                 </td>
-                <td class="footer_right">{{ formatValue(quantityTotal, typeMoney) }}</td>
-                <td class="column8 footer_right">{{ formatValue(costTotal, typeMoney) }}</td>
-                <td class="footer_right">{{ formatValue(depreciationValueTotal, typeMoney) }}</td>
-                <td class="footer_right">{{ formatValue(residualValueTotal, typeMoney) }}</td>
+                <td class="footer_right">{{ formatValue(quantityTotal, typeNumber) }}</td>
+                <td class="column8 footer_right">{{ formatValue(costTotal, typeNumber) }}</td>
+                <td class="footer_right">{{ formatValue(depreciationValueTotal, typeNumber) }}</td>
+                <td class="footer_right">{{ formatValue(residualValueTotal, typeNumber) }}</td>
                 <td></td>
             </tfoot>
       
@@ -338,6 +428,9 @@ export default {
       residualValueTotal: 0,
       isShowContextMenu: false,
       dataContextMenu: resourceJS.table.dataContextMenu,
+      contentFooterBefore: resourceJS.table.contentFooterBefore,
+      contentFooterAfter: resourceJS.table.contentFooterAfter,
+      notitfyNoDataTable: resourceJS.table.noDataTable,
       contextMenuPageX: 0,
       contextMenuPageY: 0,
       keyContextMenu: 0,
@@ -349,7 +442,10 @@ export default {
       indexCheckboxFocus: -1,
       btnDialogNotify: resourceJS.buttonDialog.notify,
       keyTable: 0,
-      typeMoney: enumJS.typeValue.money
+      typeNumber: enumJS.typeValue.number,
+      typeForm: enumJS.type,
+      titleColumn: resourceJS.table.titleColumm,
+      contentFooterTable: resourceJS.table.contentFooter
     };
   },
 
@@ -423,17 +519,20 @@ export default {
        axios
         .get(api)
         .then( (res) => {
+          // Lấy dữ liệu ra gán vào các biến
           this.assets =  res.data.Data;
           this.totalRecord =  res.data.TotalRecord;
           this.quantityTotal =  res.data.QuantityTotal;
           this.costTotal =  res.data.CostTotal;
           this.depreciationValueTotal =  res.data.DepreciationValueTotal;
           this.residualValueTotal =  res.data.ResidualValueTotal;
-          
+          // Tính tổng số trang
           this.getTotalPage();
+          // Đặt lại các giá trị của table về mặc định ban đầu
           this.reloadTable();
           this.isShowLoad = false;
           this.keyTable = ++this.keyTable;
+          // Đặt lại trạng thái cũ của các checkbox 
           if(!this.checkboxActive[this.pageNumber]){
             this.checkboxActive[this.pageNumber] = [];
             this.entityCheckboxActive[this.pageNumber] = [];
@@ -448,7 +547,7 @@ export default {
               });
             }
           }
-          
+          this.$emit('handleEventLoadTable');
         })
         .catch((error) => {
           console.log(error);
@@ -469,22 +568,14 @@ export default {
     },
 
     /**
-     * Hàm tính giá trị còn lại của 1 tài sản trong table
-     * @author LTVIET (02/03/2023)
-     */
-    getResidualCost(item) {
-      return item.residual_value > 0 ? item.residual_value : 0;
-    },
-
-    /**
      * Hàm format lại định dạng tiền
      * @param {*} value giá trị cần format
      * @param {*} type loại định dạng muốn format
      * @author LTVIET (02/03/2023)
      */
     formatValue(value, type) {
-      if (type == enumJS.typeValue.money) {
-        return commonJS.formatMoney(value);
+      if (type == enumJS.typeValue.number) {
+        return commonJS.formatNumber(value);
       } else if (type == enumJS.typeValue.date) {
         return commonJS.formatDate(value);
       }
@@ -496,9 +587,9 @@ export default {
      * @param {*} item đối tượng cần xử lý
      * @author LTVIET (02/03/2023)
      */
-    handleEventClickFunction(title, item) {
+    handleEventClickFunction(type, item) {
       this.clickFunction = true;
-      this.$emit("btnClickFunctionOpenForm", [title, item.fixed_asset_id]);
+      this.$emit("btnClickFunctionOpenForm", [type, item.fixed_asset_id]);
     },
 
     /**
@@ -517,7 +608,7 @@ export default {
 
     /**
      * Hàm xử lý sự kiện click 1 dòng của table
-     * @param {*} index vị trí dòng của table được dblclick
+     * @param {*} index vị trí dòng của table được click
      * @author LTVIET (02/03/2023)
      */
     btnAddOnClickRowTable(index) {
@@ -525,19 +616,16 @@ export default {
         this.setFocusCheckbox(index);
       }
       
-      if (!this.checkbox[index]) {
-        if (!this.clickFunction&&!this.clickCheckbox) {
-          this.isSelectedRow[index] = !this.isSelectedRow[index];
-          if(index != this.indexRowClick){
-            this.isSelectedRow[this.indexRowClick] = false;
-          }
-        }
-        if (this.isSelectedRow[index]) {
-          this.indexRowClick = index;
-          this.indexDeleteMultiple = index;
+      if (!this.clickFunction&&!this.clickCheckbox) {
+        this.isSelectedRow[index] = !this.isSelectedRow[index];
+        if(index != this.indexRowClick){
+          this.isSelectedRow[this.indexRowClick] = false;
         }
       }
-      
+      if (this.isSelectedRow[index]) {
+        this.indexRowClick = index;
+        this.indexDeleteMultiple = index;
+      }
       this.clickFunction = false;
       this.clickCheckbox = false;
     },
@@ -548,7 +636,7 @@ export default {
      * @author LTVIET (01/04/2023)
      */
      handleEventKeyDown(event){
-      const keyCode = event.keyCode;
+      let keyCode = event.keyCode;
       switch (keyCode) {
         case enumJS.arrowDown:
           this.handleEventKeyArrowDown();
@@ -646,12 +734,14 @@ export default {
       if(this.indexDeleteStart == 0){
         this.indexDeleteStart = index - 1;
         this.indexDeleteEnd = index;
+        
       }else{
         this.indexDeleteEnd = ++this.indexDeleteEnd;
         if(this.indexDeleteEnd > this.pageSize){
           this.indexDeleteEnd = this.pageSize;
         }
       }
+      
       this.setTrueForMultipleCheckbox();
     },
 
@@ -905,6 +995,7 @@ export default {
       this.indexDeleteEnd = 0;
       this.indexRowClick = 0;
       this.indexCheckboxFocus = -1;
+      
     },
 
     /**

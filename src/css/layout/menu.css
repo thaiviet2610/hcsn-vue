@@ -33,8 +33,10 @@ menu{
 .menu__body{
     width: 100%;
     height: calc(100% - 50px - 49px);
+    /* overflow-x: hidden; */
     box-sizing: border-box;
     padding: 15px 11px;
+    margin: 0;
 }
 
 .menu-body__item{

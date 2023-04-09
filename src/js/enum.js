@@ -45,7 +45,9 @@ const enumJS = {
         number: 2,
         boolean: 3,
         date: 4,
-        money: 5
+        money: 5,
+        checkbox: 6,
+        function: 7
     }
 }
 

@@ -319,7 +319,7 @@ export default {
          */
         formatMoney(value){
             let valueMoney = this.getMoney(value);
-            valueMoney = commonJS.formatMoney(valueMoney);
+            valueMoney = commonJS.formatNumber(valueMoney);
             if(this.getMoney(valueMoney) < 10){
                 valueMoney = `0${valueMoney}`;
             }

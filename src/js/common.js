@@ -27,11 +27,11 @@ const commonJS = {
         }
     },
 
-    formatMoney(value) {
+    formatNumber(value) {
         try {
-            let money = value;
-            money = Math.round(money);
-            return new Intl.NumberFormat("vi", {NumberFormat: 3 }).format(money);
+            let number = value;
+            number = Math.round(number);
+            return new Intl.NumberFormat("vi", {NumberFormat: 3 }).format(number);
         } catch (error) {
             console.log(error);
             return "";

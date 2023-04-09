@@ -23,6 +23,8 @@
                 @blur="addEventBlurInput"
                 @keydown="handleEventKeydown"
                 @keyup="handleEventKeyup"
+                @focus="handleEventFocus"
+                tabindex="0"
                 :key="keyValueInput"
                 v-model="value">
         </div> 
@@ -109,7 +111,9 @@ export default {
         }
     },
     methods: {
-
+        handleEventFocus(){
+            this.setFocus();
+        },
         /**
          * Hàm set focus vào input
          * @author LTVIET (05/03/2023)
@@ -338,7 +342,7 @@ export default {
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = true;
             }
-            if(this.value.length == 10 && keyCode > 31){
+            if(this.value.length == 10 && keyCode > 31 && !(keyCode >=37 && keyCode <=40)){
                 event.preventDefault();
             }
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){

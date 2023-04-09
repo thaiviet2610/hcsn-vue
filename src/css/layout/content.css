@@ -111,7 +111,7 @@
     width: 100%;
     height: max-content;
     max-height: calc(100% - 38px - 13px);
-    border-radius: 3.5px;
+    /* border-radius: 3.5px; */
     border: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     margin-top: 13px;

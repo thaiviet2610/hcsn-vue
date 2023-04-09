@@ -16,7 +16,6 @@
     border: 0;
     position: absolute;
     background-color: white;
-    /* padding: 6px 0 6px 6px; */
     position: absolute !important;
     padding: 0;
     top: 6px;
@@ -143,16 +142,6 @@
     display: none;
 }
 
-/* .data__item__image{
-    background: url('../../assets/icon/qlts-icon.png') no-repeat -159px -424px;
-	width: 11px;
-	height: 7px;
-    
-} */
-
-/* [status="item__selected"]{
-    background-color: rgba(162, 240, 243, 0.829);
-} */
 
 .item__selected{
     background-color: rgba(162, 240, 243, 0.829);

@@ -44,7 +44,7 @@
             ref="mComboboxData" 
             class="combobox__data"
             @mousedown="onMouseDownInput" 
-            :style="`max-height: ${(quantityItem*itemHeight+2)}px;`" 
+            :style="`max-height: ${(quantityItem*itemHeight + 2)}px;`" 
             v-show="isShow" >
             <div 
                 :ref="`item_${index}`"
@@ -335,16 +335,18 @@ export default {
                         }
                         // set vị trí thanh scroll theo theo vị trí item được chọn
                         this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
-                        if(this.scrollY < 0){
-                            this.scrollY = 0;
-                        }
                         if(this.indexItemSelect<=0){
+                            // khi thanh scroll ở cuối cùng thì sẽ chạy lên đầu
                             this.$refs["mComboboxData"].scrollTo(0,0);
                         }
                         else if(this.scrollY > comboboxDataHeight){
+                            // Khi item được chọn nằm ngoài khoảng hiển thị thì thanh scroll sẽ chạy xuống để hiển thị item đó
                             this.$refs["mComboboxData"].scrollTo(0,this.scrollY - comboboxDataHeight);
                         }
                     }else{
+                        if(this.indexItemSelect == -1){
+                            this.indexItemSelect = 0;
+                        }
                         this.entitiesSearch = this.entities;
                     }
                     this.isShow = true;
@@ -362,19 +364,24 @@ export default {
                             //set vị trí được chọn mới ở cuối cùng
                             this.indexItemSelect = length-1;
                         }
-                        // set vị trí thanh scroll theo theo vị trí item được chọn
+                        // lấy ra vị trí item trong combobox-data
                         this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
-                        let a = (this.scrollHeight - this.itemHeight*this.quantityItem);
-                        if(this.scrollY> a && this.scrollY <= this.scrollHeight){
+                        // lấy ra độ dài của thanh scroll trong phần hiển thị của combobox-data
+                        const lengthScrollDisplay = (this.scrollHeight - this.itemHeight*this.quantityItem);
+                        if((this.scrollY > lengthScrollDisplay && this.scrollY <= this.scrollHeight) || this.scrollY <= 0){
+                            // Khi item được chọn di chuyển lên trên nằm ngoài khoảng hiển thị thì thanh scroll lên di chuyển lên để hiển thị item
                             this.$refs["mComboboxData"].scrollTo(0,this.scrollHeight);
-                        }else if(this.scrollY <= 0){
-                            this.$refs["mComboboxData"].scrollTo(0,this.scrollHeight);
-                        }else{
+                        }
+                        else{
+                            // Khi item được chọn ở đoạn dưới cùng của combobox-data thì thanh scroll sẽ chạy xuống dưới cùng
                             this.$refs["mComboboxData"].scrollTo(0,this.scrollY - this.itemHeight);
                         }
                     }else{
+                        
                         this.entitiesSearch = this.entities;
                     }
+                    // set vị trí thanh scroll theo theo vị trí item được chọn
+                    
                     this.isShow = true;
                     this.zIndex = 2;
                     break;

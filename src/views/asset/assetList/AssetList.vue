@@ -85,6 +85,7 @@
                     :key="keyTable"
                     @addOnClickContextMenu="handleEventClickContextMenu"
                     @addOnEventMouseDown="handleEventTableMouseDown"
+                    @handleEventLoadTable="handleEventLoadTable"
                     :api="this.assetFilterApi"></Mtable>
             </div>
         </div>
@@ -168,8 +169,6 @@ export default {
         AssetDetail,MCombobox,Mtable,MToastSucess,MButtonIcon,
     },
     created() {
-        document.addEventListener('keydown',this.handleEventKeyDown);
-        document.addEventListener('keyup',this.handleEventKeyUp);
     },
     data() {
         return {
@@ -223,7 +222,19 @@ export default {
             tootltipBtnAdd: resourceJS.tooltip.assetList.buttonAdd,
         }
     },
+    mounted() {
+        // mặc định focus vào input tìm kiếm khi load trang
+        this.$nextTick(function() {
+            this.setFocusDefault();
+        })
+        document.addEventListener('keydown',this.handleEventKeyDown);
+        document.addEventListener('keyup',this.handleEventKeyUp);
+    },
 
+    unmounted() {
+        document.removeEventListener('keydown',this.handleEventKeyDown);
+        document.removeEventListener('keyup',this.handleEventKeyUp);
+    },
     watch: {
     },
     methods: {
@@ -276,7 +287,7 @@ export default {
          */
         formatValue(value,type) {
             if(type == "money"){
-                return commonJS.formatMoney(value);
+                return commonJS.formatNumber(value);
             }else if(type == "date") {
                 return commonJS.formatDate(value);
             }
@@ -289,11 +300,15 @@ export default {
          */
         handleEventOpenForm(values) {
             this.isShowToastSucess = false;
-            this.labelForm = values[0];
-            if(this.labelForm == resourceJS.titlteForm.editAssetForm){
-                this.typeForm = enumJS.type.edit;
+            this.typeForm = values[0];
+            if(this.typeForm == enumJS.type.edit){
+                this.labelForm = resourceJS.titlteForm.editAssetForm;
             }else{
-                this.typeForm = enumJS.type.clone;
+                if(this.typeForm == enumJS.type.clone){
+                    this.labelForm = resourceJS.titlteForm.cloneAssetForm;
+                }else if(this.typeForm == enumJS.type.add){
+                    this.labelForm = resourceJS.titlteForm.addAssetForm;
+                }
                 this.getNewCode();
             }
             this.isShowToastSucess = false;
@@ -477,8 +492,7 @@ export default {
          */
         deleteAsset(id){
             axios.delete(`${this.assetApi}/${id}`)
-            .then(res=>{
-                console.log(res);
+            .then(()=>{
                 //gọi hàm load lại dữ liệu table
                 this.$refs[this.refElements.table].pageNumber = 1;
                 this.$refs[this.refElements.table].loadData();
@@ -510,8 +524,7 @@ export default {
             axios.delete(this.deleteMultipleAssetApi,{
                 data: Object.values(assetsId)
             })
-            .then( res=>{
-                console.log(res);
+            .then( ()=>{
                 //gọi hàm load lại dữ liệu table
                 this.$refs[this.refElements.table].pageNumber = 1;
                 this.$refs[this.refElements.table].loadData();
@@ -561,7 +574,6 @@ export default {
          */
         closeToastSucess(){
             this.isShowToastSucess = false;
-            this.setFocusDefault();
         },
 
         /**
@@ -573,7 +585,7 @@ export default {
             this.$refs[this.refElements.table].pageNumber = 1;
             this.$refs[this.refElements.table].loadData();
             let message = resourceJS.toastSuccess.saveSuccess;
-            this.$refs[this.refElementAssetList.table].checkboxActive = [];
+            this.$refs[this.refElements.table].checkboxActive = [];
             this.showToastSucess(message);
             
         },
@@ -625,9 +637,10 @@ export default {
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
-                this.$refs[this.refElementAssetList.table].checkboxActive = [];
-                this.$refs[this.refElementAssetList.table].entityCheckboxActive = [];
-                this.$refs[this.refElementAssetList.table].checkbox.fill(false);
+                
+                this.$refs[this.refElements.table].checkboxActive = [];
+                this.$refs[this.refElements.table].entityCheckboxActive = [];
+                this.$refs[this.refElements.table].checkbox.fill(false);
                 this.setFocusDefault();
             })
             .catch(error => {
@@ -695,7 +708,6 @@ export default {
          */
          handleEventKeydownEnterInputSearch(value){
             this.keyword = value;
-            console.log("keyword:",this.keyword);
             if(!value){
                 this.keyword = "";
             }
@@ -870,6 +882,14 @@ export default {
         },
 
         /**
+         * Hàm xử lý sự kiện khi load lại dữ liệu table thì focus vào input tìm kiếm
+         * @author LTVIET (09/03/2023)
+         */
+        handleEventLoadTable(){
+            this.setFocusDefault();
+        },
+
+        /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + keycode
          * @param {*} event Sự kiện khi bấm phím
          * @param {*} keyCode Ký tự bấm cùng phím Ctrl
@@ -971,14 +991,6 @@ export default {
         },
     },
     
-    
-    mounted() {
-        // mặc định focus vào input tìm kiếm khi load trang
-        this.$nextTick(function() {
-            this.setFocusDefault();
-        })
-        
-    },
 
 }
 </script>

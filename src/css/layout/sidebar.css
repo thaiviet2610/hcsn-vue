@@ -53,7 +53,7 @@
     height: calc(100vh - 50px - 49px);
     box-sizing: border-box;
     padding: 15px 11px;
-    
+    overflow-x: hidden;
 }
 
 .sidebar-body__item{

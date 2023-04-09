@@ -178,60 +178,99 @@ const resourceJS = {
             }
         },
         dataPageSize: ["15", "50", "100","150"],
-        dataTitleColumn:[
+        titleColumm:{
+            index: "STT",
+            assetCode: "Mã tài sản",
+            assetName: "Tên tài sản",
+            assetCategoryName: "Loại tài sản",
+            departmentName: "Bộ phận sử dụng",
+            quantity: "Số lượng",
+            cost: "Nguyên giá",
+            depreciationValue: "HM/KH lũy kế",
+            residualValue: "Giá trị còn lại",
+            function: "Chức năng"
+        },
+        contentFooterBefore: "Tổng số: ",
+        contentFooterAfter: " bản ghi",
+        noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+        tableInfo:[
             {
-                titlte: "STT",
+                title: "",
+                propName: "",
+                columnClass: "column1",
+                typeValue: enumJS.typeValue.checkbox
+            },
+            {
+                title: "STT",
                 propName: "index",
                 columnClass: "column2",
                 typeValue: enumJS.typeValue.number
             },
             {
-                titlte: "Mã tài sản",
+                title: "Mã tài sản",
                 propName: "fixed_asset_code",
                 columnClass: "column3",
                 typeValue: enumJS.typeValue.text
             },
             {
-                titlte: "Tên tài sản",
+                title: "Tên tài sản",
                 propName: "fixed_asset_name",
                 columnClass: "column4",
                 typeValue: enumJS.typeValue.text
             },
             {
-                titlte: "Loại tài sản",
+                title: "Loại tài sản",
                 propName: "fixed_asset_category_name",
                 columnClass: "column5",
                 typeValue: enumJS.typeValue.text
             },
             {
-                titlte: "Bộ phận sử dụng",
-                propName: "deparment_name",
+                title: "Bộ phận sử dụng",
+                propName: "department_name",
                 columnClass: "column6",
                 typeValue: enumJS.typeValue.text
             },
             {
-                titlte: "Số lượng",
+                title: "Số lượng",
                 propName: "quantity",
                 columnClass: "column7",
                 typeValue: enumJS.typeValue.number
             },
             {
-                titlte: "Nguyên giá",
+                title: "Nguyên giá",
                 propName: "cost",
                 columnClass: "column8",
                 typeValue: enumJS.typeValue.number
             },
             {
-                titlte: "KH/HM lũy kế",
+                title: "KH/HM lũy kế",
                 propName: "depreciation_value",
                 columnClass: "column9",
                 typeValue: enumJS.typeValue.number
             },
             {
-                titlte: "Giá trị còn lại",
+                title: "Giá trị còn lại",
                 propName: "residual_value",
                 columnClass: "column10",
                 typeValue: enumJS.typeValue.number
+            },
+            {
+                title: "Chức năng",
+                propName: "",
+                columnClass: "column11",
+                typeValue: enumJS.typeValue.function,
+                function: {
+                    edit: {
+                        class: "function__edit",
+                        type: enumJS.type.edit,
+                        tooltip: "Sửa (Ctrl+E)"
+                    },
+                    clone: {
+                        class: "function__clone",
+                        type: enumJS.type.clone,
+                        tooltip: "Nhân bản (Ctrl+0)"
+                    }
+                }
             },
         ]
     },

@@ -105,5 +105,19 @@ export default {
 </script>
 
 <style scoped>
+div::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
 
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgb(0, 0, 0, 0.3);
+    /* border-radius: 2px; */
+
+}
+
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 6px rgb(0, 0, 0, 0.3);
+    border-radius: 1.5px;
+}
 </style>

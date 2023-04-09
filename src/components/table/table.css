@@ -2,7 +2,6 @@ table{
     width: 100%;
     background-color: #ffffff;
     border-collapse: separate;
-
     border-bottom: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     border-spacing: 0;
@@ -14,15 +13,15 @@ table{
     max-height: 100%;
     /* max-height: calc(100% - 40px); */
     overflow: auto ;
+    
 }
-
-
 
 
 th{
     height: 38px;
     box-sizing: border-box;
     border-bottom: 1px solid #afafaf;
+    
     /* resize: horizontal;
     overflow: auto; */
 }
@@ -50,9 +49,10 @@ thead{
     font-size: 13px;
     color: #001031;
     font-weight: 700;
+    
 }
 
-tbody tr{
+.content__table tbody tr{
     cursor: pointer;
 
 }
@@ -116,33 +116,38 @@ tfoot{
     /* min-width: 50px; */
     padding: 0 20px 0 16px;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .column2{
-    width: 29px;
-    /* min-width: 25px; */
+    width: 60px;
+    min-width: 29px;
     box-sizing: border-box;
     padding-right: 10px;
+    text-align: center;
 }
 
 .column3{
-    /* width: 80px; */
+    width: 115px;
     min-width: 70px;
     padding-right: 10px;
+    text-align: left;
 }
 
 
 .column4{
-    /* width: 115px; */
+    width: 160px;
     min-width: 90px;
     padding-right: 10px;
+    text-align: left;
 }
 
 
 .column5{
-    /* width: 125px; */
+    width: 160px;
     min-width: 90px;
     padding-right: 10px;
+    text-align: left;
 }
 
 
@@ -150,7 +155,7 @@ tfoot{
 .column6{
     min-width: 90px;
     padding-right: 5px;
-    
+    text-align: left;
 }
 
 
@@ -158,8 +163,9 @@ tfoot{
 
 
 .column7{
-    width: 55px;
-    /* min-width: 52px; */
+    width: 80px;
+    min-width: 55px;
+    text-align: right;
 }
 
 .footer_right{
@@ -173,34 +179,38 @@ tfoot{
 
 
 .column8{
-    width: 110px;
+    width: 140px;
     min-width: 100px;
     padding: 0 0 0 10px;
+    text-align: right;
 }
 
 
 
 .column9{
-    width: 110px;
+    width: 140px;
     min-width: 100px ;
     padding: 0 0 0 10px;
+    text-align: right;
 }
 
 
 
 .column10{
-    width: 110px;
+    width: 140px;
     min-width: 100px;
     padding: 0 0 0 10px;
+    text-align: right;
 }
 
 
 
 .column11{
-    width: 95px;
+    width: 100px;
     min-width: 60px;
     padding-left: 10px;
     padding-right: 15px;
+    text-align: center;
 }
 
 .column12{
@@ -213,8 +223,6 @@ tfoot{
 
 
 .function{
-    /* width: 62px; */
-    /* padding: 0px 18px 0px 18px; */
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -297,12 +305,12 @@ tfoot{
 
 
 
-tbody tr:hover{
+.content__table tbody tr:hover{
     height: 38px;
     background-color: rgba(162, 240, 243, 0.829);
 }
 
-tbody tr:hover .function {
+.content__table tbody tr:hover .function {
     visibility: visible !important;
 }
 
@@ -330,9 +338,9 @@ tbody tr:hover .function {
 }
 
 .content-footer__item1--text{
-    font-size: 11px;
+    font-size: 11px !important;
     height: 13px;
-    font-weight: 400;
+    font-weight: 400 !important;
 }
 
 .content-footer__item2{
@@ -451,6 +459,38 @@ tbody tr:hover .function {
 .cursor_disable{
     cursor: none;
 }
+
+.no_data{
+    width: 100%;
+    height: calc(100vh - 205px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.no_data--content{
+    width: 100%;
+    height: calc(100vh - 205px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px;
+    position: absolute;
+    top: 38px;
+}
+
+.no_data--icon{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -464px -68px;
+	width: 18px;
+	height: 16px;
+}
+
+.no_data--text{
+    font-family: Roboto-Bold;
+    color: red;
+}
+
 
 
 
