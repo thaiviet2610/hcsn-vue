@@ -144,7 +144,7 @@ export default {
          * @param {*} index vị trí của item được chọn
          * @author LTVIET (11/03/2023)
          */
-         setStyleIconSelect(index){
+        setStyleIconSelect(index){
             // nếu index bằng vị trí của item được chọn thì hiển thị icon
             if(index == this.indexItemSelected){
                 return "display: block;";
@@ -207,69 +207,81 @@ export default {
          onKeyDownSelecte(event) {
             //1. lấy ra giá trị phím được bấm
             const key = event.keyCode;
-            let length = this.dataSearch.length;
             switch (key) {
                 case enumJS.arrowDown:
-                    //2.1. nếu là phím xuống:
-                    if(this.isShowData){
-                        //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
-                        //  set vị trí được chọn mới tăng lên 1 đơn vị
-                        if(this.indexItemSelected < (length - 1) ){
-                            this.indexItemSelected += 1;
-                        }else{
-                            //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
-                            //set vị trí được chọn mới ở đầu tiên
-                            this.indexItemSelected = 0;
-                        }
-                    }else{
-                        this.dataSearch = this.data;
-                    }
-                    this.isShowData = true;
+                    this.handleEventKeyDownArrowDown();
                     break;
                 case enumJS.arrowUp:
-                    //2.2. nếu là phím lên:
-                    if(this.isShowData){
-                        //2.2.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
-                        //  set vị trí được chọn mới giảm đi 1 đơn vị
-                        if(this.indexItemSelected > 0){
-                            this.indexItemSelected -= 1;
-                        }else{
-                            //2.2.2. nếu vị trí item được chọn là ở dầu tiên thi
-                            //set vị trí được chọn mới ở cuối cùng
-                            this.indexItemSelected = length-1;
-                        }
-                    }else{
-                        this.dataSearch = this.data;
-                    }
-                    this.isShowData = true;
+                    this.handleEventKeyDownArrowUp();
                     break;
                 case enumJS.keyEnter:
-                    //2.4. nếu là phím enter
-                    //2.4.1. lấy ra item được chọn trong danh sách
-                    if(length == 0){
-                        //2.4.2. nếu độ dài danh sách tìm kiếm = 0
-                        //--> giá trị input không có trong danh sách data
-                        //2.4.2.1 gán lại dữ liệu cho dánh sách tìm kiếm 
-                        this.dataSearch = this.data;
-                        //2.4.2.2. gán giá trị input cho giá trị đầu tiên của danh sách
-                        this.valueSelected = this.dataSearch[0];
-                        this.indexItemSelected = 0;
-                        this.$emit("update:modelValue",Number(this.valueSelected));
-                        //2.4.2.3. hiển thị thông báo không có trong danh sách data
-                        this.isShowDialogNotify = true;
-                    }else{
-                        //2.4.3. nếu độ dài danh sách tìm kiếm > 0
-                        // gán giá trị cho biến valueSelected
-                        this.valueSelected = this.dataSearch[this.indexItemSelected];
-                    }
-                    //2.4.4. ẩn đi combobox-data
-                    this.isShowData = false;
-                    this.setFocus();
-                    //2.4.5. binding dữ liệu mới ra bên ngoài
-                    this.$emit("update:modelValue",Number(this.valueSelected));
+                    this.handleEventKeyDownEnter();
                     break;
             }
             
+        },
+
+        handleEventKeyDownArrowDown(){
+            let length = this.dataSearch.length;
+            //1. nếu là phím xuống:
+            if(this.isShowData){
+                //1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
+                //  set vị trí được chọn mới tăng lên 1 đơn vị
+                if(this.indexItemSelected < (length - 1) ){
+                    this.indexItemSelected += 1;
+                }else{
+                    //1.2. nếu vị trí item được chọn là ở cuối cùng thi
+                    //set vị trí được chọn mới ở đầu tiên
+                    this.indexItemSelected = 0;
+                }
+            }else{
+                this.dataSearch = this.data;
+            }
+            this.isShowData = true;
+        },
+
+        handleEventKeyDownArrowUp(){
+            let length = this.dataSearch.length;
+            //1. nếu là phím lên:
+            if(this.isShowData){
+                //1.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
+                //  set vị trí được chọn mới giảm đi 1 đơn vị
+                if(this.indexItemSelected > 0){
+                    this.indexItemSelected -= 1;
+                }else{
+                    //1.2. nếu vị trí item được chọn là ở dầu tiên thi
+                    //set vị trí được chọn mới ở cuối cùng
+                    this.indexItemSelected = length-1;
+                }
+            }else{
+                this.dataSearch = this.data;
+            }
+            this.isShowData = true;
+        },
+
+        handleEventKeyDownEnter(){
+            let length = this.dataSearch.length;
+            //1. lấy ra item được chọn trong danh sách
+            if(length == 0){
+                //2. nếu độ dài danh sách tìm kiếm = 0
+                //--> giá trị input không có trong danh sách data
+                //2.1 gán lại dữ liệu cho dánh sách tìm kiếm 
+                this.dataSearch = this.data;
+                //2.2. gán giá trị input cho giá trị đầu tiên của danh sách
+                this.valueSelected = this.dataSearch[0];
+                this.indexItemSelected = 0;
+                this.$emit("update:modelValue",Number(this.valueSelected));
+                //2.3. hiển thị thông báo không có trong danh sách data
+                this.isShowDialogNotify = true;
+            }else{
+                //3. nếu độ dài danh sách tìm kiếm > 0
+                // gán giá trị cho biến valueSelected
+                this.valueSelected = this.dataSearch[this.indexItemSelected];
+            }
+            //4. ẩn đi combobox-data
+            this.isShowData = false;
+            //5. binding dữ liệu mới ra bên ngoài
+            this.$emit("update:modelValue",Number(this.valueSelected));
         },
 
         /**

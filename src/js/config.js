@@ -5,7 +5,7 @@ const configJS = {
         assetApi: "https://localhost:7123/api/v1/Assets",
         assetFilterApi: "https://localhost:7123/api/v1/Assets/Filter?fixedAssetCatagortId={1}&keyword={0}&departmentId={2}&pageSize={3}&pageNumber={4}",
         assetGenerateNewCodeApi: "https://localhost:7123/api/v1/Assets/NewCode",
-        exportExcelApi: "https://localhost:7123/api/v1/Assets/Excel?",
+        exportExcelApi: "https://localhost:7123/api/v1/Assets/Export?",
         deleteMultipleAsset: "https://localhost:7123/api/v1/Assets",
     }
 }

@@ -6,13 +6,13 @@
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
-            :id="idCombobox"
             type="text" 
             v-model="value"
             :placeholder="this.placeholder" 
             class="combobox_input combobox__text" 
             :class="{'input--error':inValid}" 
             autocomplete="off"
+            @focus="handleEventFocusInput"
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
@@ -36,15 +36,15 @@
             @addOnClickBtnIcon="btnCloseDropdown">
         </MButtonIcon>
         <!-- thẻ button thực hiện chức năng lọc (nếu có)  -->
-        <div v-if="isIcon" class="combobox__icon">
-            <div class="combobox__icon--image"></div>
+        <div v-if="iconCombobox" class="combobox__icon">
+            <div :class="iconCombobox"></div>
         </div>
         <!-- thẻ div hiển thị dữ liệu combobox-data  -->
         <div
             ref="mComboboxData" 
             class="combobox__data"
             @mousedown="onMouseDownInput" 
-            :style="`max-height: ${(quantityItem*itemHeight + 2)}px;`" 
+            :style="`max-height: ${(quantityItemDisplay*itemHeight + 2)}px;`" 
             v-show="isShow" >
             <div 
                 :ref="`item_${index}`"
@@ -83,9 +83,9 @@ import axios from 'axios'
 export default {
     name:"TheCombobox",
     props: {
-        isIcon: {
-            type: Boolean,
-            default: false
+        iconCombobox: {
+            type: String,
+            default: ""
         },
         api: {
             type: String,
@@ -115,7 +115,7 @@ export default {
             type: String,
             default: ""
         },
-        quantityItem: {
+        quantityItemDisplay: {
             type: Number,
             default: 0
         },
@@ -123,10 +123,6 @@ export default {
             type: Number,
             default: 0
         },
-        idCombobox: {
-            type: String,
-            default: ""
-        }
     },
     data() {
         return {
@@ -181,7 +177,7 @@ export default {
          * nếu combobox không có icon thì set lại style cho input
          * @author LTVIET (05/03/2023)
          */
-        if (!this.isIcon) {
+        if (!this.iconCombobox) {
             this.styleInput = 'width: 100%; padding-right: 28px';
         }
 
@@ -191,7 +187,7 @@ export default {
     },
     computed: {
         /**
-         * Hàm tìm vị trí giá trị được chọn trong danh sách dữ liệu
+         * Hàm tìm vị trí giá trị được chọn trong danh sách tìm kiếm dữ liệu
          * @author LTVIET (05/03/2023)
          */
         findIndexSelected: function() {
@@ -222,8 +218,7 @@ export default {
                 this.indexItemSelect = -1;
             }
             this.scrollY = 0;
-            this.zIndex = 2;
-            this.setFocus();
+            this.zIndex = 0;
         },
         
         /**
@@ -245,10 +240,10 @@ export default {
             this.isShow = false;
             this.scrollY = 0;
             this.zIndex = 0;
-            this.setFocus();
             const value = item[this.propValue];
             this.$emit("getInputCombobox",value);
         },
+        
         /**
          * Hàm set focus vào input của combobox
          * @author LTVIET (05/03/2023)
@@ -260,13 +255,13 @@ export default {
         }, 
 
         /**
-         * Hàm tìm item tương ứng với giá trị truyền từ ngoài vào và gán vòa value
+         * Hàm tìm item tương ứng với giá trị truyền từ ngoài vào và gán vào value
          * @author LTVIET (05/03/2023)
          */
         setItemSelected(){
             let me = this;
             //tìm item tương ứng với valueInput
-            let entitySelected = this.entities.find(item=>item[this.propValue] == me.valueInput);
+            let entitySelected = this.entitiesSearch.find(item=>item[this.propValue] == me.valueInput);
             if(entitySelected){
                 this.value = entitySelected[this.propName];
             }
@@ -317,105 +312,132 @@ export default {
         onKeyDownSelecte(event) {
             //1. lấy ra giá trị phím được bấm
             const key = event.keyCode;
-            let length = this.entitiesSearch.length;
+            // Lấy ra giá trị độ dài của thanh scroll trong combobox-data
             this.scrollHeight = this.$refs["mComboboxData"].scrollHeight - 2;
-            const comboboxDataHeight = this.quantityItem*this.itemHeight;
             switch (key) {
                 case enumJS.arrowDown:
-                    //2.1. nếu là phím xuống:
-                    if(this.isShow){
-                        //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
-                        //  set vị trí được chọn mới tăng lên 1 đơn vị
-                        if(this.indexItemSelect < (length - 1) ){
-                            this.indexItemSelect += 1;
-                        }else{
-                            //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
-                            //set vị trí được chọn mới ở đầu tiên
-                            this.indexItemSelect = 0;
-                        }
-                        // set vị trí thanh scroll theo theo vị trí item được chọn
-                        this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
-                        if(this.indexItemSelect<=0){
-                            // khi thanh scroll ở cuối cùng thì sẽ chạy lên đầu
-                            this.$refs["mComboboxData"].scrollTo(0,0);
-                        }
-                        else if(this.scrollY > comboboxDataHeight){
-                            // Khi item được chọn nằm ngoài khoảng hiển thị thì thanh scroll sẽ chạy xuống để hiển thị item đó
-                            this.$refs["mComboboxData"].scrollTo(0,this.scrollY - comboboxDataHeight);
-                        }
-                    }else{
-                        if(this.indexItemSelect == -1){
-                            this.indexItemSelect = 0;
-                        }
-                        this.entitiesSearch = this.entities;
-                    }
-                    this.isShow = true;
-                    this.zIndex = 2;
+                    this.handleEventKeyDownArrowDown();
                     break;
                 case enumJS.arrowUp:
-                    //2.2. nếu là phím lên:
-                    if(this.isShow){
-                        //2.2.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
-                        //  set vị trí được chọn mới giảm đi 1 đơn vị
-                        if(this.indexItemSelect > 0){
-                            this.indexItemSelect -= 1;
-                        }else{
-                            //2.2.2. nếu vị trí item được chọn là ở dầu tiên thi
-                            //set vị trí được chọn mới ở cuối cùng
-                            this.indexItemSelect = length-1;
-                        }
-                        // lấy ra vị trí item trong combobox-data
-                        this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
-                        // lấy ra độ dài của thanh scroll trong phần hiển thị của combobox-data
-                        const lengthScrollDisplay = (this.scrollHeight - this.itemHeight*this.quantityItem);
-                        if((this.scrollY > lengthScrollDisplay && this.scrollY <= this.scrollHeight) || this.scrollY <= 0){
-                            // Khi item được chọn di chuyển lên trên nằm ngoài khoảng hiển thị thì thanh scroll lên di chuyển lên để hiển thị item
-                            this.$refs["mComboboxData"].scrollTo(0,this.scrollHeight);
-                        }
-                        else{
-                            // Khi item được chọn ở đoạn dưới cùng của combobox-data thì thanh scroll sẽ chạy xuống dưới cùng
-                            this.$refs["mComboboxData"].scrollTo(0,this.scrollY - this.itemHeight);
-                        }
-                    }else{
-                        
-                        this.entitiesSearch = this.entities;
-                    }
-                    // set vị trí thanh scroll theo theo vị trí item được chọn
-                    
-                    this.isShow = true;
-                    this.zIndex = 2;
+                    this.handleEventKeyDownArrowUp();
                     break;
                 case enumJS.keyEnter:
-                    if(this.indexItemSelect==-1){
-                        if(this.value){
-                            this.$emit("getInputCombobox",null);
-                        }else{
-                            this.$emit("getInputCombobox","");
-                        }
-                        this.isShow = false;
-                        this.scrollY = 0;
-                        this.zIndex = 0;
-                    }else{
-                        //2.4. nếu là phím enter
-                        //2.4.1. lấy ra item được chọn trong danh sách
-                        this.itemSelected = this.entitiesSearch[this.indexItemSelect];
-                        //2.4.2. gán giá trị tương ứng vào value
-                        this.value = this.itemSelected[this.propName];
-                        if(this.value){
-                            this.inValid = false;
-                        }
-                        //2.4.3. ẩn đi combobox-data
-                        this.isShow = false;
-                        this.scrollY = 0;
-                        this.zIndex = 0;
-                        //2.4.4. set focus vào input
-                        this.setFocus();
-                        //2.4.5. binding dữ liệu mới ra bên ngoài
-                        this.$emit("getInputCombobox",this.itemSelected[this.propValue]);
-                    }
+                    this.handleEventKeyDownEnter();
                     break;
-            
                 }
+        },
+
+        /**
+         * Hàm xử lý sự kiện nhấn phím xuống
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeyDownArrowDown(){
+            let length = this.entitiesSearch.length;
+            // Lấy ra giá trị độ dài của combobox-data
+            const comboboxDataHeight = this.quantityItemDisplay*this.itemHeight;
+            if(this.isShow){
+                //2.1.1. nếu vị trí item được chọn không phải ở cuối cùng thì 
+                //  set vị trí được chọn mới tăng lên 1 đơn vị
+                if(this.indexItemSelect < (length - 1) ){
+                    this.indexItemSelect += 1;
+                }else{
+                    //2.1.2. nếu vị trí item được chọn là ở cuối cùng thi
+                    //set vị trí được chọn mới ở đầu tiên
+                    this.indexItemSelect = 0;
+                }
+                // set vị trí thanh scroll theo theo vị trí item được chọn
+                // lấy giá trị vị trí item được chọn trong combobox-data
+                this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
+                if(this.indexItemSelect<=0){
+                    // khi thanh scroll ở cuối cùng thì sẽ chạy lên đầu
+                    this.$refs["mComboboxData"].scrollTo(0,0);
+                }
+                else if(this.scrollY > comboboxDataHeight){
+                    // Khi item được chọn nằm ngoài khoảng hiển thị thì thanh scroll sẽ chạy xuống để hiển thị item đó
+                    this.$refs["mComboboxData"].scrollTo(0,this.scrollY - comboboxDataHeight);
+                }
+            }else{
+                // nếu không có có item nào được chọn trước đó thì set mặc định là item đầu tiên
+                if(this.indexItemSelect == -1){
+                    this.indexItemSelect = 0;
+                }
+                this.entitiesSearch = this.entities;
+            }
+            this.isShow = true;
+            this.zIndex = 2;
+        },
+
+        /**
+         * Hàm xử lý sự kiện nhấn phím lên
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeyDownArrowUp(){
+            let length = this.entitiesSearch.length;
+            //1. nếu là phím lên:
+            if(this.isShow){
+                //1.1. nếu vị trí item được chọn không phải ở đâu tiên thì 
+                //  set vị trí được chọn mới giảm đi 1 đơn vị
+                if(this.indexItemSelect > 0){
+                    this.indexItemSelect -= 1;
+                }else{
+                    //1.2. nếu vị trí item được chọn là ở dầu tiên thi
+                    //set vị trí được chọn mới ở cuối cùng
+                    this.indexItemSelect = length-1;
+                }
+                // lấy ra vị trí item trong combobox-data
+                this.scrollY = (this.indexItemSelect+1)*this.itemHeight;
+                // lấy ra giá trị độ dài phần không được hiển thị của combobox-data
+                const lengthScrollDisplay = (this.scrollHeight - this.itemHeight*this.quantityItemDisplay);
+                if((this.scrollY > lengthScrollDisplay && this.scrollY <= this.scrollHeight) || this.scrollY <= 0){
+                    // Khi item được chọn ở đoạn dưới cùng của combobox-data thì thanh scroll sẽ chạy xuống dưới cùng
+                    this.$refs["mComboboxData"].scrollTo(0,this.scrollHeight);
+                }
+                else{
+                    // Khi item được chọn di chuyển lên trên nằm ngoài khoảng hiển thị thì thanh scroll lên di chuyển lên để hiển thị item
+                    this.$refs["mComboboxData"].scrollTo(0,this.scrollY - this.itemHeight);
+                }
+            }else{
+                
+                this.entitiesSearch = this.entities;
+            }
+            // set vị trí thanh scroll theo theo vị trí item được chọn
+            this.isShow = true;
+            this.zIndex = 2;
+        },
+
+        /**
+         * Hàm xử lý sự kiện nhấn phím enter
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventKeyDownEnter(){
+            // Nếu chưa có item nào được chọn
+            if(this.indexItemSelect==-1){
+                if(this.value){
+                    this.$emit("getInputCombobox",null);
+                }else{
+                    this.$emit("getInputCombobox","");
+                }
+                this.isShow = false;
+                this.scrollY = 0;
+                this.zIndex = 0;
+            }
+            // Nếu đã có item được chọn
+            else{
+                //1. nếu là phím enter
+                //1.1. lấy ra item được chọn trong danh sách
+                this.itemSelected = this.entitiesSearch[this.indexItemSelect];
+                //1.2. gán giá trị tương ứng vào value
+                this.value = this.itemSelected[this.propName];
+                if(this.value){
+                    this.inValid = false;
+                }
+                //1.3. ẩn đi combobox-data
+                this.isShow = false;
+                this.scrollY = 0;
+                this.zIndex = 0;
+                //1.5. binding dữ liệu mới ra bên ngoài
+                this.$emit("getInputCombobox",this.itemSelected[this.propValue]);
+            }
         },
         
         /**
@@ -473,6 +495,11 @@ export default {
         handleEventCloseDialogNotifyLoadError(){
             this.isShowDialogNotifyLoadError = false;
         },
+
+        handleEventFocusInput(){
+            this.isShow = true;
+            this.zIndex = 2;
+        }
     }
 }
 </script>

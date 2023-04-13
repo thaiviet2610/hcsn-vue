@@ -2,12 +2,12 @@
     <!-- phần header  -->
     <header>
         <div class="header-left">
-            <div class="header-left__text">Danh sách tài sản</div>
+            <div class="header-left__text">{{ txtAssetList }}</div>
         </div>
         <div class="header-right">
-            <div class="header-right__text">Sở tài chính</div>
+            <div class="header-right__text">{{ txtFinancialDepartment }}</div>
             <div class="header-right__item">
-                <div class="header-right__item text1">Năm</div>
+                <div class="header-right__item text1">{{ txtYear }}</div>
                 <div id="txtYear" class="header-right__item text2">{{ year }}</div>
                 <div class="header-right__item--icon">
                     <MButtonIcon
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import resourceJS from '@/js/resourceJS';
 export default {
     name:"TheHeader",
     components:{
@@ -56,6 +57,9 @@ export default {
     data() {
         return {
             year: null,
+            txtAssetList: resourceJS.theHeader.assetList,
+            txtFinancialDepartment: resourceJS.theHeader.financialDepartment,
+            txtYear: resourceJS.theHeader.year
         }
     },
     created() {

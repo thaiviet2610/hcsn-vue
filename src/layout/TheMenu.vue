@@ -2,48 +2,48 @@
     <div>
         <menu v-if="isShow">
         <div class="menu-header">
-            <div class="menu-header__item menu__item--selected" data_tooltip_right="MISA QUẢN LÝ TÀI SẢN"></div>
+            <div class="menu-header__item menu__item--selected" :data_tooltip_right="tooltipHeader"></div>
         </div>
         <div class="menu__body">
             <router-link to="/overview"
             class="menu-body__item"
-            data_tooltip_right="Tổng quan"
+            :data_tooltip_right="tooltipBodyOverview"
             >
             <div class="menu-body__item2 menu-body__item2--icon1"></div>
             </router-link>
             <router-link to="/"
             class="menu-body__item"
-            data_tooltip_right="Tài sản"
+            :data_tooltip_right="tooltipBodyAsset"
             >
             <div class="menu-body__item2 menu-body__item2--icon2"></div>
             </router-link>
             <router-link to="/assetHTDB"
             class="menu-body__item"
-            data_tooltip_right="Tài sản HT-DB"
+            :data_tooltip_right="tooltipBodyAssetHTDB"
             >
             <div class="menu-body__item2 menu-body__item2--icon3"></div>
             </router-link>
             <router-link to="/tools"
             class="menu-body__item"
-            data_tooltip_right="Công cụ dụng cụ"
+            :data_tooltip_right="tooltipBodyTool"
             >
             <div class="menu-body__item2 menu-body__item2--icon4"></div>
             </router-link>
             <router-link to="/category"
             class="menu-body__item"
-            data_tooltip_right="Danh mục"
+            :data_tooltip_right="tooltipBodyCategory"
             >
             <div class="menu-body__item2 menu-body__item2--icon5"></div>
             </router-link>
             <router-link to="/search"
             class="menu-body__item"
-            data_tooltip_right="Tra cứu"
+            :data_tooltip_right="tooltipBodySearch"
             >
             <div class="menu-body__item2 menu-body__item2--icon6"></div>
             </router-link>
             <router-link to="/report"
             class="menu-body__item"
-            data_tooltip_right="Báo cáo"
+            :data_tooltip_right="tooltipBodyReport"
             >
             <div class="menu-body__item2 menu-body__item2--icon7"></div>
             </router-link>
@@ -51,7 +51,7 @@
         <div class="menu__footer">
             <MButtonIcon
                 class="menu_footer__item"
-                data_tooltip_right="Mở rộng"
+                :data_tooltip_right="tooltipFooter"
                 classIcon="menu_footer__item--image"
                 @addOnClickBtnIcon="handleEventClickBtnExpandMenu">
             </MButtonIcon>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import resourceJS from '@/js/resourceJS';
 import TheSidebar from "./TheSidebar.vue";
 export default {
     name: "TheMenu",
@@ -76,6 +77,16 @@ export default {
     data() {
         return {
             isShow: true,
+            tooltipHeader: resourceJS.tooltip.theMenu.header,
+            tooltipBodyOverview: resourceJS.tooltip.theMenu.body.overview,
+            tooltipBodyAsset: resourceJS.tooltip.theMenu.body.asset,
+            tooltipBodyAssetHTDB: resourceJS.tooltip.theMenu.body.assetHTDB,
+            tooltipBodyCategory: resourceJS.tooltip.theMenu.body.category,
+            tooltipBodyTool: resourceJS.tooltip.theMenu.body.tool,
+            tooltipBodySearch: resourceJS.tooltip.theMenu.body.search,
+            tooltipBodyReport: resourceJS.tooltip.theMenu.body.report,
+            tooltipFooter: resourceJS.tooltip.theMenu.footer.expand,
+
         };
     },
     methods: {

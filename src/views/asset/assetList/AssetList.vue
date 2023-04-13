@@ -8,7 +8,7 @@
                     <!-- input tìm kiếm tài sản  -->
                     <div class="input1">
                         <MInput 
-                            @keydownEnter ="handleEventKeydownEnterInputSearch"
+                            @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                             :ref="refElements.inputSearch"
                             placeholder="Tìm kiếm tài sản"
                             :iconInput="true"
@@ -18,28 +18,28 @@
                     <!-- combobox lọc loại tài sản  -->
                     <div class="input1">
                         <MCombobox  
-                            :isIcon="true" 
+                            iconCombobox="combobox__icon--image" 
                             :api="this.assetCategoryApi"
                             :ref="refElements.comboboxAssetCategory"
                             propName="fixed_asset_category_name" 
                             placeholder="Loại tài sản" 
                             :itemHeight = "36"
                             propValue="fixed_asset_category_id"
-                            :quantityItem = "4"
+                            :quantityItemDisplay = "4"
                             @getInputCombobox="getValueAssetCategory">
                         </MCombobox>
                     </div>
                     <!-- combobox lọc bộ phận sử dụng  -->
                     <div class="input1">
                         <MCombobox  
-                            :is-icon="true" 
+                            iconCombobox="combobox__icon--image" 
                             :api="this.departApi"
                             :ref="refElements.comboboxDepartment"
                             propName="department_name" 
                             placeholder="Bộ phận sử dụng" 
                             propValue="department_id"
                             :itemHeight = "36"
-                            :quantityItem = "4"
+                            :quantityItemDisplay = "4"
                             @getInputCombobox="getValueDepartment">
                         </MCombobox>
                     </div>
@@ -415,12 +415,12 @@ export default {
 
         /**
          * Hàm xử lý sự kiện click vào button của dialog xác nhận hành động xóa
-         * @param {*} label label của button muốn click
+         * @param {*} index index của button muốn click
          * @author LTVIET (02/03/2023)
          */
-        handleEventCloseDialogDelete(label) {
-            // 1.Nếu click button "Không"
-            if(label == this.btnDialogDelete[1][0]){
+        handleEventCloseDialogDelete(index) {
+            //1.Nếu click button "Không"
+            if(index == this.btnDialogDelete[1][2]){
                 if(this.isShowDialogConfirmDeleteOneAsset==true){
                     //--> ẩn đi dialog xác nhận xóa 1 tái sản
                     this.isShowDialogConfirmDeleteOneAsset = false;
@@ -631,9 +631,9 @@ export default {
             { responseType: "blob" })
             .then(res => {
                 const blob = new Blob([res.data], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    type: resourceJS.excel.type
                 });
-                const fileName = `Assets(${this.getCurrentDate()}).xlsx`;
+                const fileName = `${resourceJS.excel.name}.xlsx`;
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
@@ -654,28 +654,7 @@ export default {
             
         },
 
-        /**
-         * Hàm lấy ra giá trị thời gian hiện tại
-         * @author LTVIET (16/03/2023)
-         */
-        getCurrentDate(){
-            let currentDate = new Date();
-            let day = currentDate.getDate();
-            day = day < 10 ? `0${day}` : day;
-            let month = currentDate.getMonth() + 1;
-            month = month < 10 ? `0${month}` : month;
-            let year = currentDate.getFullYear();
-            while(year < 1000){
-                year = `0${year}`;
-            }
-            let hours = currentDate.getHours();
-            hours = hours < 10 ? `0${hours}` : hours;
-            let minutes = currentDate.getMinutes() + 1;
-            minutes = minutes < 10 ? `0${minutes}` : minutes;
-            let seconds = currentDate.getSeconds();
-            seconds = seconds < 10 ? `0${seconds}` : seconds;
-            return `${day}-${month}-${year}T${hours}.${minutes}.${seconds}`;
-        },
+        
 
         /**
          * Hàm lấy dữ liệu từ combobox loại tài sản
@@ -706,7 +685,7 @@ export default {
          * @param {*} value giá trị cần tìm kiếm
          * @author LTVIET (16/03/2023)
          */
-         handleEventKeydownEnterInputSearch(value){
+         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
             if(!value){
                 this.keyword = "";
@@ -843,7 +822,6 @@ export default {
                 switch (keyCode) {
                     case enumJS.keyAlt:
                         event.preventDefault();
-                        console.log(keyCode);
                         this.$refs[this.refElements.table].markCheckboxAll();
                         break;
                     default:
@@ -869,10 +847,12 @@ export default {
                     if(this.indexDeleteStart <= this.indexDeleteEnd){
                         for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
                             table.checkbox[i] = true;
+                            table.pushCheckboxActive(i);
                         }
                     }else{
                         for(let i = this.indexDeleteEnd; i<= this.indexDeleteStart; i++){
                             table.checkbox[i] = true;
+                            table.pushCheckboxActive(i);
                         }
                     }
                 }else{
@@ -947,7 +927,7 @@ export default {
             event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();
-                table.handleEventClickFunction(resourceJS.titlteForm.cloneAssetForm,asset[0]);
+                table.handleEventClickFunction(enumJS.type.clone,asset[0]);
                 this.previousKeyCtrl = false;
             }
         },
@@ -963,7 +943,7 @@ export default {
             event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();
-                table.handleEventClickFunction(resourceJS.titlteForm.editAssetForm,asset[0]);
+                table.handleEventClickFunction(enumJS.type.edit,asset[0]);
                 this.previousKeyCtrl = false;
             }
         },

@@ -7,12 +7,13 @@
             ref="mInputNumber"
             :id="idInput"
             :class="[{'input--error':inValid}]" 
+            :disabled="disable"
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
             autocomplete="off"
             @input="handleEventInput"
-            @keydown="handleEventKeydown"
-            @keyup="handleEventKeyup"
+            @keydown="handleEventKeyDown"
+            @keyup="handleEventKeyUp"
             @blur="onValidateBlur"
             :placeholder="placeholder">    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
@@ -59,6 +60,11 @@ export default {
             required: false,
             default: false
         },
+        disable: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         placeholder: {
             type: String,
             required: false,
@@ -91,7 +97,7 @@ export default {
         idInput: {
             type: String,
             default: ""
-        }
+        },
 
 
     },
@@ -107,7 +113,9 @@ export default {
             styleInput: null,
             errorFormatNumber: false,
             classInput: null,
-            previousKeyShift: false
+            previousKeyShift: false,
+            previousKeyCtrl: false,
+            decimalPartValue: 0
         }
     },
     watch: {
@@ -123,6 +131,7 @@ export default {
             if(this.value < 10){
                 this.value = `0${this.value}`;
             }
+            
         }else{
             //2. gán giá trị mặc định = 0
             this.value = 0;
@@ -136,9 +145,6 @@ export default {
             this.styleInput = 'padding-left: 38px';
         }
         this.value = this.formatMoney(this.value);
-        
-        
-        
     },
     methods: {
 
@@ -150,9 +156,7 @@ export default {
             if(this.required && (this.value == null || this.value == undefined || this.value == "")){
                 //1. nếu input required và có giá trị rỗng 
                 //1.1. set invalid = true và hiện thị thông báo lỗi không được để trống
-                if(this.value===0){
-                    this.inValid = false;
-                }else{
+                if(this.value!==0){
                     this.inValid = true;
                     this.notifyError = this.label + resourceJS.error.emptyInput;
                 }
@@ -166,8 +170,8 @@ export default {
                     this.inValid = true;
                     this.notifyError = resourceJS.error.errorMaxLengthNumber;
                 }else{
+                    console.log(1);
                     this.value = this.formatMoney(this.value);
-                    //--> nếu ngược lại thì set invalid = false
                     this.inValid = false;
                 }
                 if(this.value && String(this.value).indexOf(".") == -1){
@@ -196,9 +200,6 @@ export default {
                 this.$emit('getValueInput',0);
             }
             valueInput = Number(valueInput) + Number(this.stepValue);
-            if(this.stepValue < 1){
-                valueInput = Math.round(valueInput*(1/valueInput))/(1/this.stepValue);
-            }
             this.$emit('getValueInput',valueInput);
             this.value = this.formatMoney(valueInput);
         },
@@ -240,15 +241,20 @@ export default {
          * @param {*} event sự kiện cần xử lý
          * @author LTVIET (05/03/2023)
          */
-        handleEventKeydown(event){
+         handleEventKeyDown(event){
             let keyCode = event.keyCode;
-            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
-                event.preventDefault();
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) 
+                    || (keyCode >=37 && keyCode <= 40))){
+                if(!(this.previousKeyCtrl && keyCode == 65)){
+                    event.preventDefault();
+                }
             }
             if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
                 event.preventDefault();
             }
-            
             switch (keyCode) {
                 
                 case enumJS.arrowDown:
@@ -277,10 +283,13 @@ export default {
          * @param {*} event sự kiện cần xử lý
          * @author LTVIET (05/03/2023)
          */
-        handleEventKeyup(event){
+         handleEventKeyUp(event){
             let keyCode = event.keyCode;
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
+            }
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
             }
         },
         
@@ -290,7 +299,7 @@ export default {
          * @author LTVIET(14/03/2023)
          */
          getMoney(value){
-            return String(value).indexOf(".") == -1 ? Number(value) : Number(value.replaceAll('.',''));
+            return String(value).indexOf(".") == -1 ? Number(value) : Number(String(value).replaceAll('.',''));
         },
 
         /**
@@ -307,8 +316,12 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         handleEventInput(){
-            let value = this.getMoney(this.value);
-            this.value = this.formatMoney(value);
+            this.value = this.formatMoney(this.value);
+            if(this.required && (Number(this.value) == null || Number(this.value) == undefined || Number(this.value) == "")){
+                if(this.value===0){
+                    this.inValid = false;
+                }
+            }
             this.$emit("getValueEventInput",this.value);
         },
 
@@ -318,15 +331,11 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         formatMoney(value){
-            let valueMoney = this.getMoney(value);
-            valueMoney = commonJS.formatNumber(valueMoney);
-            if(this.getMoney(valueMoney) < 10){
-                valueMoney = `0${valueMoney}`;
+            if(value != "" && value != null && value != undefined){
+                value = this.getMoney(value);
+                value = commonJS.formatNumber(value);
             }
-            if(Number(valueMoney)==0){
-                valueMoney = 0;
-            }
-            return valueMoney;
+            return value;
         }
     },
     

@@ -17,7 +17,9 @@
                 >
               </MCheckbox>
             </th>
-            <th class="column2 text-align-center">{{ titleColumn.index }}</th>
+            <th class="column2 text-align-center" >
+              <div :data_tooltip_bottom="tooltipIndex">{{ titleColumn.index }}</div>
+            </th>
             <th class="column3 text-align-left">{{ titleColumn.assetCode }}</th>
             <th class="column4 text-align-left">{{ titleColumn.assetName }}</th>
             <th class="column5 text-align-left">{{ titleColumn.assetCategoryName }}</th>
@@ -25,10 +27,9 @@
             <th class="column7 text-align-right">{{ titleColumn.quantity }}</th>
             <th class="column8 text-align-right">{{ titleColumn.cost }}</th>
             <th
-              class="column9 text-align-right"
-              :data_tooltip_bottom="tooltipDepreciation"
+              class="column9 text-align-right" 
             >
-            {{ titleColumn.depreciationValue }}
+            <div :data_tooltip_bottom="tooltipDepreciation">{{ titleColumn.depreciationValue }}</div>
             </th>
             <th class="column10 text-align-right">{{ titleColumn.residualValue }}</th>
             <th class="column11 text-align-center">{{ titleColumn.function }}</th>
@@ -58,7 +59,7 @@
                   </div>
                 </div>
                 <div class="dropdown_table">
-                  <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
+                  <MDropdown ref="mDropdown" v-model="pageSize" :data="dataPageSize"> </MDropdown>
                 </div>
                 <div class="content-footer__item3"> 
                   <MButtonIcon
@@ -66,11 +67,11 @@
                     classIcon="item3__icon1--image"
                   >
                   </MButtonIcon>
-                  <div class="content-footer__item3--icon2">
+                  <div class="content-footer__item3--icon2" >
                     <div
-                      class="page__index page--selected"
+                      class="page__index page--selected" style="cursor: unset;"
                     >
-                      <div class="text">1</div>
+                      <div class="text">{{ pageNumber }}</div>
                     </div>
                   </div>
                   <MButtonIcon
@@ -82,10 +83,10 @@
                 </div>
               </div>
             </td>
-            <td class="footer_right">0</td>
-            <td class="column8 footer_right">0</td>
-            <td class="footer_right">0</td>
-            <td class="footer_right">0</td>
+            <td class="footer_right">{{ formatValue(quantityTotal, typeNumber) }}</td>
+            <td class="column8 footer_right">{{ formatValue(costTotal, typeNumber) }}</td>
+            <td class="footer_right">{{ formatValue(depreciationValueTotal, typeNumber) }}</td>
+            <td class="footer_right">{{ formatValue(residualValueTotal, typeNumber) }}</td>
             <td></td>
         </tfoot>
       </table>
@@ -105,7 +106,9 @@
               >
             </MCheckbox>
           </th>
-          <th class="column2 text-align-center">{{ titleColumn.index }}</th>
+          <th class="column2 text-align-center" >
+            <div :data_tooltip_bottom="tooltipIndex">{{ titleColumn.index }}</div>
+          </th>
           <th class="column3 text-align-left">{{ titleColumn.assetCode }}</th>
           <th class="column4 text-align-left">{{ titleColumn.assetName }}</th>
           <th class="column5 text-align-left">{{ titleColumn.assetCategoryName }}</th>
@@ -113,10 +116,9 @@
           <th class="column7 text-align-right">{{ titleColumn.quantity }}</th>
           <th class="column8 text-align-right">{{ titleColumn.cost }}</th>
           <th
-            class="column9 text-align-right"
-            :data_tooltip_bottom="tooltipDepreciation"
+            class="column9 text-align-right" 
           >
-          {{ titleColumn.depreciationValue }}
+          <div :data_tooltip_bottom="tooltipDepreciation">{{ titleColumn.depreciationValue }}</div>
           </th>
           <th class="column10 text-align-right">{{ titleColumn.residualValue }}</th>
           <th class="column11 text-align-center">{{ titleColumn.function }}</th>
@@ -346,10 +348,14 @@
     </MDialog>
     <!-- contextmenu của table  -->
     <MContextMenu  
+      ref="mContextMenu"
+      id="idContextMenu"
       v-show="isShowContextMenu"
       :data="dataContextMenu"
       :pageX="contextMenuPageX"
       :pageY="contextMenuPageY"
+      :width="widthContextMenu"
+      :height="heightContextMenu"
       :key="keyContextMenu"
       :entity="contextMenuEnity"
       @addOnClickItem="addOnClickItemContextMenu"
@@ -401,6 +407,7 @@ export default {
       assetInput: null,
       assets: [],
       tooltipDepreciation: resourceJS.tooltip.table.tooltipDepreciation,
+      tooltipIndex: resourceJS.tooltip.table.index,
       tooltipFunctionEdit: resourceJS.tooltip.table.functionEdit,
       tooltipFunctionClone: resourceJS.tooltip.table.functionClone,
       checkboxAll: false,
@@ -445,7 +452,9 @@ export default {
       typeNumber: enumJS.typeValue.number,
       typeForm: enumJS.type,
       titleColumn: resourceJS.table.titleColumm,
-      contentFooterTable: resourceJS.table.contentFooter
+      contentFooterTable: resourceJS.table.contentFooter,
+      widthContextMenu: 156,
+      heightContextMenu: 152
     };
   },
 
@@ -486,13 +495,16 @@ export default {
         this.contextMenuEnity = item;
         this.contextMenuPageX = event.pageX+10;
         this.contextMenuPageY = event.pageY+10;
-        if(this.contextMenuPageX+156 > window.innerWidth){
-          this.contextMenuPageX = this.contextMenuPageX - 20 - 156 ;
+        
+        if(this.contextMenuPageX+this.widthContextMenu > window.innerWidth){
+          this.contextMenuPageX = this.contextMenuPageX - this.widthContextMenu - 20;
         }
-        if(this.contextMenuPageY+153 > window.innerHeight){
-          this.contextMenuPageY = this.contextMenuPageY - 10 - 153;
+        if(this.contextMenuPageY+this.heightContextMenu > window.innerHeight){
+          this.contextMenuPageY = this.contextMenuPageY - this.heightContextMenu - 10;
         }
         this.isShowContextMenu = true;
+        this.isSelectedRow[item.index - this.pageSize*(this.pageNumber-1)] = false;
+        this.btnAddOnClickRowTable(item.index - this.pageSize*(this.pageNumber-1));
         this.keyContextMenu=++this.keyContextMenu;
     },
 
@@ -537,7 +549,6 @@ export default {
             this.checkboxActive[this.pageNumber] = [];
             this.entityCheckboxActive[this.pageNumber] = [];
           }
-
           if(this.checkboxActive[this.pageNumber].length != 0){
             if(this.checkboxActive[this.pageNumber].length == this.pageSize){
               this.markCheckboxAll();
@@ -547,7 +558,7 @@ export default {
               });
             }
           }
-          this.$emit('handleEventLoadTable');
+          
         })
         .catch((error) => {
           console.log(error);
@@ -604,8 +615,6 @@ export default {
       this.$emit("btnDblClickRow", item.fixed_asset_id);
     },
 
-
-
     /**
      * Hàm xử lý sự kiện click 1 dòng của table
      * @param {*} index vị trí dòng của table được click
@@ -650,7 +659,6 @@ export default {
         case enumJS.keyCtrl:
           this.previousKeyCtrl = true;
           break;
-
         default:
           break;
       }
@@ -995,7 +1003,6 @@ export default {
       this.indexDeleteEnd = 0;
       this.indexRowClick = 0;
       this.indexCheckboxFocus = -1;
-      
     },
 
     /**
@@ -1033,6 +1040,7 @@ export default {
       this.pageNumber = 1;
       this.pageSize = newValue;
       this.loadData();
+      this.$emit('handleEventLoadTable');
     },
 
     /**
@@ -1053,6 +1061,7 @@ export default {
      */
     pageNumber: function () {
       this.loadData();
+      this.$emit('handleEventLoadTable');
     },
 
     /** 

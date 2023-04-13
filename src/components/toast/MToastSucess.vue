@@ -10,9 +10,6 @@
             </div>
             <!-- phần button (nếu có)  -->
             <div class="toast__right">
-                <!-- button hoàn tác  -->
-                <div v-if="buttonUndo"
-                    class="toast__text--right">Hoàn tác</div>
                     <!-- button đóng  -->
                 <MButtonIcon v-if="buttonClose"
                     classIcon="btn__toast--close"

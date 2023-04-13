@@ -10,12 +10,6 @@ const commonJS = {
                 month =  month < 10 ? `0${month}` : month;
                 let year = dateTime.getFullYear();
                 year = year < 10 ? `0${year}` : year;
-                // let hours = dateTime.getHours();
-                // hours = hours < 10 ? `0${hours}` : hours;
-                // let minutes = dateTime.getMinutes();
-                // minutes = minutes < 10 ? `0${minutes}` : minutes;
-                // let seconds = dateTime.getSeconds();
-                // seconds = seconds < 10 ? `0${seconds}` : seconds;
                 return `${year}-${month}-${date}`;
             
             }else {
@@ -31,7 +25,29 @@ const commonJS = {
         try {
             let number = value;
             number = Math.round(number);
-            return new Intl.NumberFormat("vi", {NumberFormat: 3 }).format(number);
+            let money = String(number).indexOf(".") == -1 ? Number(number) : Number(number.replaceAll('.',''));
+            if(money < 10){
+                number = `0${money}`;
+                if(Number(money) == 0){
+                    number = 0;
+                }
+            }else{
+                let moneyString = String(number);
+                let length = moneyString.length;
+                let dem = 0;
+                let result = "";
+                for(let i = length -1;i>=0;i--){
+                    result = moneyString[i] + result;
+                    dem++;
+                    if(dem==3 && i!=0){
+                        result ="." + result;
+                        dem=0;
+                    }
+                }
+                number = result;
+                // number = new Intl.NumberFormat("vi").format(number);
+            }
+            return number;
         } catch (error) {
             console.log(error);
             return "";

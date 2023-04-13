@@ -3,7 +3,7 @@
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header" >
                 <div class="sidebar-header__item"></div>
-                <div class="sidebar-header__text" data_tooltip_right="MISA QUẢN LÝ TÀI SẢN">MISA QLTS</div>
+                <div class="sidebar-header__text" :data_tooltip_right="tooltipHeader">MISA QLTS</div>
             </div>
             <div class="sidebar__body">
                 <router-link to="/customer" 
@@ -11,14 +11,14 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon1"></div>
                     </div>
-                    <div class="sidebar-body__text">Tổng quan</div>
+                    <div class="sidebar-body__text">{{ txtBodyOverview }}</div>
                 </router-link>
                 <router-link to="/" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2 ">
                         <div class="sidebar-body__item2--icon2"></div>
                     </div>
-                    <div class="sidebar-body__text">Tài sản</div>
+                    <div class="sidebar-body__text">{{ txtBodyAsset }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -28,7 +28,7 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon3"></div>
                     </div>
-                    <div class="sidebar-body__text">Tài sản HT-DB</div>
+                    <div class="sidebar-body__text">{{ txtBodyAssetHTDB }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -38,7 +38,7 @@
                         <div class="sidebar-body__item2">
                             <div class="sidebar-body__item2--icon4"></div>
                         </div>
-                        <div class="sidebar-body__text">Công cụ dụng cụ</div>
+                        <div class="sidebar-body__text">{{ txtBodyTool }}</div>
                         <div class="sidebar-body__item2-icon">
                             <button class="sidebar-body__item2-icon--image"></button>
                         </div>
@@ -48,14 +48,14 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon5"></div>
                     </div>
-                    <div class="sidebar-body__text">Danh mục</div>
+                    <div class="sidebar-body__text">{{ txtBodyCategory }}</div>
                 </router-link>
                 <router-link to="/search" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon6"></div>
                     </div>
-                    <div class="sidebar-body__text">Tra cứu</div>
+                    <div class="sidebar-body__text">{{ txtBodySearch }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -65,7 +65,7 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon7"></div>
                     </div>
-                    <div class="sidebar-body__text">Báo cáo</div>
+                    <div class="sidebar-body__text">{{ txtBodyReport }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -74,7 +74,7 @@
             <div class="sidebar-footer">
                 <MButtonIcon
                     class="sidebar-footer__item"
-                    data_tooltip_right="Mở rộng"
+                    :data_tooltip_right="tooltipFooter"
                     classIcon="sidebar-footer__item--image"
                     @addOnClickBtnIcon="handleEventClickBtnCollapseSidebar">
                 </MButtonIcon>
@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import resourceJS from '@/js/resourceJS';
 export default {
     name:"TheSidebar",
     components:{
@@ -93,6 +94,17 @@ export default {
     },
     data() {
         return {
+            tooltipHeader: resourceJS.tooltip.theSidebar.header,
+            tooltipFooter: resourceJS.tooltip.theSidebar.footer.collapse,
+            txtHeader: resourceJS.theSidebar.header.txt,
+            txtBodyOverview: resourceJS.theSidebar.body.txtOverview,
+            txtBodyAsset: resourceJS.theSidebar.body.txtAsset,
+            txtBodyAssetHTDB: resourceJS.theSidebar.body.txtAssetHTDB,
+            txtBodyCategory: resourceJS.theSidebar.body.txtTool,
+            txtBodyTool: resourceJS.theSidebar.body.txtCategory,
+            txtBodySearch: resourceJS.theSidebar.body.txtSearch,
+            txtBodyReport: resourceJS.theSidebar.body.txtReport,
+            
         }
     },
     methods: {

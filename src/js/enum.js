@@ -28,11 +28,30 @@ const enumJS = {
     errorCode: {
         exception: 1,
         inValid: 2,
-        duplicate: 3,
-        insertFailed : 4,
-        updateFailed : 5,
-        deleteFailed : 6,
-        notFound : 7,
+        insertFailed : 3,
+        updateFailed : 4,
+        deleteFailed : 5,
+        notFound : 6,
+    },
+    validateCode:{
+        // Lỗi validate các trường để trống
+        empty: 1,
+        // Lỗi validate nguyên giá tài sản nhỏ hơn hao mòn năm
+        depreciationYearGreaterThanCost: 2,
+        // Lỗi dữ liệu kiểu number vượt quá độ dài cho phép
+        outMaxLength: 3,
+        // Lỗi dữ liệu kiểu tỷ lệ phần trăm nằm ngoài khoảng 0-100 
+        outOfRate : 4,
+        // Lỗi trùng mã
+        duplicate: 5,
+        // Lỗi dữ liệu kiểu number thuộc trường bắt buộc lớn hơn 0 nhưng có giá trị <= 0
+        numberLessThanOrEqualZero :6,
+        // Lỗi validate tỷ lệ hao mòn != (1/số năm sử dụng)*100
+        depreciationRateDifferentLifeTime : 7,
+        // Lỗi validate ngày mua lớn hơn ngày bắt đầu sử dụng
+        purchaseDateGreaterThanProductionYear : 8,
+        // Lỗi vượt quá độ dài ký tự cho phép
+        maxLength : 9,
     },
     type: {
         add: 1,

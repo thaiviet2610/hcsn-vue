@@ -154,6 +154,10 @@
     box-sizing: border-box;
 }
 
+.form .input{
+    min-width: 134px;
+}
+
 .right__up{
     display: flex;
     flex-direction: column;

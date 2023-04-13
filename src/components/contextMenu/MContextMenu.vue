@@ -32,6 +32,14 @@ export default {
         entity: {
             type: Object,
             default: null
+        },
+        height: {
+            type: Number,
+            default: 0
+        },
+        width: {
+            type: Number,
+            default: 0
         }
     },
     data() {
@@ -53,7 +61,7 @@ export default {
         }
     },
     created() {
-        this.styleContextMenu = `left: ${this.pageX}px;top: ${this.pageY}px;`;
+        this.styleContextMenu = `width: ${this.width}px; height: ${this.height}px; left: ${this.pageX}px;top: ${this.pageY}px;`;
     },
 }
 </script>

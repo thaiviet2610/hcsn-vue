@@ -3,58 +3,93 @@ import enumJS from "./enum";
 const resourceJS = {
     assetDetail: {
         assetCode : {
+            ref: 'ref_fixed_asset_code',
             label: "Mã tài sản ",
-            placeholder: "Nhập mã tài sản"
+            placeholder: "Nhập mã tài sản",
+            required : true,
+            disable: false
         },
         assetName:{
-            label: "Tên tài sản",
-            placeholder: "Nhập tên tài sản"
+            ref: 'ref_fixed_asset_name',
+            label: "Tên tài sản ",
+            placeholder: "Nhập tên tài sản",
+            required : true,
+            disable: false
         },
         departmentCode:{
-            label: "Mã bộ phận sử dụng",
-            placeholder: "Nhập mã bộ phận sử dụng"
+            ref: 'ref_department_code',
+            label: "Mã bộ phận sử dụng ",
+            placeholder: "Chọn mã bộ phận sử dụng",
+            required : true,
+            disable: false
         },
         departmentName:{
-            label: "Tên bộ phận sử dụng",
-            placeholder: "Nhập tên bộ phận sử dụng"
+            label: "Tên bộ phận sử dụng ",
+            required : false,
+            disable: true
         },
         assetCategoryCode:{
-            label: "Mã loại tài sản",
-            placeholder: "Nhập mã loại tài sản"
+            ref: 'ref_fixed_asset_category_code',
+            label: "Mã loại tài sản ",
+            placeholder: "Chọn mã loại tài sản",
+            required : true,
+            disable: false
         },
         assetCategoryName:{
-            label: "Tên loại tài sản",
-            placeholder: "Nhập tên loại tài sản"
+            label: "Tên loại tài sản ",
+            required : false,
+            disable: true
         },
         quantity:{
-            label: "Số lượng",
-            placeholder: "Nhập số lượng"
+            ref: 'ref_quantity',
+            label: "Số lượng ",
+            placeholder: "Nhập số lượng",
+            required : true,
+            disable: false
         },
         cost:{
-            label: "Nguyên giá",
-            placeholder: "Nhập nguyên giá"
+            ref: 'ref_cost',
+            label: "Nguyên giá ",
+            placeholder: "Nhập nguyên giá",
+            required : true,
+            disable: false
         },
         lifeTime:{
-            label: "Số năm sử dụng",
-            placeholder: "Nhập số năm sử dụng"
+            ref: 'ref_life_time',
+            label: "Số năm sử dụng ",
+            placeholder: "Nhập số năm sử dụng",
+            required : true,
+            disable: false
         },
         depreciationRate:{
-            label: "Tỷ lệ hao mòn",
-            placeholder: "Nhập tỷ lệ hao mòn"
+            label: "Tỷ lệ hao mòn (%) ",
+            placeholder: "Nhập tỷ lệ hao mòn",
+            required : true,
+            disable: true
         },
         depreciationValueYear:{
-            label: "Giá trị hao mòn năm",
-            placeholder: "Nhập giá trị hao mòn năm"
+            label: "Giá trị hao mòn năm ",
+            placeholder: "Nhập giá trị hao mòn năm",
+            required : true,
+            disable: true
         },
         trackedYear:{
-            label: "Năm theo dõi",
-            placeholder: "Nhập năm theo dõi"
+            label: "Năm theo dõi ",
+            placeholder: "Nhập năm theo dõi",
+            required : false,
+            disable: true
         },
         purchaseDate:{
-            label: "Ngày mua"
+            ref: 'ref_purchase_date',
+            label: "Ngày mua ",
+            required : true,
+            disable: false
         },
         productionYear:{
-            label: "Năm bắt đầu sử dụng"
+            ref: 'ref_production_year',
+            label: "Năm bắt đầu sử dụng ",
+            required : true,
+            disable: false
         },
         buttonSave:{
             label: "Lưu"
@@ -62,17 +97,8 @@ const resourceJS = {
         buttonCancel:{
             label: "Hủy"
         },
-        refAssetDetail: {
-            assetCode: 'txtAssetCode',
-            assetName: 'txtAssetName',
-            departmentCode: 'txtDepartmentCode',
-            assetCategoryCode:'txtAssetCategoryCode',
-            quantity: 'txtQuantity',
-            cost: 'txtCost',
-            lifeTime: 'txtLifeTime',
-            purchaseDate: 'txtPurchaseDate',
-            productionYear: 'txtProductionYear'
-        },
+        refElements: ['ref_fixed_asset_code','ref_fixed_asset_name','ref_department_code','ref_fixed_asset_category_code',
+                'ref_quantity','ref_cost','ref_life_time','ref_purchase_date','ref_production_year']
     },
     validateProfessionalAssetDetail: {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá!",
@@ -84,6 +110,7 @@ const resourceJS = {
     error: {
         validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div> ",
         emptyInput: "  không được phép để trống! ",
+        emptyInputNumber: " phải nhập giá trị lớn hơn 0",
         errorFormatNumber: " chỉ được nhập số!",
         errorMaxLengthNumber: "Độ dài số nhập vào không được quá 14 ký tự!",
         errorFormatRate: "Tỷ lệ chỉ được cho phép trong khoảng từ 0 -> 100%!",
@@ -92,6 +119,7 @@ const resourceJS = {
         errorUpdateAssetFail: "Hành động sửa tài sản thất bại. Vui lòng thử lại sau!",
         errorAddAssetFail: "Hành động thêm tài sản thất bại. Vui lòng thử lại sau!",
         errorCloneAssetFail: "Hành động nhân bản tài sản thất bại. Vui lòng thử lại sau!",
+        notify: "Vui lòng điền giá trị hợp lệ vào các trường thông tin trước khi lưu!"
     },
     notify: {
         noAssetDelete: "Không có tài sản nào được chọn. Vui lòng chọn tài sản muốn xóa!",
@@ -100,6 +128,7 @@ const resourceJS = {
         errorLoadData: "Đã có lỗi khi load data. Vui lòng thử lại!",
         errorLoadCombobox: "Đã có lỗi khi load data của combobox {0}. vui lòng thử lại sau!",
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
+        exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!"
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
@@ -124,6 +153,7 @@ const resourceJS = {
         success: "Thành công.",
         saveSuccess: "Lưu dữ liệu thành công.",
         deleteSuccess: "Tài sản đã được xóa.",
+        undo: "Hoàn tác"
     },
     titlteForm: {
         addAssetForm: "Thêm tài sản",
@@ -132,6 +162,7 @@ const resourceJS = {
     },
     tooltip: {
         table:{
+            index: "Số thứ tự",
             tooltipDepreciation: "Hao mòn/Khấu hao lũy kế",
             functionEdit: "Sửa (Ctrl+E)",
             functionClone: "Nhân bản (Ctrl+0)"
@@ -145,6 +176,41 @@ const resourceJS = {
             btnCloseForm: "Đóng (Esc)",
             saveForm: "Ctrl+s",
             cancelForm: "Esc"
+        },
+        theMenu:{
+            header: "MISA QUẢN LÝ TÀI SẢN",
+            body:{
+                overview: "Tổng quan",
+                asset: "Tài sản",
+                assetHTDB: "Tài sản HT-DB",
+                tool: "Công cụ dụng cụ",
+                category: "Danh mục",
+                search: "Tra cứu",
+                report: "Báo cáo",
+            },
+            footer:{
+                expand: "Mở rộng",
+            }
+        },
+        theSidebar: {
+            header: "MISA QUẢN LÝ TÀI SẢN",
+            footer:{
+                collapse: "Thu gọn"
+            }
+        }
+    },
+    theSidebar: {
+        header:{
+            txt: "MISA QLTS",
+        },
+        body:{
+            txtOverview: "Tổng quan",
+            txtAsset: "Tài sản",
+            txtAssetHTDB: "Tài sản HT-DB",
+            txtTool: "Công cụ dụng cụ",
+            txtCategory: "Danh mục",
+            txtSearch: "Tra cứu",
+            txtReport: "Báo cáo",
         }
     },
     searchAssetPlaceholder: "Tìm kiếm tài sản",
@@ -288,16 +354,30 @@ const resourceJS = {
     },
     
     buttonDialog: {
-        exportExcel: [['Tải xuống','btn--main'],['Không','btn--outline']],
-        delete: [['Xóa','btn--main'],['Không','btn--outline']],
-        cancelEditForm: [['Lưu','btn--main'],['Không lưu','btn--sub'],['Hủy bỏ','btn--outline']],
-        cancelAddForm: [['Hủy bỏ','btn--main'],['Không','btn--outline']],
-        notify: [['Đóng','btn--outline']]
+        exportExcel: [['Tải xuống','btn--main',1],['Không','btn--outline',2]],
+        delete: [['Xóa','btn--main',1],['Không','btn--outline',2]],
+        cancelEditForm: [['Lưu','btn--main',1],['Không lưu','btn--sub',2],['Hủy bỏ','btn--outline',3]],
+        cancelAddForm: [['Hủy bỏ','btn--main',1],['Không','btn--outline',2]],
+        notify: [['Đóng','btn--outline',1]]
     },
     date: {
         format:{
-            ddMMyyyy: "dd/mm/yyyy"
+            ddMMyyyy: "dd/mm/yyyy",
+            yyyyMMdd: "yyyy-mm-dd"
+        },
+        regex: {
+            regexYearEnd: /^([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})[/]{1}[0-9]{4}$/,
+            regexYearBegin: /^[0-9]{4}[/]{1}([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})$/
         }
+    },
+    theHeader:{
+        assetList: "Danh sách tài sản",
+        financialDepartment: "Sở tài chính",
+        year: "Năm"
+    },
+    excel:{
+        name: "Danh sách tài sản",
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     }
 }
 

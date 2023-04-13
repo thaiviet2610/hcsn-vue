@@ -11,6 +11,7 @@
             v-model="value"
             type="text" 
             autocomplete="off"
+            :disabled="disable"
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"
@@ -36,6 +37,11 @@ export default {
             required: false
         },
         required: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        disable:{
             type: Boolean,
             required: false,
             default: false
@@ -107,10 +113,10 @@ export default {
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.emptyInput;
             }
-            else{
-                //2.4. nếu là các trường hợp còn lại thì set invalid = false
-                this.inValid = false;
-            }  
+            // else{
+            //     //2.4. nếu là các trường hợp còn lại thì set invalid = false
+            //     this.inValid = false;
+            // }  
             if(!this.inValid){
                 this.$emit('getValueInput',this.value);
             }
@@ -131,7 +137,7 @@ export default {
          * @author LTVIET(16/03/2023)
          */
         onKeyDownSelecte(){
-            this.$emit("keydownEnter",this.value);
+            this.$emit("keyDownEnter",this.value);
         },
         
         /**

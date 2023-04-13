@@ -19,7 +19,7 @@
                             :idButton="`id_${index}`"
                             :class="item[1]"
                             :label="item[0]"
-                            @btnAddOnClickBtn="handleEventClickBtn(item[0])" 
+                            @btnAddOnClickBtn="handleEventClickBtn(item[2])" 
                             >
                         </MButton>
                     </div>
@@ -79,8 +79,8 @@ export default {
          * Hàm xử lý sự kiện click vào btn phụ
          * @author LTVIET (02/03/2023)
          */
-        handleEventClickBtn(label){
-            this.$emit('onClickBtn',label);
+        handleEventClickBtn(index){
+            this.$emit('onClickBtn',index);
         },
 
     },

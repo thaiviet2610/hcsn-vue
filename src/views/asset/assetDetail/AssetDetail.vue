@@ -19,11 +19,12 @@
                 <div id="formBody" class="form-body">
                     <div class="form-body__up">
                         <div class="m-row">
-                            <div class="up-left">
+                            <div class="input up-left">
                                 <!-- input nhập mã tài sản  -->
                                 <MInput 
-                                    :ref="refElemnts.assetCode"
-                                    :required="true"
+                                    :ref="assetDetailInfo.assetCode.ref"
+                                    :required="assetDetailInfo.assetCode.required"
+                                    :disable="assetDetailInfo.assetCode.disable"
                                     @getValueEventInput="GetValueAssetCode"
                                     :valueInput="asset.fixed_asset_code"
                                     :placeholder="assetDetailInfo.assetCode.placeholder"
@@ -32,11 +33,12 @@
                                 </MInput>
                             </div>
                             
-                            <div class="up-right">
+                            <div class="input up-right">
                                 <!-- input nhập tên tài sản  -->
                                 <MInput 
-                                    :ref="refElemnts.assetName"
-                                    :required="true"
+                                    :ref="assetDetailInfo.assetName.ref"
+                                    :required="assetDetailInfo.assetName.required"
+                                    :disable="assetDetailInfo.assetName.disable"
                                     :placeholder="assetDetailInfo.assetName.placeholder"
                                     @getValueEventInput="GetValueAssetName"
                                     :valueInput="asset.fixed_asset_name"
@@ -46,20 +48,21 @@
                             </div>
                         </div>
                         <div class="m-row">
-                            <div class="up-left">
+                            <div class="input up-left">
                                 <div class="input__container">
                                     <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                     <MCombobox  
                                         :is-icon="false" 
-                                        :ref="refElemnts.departmentCode"
-                                        :required="true"
+                                        :ref="assetDetailInfo.departmentCode.ref"
+                                        :required="assetDetailInfo.departmentCode.required"
+                                        :disable="assetDetailInfo.departmentCode.disable"
                                         :api="this.departApi"
                                         propName="department_code" 
                                         :placeholder="assetDetailInfo.departmentCode.placeholder" 
                                         :label="assetDetailInfo.departmentCode.label"
                                         propValue="department_id" 
                                         :itemHeight = 36
-                                        :quantityItem = 4
+                                        :quantityItemDisplay = 4
                                         :valueInput="asset.department_id"
                                         @getInputCombobox="getValueDepartmentId"
                                         :key="keyDepartment">
@@ -67,10 +70,10 @@
                                 </div>
                             </div>
                             
-                            <div class="up-right">
+                            <div class="input up-right">
                                 <!-- input nhập tên bộ phận sử dụng  -->
                                 <MInputDisable
-                                    :placeholder="assetDetailInfo.departmentName.placeholder"
+                                    :required="assetDetailInfo.departmentName.required"
                                     :value="this.asset.department_name"
                                     :label="assetDetailInfo.departmentName.label"
                                     >
@@ -78,29 +81,29 @@
                             </div>
                         </div>
                         <div class="m-row">
-                            <div class="input__container up-left">
+                            <div class="input input__container up-left">
                                 <!-- combobox nhập mã loại tài sản  -->
                                 <MCombobox  
                                     :is-icon="false"
-                                    :ref="refElemnts.assetCategoryCode"
-                                    :required="true" 
+                                    :ref="assetDetailInfo.assetCategoryCode.ref"
+                                    :required="assetDetailInfo.assetCategoryCode.required"
+                                    :disable="assetDetailInfo.assetCategoryCode.disable"
                                     :api="this.assetCategoryApi"
                                     propName="fixed_asset_category_code" 
                                     :placeholder="assetDetailInfo.assetCategoryCode.placeholder" 
                                     :label="assetDetailInfo.assetCategoryCode.label"
-                                    :itemHeight = 36
-                                    :quantityItem = 4
+                                    :itemHeight = "36"
+                                    :quantityItemDisplay = "4"
                                     propValue="fixed_asset_category_id" 
                                     :valueInput="asset.fixed_asset_category_id"
                                     @getInputCombobox="getValueAssetCategoryId">
                                 </MCombobox>
-                                
                             </div>
                             
-                            <div class="up-right">
+                            <div class="input up-right">
                                 <!-- input nhập tên loại tài sản  -->
                                 <MInputDisable 
-                                    :placeholder="assetDetailInfo.assetCategoryName.placeholder"
+                                    :required="assetDetailInfo.assetCategoryName.required"
                                     :label="assetDetailInfo.assetCategoryName.label"
                                     :value="this.asset.fixed_asset_category_name"
                                     >
@@ -110,11 +113,12 @@
                     </div>
                     <div class="form-body__down">
                         <div class="m-row">
-                            <div class="down-left">
+                            <div class="input down-left">
                                 <!-- input nhập số lượng  -->
                                 <MInputNumber
-                                    :ref="refElemnts.quantity"
-                                    :required="true"
+                                    :ref="assetDetailInfo.quantity.ref"
+                                    :required="assetDetailInfo.quantity.required"
+                                    :disable="assetDetailInfo.quantity.disable"
                                     :placeholder="assetDetailInfo.quantity.placeholder"
                                     :valueInput="asset.quantity"
                                     @getValueInput="getValueQuantity"
@@ -126,11 +130,12 @@
                                 </MInputNumber>
                             </div>
                             
-                            <div class="down-center">
+                            <div class="input down-center">
                                 <!-- input nhập nguyên giá  -->
                                 <MInputNumber
-                                    :ref="refElemnts.cost"
-                                    :required="true"
+                                    :ref="assetDetailInfo.cost.ref"
+                                    :required="assetDetailInfo.cost.required"
+                                    :disable="assetDetailInfo.cost.disable"
                                     :stepValue="1"
                                     :placeholder="assetDetailInfo.cost.placeholder"
                                     @getValueInput="getValueCostInput"
@@ -141,11 +146,12 @@
                                 </MInputNumber>
                             </div>
                            
-                            <div class="down-right">
+                            <div class="input down-right">
                                 <!-- input nhập số năm sử dụng  -->
                                 <MInputNumber
-                                    :ref="refElemnts.lifeTime"
-                                    :required="true"
+                                    :ref="assetDetailInfo.lifeTime.ref"
+                                    :required="assetDetailInfo.lifeTime.required"
+                                    :disable="assetDetailInfo.lifeTime.disable"
                                     :stepValue="1"
                                     :placeholder="assetDetailInfo.lifeTime.placeholder"
                                     :label="assetDetailInfo.lifeTime.label"
@@ -158,11 +164,10 @@
                             </div>
                         </div>
                         <div class="m-row">
-                            <div class="down-left">
+                            <div class="input down-left">
                                 <!-- input nhập tỷ lệ hao mòn  -->
                                 <MInputDisable
-                                    :required="true"
-                                    :placeholder="assetDetailInfo.depreciationRate.placeholder"
+                                    :required="assetDetailInfo.depreciationRate.required"
                                     :label="assetDetailInfo.depreciationRate.label"
                                     :value="depreciationRate"
                                     :key="keyDepreciationRate"
@@ -173,7 +178,7 @@
                             <div class="down-center">
                                 <!-- input nhập giá trị hao mòn  -->
                                 <MInputDisable
-                                    :required="true"
+                                    :required="assetDetailInfo.depreciationValueYear.required"
                                     :placeholder="assetDetailInfo.depreciationValueYear.placeholder"
                                     :label="assetDetailInfo.depreciationValueYear.label"
                                     :value="depreciationValueYear"
@@ -182,10 +187,10 @@
                                     >
                                 </MInputDisable>
                             </div>
-                            <div class="down-right">
+                            <div class="input down-right">
                                 <!-- inptu nhập năm theo dõi  -->
                                 <MInputDisable
-                                    :required="true"
+                                    :required="assetDetailInfo.trackedYear.required"
                                     :placeholder="assetDetailInfo.trackedYear.placeholder"
                                     :label="assetDetailInfo.trackedYear.label"
                                     :value="asset.tracked_year"
@@ -195,29 +200,31 @@
                             </div>
                         </div>
                         <div class="m-row ">
-                            <div class="down-left">
+                            <div class="input down-left">
                                 <!-- input nhập ngày mua  -->
                                 
                                 <MInputDate
-                                    :ref="refElemnts.purchaseDate"
+                                    :ref="assetDetailInfo.purchaseDate.ref"
+                                    :required="assetDetailInfo.purchaseDate.required"
+                                    :disable="assetDetailInfo.purchaseDate.disable"
                                     :label="assetDetailInfo.purchaseDate.label"
                                     :format="formatDate"
                                     :valueInputDate="asset.purchase_date"
                                     @getValueInputDate="getValuePurchaseDate"
-                                    :required="true"
                                     >
                                 </MInputDate>
                             </div>
                             
-                            <div class="down-center">
+                            <div class="input down-center">
                                 <!-- input nhập ngày bắt đầu sử dụng  -->
                                 <MInputDate
-                                    :ref="refElemnts.productionYear"
+                                    :ref="assetDetailInfo.productionYear.ref"
+                                    :required="assetDetailInfo.productionYear.required"
+                                    :disable="assetDetailInfo.productionYear.disable"
                                     :label="assetDetailInfo.productionYear.label"
                                     :format="formatDate"
                                     :valueInputDate="asset.production_year"
                                     @getValueInputDate="getValueProductionYear"
-                                    :required="true"
                                     >
                                 </MInputDate>
                             </div>
@@ -282,6 +289,7 @@ import commonJS from '@/js/common';
 import moment from 'moment';
 import MInputDisable from '@/components/input/MInputDisable.vue';
 import configJS from '@/js/config';
+import MInputNumber from '@/components/input/MInputNumber.vue';
 export default {
     name:"assetDetail",
     props: {
@@ -306,7 +314,8 @@ export default {
     components:{
     MCombobox,
     MInput,
-    MInputDisable
+    MInputDisable,
+    MInputNumber
 },
     data() {
         return {
@@ -337,9 +346,10 @@ export default {
             cost: 0,
             keyDepartment: 0,
             itemError: null,
+            assetCodeDuplicate: "",
             previousKey: "",
             previousKeyCtrl: false,
-            refElemnts: resourceJS.assetDetail.refAssetDetail,
+            assetDetailInfo: resourceJS.assetDetail,
             btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
             btnDialogNotify: resourceJS.buttonDialog.notify,
@@ -347,7 +357,6 @@ export default {
             tootltipBtnCloseForm: resourceJS.tooltip.assetDetail.btnCloseForm,
             tootltipSaveForm: resourceJS.tooltip.assetDetail.saveForm,
             tootltipCancelForm: resourceJS.tooltip.assetDetail.cancelForm,
-            assetDetailInfo: resourceJS.assetDetail,
             formatDate: resourceJS.date.format.ddMMyyyy,
             typeNumber: enumJS.typeValue.number
         }
@@ -356,6 +365,7 @@ export default {
     computed: {
         /**
          * Hàm tính giá trị hao mòn năm
+         * @author LTVIET (06/03/2023)
          */
         getDepreciationValueYear: function(){
             let value = this.asset.cost*this.asset.depreciation_rate;
@@ -384,6 +394,7 @@ export default {
                     //--> khai báo 1 biến mới và gán giá trị lưu trũ vào biến mới đó
                     this.asset = JSON.parse(this.oldValueAseet);
                 }
+                
             }else{
                 //2. nếu không có dữ liệu truyền vào thì khai báo 1 đối tượng rỗng
                 this.getDefaultAsset();
@@ -404,13 +415,13 @@ export default {
         this.$nextTick(function() {
             this.setFocus();
         })
-        document.addEventListener('keydown',this.handleEventKeydown);
-        document.addEventListener('keyup',this.handleEventKeyup);
+        document.addEventListener('keydown',this.handleEventKeyDown);
+        document.addEventListener('keyup',this.handleEventKeyUp);
     },
 
     unmounted() {
-        document.removeEventListener('keydown',this.handleEventKeydown);
-        document.removeEventListener('keyup',this.handleEventKeyup);
+        document.removeEventListener('keydown',this.handleEventKeyDown);
+        document.removeEventListener('keyup',this.handleEventKeyUp);
     },
     
     methods: {
@@ -462,9 +473,12 @@ export default {
          */
         handleEventBtnClickSave(){
             this.previousKeyCtrl = false;
-            if(this.validateForm()){
+            let check = this.validateForm();
+            // let check  = true;
+            if(check){
                 this.asset.quantity = Number(this.asset.quantity);
                 let entity = {
+                    fixed_asset_id: "00000000-0000-0000-0000-000000000000",
                     fixed_asset_code : this.asset.fixed_asset_code,
                     fixed_asset_name : this.asset.fixed_asset_name,
                     organization_id: null,
@@ -489,6 +503,8 @@ export default {
                 if(this.typeForm==enumJS.type.add || this.typeForm == enumJS.type.clone){
                     this.addAsset(entity);
                 }else if(this.typeForm == enumJS.type.edit){
+                    entity.fixed_asset_id = this.asset.fixed_asset_id;
+                    console.log();
                     this.updateAsset(entity);
                 }
             }  
@@ -501,6 +517,9 @@ export default {
          * @author LTVIET (20/03/2023)
          */
         GetValueAssetCode(value){
+            if(!this.assetCodeDuplicate && value == this.assetCodeDuplicate){
+                this.$refs[this.assetDetailInfo.assetCode.ref].inValid = true;
+            }
             this.asset.fixed_asset_code = value;
         },
 
@@ -552,23 +571,86 @@ export default {
         handleEventErrorAPI(error){
             console.log(error);
             this.isShowLoad = false;
+            this.isShowDialogNotify = true;
+            // lỗi kết nối
             if(error.code == "ERR_NETWORK"){
-                this.isShowDialogNotify = true;
                 this.contentDialogNotifyErrorValidate = resourceJS.errorMsg.errorConnection;
             }
             else{
                 let errorData = error.response.data;
                 let errorCode = errorData.ErrorCode;
                 let message = errorData.UserMsg;
+                // Nếu là lỗi về dữ liệu
                 if(errorCode == enumJS.errorCode.inValid){
-                    message = errorData.MoreInfo.Message;
+                    this.contentDialogNotifyErrorValidate = resourceJS.error.notify;
+                    this.handleEventErrorInvalid(errorData.MoreInfo);
                 }
-                if(errorCode == enumJS.errorCode.duplicate){
-                    message = resourceJS.errorMsg.duplicate.replace("{0}",this.asset.fixed_asset_code);
+                // Các lỗi khác
+                else{
+                    this.contentDialogNotifyErrorValidate = message;
                 }
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = message;
+                
             }
+        },
+
+        /**
+         * Hàm nhận và xử lý lỗi từ backend
+         * @param {*} errors lỗi nhận được từ backend
+         * @author LTVIET (12/04/2023)
+         */
+        handleEventErrorInvalid(errors){
+            let itemError = null;
+            for (let error of errors) {
+                // validate lỗi code bị trùng
+                if(error.ValidateCode == enumJS.validateCode.duplicate){
+                    let itemAssetCode = this.$refs[this.assetDetailInfo.assetCode.ref];
+                    if(!itemAssetCode.inValid){
+                        this.assetCodeDuplicate = this.asset.fixed_asset_code;
+                        this.handleDisplayInputError(itemAssetCode,error.Message);
+                        if(!itemError){
+                            itemError = itemAssetCode;
+                            itemError.setFocus();
+                        }
+                    }
+                    
+                }
+                // validate lỗi để trống
+                else if(error.ValidateCode == enumJS.validateCode.empty || error.ValidateCode == enumJS.validateCode.numberLessThanOrEqualZero){
+                    for (let item of error.Data) {
+                        let itemEmpty = this.$refs[`ref_${item}`];
+                        if(!itemEmpty.inValid){
+                            let message = itemEmpty.label + error.Message;
+                            this.handleDisplayInputError(itemEmpty,message);
+                            if(!itemError){
+                                itemError = itemEmpty;
+                                itemError.setFocus();
+                            }
+                        }
+                    }
+                }
+                // validate các lỗi còn lại
+                else{
+                    let item = this.$refs[`ref_${error.Data}`];
+                    if(!item.inValid){
+                        this.handleDisplayInputError(item,error.Message);
+                        if(!itemError){
+                            itemError = item;
+                            itemError.setFocus();
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện hiển thị lỗi thông báo của input 
+         * @param {*} item đối tượng cần hiển thị lỗi
+         * @param {*} message nội dung thông báo lỗi
+         * @author LTVIET (26/03/2023)
+         */
+        handleDisplayInputError(item,message){
+            item.inValid = true;
+            item.notifyError = message;
         },
 
         
@@ -578,18 +660,13 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateForm(){
-            let itemRef = this.validateEmptyValue();
-            if(itemRef.length != 0){
-                this.itemError = this.$refs[itemRef[0]];
-                let label = itemRef.map(element => {
-                    return this.$refs[element].label;
-                });
-                label = label.join(", ");
+
+            if(!this.validateEmptyValue() | !this.validateProfessional()){
                 this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.error.validateData.replace("{0}",label);
+                this.contentDialogNotifyErrorValidate = resourceJS.error.notify;
                 return false;
             }
-            return this.validateProfessional();
+            return true;
         },
 
         /**
@@ -597,26 +674,39 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateEmptyValue(){
-            var refs = resourceJS.assetDetail.refAssetDetail;
+            var refs = this.assetDetailInfo.refElements;
             let txt = [];
-            for (let ref in refs) {
-                let item = this.$refs[refs[ref]];
-                if(ref == "purchaseDate" || ref == "productionYear"){
+            for (let ref of refs) {
+                let item = this.$refs[ref];
+                if(ref == this.assetDetailInfo.purchaseDate.ref || ref == this.assetDetailInfo.productionYear.ref){
                     if(!item.txtInputDate){
-                        txt.push(refs[ref]);
+                        txt.push(ref);
                         item.inValid = true;
+                    }
+                }else if(ref == this.assetDetailInfo.quantity.ref || ref == this.assetDetailInfo.cost.ref || ref == this.assetDetailInfo.lifeTime.ref){
+                    if(!item.value){
+                        if(item.value == 0){
+                            txt.push(ref);
+                            item.inValid = true;
+                            item.notifyError = item.label + resourceJS.error.emptyInputNumber;
+                        }else{
+                            txt.push(ref);
+                            item.inValid = true;
+                            item.notifyError = item.label + resourceJS.error.emptyInput;
+                        }
+                        
                     }
                 }
                 else{
                     if(!item.value){
-                        txt.push(refs[ref]);
+                        txt.push(ref);
                         item.inValid = true;
                         item.notifyError = item.label + resourceJS.error.emptyInput;
                     }
                 }
             }
             
-            return txt;
+            return txt.length > 0 ? false : true;
         },
         
         /**
@@ -624,114 +714,59 @@ export default {
          * @author LTVIET (17/03/2023)
          */
         validateProfessional(){
-            let message = "";
-            var refs = resourceJS.assetDetail.refAssetDetail;
             // validate độ dài ký tự của dữ liệu
-            message = this.validateMaxLength(message,refs);
+            const checkMaxlength = this.validateMaxLength();
             // validate giá trị hao mòn năm phải nhỏ hơn nguyên giá
-            message = this.validateCostGreaterThanDepreciationValueYear(message,refs);
+            const checkCost = this.validateCostGreaterThanDepreciationValueYear();
             // validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
-            message = this.validateDepreciationEqualPartOfLifeTime(message,refs);
+            const checkDepreciationRate = this.validateDepreciationEqualPartOfLifeTime();
             // validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
-            message = this.validateProcductionYearGreaterThanPurchaseDate(message,refs);
-            if(message){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = message;
+            const checkProductionYear = this.validateProcductionYearGreaterThanPurchaseDate();
+            if(!checkMaxlength | !checkCost | !checkDepreciationRate | !checkProductionYear){
                 return false;
             }
             return true;
         },
 
         /**
-         * Hàm validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
-         * @author LTVIET (17/03/2023)
-         */
-        validateProcductionYearGreaterThanPurchaseDate(message,refs){
-            const itemProductionYear = this.$refs[refs.productionYear];
-            let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
-            if(valueTime > 0){
-                if(message){
-                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
-                }else{
-                    message = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
-                }
-                itemProductionYear.inValid = true;
-                itemProductionYear.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
-                if(!this.itemError){
-                    this.itemError = itemProductionYear;
-                }
-            }else{
-                itemProductionYear.inValid = false;
-            }
-            return message;
-        },
-        
-        /**
-         * Validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
-         * @author LTVIET (17/03/2023)
-         */
-        validateDepreciationEqualPartOfLifeTime(message,refs){
-            const item = this.$refs[refs.lifeTime];
-            if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
-                if(message){
-                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-                }else{
-                    message = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-                }
-                item.inValid = true;
-                item.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
-                if(!this.itemError){
-                    this.itemError = item;
-                }
-            }else{
-                item.inValid = false;
-            }
-            return message;
-        },
-
-        /**
          * Hàm validate độ dài tối đa của ký tự
          * @author LTVIET (17/03/2023)
          */
-        validateMaxLength(message,refs){
-            const itemCode = this.$refs[refs.assetCode];
-            const itemName = this.$refs[refs.assetName];
+         validateMaxLength(){
+            let refs = this.assetDetailInfo;
+            let check = true;
+            const itemCode = this.$refs[refs.assetCode.ref];
+            const itemName = this.$refs[refs.assetName.ref];
             // validate độ dài mã tài sản (không được quá 10 ký tự)
             if(this.asset.fixed_asset_code.length > 10){
-                message = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
-                itemCode.inValid = true;
-                itemCode.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
-                if(!this.itemError){
-                    this.itemError = itemCode;
+                if(!itemCode.inValid){
+                    itemCode.inValid = true;
+                    itemCode.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthCode;
+                    itemCode.setFocus();
                 }
-            }else{
-                itemCode.inValid = false;
+                check = false;
             }
 
             // validate độ dài mã tài sản (không được quá 100 ký tự)
             if(this.asset.fixed_asset_name.length > 100){
-                if(message){
-                    message = message + "<br>" + resourceJS.validateProfessionalAssetDetail.maxLengthName;
-                }else{
-                    message = resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                if(!itemName.inValid){
+                    itemName.inValid = true;
+                    itemName.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthName;
+                    itemName.setFocus();
                 }
-                itemName.inValid = true;
-                itemName.notifyError = resourceJS.validateProfessionalAssetDetail.maxLengthName;
-                if(!this.itemError){
-                    this.itemError = itemName;
-                }
-            }else{
-                itemName.inValid = false;
+                check = false;
             }
-            return message;
+            return check;
         },
 
         /**
          * Hàm validate tỷ lệ hao mòn phải nhỏ hơn nguyên giá
          * @author LTVIET (17/03/2023)
          */
-        validateCostGreaterThanDepreciationValueYear(message,refs){
-            const itemCost = this.$refs[refs.cost];
+         validateCostGreaterThanDepreciationValueYear(){
+            let refs = this.assetDetailInfo;
+            let check = true;
+            const itemCost = this.$refs[refs.cost.ref];
             let depreciationValueYear;
             if(typeof this.depreciationValueYear == "string"){
                 depreciationValueYear = this.getMoney(this.depreciationValueYear);
@@ -740,20 +775,51 @@ export default {
             }
 
             if(this.asset.cost < depreciationValueYear){
-                if(message){
-                    message += "<br>" + resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
-                }else{
-                    message = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+                if(!itemCost.inValid){
+                    itemCost.inValid = true;
+                    itemCost.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
+                    itemCost.setFocus();
                 }
-                itemCost.inValid = true;
-                itemCost.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationYearGreaterCost;
-                if(!this.itemError){
-                    this.itemError = itemCost;
-                }
-            }else{
-                itemCost.inValid = false;
+                check = false;
             }
-            return message;
+            return check;
+        },
+        
+        /**
+         * Validate tỷ lệ hao mòn phải bằng 1/số năm sử dụng
+         * @author LTVIET (17/03/2023)
+         */
+        validateDepreciationEqualPartOfLifeTime(){
+            let refs = this.assetDetailInfo;
+            let check = true;
+            const item = this.$refs[refs.lifeTime.ref];
+            if(this.asset.depreciation_rate != Math.round(1/this.asset.life_time*1000)/1000){
+                if(!item.inValid){
+                    item.inValid = true;
+                    item.notifyError = resourceJS.validateProfessionalAssetDetail.depreciationRateDifferentLifeTimeValue;
+                }
+                check = false;
+            }
+            return check;
+        },
+
+        /**
+         * Hàm validate ngày mua phải là ngày trước ngày bắt đầu sử dụng
+         * @author LTVIET (17/03/2023)
+         */
+         validateProcductionYearGreaterThanPurchaseDate(){
+            let refs = this.assetDetailInfo;
+            let check = true;
+            const itemProductionYear = this.$refs[refs.productionYear.ref];
+            let valueTime = moment(this.asset.purchase_date).diff(this.asset.production_year, "milliseconds");
+            if(valueTime > 0){
+                if(!itemProductionYear.inValid){
+                    itemProductionYear.inValid = true;
+                    itemProductionYear.notifyError = resourceJS.validateProfessionalAssetDetail.purchaseDateGreaterThanProductionYear;
+                }
+                check = false;
+            }
+            return check;
         },
         
         /**
@@ -771,7 +837,7 @@ export default {
          */
          handleEventCloseDialogCancelAddForm(label) {
             // Nếu click button "không" thì ẩn dialog đi
-            if(label == this.btnDialogCancelAddForm[1][0]){
+            if(label == this.btnDialogCancelAddForm[1][2]){
                 this.isShowDialogAddFormCancel = false;
                 return;
             }
@@ -787,15 +853,16 @@ export default {
          */
          handleEventCloseDialogCancelEditForm(label){
             // Nếu click button "Không lưu" thì đóng dialog và form sửa lại và không lưu dữ liệu
-            if(label == this.btnDialogCancelEditForm[1][0]){
+            if(label == this.btnDialogCancelEditForm[1][2]){
                 this.isShowDialogEditFormCancel = false;
                 this.$emit('onClose');
                 return;
             }
 
             // Nếu click button "Hủy" thì đóng dialog lại
-            if(label == this.btnDialogCancelEditForm[2][0]){
+            if(label == this.btnDialogCancelEditForm[2][2]){
                 this.isShowDialogEditFormCancel = false;
+                this.setFocus();
                 return;
             }
 
@@ -844,6 +911,7 @@ export default {
                     this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
                     // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
                     this.depreciationValueYear = this.getDepreciationValueYear;
+                    
                     this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
                     this.keyDepreciationRate = ++this.keyDepreciationRate;
                     this.keyLifeTime = ++this.keyLifeTime;
@@ -937,7 +1005,7 @@ export default {
          * @author LTVIET(02/03/2023)
          */
         setFocus(){
-            this.$refs[this.refElemnts.assetCode].setFocus();
+            this.$refs[this.assetDetailInfo.assetCode.ref].setFocus();
         },
 
         /**
@@ -951,6 +1019,7 @@ export default {
                 this.asset.depreciation_rate = this.getRoundValue(1/value,1000);
                 this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
                 this.depreciationValueYear = this.getDepreciationValueYear;
+                console.log(this.depreciationRate);
                 this.keyDepreciationRate = ++this.keyDepreciationRate;
                 this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
             }else{
@@ -965,16 +1034,16 @@ export default {
          */
         getDefaultAsset(){
             this.asset = {
-                fixed_asset_id: "",
+                fixed_asset_id: "00000000-0000-0000-0000-000000000000",
                 fixed_asset_code: "",
                 fixed_asset_name: "",
-                organization_id: null,
+                organization_id: "00000000-0000-0000-0000-000000000000",
                 organization_code: null,
-                organization_name: null,
-                department_id: "",
+                organization_name: "",
+                department_id: "00000000-0000-0000-0000-000000000000",
                 department_code: "",
                 department_name: "",
-                fixed_asset_category_id: "",
+                fixed_asset_category_id: "00000000-0000-0000-0000-000000000000",
                 fixed_asset_category_code: "",
                 fixed_asset_category_name: "",
                 quantity: 0,
@@ -1025,10 +1094,7 @@ export default {
          */
         handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
-            if(this.itemError!=null){
-                this.itemError.inValid = true;
-                this.itemError.setFocus();
-            }
+            this.setFocus();
         },
 
         /**
@@ -1036,7 +1102,7 @@ export default {
          * @param {*} event đối tượng sự kiện cần sử lý
          * @author LTVIET (29/03/2023)
          */
-        handleEventKeydown(event){
+         handleEventKeyDown(event){
             let keyCode = event.keyCode;
             if (keyCode == enumJS.keyCtrl) {
                 this.previousKeyCtrl = true;
@@ -1047,7 +1113,7 @@ export default {
             }
             if(keyCode == enumJS.keyEsc){
                 event.preventDefault();
-                this.$emit('onClose');
+                this.handleEventBtnClickCancel();
             }
         },
 
@@ -1057,7 +1123,7 @@ export default {
          * @param {*} event sự kiện cần sử lý
          * @author LTVIET (26/03/2023)
          */
-        handleEventKeyup(event){
+         handleEventKeyUp(event){
             let keyCode = event.keyCode;
             if(keyCode == enumJS.keyCtrl){
                 this.previousKeyCtrl = false;
