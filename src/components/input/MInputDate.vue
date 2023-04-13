@@ -10,6 +10,7 @@
                 ref="date" 
                 v-model="txtInputDate" type="date"
                 :key="keyValue"
+                :disabled="disable"
                 @change="handleEventChangeDatePicker"
                 tabindex="-1"
                 >
@@ -19,12 +20,11 @@
                 class="input__date-container" 
                 :placeholder="placeholder"
                 autocomplete="off"
+                :disabled="disable"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
-                @keydown="handleEventKeydown"
-                @keyup="handleEventKeyup"
-                @focus="handleEventFocus"
-                tabindex="0"
+                @keydown="handleEventKeyDown"
+                @keyup="handleEventKeyUp"
                 :key="keyValueInput"
                 v-model="value">
         </div> 
@@ -51,9 +51,13 @@ export default {
             type: Boolean,
             default: false
         },
+        disable: {
+            type: Boolean,
+            default: false
+        },
         format: {
             type: String,
-            default: "dd/mm/yyyy"
+            default: resourceJS.date.format.yyyyMMdd
         },
         valueInputDate: {
             type: String,
@@ -82,6 +86,7 @@ export default {
             keyValueInput: 0,
             keyValue: 0,
             previousKeyShift: false,
+            previousKeyCtrl: false
         }
     },
     created() {
@@ -90,30 +95,28 @@ export default {
             this.propValue = this.valueInputDate;
             this.propValue = commonJS.formatDate(this.propValue);
             let date = new Date(this.valueInputDate);
+            this.txtInputDate = this.propValue;
             this.txtDate = date.getDate();
             this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
             this.txtMonth = date.getMonth()+1;
             this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
             this.txtYear = date.getFullYear();
-            this.value = this.getFormatDate(this.propValue,"yyyy-mm-dd",this.format);
-            this.txtInputDate = this.propValue;
+            this.value = this.getFormatDate(this.propValue,resourceJS.date.format.yyyyMMdd,this.format);
+            
         }else{
             //nếu không có dữ liệu truyền vào thì hiển thị thời gian hiện tại
             let currentDate = this.getCurrentDate();
             this.txtInputDate = currentDate;
-            this.value = this.getFormatDate(currentDate,"yyyy-mm-dd",this.format);
+            this.value = this.getFormatDate(currentDate,resourceJS.date.format.yyyyMMdd,this.format);
         }
 
         if(this.format.split("/")[0].length == 4){
-            this.regex = /^[0-9]{4}[/]{1}([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})$/;
+            this.regex = resourceJS.date.regex.regexYearBegin;
         }else{
-            this.regex = /^([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})[/]{1}[0-9]{4}$/;
+            this.regex = resourceJS.date.regex.regexYearEnd;
         }
     },
     methods: {
-        handleEventFocus(){
-            this.setFocus();
-        },
         /**
          * Hàm set focus vào input
          * @author LTVIET (05/03/2023)
@@ -137,7 +140,7 @@ export default {
                 }
             }else{
                 this.inValid = false;
-                this.value = this.getFormatDate(this.txtInputDate,"yyyy-mm-dd",this.format);
+                this.value = this.getFormatDate(this.txtInputDate,resourceJS.date.format.yyyyMMdd,this.format);
                 this.$emit("getValueInputDate",this.txtInputDate);
             }
         },
@@ -168,6 +171,7 @@ export default {
                     this.inValid = true;
                     let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
                     this.notifyError = message;
+                    this.$emit('getValueInputDate',this.value);
                 }else{
                     // 2.2. nếu đúng định dạng
                     // 2.2.1. validate lại giá trị ngày, tháng, năm
@@ -181,9 +185,8 @@ export default {
                         result = result.replace("mm",this.txtMonth);
                         result = result.replace("yyyy",this.txtYear);
                         this.value = result;
-                        this.txtInputDate = this.getFormatDate(this.value,this.format,"yyyy-mm-dd");
+                        this.txtInputDate = this.getFormatDate(this.value,this.format,resourceJS.date.format.yyyyMMdd);
                         this.keyValueInput = ++this.keyValueInput;
-                        this.inValid = false;
                     }
                     
                 }
@@ -301,6 +304,9 @@ export default {
                     let value = `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
                     this.$emit('getValueInputDate',value);
                 }
+            }else if(!this.value){
+                this.$emit('getValueInputDate',null);
+
             }
         },
 
@@ -313,7 +319,7 @@ export default {
          */
         getFormatDate(value,formatBefore,formatAfter){
             // Xác định vị trí ngày , tháng, năm ở định dạng ban đầu
-            let arrBefore = formatBefore.split(/[/,-]/);
+            let arrBefore = formatBefore.split(/[/-]/);
             let indexDayBefore = arrBefore.indexOf("dd");
             let indexMonthBefore = arrBefore.indexOf("mm");
             let indexYearBefore = arrBefore.indexOf("yyyy");
@@ -337,16 +343,25 @@ export default {
          * @param {*} event sự kiện cần sử lý
          * @author LTVIET (05/03/2023)
          */
-        handleEventKeydown(event){
+        handleEventKeyDown(event){
             const keyCode = event.keyCode;
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = true;
             }
-            if(this.value.length == 10 && keyCode > 31 && !(keyCode >=37 && keyCode <=40)){
-                event.preventDefault();
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
             }
-            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
-                event.preventDefault();
+            
+            if(this.value.length == 10 && keyCode > 31 && !(keyCode >=37 && keyCode <=40)){
+                if(!(this.previousKeyCtrl && keyCode == 65)){
+                    event.preventDefault();
+                }
+            }
+            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) 
+                || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
+                    if(!(this.previousKeyCtrl && keyCode == 65)){
+                        event.preventDefault();
+                    }
             }
             if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
                 event.preventDefault();
@@ -358,10 +373,13 @@ export default {
          * @param {*} event sự kiện cần sử lý
          * @author LTVIET (05/03/2023)
          */
-        handleEventKeyup(event){
+        handleEventKeyUp(event){
             const keyCode = event.keyCode;
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
+            }
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
             }
         },
     },
