@@ -3,7 +3,6 @@
     <!-- Khi table có dữ liệu phù hợp  -->
     <div class="content__table">
       <table ref="table1" class="ab" :key="keyTable"  style="border-bottom: none;box-shadow: none;height: 100%;position: absolute;top:0;" >
-        <!-- phần title của table  -->
         <thead>
           <tr>
             <th v-if="tableInfo.isCheckbox" class="column1 text-align-center">
@@ -215,7 +214,7 @@
             v-for="(item, index) of this.assets"
             :key="index"
             :class="{
-              row__selected: checkbox[index + 1]||rowContextMenuSelected[index+1],
+              row__selected: rowSelected[index+1]||checkbox[index+1],
             }"
           >
             <td v-if="tableInfo.isCheckbox" class="column1 text-align-center">
@@ -504,8 +503,9 @@ export default {
       widthContextMenu: 156,
       heightContextMenu: 152,
       totalFooter: [],
-      rowContextMenuSelected: [],
-      check:true
+      rowSelected: [],
+      indexRowSelected: 0,
+      check:true,
     };
   },
   updated() {
@@ -530,8 +530,7 @@ export default {
     }
     for(let i=0;i<=this.pageSize;i++){
       this.checkbox[i] = false;
-      
-      
+      this.rowSelected[i] = false;
     }
   },
 
@@ -564,7 +563,6 @@ export default {
      */
     handleEventCloseContextMenu(){
       this.isShowContextMenu = false;
-      this.rowContextMenuSelected = [];
     },
     /**
      * Hàm xử lý sự kiện click vào 1 item trong contextmenu
@@ -600,7 +598,8 @@ export default {
           this.contextMenuPageY = this.contextMenuPageY - this.heightContextMenu - 10;
         }
         this.isShowContextMenu = true;
-        this.rowContextMenuSelected[item.index - this.pageSize*(this.pageNumber-1)] = true;
+        this.indexRowSelected = item.index - this.pageSize*(this.pageNumber-1);
+        this.rowSelected[this.indexRowSelected] = true;
         this.keyContextMenu=++this.keyContextMenu;
     },
 
@@ -776,8 +775,9 @@ export default {
           this.handleEventKeyStrokesShift(index);
         }else if (!this.clickCheckbox && !this.clickFunction) {
           if(!this.previousKeyCtrl){
-            this.resetCheckbox();
-            this.markCheckbox(index,index != this.indexCheckbox);
+            this.rowSelected.fill(false);
+            this.rowSelected[index] = (index != this.indexRowSelected);
+            this.indexRowSelected = this.rowSelected[index] ? index : 0;
           }
           else{
             this.markCheckbox(index);
@@ -945,6 +945,8 @@ export default {
      * @author LTVIET (04/03/2023)
      */
     markCheckbox(index,value) {
+      this.rowSelected.fill(false);
+      this.indexRowSelected = 0;
       //1. set giá trị của checkbox: false-->true hoặc true-->false
       if(value != undefined){
         this.checkbox[index] = value;
@@ -1025,7 +1027,7 @@ export default {
      * @author LTVIET (05/03/2023)
      */
     styleFunction(index) {
-      if (this.checkbox[index] || this.rowContextMenuSelected[index]) {
+      if (this.checkbox[index] || this.rowSelected[index]) {
         //nếu checkbox = true thì hiển thị icon
         return "visibility: visible;";
       } else {
