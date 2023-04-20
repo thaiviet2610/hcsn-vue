@@ -74,9 +74,7 @@ input:focus{
     background: url('../../assets/icon/qlts-icon.png') no-repeat -243px -23px;
 }
 
-.content-header input{
-    font-family: Roboto-Italic ;
-}
+
 
 .inputNumber{
     text-align: right;
@@ -100,6 +98,11 @@ input:focus{
 
 .classInput {
     -moz-appearance: textfield;
+}
+
+/* Chrome, Opera, Safari */
+.form input::-webkit-input-placeholder {
+    font-style: italic!important;
 }
 
 .input__container{

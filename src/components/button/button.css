@@ -81,6 +81,12 @@
     background-color: white;
 }
 
+.btn__icon{
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
 .btn__icon:focus{
     outline: 3px solid #bce7f1 ;
 }

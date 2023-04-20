@@ -288,7 +288,14 @@ export default {
             }
             if(this.entitiesSearch.length == 0 && this.required){
                 this.inValid = true;
-                this.notifyError = this.label + resourceJS.error.errorDontFindInData;
+                if(this.label){
+                    this.notifyError = this.label + resourceJS.error.errorDontFindInData;
+                }else{
+                    this.notifyError = resourceJS.error.errorDontFindInData;
+                }
+            }
+            if(this.value == ""){
+                this.$emit("getInputCombobox","");
             }
         },
 
@@ -455,13 +462,21 @@ export default {
             if(this.required && !this.value){
                 //1.1. nếu có thì set invalid =true và hiển thị thêm thông báo lỗi không được để trống
                 this.inValid = true;
-                this.notifyError = this.label + resourceJS.error.emptyInput;
+                if(this.label){
+                    this.notifyError = this.label + resourceJS.error.emptyInput;
+                }else{
+                    this.notifyError = resourceJS.error.emptyInput;
+                }
                 return;
             }else if(this.required && findIndex == -1){
                 //1.2. kiểm tra xem giá trị nhập vào có nằm trong danh sách dữ liệu không
                 //1.2.1. nếu có thì set invalid = true và hiển thị thêm thông báo lỗi 
                 this.inValid = true;
-                this.notifyError = this.label + resourceJS.error.errorDontFindInData;
+                if(this.label){
+                    this.notifyError = this.label + resourceJS.error.errorDontFindInData;
+                }else{
+                    this.notifyError = resourceJS.error.errorDontFindInData;
+                }
                 return;
             }
             else if(findIndex >= 0){

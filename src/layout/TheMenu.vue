@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <menu v-if="isShow">
+    
+        <menu>
         <div class="menu-header">
             <div class="menu-header__item menu__item--selected" :data_tooltip_right="tooltipHeader"></div>
         </div>
@@ -57,22 +57,15 @@
             </MButtonIcon>
         </div>
         </menu>
-        <!-- sidebar -->
-        <TheSidebar
-        v-else
-        @onClose="handleEventCloseSidebar"
-        ></TheSidebar>
-    </div>
+    
 </template>
 
 <script>
 import resourceJS from '@/js/resourceJS';
-import TheSidebar from "./TheSidebar.vue";
 export default {
     name: "TheMenu",
     props: ["menuIndex"],
     components: {
-        TheSidebar,
     },
     data() {
         return {
@@ -90,20 +83,13 @@ export default {
         };
     },
     methods: {
-        /**
-         * Hàm xử lý sự kiện click vào button đóng sidebar
-         * @author LTVIET (06/03/2023)
-         */
-        handleEventCloseSidebar() {
-            this.isShow = true;
-        },
 
         /**
          * Hàm xử lý sự kiện click vào button mở sidebar
          * @author LTVIET (06/03/2023)
          */
-        handleEventClickBtnExpandMenu(){
-            this.isShow = false;
+         handleEventClickBtnExpandMenu(){
+            this.$emit('onOpen',this.isSelected);
         }
     },
 };

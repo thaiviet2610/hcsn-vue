@@ -90,7 +90,7 @@ export default {
             type: [String,Number],
             default: null
         },
-        stepValue: {
+        stepValueInput: {
             type: Number,
             default: 0
         },
@@ -107,35 +107,34 @@ export default {
     data() {
         return {
             value: null,
+            valueNumber: 0,
             inValid: false,
-            errorEmpty: "",
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
             classInput: null,
             previousKeyShift: false,
             previousKeyCtrl: false,
-            decimalPartValue: 0
+            decimalPartValue: 0,
+            stepValue: 0,
+            keyInput: 0
         }
     },
     watch: {
-        
     },
     mounted() {
         
     },
     created() {
         //1. nếu valueInput có giá trị thì gán cho value
-        if(this.valueInput){
-            this.value = this.valueInput;
-            if(this.value < 10){
-                this.value = `0${this.value}`;
-            }
-            
-        }else{
-            //2. gán giá trị mặc định = 0
-            this.value = 0;
+        if(this.valueInput || this.valueInput === 0){
+            this.valueNumber = this.getNumber(this.valueInput);
         }
+        else{
+            this.valueNumber = null;
+            this.value = "";
+        }
+        
         //3. nếu input có button thì set style cho input
         if(this.buttonInput){
             this.styleInput = 'padding-right: 28px;';
@@ -144,10 +143,26 @@ export default {
             //4. nếu input có icon thì set style cho input
             this.styleInput = 'padding-left: 38px';
         }
-        this.value = this.formatMoney(this.value);
+        
+        this.value = this.formatMoney(this.valueNumber);
+        if(String(this.stepValueInput).indexOf(",") != -1){
+            this.stepValue = Number(String(this.stepValueInput).replace(",","."));
+        }else{
+            this.stepValue = this.stepValueInput;
+        }
+        
     },
     methods: {
-
+        /**
+         * Hàm chuyển giá trị kiểu string về kiểu number
+         * @param {*} value giá trị cần chuyển đổi
+         * @author LTVIET (13/04/2023)
+         */
+        getNumber(value){
+            value = String(value).indexOf(".") == -1 ? value : String(value).replaceAll('.','');
+            value = String(value).indexOf(",") == -1 ? Number(value) : Number(value.replaceAll(',','.'));
+            return value;
+        },
         /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)
@@ -158,7 +173,11 @@ export default {
                 //1.1. set invalid = true và hiện thị thông báo lỗi không được để trống
                 if(this.value!==0){
                     this.inValid = true;
-                    this.notifyError = this.label + resourceJS.error.emptyInput;
+                    if(this.label){
+                        this.notifyError = this.label + resourceJS.error.emptyInput;
+                    }else{
+                        this.notifyError = resourceJS.error.emptyInput;
+                    }
                 }
             }
             else{
@@ -170,21 +189,11 @@ export default {
                     this.inValid = true;
                     this.notifyError = resourceJS.error.errorMaxLengthNumber;
                 }else{
-                    console.log(1);
-                    this.value = this.formatMoney(this.value);
                     this.inValid = false;
-                }
-                if(this.value && String(this.value).indexOf(".") == -1){
-                    this.value = Number(this.value);
-                    if(this.value > 0 && this.value<10){
-                        this.value = Number(this.value);
-                        this.value = `0${this.value}`;
-                    }
                 }
             }
             if(!this.inValid){
-                let value = this.getMoney(this.value);
-                this.$emit('getValueInput',value);
+                this.$emit('getValueInput',this.valueNumber);
             }
         },
 
@@ -193,15 +202,18 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventIncreaseValue() {
-            let valueInput = this.getMoney(this.value);
             //2. nếu giá trị rỗng thì gán bằng 0
-            if(valueInput == "" || valueInput == null || valueInput == undefined){
-                this.value = 0;
+            if((this.valueNumber == "" || this.valueNumber == null || this.valueNumber == undefined) && this.valueNumber !== 0){
+                this.valueNumber = 0;
                 this.$emit('getValueInput',0);
             }
-            valueInput = Number(valueInput) + Number(this.stepValue);
-            this.$emit('getValueInput',valueInput);
-            this.value = this.formatMoney(valueInput);
+            this.valueNumber = this.valueNumber + Number(this.stepValue);
+            if(this.stepValue < 1 && this.stepValue > 0){
+                let valueRound = 1/this.stepValue;
+                this.valueNumber = Math.round(this.valueNumber*valueRound)/valueRound;
+            }
+            this.$emit('getValueInput',this.valueNumber);
+            this.value = this.formatMoney(this.valueNumber);
         },
 
         /**
@@ -209,21 +221,21 @@ export default {
          * @author LTVIET (05/03/2023)
          */
         handleEventDecreaseValue(){
-            let valueInput = this.getMoney(this.value);
-            //2. nếu giá trị rỗng thì gán bằng 0
-            if(valueInput == "" || valueInput == null || valueInput == undefined){
-                this.value = 0;
+            //1. nếu giá trị rỗng thì gán bằng 0
+            if(this.valueNumber == "" || this.valueNumber == null || this.valueNumber == undefined){
+                this.valueNumber = 0;
                 this.$emit('getValueInput',0);
             }
-            valueInput = Number(valueInput) - this.stepValue;
-            if(this.stepValue < 1){
-                valueInput = Math.round(valueInput*(1/this.stepValue))/(1/this.stepValue);
+            this.valueNumber = this.valueNumber - Number(this.stepValue);
+            if(this.stepValue < 1 && this.stepValue > 0){
+                let valueRound = 1/this.stepValue;
+                this.valueNumber = Math.round(this.valueNumber*valueRound)/valueRound;
             }
-            if(valueInput < 0){
-                valueInput = 0;
+            if(this.valueNumber < 0){
+                this.valueNumber = 0;
             }
-            this.$emit('getValueInput',valueInput);
-            this.value = this.formatMoney(valueInput);
+            this.$emit('getValueInput',this.valueNumber);
+            this.value = this.formatMoney(this.valueNumber);
         },
 
         /**
@@ -246,8 +258,9 @@ export default {
             if(keyCode == enumJS.keyCtrl){
                 this.previousKeyCtrl = true;
             }
+            
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) 
-                    || (keyCode >=37 && keyCode <= 40))){
+                    || (keyCode >=37 && keyCode <= 40)) && keyCode!=188){
                 if(!(this.previousKeyCtrl && keyCode == 65)){
                     event.preventDefault();
                 }
@@ -292,37 +305,27 @@ export default {
                 this.previousKeyCtrl = false;
             }
         },
-        
-        /**
-         * Hàm chuyển dữ liệu tiền từ string về dạng number trong trường hợp dữ liệu tiền được format thành dạng string
-         * @param {*} value giá trị cần chuyển đổi
-         * @author LTVIET(14/03/2023)
-         */
-         getMoney(value){
-            return String(value).indexOf(".") == -1 ? Number(value) : Number(String(value).replaceAll('.',''));
-        },
 
-        /**
-         * Hàm làm tròn giá trị đến 1 chữ số sau dấu phảy
-         * @param {*} value giá trị cần làm tròn
-         * @author LTVIET(06/03/2023)
-         */
-        getRoundValue(value){
-            return Math.round(value*10)/10;
-        },
 
         /**
          * Hàm truyền dữ liệu ra lớp cha khi nhập dữ liệu mới vào input
          * @author LTVIET(06/03/2023)
          */
-        handleEventInput(){
-            this.value = this.formatMoney(this.value);
+        handleEventInput(event){
+            if(!this.value){
+                this.valueNumber = this.value;
+            }else{
+                this.valueNumber = this.getNumber(this.value);
+            }
+            if(event.data != ","){
+                this.value = this.formatMoney(this.valueNumber);
+            }
             if(this.required && (Number(this.value) == null || Number(this.value) == undefined || Number(this.value) == "")){
                 if(this.value===0){
                     this.inValid = false;
                 }
             }
-            this.$emit("getValueEventInput",this.value);
+            this.$emit("getValueEventInput",this.valueNumber);
         },
 
         /**
@@ -332,7 +335,6 @@ export default {
          */
         formatMoney(value){
             if(value != "" && value != null && value != undefined){
-                value = this.getMoney(value);
                 value = commonJS.formatNumber(value);
             }
             return value;
@@ -344,4 +346,5 @@ export default {
 
 <style scoped>
 @import url(./input.css);
+
 </style>

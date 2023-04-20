@@ -25,6 +25,7 @@ const enumJS = {
     keyD: 68,
     keyP: 80,
     keyS: 83,
+    keySlash: 191,
     errorCode: {
         exception: 1,
         inValid: 2,
@@ -67,7 +68,8 @@ const enumJS = {
         money: 5,
         checkbox: 6,
         function: 7
-    }
+    },
+    
 }
 
 export default enumJS;

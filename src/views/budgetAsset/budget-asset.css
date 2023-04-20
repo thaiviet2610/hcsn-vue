@@ -1,0 +1,70 @@
+.budget__body--up{
+    width: 75%;
+}
+
+.budget_combobox{
+    width: 65%;
+}
+
+.budget_input{
+    width: 33%;
+}
+
+.budget_input--text{
+    text-align: right;
+}
+
+.budget-body{
+    height: 445px;
+}
+
+.budget__container{
+    height: calc(100% - 15px - 10px);
+    max-height: calc(100% - 15px - 10px);
+    overflow: auto;
+    row-gap: 14px !important;
+}
+
+.budget__item{
+    margin-top: 14px;
+}
+
+.budget__container--left{
+    width: 75%;
+    display: flex;
+    align-items: top;
+    justify-content: space-between;
+}
+
+.budget__container--right{
+    display: flex;
+    align-items: top;
+    column-gap: 10px;
+
+}
+
+.budget__icon{
+    height: 18px;
+    display: flex;
+    align-items: top;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.budget__icon--add{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -375px -419px;
+	width: 18px;
+	height: 18px;
+}
+
+.budget__icon--minus{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -375px -463px;
+	width: 18px;
+	height: 18px;
+}
+
+.form-body__total{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}

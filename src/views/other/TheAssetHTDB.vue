@@ -6,11 +6,11 @@
 </template>
 
 <script>
+
 export default {
     name:"TheAssetHTDB",
     components:{
-        
-    },
+},
     data() {
         return {
             isShowLoad: false

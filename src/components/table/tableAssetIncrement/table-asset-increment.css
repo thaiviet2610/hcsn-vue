@@ -1,0 +1,67 @@
+.asset_increment--column1{
+    width: 50px;
+    /* min-width: 50px; */
+    padding: 0 20px 0 16px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.asset_increment--column2{
+    width: 50px;
+    min-width: 29px;
+    box-sizing: border-box;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset_increment--column3{
+    width: 130px;
+    min-width: 70px;
+    padding-right: 10px;
+    text-align: left;
+}
+
+
+.asset_increment--column4{
+    width: 130px;
+    min-width: 90px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+
+.asset_increment--column5{
+    width: 130px;
+    min-width: 90px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+
+
+.asset_increment--column6{
+    width: 140px;
+    text-align: right;
+}
+
+
+
+
+
+.asset_increment--column7{
+    min-width: 240px;
+    text-align: left;
+    padding-left: 50px;
+}
+
+
+
+
+
+.asset_increment--column8{
+    width: 100px;
+    min-width: 60px;
+    padding-left: 10px;
+    padding-right: 15px;
+    text-align: center;
+}

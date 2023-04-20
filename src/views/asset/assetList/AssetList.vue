@@ -1,6 +1,6 @@
 <template>
     <!-- <div class="body"> -->
-    <div class="main" @click="addOnClickAssetList" >
+    <div class="main">
         <!-- phần content  -->
         <div class="content">
             <div class="content-header">
@@ -9,6 +9,7 @@
                     <div class="input1">
                         <MInput 
                             @keyDownEnter ="handleEventKeyDownEnterInputSearch"
+                            @getValueEventInput="handleEventGetValueInputSearch"
                             :ref="refElements.inputSearch"
                             placeholder="Tìm kiếm tài sản"
                             :iconInput="true"
@@ -49,44 +50,52 @@
                     <MButton
                         :ref="refElements.buttonAdd"
                         label=" + Thêm tài sản"
-                        :data_tooltip_bottom="tootltipBtnAdd"
+                        :data_tooltip_bottom="tooltipBtnAdd"
                         class="item1 btn--main"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
                     <!-- button xuất dữu liệu ra excel  -->
-                    <MButtonIcon
-                        class="item2"
-                        :ref="refElements.buttonExport"
-                        classIcon="item2__icon--image"
-                        :data_tooltip_bottom="tootltipBtnExcel"
-                        @addOnClickBtnIcon="addOnClicKBtnExportExcel">
-                    </MButtonIcon>
+                    <div style="position: relative;">
+                        <MButtonIcon
+                            class="item2"
+                            :ref="refElements.buttonExport"
+                            classIcon="item2__icon--image"
+                            @addOnClickBtnIcon="addOnClicKBtnExportExcel">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="tooltipBtnExcel"
+                            class="asset-list-btn-export-tooltip"
+                        ></MTooltip>
+                    </div>
                     
                     <!-- button xóa tài sản  -->
-                    <MButtonIcon
-                        class="item3"
-                        :ref="refElements.buttonDelete"
-                        classIcon="item3__icon--image"
-                        :data_tooltip_bottom="tootltipBtnDelete"
-                        @addOnClickBtnIcon="btnOnClick">
-                    </MButtonIcon>
+                   <div style="position: relative;">
+                        <MButtonIcon
+                            class="item3"
+                            :ref="refElements.buttonDelete"
+                            classIcon="function__delete"
+                            @addOnClickBtnIcon="btnOnClick">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="tooltipBtnDelete"
+                            class="asset-list-btn-delete-tooltip"
+                        ></MTooltip>
+                   </div>
                 </div>
             </div>
 
-            <div class="content-body">
+            <div id="abcd123" class="content-body" >
                 <!-- table hiển thị danh sách tài sản  -->
                 <Mtable 
                     :ref="refElements.table"
                     @btnDblClickRow="handleEventDblClickRow"
                     @btnClickFunctionOpenForm="handleEventOpenForm"
-                    :departmentId="departmentId"
-                    :assetCategoryId="assetCategoryId"
-                    :keyword="keyword"
+                    :tableInfo="tableInfo"
+                    :dataPageSize="dataPageSize"
                     :key="keyTable"
                     @addOnClickContextMenu="handleEventClickContextMenu"
-                    @addOnEventMouseDown="handleEventTableMouseDown"
                     @handleEventLoadTable="handleEventLoadTable"
-                    :api="this.assetFilterApi"></Mtable>
+                    :api="assetFilterApi"></Mtable>
             </div>
         </div>
     </div>
@@ -155,9 +164,7 @@
 import AssetDetail from '../assetDetail/AssetDetail.vue'
 import MCombobox from '../../../components/combobox/MCombobox.vue'
 import Mtable from '../../../components/table/MTable.vue'
-import commonJS from '@/js/common.js';
 import resourceJS from '@/js/resourceJS.js';
-import MToastSucess from '@/components/toast/MToastSucess.vue';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import axios from 'axios'
 import enumJS from '@/js/enum.js';
@@ -166,13 +173,17 @@ import configJS from '@/js/config';
 export default {
     name: "AssetList",
     components:{
-        AssetDetail,MCombobox,Mtable,MToastSucess,MButtonIcon,
+        AssetDetail,MCombobox,MButtonIcon,
+        Mtable
     },
     created() {
+        
+
+        this.assetFilterApi = this.getAssetFilterApi();
+        
     },
     data() {
         return {
-            quantityCheckbox: 0,
             labelForm: "",
             assetInput:null,
             isShowForm: false,
@@ -211,18 +222,20 @@ export default {
             previousKey: "",
             previousKeyCtrl: false,
             previousKeyShift: false,
-            indexDeleteStart: 0,
-            indexDeleteEnd: 0,
             refElements: resourceJS.assetList.refElementAssetList ,
             btnDialogExcel: resourceJS.buttonDialog.exportExcel,
             btnDialogDelete: resourceJS.buttonDialog.delete,
             btnDialogNotify: resourceJS.buttonDialog.notify,
-            tootltipBtnExcel: resourceJS.tooltip.assetList.buttonExcel,
-            tootltipBtnDelete: resourceJS.tooltip.assetList.buttonDelete,
-            tootltipBtnAdd: resourceJS.tooltip.assetList.buttonAdd,
+            tooltipBtnExcel: resourceJS.tooltip.assetList.buttonExcel,
+            tooltipBtnDelete: resourceJS.tooltip.assetList.buttonDelete,
+            tooltipBtnAdd: resourceJS.tooltip.assetList.buttonAdd,
+            tableInfo: resourceJS.table.tableAsset.tableInfo,
+            dataPageSize: resourceJS.table.tableAsset.dataPageSize,
+            assetDeleteMultiple: [],
         }
     },
     mounted() {
+        this.keyTable = ++this.keyTable;
         // mặc định focus vào input tìm kiếm khi load trang
         this.$nextTick(function() {
             this.setFocusDefault();
@@ -235,10 +248,21 @@ export default {
         document.removeEventListener('keydown',this.handleEventKeyDown);
         document.removeEventListener('keyup',this.handleEventKeyUp);
     },
-    watch: {
-    },
-    methods: {
 
+    
+   
+    methods: {
+        /**
+         * Hàm xử lý sự kiện lấy ra giá trị api từ keyword,departmentId,assetCategoryId
+         * @author LTVIET (15/04/2023)
+         */
+        getAssetFilterApi(){
+            let api = configJS.api.assetFilterApi.replace("{2}",this.keyword);
+            api = api.replace("{3}",this.assetCategoryId);
+            api = api.replace("{4}",this.departmentId);
+            return api;
+        },
+        
         /**
          * Hàm xử lý sự kiện click button đóng form
          * @author LTVIET (06/03/2023)
@@ -280,20 +304,6 @@ export default {
         },
         
         /**
-         * Hàm format lại định dạng tiền
-         * @param {*} value giá trị cần format
-         * @param {*} type loại định dạng muốn format
-         * @author LTVIET (02/03/2023)
-         */
-        formatValue(value,type) {
-            if(type == "money"){
-                return commonJS.formatNumber(value);
-            }else if(type == "date") {
-                return commonJS.formatDate(value);
-            }
-        },
-        
-        /**
          * Hàm xử lý sự kiện mở form chi tiết tài sản khi click vào chức năng của table
          * @param {*} values giá trị được truyền từ lớp con (label form,id của đối tượng tài sản asset)
          * @author LTVIET (02/03/2023)
@@ -301,20 +311,23 @@ export default {
         handleEventOpenForm(values) {
             this.isShowToastSucess = false;
             this.typeForm = values[0];
-            if(this.typeForm == enumJS.type.edit){
-                this.labelForm = resourceJS.titlteForm.editAssetForm;
+            if(this.typeForm == enumJS.type.delete){
+                this.btnOnClick();
             }else{
-                if(this.typeForm == enumJS.type.clone){
-                    this.labelForm = resourceJS.titlteForm.cloneAssetForm;
-                }else if(this.typeForm == enumJS.type.add){
-                    this.labelForm = resourceJS.titlteForm.addAssetForm;
+                if(this.typeForm == enumJS.type.edit){
+                    this.labelForm = resourceJS.titlteForm.editAssetForm;
+                } 
+                else{
+                    if(this.typeForm == enumJS.type.clone){
+                        this.labelForm = resourceJS.titlteForm.cloneAssetForm;
+                    }else if(this.typeForm == enumJS.type.add){
+                        this.labelForm = resourceJS.titlteForm.addAssetForm;
+                    }
+                    this.getNewCode();
                 }
-                this.getNewCode();
+                this.getAssetById(values[1]);
+                this.isShowForm = true;
             }
-            this.isShowToastSucess = false;
-            this.isShowForm = true;
-            this.getAssetById(values[1]);
-            
         },
 
         /**
@@ -335,30 +348,20 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện mở form chi tiết tài sản khi double click vào 1 dòng của table
-         * @param {*} id id của đối tượng tài sản asset được chọn
-         * @author LTVIET (02/03/2023)
-         */
-        handleEventDblClickRow(id){
-            this.isShowToastSucess = false;
-            this.isShowForm = true;
-            this.getAssetById(id);
-            this.typeForm = enumJS.type.edit;
-            this.labelForm = resourceJS.titlteForm.editAssetForm;
-        },
-
-        /**
          * Hàm xử lý sự kiện click button xóa tài sản
          * @author LTVIET (02/03/2023)
          */
         btnOnClick(){
             //1. lấy số lượng checkbox = true từ table
-            this.quantityCheckbox = this.$refs[this.refElements.table].quantityCheckbox;
+            let table = this.$refs[this.refElements.table];
+            let pageNumber = table.pageNumber;
+            this.assetDeleteMultiple = table.entityCheckboxActive[pageNumber];
+            let quantityCheckbox = this.assetDeleteMultiple.length;
             //2. kiểm tra số lượng 
-            if(this.quantityCheckbox == 0){
+            if(quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
                 this.showDialogNotifyDeleteNoAsset();
-            }else if(this.quantityCheckbox == 1){
+            }else if(quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
                 this.showDialogConfirmDeleteOne();
             }else{
@@ -382,9 +385,9 @@ export default {
          */
         showDialogConfirmDeleteOne(){
             // 1. lấy thông tin của tài sản đó
-            let asset = this.$refs[this.refElements.table].getItemSelected();
-            let codeAsset = asset[0].fixed_asset_code;
-            let nameAsset = asset[0].fixed_asset_name;
+            let asset = this.assetDeleteMultiple[0];
+            let codeAsset = asset.fixed_asset_code;
+            let nameAsset = asset.fixed_asset_name;
             // 2. hiển thị thông báo xác nhận có muốn xóa không
             let message = resourceJS.confirm.oneAssetDelete.replace("{0}", codeAsset);
             message = message.replace("{1}", nameAsset);
@@ -398,8 +401,8 @@ export default {
          */
          showDialogConfirmDeleteMultiple(){
             this.isShowDialogConfirmDeleteMultiAsset = true;
-            let quantity = this.quantityCheckbox;
-            if(this.quantityCheckbox < 10){
+            let quantity = this.assetDeleteMultiple.length;
+            if(quantity < 10){
                 quantity = `0${quantity}`; 
             }
             this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.multiAssetDelete.replace("{0}", quantity);
@@ -432,13 +435,13 @@ export default {
                 return;
             }
             // 2.Nếu click button "Xóa"
-            let checkboxSelected = this.$refs[this.refElements.table].getItemSelected();
+            // let checkboxSelected = this.$refs[this.refElements.table].getItemSelected();
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 // 2.1. Nếu xóa 1 tài sản
-                this.handleEventCloseDialogDeleteOne(checkboxSelected[0]);
+                this.handleEventCloseDialogDeleteOne(this.assetDeleteMultiple[0]);
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 // 2.2. Nếu xóa nhiều tài sản
-                this.handleEventCloseDialogDeleteMultiple(checkboxSelected);
+                this.handleEventCloseDialogDeleteMultiple(this.assetDeleteMultiple);
             }
             this.setFocusDefault();
         },
@@ -666,6 +669,7 @@ export default {
             if(!value){
                 this.assetCategoryId = "";
             }
+            this.assetFilterApi = this.getAssetFilterApi();
         },
 
         /**
@@ -678,6 +682,7 @@ export default {
             if(!value){
                 this.departmentId = "";
             }
+            this.assetFilterApi = this.getAssetFilterApi();
         },
 
         /**
@@ -690,6 +695,18 @@ export default {
             if(!value){
                 this.keyword = "";
             }
+            this.assetFilterApi = this.getAssetFilterApi();
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi đữ liệu trong input tìm kiếm được xóa hết thì tự động reload lại data
+         * @param {*} value Giá trị dữ liệu của input tìm kiếm
+         * @author LTVIET (16/03/2023)
+         */
+        handleEventGetValueInputSearch(value){
+            if(value == ""){
+                this.handleEventKeyDownEnterInputSearch();
+            }
         },
 
         /**
@@ -700,81 +717,13 @@ export default {
             this.isShowDialogNotifyDelete = false;
             this.setFocusDefault();
         },
-
-        /**
-         * Hàm xử lý sự kiện ẩn đi contextmenu khi click vào asset list
-         * @author LTVIET (26/06/2023)
-         */
-        addOnClickAssetList(){
-            this.$refs[this.refElements.table].isShowContextMenu = false;
-        },
         
         /**
-         * Hàm xử lý sự kiện khi click vào context menu
-         * @param {*} values các giá trị truyền vào (index, item)
+         * Hàm xử lý sự kiện khi click chức năng thêm trong context menu
          * @author LTVIET (25/03/2023)
          */
-        handleEventClickContextMenu(values){
-            let index = values[1];
-            let item = values[0];
-            switch (index) {
-                case enumJS.type.add:
-                    this.btnClickOpenForm();
-                    break;
-                case enumJS.type.clone:
-                    this.addOnClickContextMenuClone(item);
-                    break;
-                case enumJS.type.edit:
-                    this.addOnClickContextMenuEdit(item);
-                    break;
-                case enumJS.type.delete:
-                    this.addOnClickContextMenuDelete(item)
-                    break;
-                default:
-                    break;
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện click vào chức năng nhân bản trong context menu table
-         * @param {*} item đối tượng nhân bản
-         */
-        addOnClickContextMenuClone(item){
-            this.labelForm = resourceJS.titlteForm.cloneAssetForm;
-            this.typeForm = enumJS.type.clone;
-            this.getNewCode();
-            this.isShowToastSucess = false;
-            this.isShowForm = true;
-            this.getAssetById(item.fixed_asset_id);
-        },
-
-        /**
-         * Hàm xử lý sự kiện click vào chức năng sửa trong context menu table
-         * @param {*} item đối tượng sửa
-         * @author LTVIET (28/03/2023)
-         */
-        addOnClickContextMenuEdit(item){
-            this.labelForm = resourceJS.titlteForm.editAssetForm;
-            this.typeForm = enumJS.type.edit;
-            this.isShowToastSucess = false;
-            this.isShowForm = true;
-            this.getAssetById(item.fixed_asset_id);
-        },
-
-        /**
-         * Hàm xử lý sự kiện click vào chức năng xóa trong context menu table
-         * @param {*} item đối tượng xóa
-         * @author LTVIET (28/03/2023)
-         */
-        addOnClickContextMenuDelete(item){
-            let codeAsset = item.fixed_asset_code;
-            let nameAsset = item.fixed_asset_name;
-            let message = resourceJS.confirm.oneAssetDelete.replace("{0}",codeAsset);
-            message = message.replace("{1}",nameAsset);
-            this.contentDialogConfirmDeleteOneAsset = message;
-            this.isShowDialogConfirmDeleteOneAsset = true;
-            this.contextMenuItemDelete = item;
-            this.contextMenuDelete = true;
+        handleEventClickContextMenu(){
+            this.btnClickOpenForm();
         },
 
         /**
@@ -789,8 +738,6 @@ export default {
             }
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
-                this.indexDeleteStart = 0;
-                this.indexDeleteEnd = 0;
             }
         },
         
@@ -826,37 +773,6 @@ export default {
                         break;
                     default:
                         break;
-                }
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi nhấn giữa phím shift vào click vào dòng table để chọn nhiều
-         * @param {*} value số vị trí của dòng trong table
-         * @author LTVIET (29/03/2023)
-         */
-        handleEventTableMouseDown(value){
-            if(value > 0){
-                if(this.previousKeyShift && value > 0){
-                    if(this.indexDeleteStart == 0){
-                        this.indexDeleteStart = value;
-                    }
-                    this.indexDeleteEnd = value;
-                    let table = this.$refs[this.refElements.table];
-                    table.checkbox.fill(false);
-                    if(this.indexDeleteStart <= this.indexDeleteEnd){
-                        for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
-                            table.checkbox[i] = true;
-                            table.pushCheckboxActive(i);
-                        }
-                    }else{
-                        for(let i = this.indexDeleteEnd; i<= this.indexDeleteStart; i++){
-                            table.checkbox[i] = true;
-                            table.pushCheckboxActive(i);
-                        }
-                    }
-                }else{
-                    this.indexDeleteStart = value;
                 }
             }
         },
@@ -923,7 +839,7 @@ export default {
          * @author LTVIET (29/03/2023)
          */
          handleEventKeyStrokesCtrl0(event,table){
-            let quantityCheckbox = table.quantityCheckbox;
+            let quantityCheckbox = table.entityCheckboxActive.length;
             event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();
@@ -939,7 +855,7 @@ export default {
          * @author LTVIET (29/03/2023)
          */
          handleEventKeyStrokesCtrlE(event,table){
-            let quantityCheckbox = table.quantityCheckbox;
+            let quantityCheckbox = table.table.entityCheckboxActive.length;
             event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();

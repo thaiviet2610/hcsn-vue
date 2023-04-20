@@ -1,6 +1,6 @@
 .sidebar{
-    width: 194px;
-    min-width: 194px;
+    width: 220px;
+    min-width: 200px;
     height: 100%;
     background-color: #1c3048;
     display: flex;
@@ -57,25 +57,83 @@
 }
 
 .sidebar-body__item{
-    
+    border-radius: 6px;
+    width: 198px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.sidebar-body__container{
+    border-radius: 6px;
+    width: 100%;
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.sidebar-detail{
+    width: 198px;
+    background-color: #324e70;
+    padding-top: 4px;
+
+}
+
+.sidebar-detail__item{
     border-radius: 6px;
     width: 100%;
     height: 40px;
     display: flex;
     align-items: center;
-    column-gap: 8px;
-    margin-bottom: 4px;
+    box-sizing: border-box;
     cursor: pointer;
     text-decoration: none !important;
+}
+
+.sidebar-detail__text{
+    width: calc(100% - 44px - 20px);
+    height: 100%;
+    color: #869AB8;
+    border-radius: 40px;
+    margin-left: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 13px;
+    margin-right: 20px;
+    font-family: Roboto-Medium;
+    text-decoration: none !important;
+}
+
+.sidebar-detail__item:hover{
+    background-color: #1aa4c8;
+}
+
+.sidebar-detail__item:hover .sidebar-detail__text{
+    color: #ffffff;
 }
 
 .sidebar-body__item:hover{
     background-color: #1aa4c8;
 }
 
+.sidebar-body__item:hover .sidebar-body__item2-icon{
+    background-color: #1aa4c8;
+}
+
+.sidebar-body__item:hover .sidebar-body__text{
+    color: #ffffff;
+}
+
 .sidebar-body__item2{
-    margin-left: 10px;
-    width: 24px;
+    width: 44px;
     height: 40px;
     display: flex;
     align-items: center;
@@ -83,9 +141,9 @@
 }
 
 .sidebar-body__text{
-    width: calc(100% - 70px);
+    width: calc(100% - 44px - 20px);
     height: 100%;
-    color: #ffffff;
+    color: #869AB8;
     border-radius: 40px;
     display: flex;
     align-items: center;
@@ -101,6 +159,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    border: 0;
+    background-color: #1c3048;
 }
 
 .sidebar-body__item2-icon--image{
@@ -202,5 +263,14 @@
 }
 
 .router-link-active{
+    background-color: #1aa4c8;
+    color: #ffffff;
+}
+
+.router-link-active .sidebar-detail__text,.sidebar-body__text{
+    color: #ffffff;
+}
+
+.router-link-active .sidebar-body__item2-icon{
     background-color: #1aa4c8;
 }

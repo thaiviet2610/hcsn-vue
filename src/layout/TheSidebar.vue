@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="sidebar" class="sidebar">
+        <div v-if="isShow" class="sidebar">
             <div class="sidebar-header" >
                 <div class="sidebar-header__item"></div>
                 <div class="sidebar-header__text" :data_tooltip_right="tooltipHeader">MISA QLTS</div>
@@ -19,10 +19,52 @@
                         <div class="sidebar-body__item2--icon2"></div>
                     </div>
                     <div class="sidebar-body__text">{{ txtBodyAsset }}</div>
-                    <div class="sidebar-body__item2-icon">
-                        <button class="sidebar-body__item2-icon--image"></button>
+                    <div style="width: 20px;">
+                        <MButtonIcon
+                            class="sidebar-body__item2-icon"
+                            classIcon="sidebar-body__item2-icon--image"
+                            @addOnClickBtnIcon="addOnClicKBtnshowDetailAsset">
+                        </MButtonIcon>
                     </div>
+                    <!-- <div class="sidebar-body__item2-icon">
+                        <button class="sidebar-body__item2-icon--image"></button>
+                    </div> -->
                 </router-link>
+                <div v-if="isShowDetailAsset" class="sidebar-detail">
+                    <router-link to="/AssetIncrementList" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Ghi tăng</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Thay đổi thông tin</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Đánh giá lại</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Tính hao mòn</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Điều chuyển tài sản</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Ghi giảm</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Kiểm kê</div>
+                    </router-link>
+                    <router-link to="/a" 
+                        class="sidebar-detail__item">
+                        <div class="sidebar-detail__text">Khác</div>
+                    </router-link>
+                    
+                </div>
                 <router-link to="/assetHTDB" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2">
@@ -80,15 +122,19 @@
                 </MButtonIcon>
             </div>
         </div>
+        <TheMenu v-else
+        @onOpen="handleEventOpenSidebar">
+        </TheMenu>
     </div>
 </template>
 
 <script>
 import resourceJS from '@/js/resourceJS';
+import TheMenu from './TheMenu.vue';
 export default {
     name:"TheSidebar",
     components:{
-
+        TheMenu
     },
     created() {
     },
@@ -104,12 +150,22 @@ export default {
             txtBodyTool: resourceJS.theSidebar.body.txtCategory,
             txtBodySearch: resourceJS.theSidebar.body.txtSearch,
             txtBodyReport: resourceJS.theSidebar.body.txtReport,
+            isShowDetailAsset: false,
+            isShow: true
             
         }
     },
     methods: {
         handleEventClickBtnCollapseSidebar(){
-            this.$emit('onClose',this.isSelected);
+            this.isShow = false;
+        },
+
+        handleEventOpenSidebar(){
+            this.isShow = true;
+        },
+
+        addOnClicKBtnshowDetailAsset(){
+            this.isShowDetailAsset = !this.isShowDetailAsset;
         }
 
     },

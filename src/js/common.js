@@ -24,15 +24,17 @@ const commonJS = {
     formatNumber(value) {
         try {
             let number = value;
-            number = Math.round(number);
-            let money = String(number).indexOf(".") == -1 ? Number(number) : Number(number.replaceAll('.',''));
-            if(money < 10){
-                number = `0${money}`;
-                if(Number(money) == 0){
+            if(value > 1000){
+                number = String(value).indexOf(",") == -1 ? Number(value) : Number(String(value).replaceAll(',','.'));
+            }
+            if(number < 10 && String(number).indexOf(".") == -1){
+                number = `0${number}`;
+                if(Number(number) == 0){
                     number = 0;
                 }
             }else{
-                let moneyString = String(number);
+                let arr = String(number).split(".");
+                let moneyString = arr[0];
                 let length = moneyString.length;
                 let dem = 0;
                 let result = "";
@@ -44,7 +46,12 @@ const commonJS = {
                         dem=0;
                     }
                 }
-                number = result;
+                if(String(number).indexOf(".") != -1){
+                    number = result+","+arr[1];
+                }else{
+                    number = result;
+                }
+                
                 // number = new Intl.NumberFormat("vi").format(number);
             }
             return number;

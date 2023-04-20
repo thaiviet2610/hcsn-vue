@@ -1,3 +1,4 @@
+import configJS from "./config";
 import enumJS from "./enum";
 
 const resourceJS = {
@@ -107,6 +108,9 @@ const resourceJS = {
         maxLengthCode: "Mã tài sản vượt quá độ dài cho phép 10 ký tự!",
         maxLengthName: "Tên tài sản vượt quá độ dài cho phép 100 ký tự!"
     },
+    validateBudget:{
+        duplicateBudget: "Nguồn chi phí đã tồn tại!"
+    },
     error: {
         validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div> ",
         emptyInput: "  không được phép để trống! ",
@@ -128,7 +132,8 @@ const resourceJS = {
         errorLoadData: "Đã có lỗi khi load data. Vui lòng thử lại!",
         errorLoadCombobox: "Đã có lỗi khi load data của combobox {0}. vui lòng thử lại sau!",
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
-        exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!"
+        exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!",
+        noAsset: "Chọn ít nhất 1 tài sản",
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
@@ -197,6 +202,12 @@ const resourceJS = {
             footer:{
                 collapse: "Thu gọn"
             }
+        },
+        assetIncrementList:{
+            zoomIn: "Phóng to",
+            zoomOut: "Thu nhỏ",
+            seeMore: "Xem thêm",
+            print: "In"
         }
     },
     theSidebar: {
@@ -220,125 +231,625 @@ const resourceJS = {
         invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
     },
     table: {
-        dataContextMenu: 
-        {
-            add: {
-                icon: "context__menu--icon-add",
-                text: "Thêm tài sản",
-                type: 1
-            },
-            clone: {
-                icon: "context__menu--icon-clone",
-                text: "Nhân bản tài sản",
-                type: 2
-            },
-            edit: {
-                icon: "context__menu--icon-edit",
-                text: "Sửa tài sản",
-                type: 3
-            },
-            delete: {
-                icon: "context__menu--icon-delete",
-                text: "Xóa tài sản",
-                type: 4
-            }
-        },
-        dataPageSize: ["15", "50", "100","150"],
-        titleColumm:{
-            index: "STT",
-            assetCode: "Mã tài sản",
-            assetName: "Tên tài sản",
-            assetCategoryName: "Loại tài sản",
-            departmentName: "Bộ phận sử dụng",
-            quantity: "Số lượng",
-            cost: "Nguyên giá",
-            depreciationValue: "HM/KH lũy kế",
-            residualValue: "Giá trị còn lại",
-            function: "Chức năng"
-        },
-        contentFooterBefore: "Tổng số: ",
-        contentFooterAfter: " bản ghi",
-        noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
-        tableInfo:[
+        tableAsset:{
+            dataContextMenu: 
             {
-                title: "",
-                propName: "",
-                columnClass: "column1",
-                typeValue: enumJS.typeValue.checkbox
-            },
-            {
-                title: "STT",
-                propName: "index",
-                columnClass: "column2",
-                typeValue: enumJS.typeValue.number
-            },
-            {
-                title: "Mã tài sản",
-                propName: "fixed_asset_code",
-                columnClass: "column3",
-                typeValue: enumJS.typeValue.text
-            },
-            {
-                title: "Tên tài sản",
-                propName: "fixed_asset_name",
-                columnClass: "column4",
-                typeValue: enumJS.typeValue.text
-            },
-            {
-                title: "Loại tài sản",
-                propName: "fixed_asset_category_name",
-                columnClass: "column5",
-                typeValue: enumJS.typeValue.text
-            },
-            {
-                title: "Bộ phận sử dụng",
-                propName: "department_name",
-                columnClass: "column6",
-                typeValue: enumJS.typeValue.text
-            },
-            {
-                title: "Số lượng",
-                propName: "quantity",
-                columnClass: "column7",
-                typeValue: enumJS.typeValue.number
-            },
-            {
-                title: "Nguyên giá",
-                propName: "cost",
-                columnClass: "column8",
-                typeValue: enumJS.typeValue.number
-            },
-            {
-                title: "KH/HM lũy kế",
-                propName: "depreciation_value",
-                columnClass: "column9",
-                typeValue: enumJS.typeValue.number
-            },
-            {
-                title: "Giá trị còn lại",
-                propName: "residual_value",
-                columnClass: "column10",
-                typeValue: enumJS.typeValue.number
-            },
-            {
-                title: "Chức năng",
-                propName: "",
-                columnClass: "column11",
-                typeValue: enumJS.typeValue.function,
-                function: {
-                    edit: {
-                        class: "function__edit",
-                        type: enumJS.type.edit,
-                        tooltip: "Sửa (Ctrl+E)"
-                    },
-                    clone: {
-                        class: "function__clone",
-                        type: enumJS.type.clone,
-                        tooltip: "Nhân bản (Ctrl+0)"
-                    }
+                add: {
+                    icon: "context__menu--icon-add",
+                    text: "Thêm tài sản",
+                    type: 1
+                },
+                clone: {
+                    icon: "context__menu--icon-clone",
+                    text: "Nhân bản tài sản",
+                    type: 2
+                },
+                edit: {
+                    icon: "context__menu--icon-edit",
+                    text: "Sửa tài sản",
+                    type: 3
+                },
+                delete: {
+                    icon: "context__menu--icon-delete",
+                    text: "Xóa tài sản",
+                    type: 4
                 }
             },
-        ]
+            dataPageSize: ["15", "50", "100","150"],
+            titleColumm:{
+                function: "Chức năng"
+            },
+            contentFooterBefore: "Tổng số: ",
+            contentFooterAfter: " bản ghi",
+            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+            tableInfo:{
+                http: configJS.http.get,
+                isCheckbox: true,
+                isFunction: true,
+                header: [
+                    {
+                        title: "STT",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Số thứ tự",
+                        classTooltip: "table-header-column2-tooltip"
+                    },
+                    {
+                        title: "Mã tài sản",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Tên tài sản",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Loại tài sản",
+                        columnClass: "column5",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Bộ phận sử dụng",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Số lượng",
+                        columnClass: "column7",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        title: "Nguyên giá",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        title: "KH/HM lũy kế",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Khấu hao/Hao mòn lũy kế",
+                        classTooltip: "table-header-column9-tooltip"
+                    },
+                    {
+                        title: "Giá trị còn lại",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                body:[
+                    {
+                        propName: "index",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "fixed_asset_code",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_name",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_category_name",
+                        columnClass: "column5",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "department_name",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "quantity",
+                        columnClass: "column7",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "cost",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "depreciation_value",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "residual_value",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                footer: {
+                    colspan: 6,
+                    isPaging: true,
+                    total: [
+                        {
+                            propName: "QuantityTotal",
+                            columnClass: "column7",
+                            typeValue: enumJS.typeValue.number
+                        },
+                        {
+                            propName: "CostTotal",
+                            columnClass: "column8",
+                            typeValue: enumJS.typeValue.number
+                        },
+                        {
+                            propName: "DepreciationValueTotal",
+                            columnClass: "column9",
+                            typeValue: enumJS.typeValue.number
+                        },
+                        {
+                            propName: "ResidualValueTotal",
+                            columnClass: "column10",
+                            typeValue: enumJS.typeValue.number
+                        },
+                    ],
+                    quantityColumnEmpty: 0
+                },
+                function:{
+                    columnClass: "column11",
+                    detail:[
+                        {
+                            type: enumJS.type.edit,
+                            classIcon: "function__edit",
+                            tooltip: "Sửa(Ctrl+S)",
+                            classTooltip: "table-function-edit-tooltip"
+                        },
+                        {
+                            type: enumJS.type.clone,
+                            classIcon: "function__clone",
+                            tooltip: "Nhân bản(Ctrl+0)",
+                            classTooltip: "table-function-clone-tooltip"
+                        },
+                        
+                    ]
+                }
+                    
+                    
+            }
+        },
+        tableAssetIncrementDetail:{
+            dataContextMenu: 
+            {
+                add: {
+                    icon: "context__menu--icon-add",
+                    text: "Thêm tài sản",
+                    type: 1
+                },
+                clone: {
+                    icon: "context__menu--icon-clone",
+                    text: "Nhân bản tài sản",
+                    type: 2
+                },
+                edit: {
+                    icon: "context__menu--icon-edit",
+                    text: "Sửa tài sản",
+                    type: 3
+                },
+                delete: {
+                    icon: "context__menu--icon-delete",
+                    text: "Xóa tài sản",
+                    type: 4
+                }
+            },
+            dataPageSize: ["20", "50", "100","150"],
+            titleColumm:{
+                function: "Chức năng"
+            },
+            contentFooterBefore: "Tổng số: ",
+            contentFooterAfter: " bản ghi",
+            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+            tableInfo:{
+                http: configJS.http.get,
+                isCheckbox: false,
+                isFunction: true,
+                header: [
+                    {
+                        title: "STT",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Số thứ tự"
+                    },
+                    {
+                        title: "Mã tài sản",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Tên tài sản",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Bộ phận sử dụng",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Nguyên giá",
+                        columnClass: "asset_increment_detail--column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        title: "KH/HM lũy kế",
+                        columnClass: "asset_increment_detail--column9",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Khấu hao/Hao mòn lũy kế"
+                    },
+                    {
+                        title: "Giá trị còn lại",
+                        columnClass: "asset_increment_detail--column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                body:[
+                    {
+                        propName: "index",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "fixed_asset_code",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_name",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "department_name",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "cost",
+                        columnClass: "asset_increment_detail--column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "depreciation_value",
+                        columnClass: "asset_increment_detail--column9",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "residual_value",
+                        columnClass: "asset_increment_detail--column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                footer: {
+                    colspan: 4,
+                    isPaging: false,
+                    total: [
+                        {
+                            propName: "CostTotal",
+                            columnClass: "asset_increment_detail--column8",
+                            typeValue: enumJS.typeValue.number
+                        },
+                        {
+                            propName: "DepreciationValueTotal",
+                            columnClass: "asset_increment_detail--column9",
+                            typeValue: enumJS.typeValue.number
+                        },
+                        {
+                            propName: "ResidualValueTotal",
+                            columnClass: "asset_increment_detail--column10",
+                            typeValue: enumJS.typeValue.number
+                        },
+                    ],
+                    quantityColumnEmpty: 0
+                },
+                function:{
+                    columnClass: "column11",
+                    detail:[
+                        {
+                            type: enumJS.type.edit,
+                            classIcon: "function__edit",
+                            tooltip: "Sửa(Ctrl+S)"
+                        },
+                        {
+                            type: enumJS.type.delete,
+                            classIcon: "function__delete",
+                            tooltip: "Xóa(Ctrl+D)"
+                        },
+                    ]
+                }      
+            }
+        },
+        tableAssetIncrementDetailSelected:{
+            dataContextMenu: 
+            {
+                add: {
+                    icon: "context__menu--icon-add",
+                    text: "Thêm tài sản",
+                    type: 1
+                },
+                clone: {
+                    icon: "context__menu--icon-clone",
+                    text: "Nhân bản tài sản",
+                    type: 2
+                },
+                edit: {
+                    icon: "context__menu--icon-edit",
+                    text: "Sửa tài sản",
+                    type: 3
+                },
+                delete: {
+                    icon: "context__menu--icon-delete",
+                    text: "Xóa tài sản",
+                    type: 4
+                }
+            },
+            dataPageSize: ["20", "50", "100","150"],
+            titleColumm:{
+                function: "Chức năng"
+            },
+            
+            contentFooterBefore: "Tổng số: ",
+            contentFooterAfter: " bản ghi",
+            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+            tableInfo:{
+                http: configJS.http.post,
+                isCheckbox: true,
+                isFunction: true,
+                header: [
+                    {
+                        title: "STT",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Số thứ tự"
+                    },
+                    {
+                        title: "Mã tài sản",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Tên tài sản",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Loại tài sản",
+                        columnClass: "column5",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Bộ phận sử dụng",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Nguyên giá",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        title: "KH/HM lũy kế",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Khấu hao/Hao mòn lũy kế"
+                    },
+                    {
+                        title: "Giá trị còn lại",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                body:[
+                    {
+                        propName: "index",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "fixed_asset_code",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_name",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_category_name",
+                        columnClass: "column5",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "department_name",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "cost",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "depreciation_value",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "residual_value",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                footer: {
+                    colspan: 9,
+                    isPaging: true,
+                    quantityColumnEmpty: 0
+                },
+                function:{
+                    columnClass: "column11",
+                    detail:[
+                        {
+                            type: enumJS.type.edit,
+                            classIcon: "function__edit",
+                            tooltip: "Sửa(Ctrl+S)"
+                        },
+                        {
+                            type: enumJS.type.delete,
+                            classIcon: "function__delete",
+                            tooltip: "Xóa(Ctrl+D)"
+                        },
+                        
+                    ]
+                }
+                    
+                    
+            }
+        },
+        tableAssetIncrementMaster:{
+            dataContextMenu: 
+            {
+                add: {
+                    icon: "context__menu--icon-add",
+                    text: "Thêm tài sản",
+                    type: 1
+                },
+                clone: {
+                    icon: "context__menu--icon-clone",
+                    text: "Nhân bản tài sản",
+                    type: 2
+                },
+                edit: {
+                    icon: "context__menu--icon-edit",
+                    text: "Sửa tài sản",
+                    type: 3
+                },
+                delete: {
+                    icon: "context__menu--icon-delete",
+                    text: "Xóa tài sản",
+                    type: 4
+                }
+            },
+            dataPageSize: ["20", "50", "100","150"],
+            titleColumm:{
+                function: "Chức năng"
+            },
+            
+            contentFooterBefore: "Tổng số: ",
+            contentFooterAfter: " bản ghi",
+            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+            tableInfo:{
+                http: configJS.http.get,
+                isCheckbox: true,
+                isFunction: true,
+                header: [
+                    {
+                        title: "STT",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Số thứ tự"
+                    },
+                    {
+                        title: "Mã tài sản",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Tên tài sản",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Bộ phận sử dụng",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        title: "Nguyên giá",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        title: "KH/HM lũy kế",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number,
+                        tooltip: "Khấu hao/Hao mòn lũy kế"
+                    },
+                    {
+                        title: "Giá trị còn lại",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                body:[
+                    {
+                        propName: "index",
+                        columnClass: "column2",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "fixed_asset_code",
+                        columnClass: "column3",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "fixed_asset_name",
+                        columnClass: "column4",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "department_name",
+                        columnClass: "column6",
+                        typeValue: enumJS.typeValue.text
+                    },
+                    {
+                        propName: "cost",
+                        columnClass: "column8",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "depreciation_value",
+                        columnClass: "column9",
+                        typeValue: enumJS.typeValue.number
+                    },
+                    {
+                        propName: "residual_value",
+                        columnClass: "column10",
+                        typeValue: enumJS.typeValue.number
+                    },
+                ],
+                footer: {
+                    colspan: 8,
+                    isPaging: true,
+                    quantityColumnEmpty: 0
+                },
+                function:{
+                    columnClass: "column11",
+                    detail:[
+                        {
+                            type: enumJS.type.edit,
+                            classIcon: "function__edit",
+                            tooltip: "Sửa(Ctrl+S)"
+                        },
+                        {
+                            type: enumJS.type.delete,
+                            classIcon: "function__delete",
+                            tooltip: "Xóa(Ctrl+D)"
+                        },
+                        
+                    ]
+                }
+                    
+                    
+            }
+        }
+    },
+    tableAssetIncrement:{
+
     },
     assetList: {
         idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],

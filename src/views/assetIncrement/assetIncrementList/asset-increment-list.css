@@ -1,0 +1,223 @@
+
+.asset_increment--item1{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70px;
+    height: 36px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.interface__container{
+    width: 140px;
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
+    z-index: 10;
+}
+
+.horizontal_interface{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -110px -420px;
+	width: 20px;
+	height: 15px;
+}
+
+
+
+.vertical_interface{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -22px -421px;
+	width: 20px;
+	height: 14px;
+}
+
+.interface__item{
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    box-sizing: border-box;
+    column-gap: 10px;
+    cursor: pointer;
+}
+
+.interface__item:hover{
+    background-color: rgba(162, 240, 243, 0.829);
+}
+
+.asset_increment--item12{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -158px -249px;
+	width: 11px;
+	height: 7px;
+}
+
+.interface--selected{
+
+}
+
+.asset_increment--icon12{
+    width: 11px;
+	height: 7px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background-color: #ffffff;
+}
+
+.asset_increment--text1{
+    font-size: 22px;
+    font-family: Roboto-Bold;
+}
+
+.content-body__up{
+    width: 100%;
+    height: 64px;
+    padding: 14px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-body__down{
+    width: 100%;
+    height: 40px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.asset_increment--item2{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 45px;
+    height: 36px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.asset_increment--item21{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -331px -67px;
+	width: 18px;
+	height: 18px;
+}
+
+.asset_increment--item22{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -383px -26px;
+	width: 3px;
+	height: 13px;
+}
+
+.icon--full_screen{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -245px -333px;
+	width: 14px;
+	height: 14px;
+}
+
+
+.asset_increment--item3:hover .full-screen-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+.see-more{
+    position: relative;
+}
+
+.see-more:hover .asset_increment--item22-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+.print{
+    position: relative;
+}
+
+.print:hover .asset_increment--item21-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+
+.asset_increment--item3{
+    width: 14px;
+	height: 14px;
+    background-color: #ffffff;
+}
+
+.asset_increment--text2{
+    font-size: 14px;
+    font-family: Roboto-Bold;
+}
+
+.asset_increment__content-body--up{
+    width: 100%;
+    height: 100%;
+    /* max-height: calc(100% - 38px - 13px); */
+    /* border-radius: 3.5px; */
+    border: none;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.asset_increment__content-body--down{
+    width: 100%;
+    height: 100%;
+    border: none !important;
+    box-sizing: border-box;
+    position: relative;
+}
+
+
+.splitpanes__splitter{
+    cursor: row-resize !important;
+    height: 10px;
+
+}
+
+.abcd .splitpanes__splitter{
+    height: 0;
+}
+
+.splitpanes__pane {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .2) inset;
+  }
+  
+  
+  em.specs {
+    font-size: 0.2em;
+    line-height: 1;
+    position: absolute;
+    color: #bbb;
+    bottom: 0.5em;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+

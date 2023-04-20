@@ -26,6 +26,7 @@
     height: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     column-gap: 11px;
     border-radius: 2.5px;
 }
@@ -101,7 +102,7 @@
     background-color: #dacece;
 }
 
-.item3__icon--image{
+.function__delete{
     width: 18px;
 	height: 18px;
     background: url('../../assets/icon/qlts-icon.png') no-repeat -463px -111px;
@@ -109,7 +110,8 @@
 
 .content-body{
     width: 100%;
-    height: max-content;
+    height: 100%;
+    /* height: max-content; */
     max-height: calc(100% - 38px - 13px);
     /* border-radius: 3.5px; */
     border: 1px solid #afafaf;
@@ -117,4 +119,57 @@
     margin-top: 13px;
     box-sizing: border-box;
     position: relative;
+}
+
+.item2:hover~.asset-list-btn-export-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+
+.item3:hover~.asset-list-btn-delete-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+
+.function__edit:hover~.table-function-edit-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+.table-function-clone-tooltip{
+    right: 30% !important;
+}
+
+.table-function-edit-tooltip{
+    right: 70% !important;
+}
+
+.function__clone:hover~.table-function-clone-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
+.table-header-column9-tooltip{
+    right: 30% !important;
+    top: 90% !important;
+}
+
+.column9:hover .table-header-column9-tooltip{
+    transform: scale(1) !important;
+    z-index: 10000;
+}
+
+.table-header-column2-tooltip{
+    top: 90% !important;
+}
+
+.column2:hover .table-header-column2-tooltip{
+    transform: scale(1);
+    z-index: 10000;
 }

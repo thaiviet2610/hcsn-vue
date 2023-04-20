@@ -5,7 +5,7 @@
         
         <div class="date" :class="{'input--error':inValid}">
             <div class="datePicker"></div>
-            <!-- input nhập dữ liệu  -->    
+            <!-- input nhập dữ liệu  -->   
             <input
                 ref="date" 
                 v-model="txtInputDate" type="date"
@@ -40,7 +40,6 @@ import resourceJS from '@/js/resourceJS';
 import enumJS from '@/js/enum';
 export default {
     name:"TheSidebar",
-    components:{},
     props: {
         modelValue: [String,Boolean,Array,Number],
         label: {
@@ -86,8 +85,11 @@ export default {
             keyValueInput: 0,
             keyValue: 0,
             previousKeyShift: false,
-            previousKeyCtrl: false
+            previousKeyCtrl: false,
+            isBlur: true,
         }
+    },
+    watch: {
     },
     created() {
         // nếu có dữ liệu truyền vào thì hiển thị dữ liệu đó
@@ -150,46 +152,50 @@ export default {
          * @author LTVIET (12/03/2023)
          */
         addEventBlurInput(){
-            if(!this.value){
-                // 1. nếu giá trị là rỗng
-                if(this.required){
-                    // 1.1. nếu là truognwf bắt buộc nhập thì thông báo lỗi
-                    this.inValid = true;
-                    this.notifyError = this.label + resourceJS.error.emptyInput;
-                }else{
-                    // 1.2. nếu là trường không bắt buộc thì hiển thị placeholder là định dạng date
-                    this.placeholder = this.format;
-                    this.inValid = false;
-                }
-                this.txtInputDate = this.getCurrentDate();
-                this.value = "";
-                this.keyValueInput = ++this.keyValueInput;
-            }else{
-                // 2.kiểm tra định dạnh của giá trị date
-                if(!this.regex.test(this.value)){
-                    // 2.1. nếu không đúng định dạng thì thông báo lỗi
-                    this.inValid = true;
-                    let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
-                    this.notifyError = message;
-                    this.$emit('getValueInputDate',this.value);
-                }else{
-                    // 2.2. nếu đúng định dạng
-                    // 2.2.1. validate lại giá trị ngày, tháng, năm
-                    let check = this.validateValueDate();
-                    if(check == true){
-                        // nếu giá trị ngày, tháng, năm hợp lệ
-                        // format lại giá trị date
-                        this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
-                        this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
-                        let result = this.format.replace("dd",this.txtDate);
-                        result = result.replace("mm",this.txtMonth);
-                        result = result.replace("yyyy",this.txtYear);
-                        this.value = result;
-                        this.txtInputDate = this.getFormatDate(this.value,this.format,resourceJS.date.format.yyyyMMdd);
-                        this.keyValueInput = ++this.keyValueInput;
+            if(this.isBlur){
+                if(!this.value){
+                    // 1. nếu giá trị là rỗng
+                    if(this.required){
+                        // 1.1. nếu là truognwf bắt buộc nhập thì thông báo lỗi
+                        this.inValid = true;
+                        this.notifyError = this.label + resourceJS.error.emptyInput;
+                    }else{
+                        // 1.2. nếu là trường không bắt buộc thì hiển thị placeholder là định dạng date
+                        this.placeholder = this.format;
+                        this.inValid = false;
                     }
-                    
+                    this.txtInputDate = this.getCurrentDate();
+                    this.value = "";
+                    this.keyValueInput = ++this.keyValueInput;
+                }else{
+                    // 2.kiểm tra định dạnh của giá trị date
+                    if(!this.regex.test(this.value)){
+                        // 2.1. nếu không đúng định dạng thì thông báo lỗi
+                        this.inValid = true;
+                        let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
+                        this.notifyError = message;
+                        this.$emit('getValueInputDate',this.value);
+                    }else{
+                        // 2.2. nếu đúng định dạng
+                        // 2.2.1. validate lại giá trị ngày, tháng, năm
+                        let check = this.validateValueDate();
+                        if(check == true){
+                            // nếu giá trị ngày, tháng, năm hợp lệ
+                            // format lại giá trị date
+                            this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
+                            this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
+                            let result = this.format.replace("dd",this.txtDate);
+                            result = result.replace("mm",this.txtMonth);
+                            result = result.replace("yyyy",this.txtYear);
+                            this.value = result;
+                            this.txtInputDate = this.getFormatDate(this.value,this.format,resourceJS.date.format.yyyyMMdd);
+                            this.keyValueInput = ++this.keyValueInput;
+                        }
+                        
+                    }
                 }
+            }else{
+                this.isBlur = true;
             }
         },
 
@@ -282,6 +288,9 @@ export default {
          * @author LTVIET (26/03/2023)
          */
         handleEventInput(){
+            
+            // Tự động sinh dấu cách khi nhập
+            this.generateAutoSlach();
             // 1.Kiểm tra xem giá trị nhập vào input có đúng định dạng không ? 
             if(this.regex.test(this.value)){
                 // 2. Nếu đúng định dạng thì:
@@ -307,6 +316,28 @@ export default {
             }else if(!this.value){
                 this.$emit('getValueInputDate',null);
 
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện tự động sinh dấu / ngăn cách khi nhấp
+         * @author LTVIET (16/04/2023)
+         */
+        generateAutoSlach(){
+            let arr = this.format.split("/");
+            let length = this.value.length;
+            let arrValue = this.value.split("/");
+            if((arrValue.length == 1) && (length == arr[0].length)){
+                this.value = this.value + "/";
+                this.isBlur = false;
+                this.keyValueInput = ++this.keyValueInput;
+                this.setFocus();
+            }
+            if((arrValue.length == 2) && (arrValue[1].length == arr[1].length)){
+                this.value = this.value + "/";
+                this.isBlur = false;
+                this.keyValueInput = ++this.keyValueInput;
+                this.setFocus();
             }
         },
 
@@ -358,7 +389,7 @@ export default {
                 }
             }
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) 
-                || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40))){
+                || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40) || keyCode == enumJS.keySlash)){
                     if(!(this.previousKeyCtrl && keyCode == 65)){
                         event.preventDefault();
                     }

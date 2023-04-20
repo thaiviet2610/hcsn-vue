@@ -9,8 +9,8 @@ table{
 
 .table{
     height: 100%;
-    max-height: 100%;
-    overflow: auto ;
+    /* max-height: 100%;
+    overflow: auto ; */
     
 }
 
@@ -27,7 +27,7 @@ th{
 
 
 td{
-    height: 40px;
+    height: 40px !important;
     box-sizing: border-box;
     border-bottom: 1px solid #afafaf;
 }
@@ -78,24 +78,13 @@ tfoot{
     height: 40px;
     box-sizing: border-box;
     background-color: #ffffff;
+    border-collapse: separate;
     position: sticky;
     bottom: 0;
     padding: 0;
     outline: 1px solid #afafaf;
     opacity: 100%;
 }
-
-
-
-
-
-
-/* .checkbox{
-    width: 14px;
-    height: 14px;
-    margin: 0;
-    color: #001031;
-} */
 
 .text-align-left{
     text-align: left;
@@ -126,7 +115,7 @@ tfoot{
 }
 
 .column3{
-    width: 115px;
+    width: 95px;
     min-width: 70px;
     padding-right: 10px;
     text-align: left;
@@ -134,7 +123,7 @@ tfoot{
 
 
 .column4{
-    width: 160px;
+    width: 120px;
     min-width: 90px;
     padding-right: 10px;
     text-align: left;
@@ -142,7 +131,7 @@ tfoot{
 
 
 .column5{
-    width: 160px;
+    width: 140px;
     min-width: 90px;
     padding-right: 10px;
     text-align: left;
@@ -204,7 +193,7 @@ tfoot{
 
 
 .column11{
-    width: 100px;
+    width: 90px;
     min-width: 60px;
     padding-left: 10px;
     padding-right: 15px;
@@ -221,6 +210,7 @@ tfoot{
 
 
 .function{
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -235,9 +225,17 @@ tfoot{
     cursor: pointer;
 }
 
+.item2:hover~.asset-list-btn-export-tooltip{
+    transform: scale(1);
+    top: calc(100% + 10px);
+    z-index: 10000;
+}
+
 .function__edit:hover{
     background-color: unset;
 }
+
+
 
 .function__clone{
     background: url('../../assets/icon/qlts-icon.png') no-repeat -244px -112px;
@@ -250,6 +248,8 @@ tfoot{
 .function__clone:hover{
     background-color: unset;
 }
+
+
 
 
 
@@ -301,7 +301,47 @@ tfoot{
     background-color: rgba(162, 240, 243, 0.829);
 }
 
+/* .table__no_data{
+    overflow: auto;
+    max-width: 100%;
+} */
 
+/* .table__no_data::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+} */
+
+.abc{
+    width: 100%;
+    overflow: auto;
+    max-height: calc(100% - 78px);
+    position: absolute;
+    top: 38px;
+}
+
+
+
+.abc::-webkit-scrollbar {
+
+    height: 2px;
+    width: 1px;
+}
+
+.content__table::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+
+.content__table{
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    /* max-height: calc(100% - 40.5px); */
+    /* overflow: auto ;
+    position: absolute;
+    top: 0; */
+    border-bottom: none !important;
+}
 
 .content__table tbody tr:hover{
     height: 38px;
@@ -484,6 +524,18 @@ tfoot{
     font-family: Roboto-Bold;
     color: red;
 }
+
+.a{
+    position: absolute;
+    bottom:0;
+}
+
+.b{
+    position: relative;
+    bottom:0;
+}
+
+
 
 
 

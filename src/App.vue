@@ -1,6 +1,6 @@
 <template>
   <div class="container" >
-    <TheMenu></TheMenu>
+    <TheSidebar></TheSidebar>
     <div class="body">
       <TheHeader></TheHeader>
       <TheMain></TheMain>
@@ -11,12 +11,12 @@
 
 <script>
 import TheMain from './layout/TheMain.vue'
-import TheMenu from './layout/TheMenu.vue'
+import TheSidebar from './layout/TheSidebar.vue'
 import TheHeader from './layout/TheHeader.vue';
 export default {
   name: 'App',
   components: {
-    TheMain,TheMenu,
+    TheMain,TheSidebar,
     TheHeader
   },
   methods: {

@@ -6,8 +6,8 @@
         <input
             :id="idInput"
             ref="mInput"
-            :class="{'input--error':inValid}" 
-            class="classInput" :style="styleInput"
+            :class="[{'input--error':inValid},{classInputABC}]" 
+            :style="styleInput"
             v-model="value"
             type="text" 
             autocomplete="off"
@@ -66,6 +66,10 @@ export default {
         idInput: {
             type: String,
             default: ""
+        },
+        textAlign:{
+            type: String,
+            default: "left"
         }
     },
     components:{
@@ -79,7 +83,6 @@ export default {
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
-            classInput: null,
         }
     },
     watch: {
@@ -95,10 +98,8 @@ export default {
         //3. nếu input có icon set style cho input
         if(this.iconInput){
             //4. nếu input có icon thì set style cho input
-            this.styleInput = 'padding-left: 38px';
+            this.styleInput = `padding-left: 38px;text-align: ${this.textAlign}`;
         }
-        
-        
     },
     methods: {
 
@@ -112,11 +113,7 @@ export default {
                 //1.1. set invalid = true và hiện thị thông báo lỗi không được để trống
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.emptyInput;
-            }
-            // else{
-            //     //2.4. nếu là các trường hợp còn lại thì set invalid = false
-            //     this.inValid = false;
-            // }  
+            } 
             if(!this.inValid){
                 this.$emit('getValueInput',this.value);
             }
@@ -160,4 +157,6 @@ export default {
 .input--error{
     border-color: #ff0000 !important;
 }
+
+
 </style>
