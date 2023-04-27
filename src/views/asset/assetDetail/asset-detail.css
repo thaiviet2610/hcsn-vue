@@ -69,7 +69,6 @@
 
 .up-left{
     width: calc(33% - 8px) !important;
-    min-width: 133px;
 }
 
 
@@ -87,12 +86,10 @@
 
 .down-left{
     width: calc(33% - 10px) !important;
-    min-width: 133px;
 }
 
 .down-right{
     width: calc(33% - 10px) !important;
-    min-width: 133px;
 }
 
 .down-center{

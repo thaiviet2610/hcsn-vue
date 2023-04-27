@@ -40,6 +40,10 @@ input:focus{
     padding: 0;
 }
 
+.disableInputClass{
+    background-color: #e6e6e6;
+}
+
 .input__icon--dropdown2{
     background: url('../../assets/icon/qlts-icon.png') no-repeat -72px -338px;
 	width: 7px;

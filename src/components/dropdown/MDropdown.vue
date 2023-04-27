@@ -53,11 +53,9 @@
 import enumJS from '@/js/enum';
 import resourceJS from '@/js/resourceJS';
 export default {
-    name:"TheSidebar",
+    name:"TheDropdown",
     components:{},
-    emits:["update:modelValue"],
     props: {
-        modelValue: [Boolean,String,Object,Array,Number],
         label:{
             type: String,
             default: null
@@ -73,7 +71,11 @@ export default {
         positionData: {
             type: String,
             default: "up"
-        }
+        },
+        valueInput: {
+            type: String,
+            default: ""
+        },
     },
     data() {
         return {
@@ -89,9 +91,9 @@ export default {
         //gán giá trị data vào biến danh sách tìm kiếm
         this.dataSearch = this.data;
         // kiểm tra xem có giá trị truyền vào không
-        if(this.modelValue){
+        if(this.valueInput){
             //--> nếu có thì gán cho biến valueSelected
-            this.valueSelected = this.modelValue;
+            this.valueSelected = this.valueInput;
             this.indexItemSelected = this.findIndexSelected;
         }
         
@@ -136,7 +138,7 @@ export default {
             this.valueSelected = item;
             this.indexItemSelected = this.findIndexSelected;
             this.isShowData = false;
-            this.$emit("update:modelValue",Number(this.valueSelected));
+            this.$emit("getValueDropdown",Number(this.valueSelected));
         },
 
         /**
@@ -172,7 +174,7 @@ export default {
             if(!this.valueSelected){
                 this.indexItemSelected = 0;
                 this.valueSelected = this.dataSearch[0];
-                this.$emit("update:modelValue",Number(this.valueSelected));
+                this.$emit("getValueDropdown",Number(this.valueSelected));
             }
             if(this.findIndexSelected == -1){
                 //2. nếu độ dài danh sách tìm kiếm = 0
@@ -182,11 +184,11 @@ export default {
                 //2.1. gán giá trị input cho giá trị đầu tiên của danh sách
                 this.valueSelected = this.dataSearch[0];
                 this.indexItemSelected = 0;
-                this.$emit("update:modelValue",Number(this.valueSelected));
+                this.$emit("getValueDropdown",Number(this.valueSelected));
                 //2.2. hiển thị thông báo không có trong danh sách data
                 this.isShowDialogNotify = true;
             }else{
-                this.$emit("update:modelValue",Number(this.valueSelected));
+                this.$emit("getValueDropdown",Number(this.valueSelected));
             }
         },
 
@@ -270,7 +272,7 @@ export default {
                 //2.2. gán giá trị input cho giá trị đầu tiên của danh sách
                 this.valueSelected = this.dataSearch[0];
                 this.indexItemSelected = 0;
-                this.$emit("update:modelValue",Number(this.valueSelected));
+                this.$emit("getValueDropdown",Number(this.valueSelected));
                 //2.3. hiển thị thông báo không có trong danh sách data
                 this.isShowDialogNotify = true;
             }else{
@@ -281,7 +283,7 @@ export default {
             //4. ẩn đi combobox-data
             this.isShowData = false;
             //5. binding dữ liệu mới ra bên ngoài
-            this.$emit("update:modelValue",Number(this.valueSelected));
+            this.$emit("getValueDropdown",Number(this.valueSelected));
         },
 
         /**

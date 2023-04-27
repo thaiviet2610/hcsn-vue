@@ -56,7 +56,6 @@
                                         :ref="assetDetailInfo.departmentCode.ref"
                                         :required="assetDetailInfo.departmentCode.required"
                                         :disable="assetDetailInfo.departmentCode.disable"
-                                        :api="this.departApi"
                                         propName="department_code" 
                                         :placeholder="assetDetailInfo.departmentCode.placeholder" 
                                         :label="assetDetailInfo.departmentCode.label"
@@ -64,8 +63,9 @@
                                         :itemHeight = 36
                                         :quantityItemDisplay = 4
                                         :valueInput="asset.department_id"
+                                        :dataCombobox="dataComboboxDepartment"
                                         @getInputCombobox="getValueDepartmentId"
-                                        :key="keyDepartment">
+                                        :key="keyComboboxDepartment">
                                     </MCombobox>
                                 </div>
                             </div>
@@ -74,8 +74,9 @@
                                 <!-- input nhập tên bộ phận sử dụng  -->
                                 <MInputDisable
                                     :required="assetDetailInfo.departmentName.required"
-                                    :value="this.asset.department_name"
+                                    :value="asset.department_name"
                                     :label="assetDetailInfo.departmentName.label"
+                                    :key="keyDepartmentName"
                                     >
                                 </MInputDisable>
                             </div>
@@ -88,13 +89,14 @@
                                     :ref="assetDetailInfo.assetCategoryCode.ref"
                                     :required="assetDetailInfo.assetCategoryCode.required"
                                     :disable="assetDetailInfo.assetCategoryCode.disable"
-                                    :api="this.assetCategoryApi"
                                     propName="fixed_asset_category_code" 
                                     :placeholder="assetDetailInfo.assetCategoryCode.placeholder" 
                                     :label="assetDetailInfo.assetCategoryCode.label"
                                     :itemHeight = "36"
                                     :quantityItemDisplay = "4"
-                                    propValue="fixed_asset_category_id" 
+                                    propValue="fixed_asset_category_id"
+                                    :dataCombobox="dataComboboxAssetCategory"
+                                    :key="keyComboboxAssetCategory"
                                     :valueInput="asset.fixed_asset_category_id"
                                     @getInputCombobox="getValueAssetCategoryId">
                                 </MCombobox>
@@ -105,7 +107,8 @@
                                 <MInputDisable 
                                     :required="assetDetailInfo.assetCategoryName.required"
                                     :label="assetDetailInfo.assetCategoryName.label"
-                                    :value="this.asset.fixed_asset_category_name"
+                                    :value="asset.fixed_asset_category_name"
+                                    :key="keyAssetCategoryName"
                                     >
                                 </MInputDisable>
                             </div>
@@ -324,14 +327,13 @@ export default {
             isShowDialogAddFormCancel: false,
             isShowDialogEditFormCancel: false,
             contentDialogNotifyErrorValidate: "",
-            contentDialogAddFormCancel: resourceJS.confirm.cancelFormAsset,
-            contentDialogEditFormCancel: resourceJS.confirm.changeCancelFormAsset,
-            departApi: configJS.api.departmentApi,
-            assetApi: configJS.api.assetApi,
-            assetCategoryApi: configJS.api.assetCategoryApi,
-            generateNewCodeApi: configJS.api.assetGenerateNewCodeApi,
+            contentDialogAddFormCancel: resourceJS.confirm.asset.cancelFormAsset,
+            contentDialogEditFormCancel: resourceJS.confirm.asset.changeCancelFormAsset,
+            departApi: configJS.api.department.departmentApi,
+            assetApi: configJS.api.asset.assetApi,
+            assetCategoryApi: configJS.api.assetCategory.assetCategoryApi,
+            generateNewCodeApi: configJS.api.asset.assetGenerateNewCodeApi,
             depart: [],
-            assetCategory: [],
             isShowLoad: false,
             asset: [],
             departmentId: null,
@@ -344,9 +346,9 @@ export default {
             keyAssetCode: "",
             newCode: "",
             cost: 0,
-            keyDepartment: 0,
+            keyDepartmentName: 0,
+            keyAssetCategoryName: 0,
             itemError: null,
-            assetCodeDuplicate: "",
             previousKey: "",
             previousKeyCtrl: false,
             assetDetailInfo: resourceJS.assetDetail,
@@ -359,7 +361,11 @@ export default {
             tooltipCancelForm: resourceJS.tooltip.assetDetail.cancelForm,
             formatDate: resourceJS.date.format.ddMMyyyy,
             typeNumber: enumJS.typeValue.number,
-            depreciationRateInput: ""
+            depreciationRateInput: "0",
+            dataComboboxAssetCategory: [],
+            keyComboboxAssetCategory: 0,
+            dataComboboxDepartment: [],
+            keyComboboxDepartment: 0,
         }
     },
 
@@ -382,7 +388,7 @@ export default {
             this.asset.fixed_asset_code = this.propAssetCode;
             this.oldValueAseet = JSON.stringify(this.asset);
         }else{
-            // Nếu là form sửa haocjw nhân bản (đã có sẵn dư liệu)
+            // Nếu là form sửa hoặc nhân bản (đã có sẵn dư liệu)
             //1. nếu có dữ liệu từ bên ngoài gửi vào
             if(this.assetInput){
                 // --> lưu dữ liệu vào 1 biến lưu trữ
@@ -404,6 +410,7 @@ export default {
             }
             // lấy giá trị của departmentId của asset gán cho departmentId
             this.departmentId = this.asset.department_id;
+
             // lấy giá trị của assetCategoryId của asset gán cho assetCategoryId
             this.assetCategoryId = this.asset.fixed_asset_category_id;
             this.depreciationValueYear = this.getDepreciationValueYear;
@@ -411,6 +418,9 @@ export default {
             this.getDepreciationRateInput();
             
         }
+        this.getDepartment();
+        this.getAssetCategory();
+
     },
     mounted() {
         // set focus cho input đầu tiên
@@ -522,9 +532,6 @@ export default {
          * @author LTVIET (20/03/2023)
          */
         GetValueAssetCode(value){
-            if(!this.assetCodeDuplicate && value == this.assetCodeDuplicate){
-                this.$refs[this.assetDetailInfo.assetCode.ref].inValid = true;
-            }
             this.asset.fixed_asset_code = value;
         },
 
@@ -612,7 +619,6 @@ export default {
                 if(error.ValidateCode == enumJS.validateCode.duplicate){
                     let itemAssetCode = this.$refs[this.assetDetailInfo.assetCode.ref];
                     if(!itemAssetCode.inValid){
-                        this.assetCodeDuplicate = this.asset.fixed_asset_code;
                         this.handleDisplayInputError(itemAssetCode,error.Message);
                         if(!this.itemError){
                             this.itemError = itemAssetCode;
@@ -900,17 +906,17 @@ export default {
         },
 
         /**
-         * Hàm lấy giá trị của department theo departmentId
+         * Hàm lấy danh sách của department theo departmentId
          * @author LTVIET (05/03/2023)
          */
-        getDepartment() {
-            if(this.departApi && this.asset.department_id){
-                axios.get(`${this.departApi}/${this.asset.department_id}`)
+         getDepartment() {
+            this.isShowLoad = true;
+            if(this.departApi){
+                axios.get(this.departApi)
                 .then(res =>{
-                    this.depart = res.data;
-                    // Nếu đối tượng phòng ban thay đổi thì lấy code, name theo đối tượng mới
-                    this.asset.department_code = this.depart.department_code;
-                    this.asset.department_name = this.depart.department_name;
+                    this.dataComboboxDepartment = res.data;
+                    this.keyComboboxDepartment = ++this.keyComboboxDepartment;
+                    this.isShowLoad = false;
                 })
                 .catch(error=>{
                     console.log(error);
@@ -921,33 +927,21 @@ export default {
         },
 
         /**
-         * Hàm lấy giá trị của loại tài sản theo assetCategoryId
+         * Hàm lấy danh sách của loại tài sản 
          * @author LTVIET (05/03/2023)
          */
-        getAssetCategory() {
-            if(this.assetCategoryApi && this.asset.fixed_asset_category_id){
-                axios.get(`${this.assetCategoryApi}/${this.asset.fixed_asset_category_id}`)
+         getAssetCategory() {
+            this.isShowLoad = true;
+            if(this.assetCategoryApi){
+                axios.get(this.assetCategoryApi)
                 .then(res =>{
-                    this.assetCategory = res.data;
-                    // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
-                    this.asset.fixed_asset_category_code = this.assetCategory.fixed_asset_category_code;
-                    this.asset.fixed_asset_category_name = this.assetCategory.fixed_asset_category_name;
-                    // Nếu thay đổi loại tài sản thì sẽ lấy:
-                    // --> số năm sử dụng theo loại tài sản
-                    this.asset.life_time = this.assetCategory.life_time;
-                    // --> tỷ lệ khấu hao theo loại tài sản
-                    this.asset.depreciation_rate = this.assetCategory.depreciation_rate;
-                    this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
-                    this.getDepreciationRateInput();
-                    // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
-                    this.depreciationValueYear = this.getDepreciationValueYear;
-                    
-                    this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
-                    this.keyDepreciationRate = ++this.keyDepreciationRate;
-                    this.keyLifeTime = ++this.keyLifeTime;
+                    this.dataComboboxAssetCategory = res.data;
+                    this.keyComboboxAssetCategory = ++this.keyComboboxAssetCategory;
+                    this.isShowLoad = false;
                 })
                 .catch(error=>{
                     console.log(error);
+                    this.isShowLoad = false;
                 })
             }
         },
@@ -1096,7 +1090,11 @@ export default {
          */
         getValueDepartmentId(value){
             this.asset.department_id = value;
-            this.getDepartment();
+            const department  = this.dataComboboxDepartment.find(function(department){
+                return department.department_id == value;
+            })
+            this.asset.department_code = department.department_code;
+            this.asset.department_name = department.department_name;
         },
 
         /**
@@ -1106,7 +1104,25 @@ export default {
          */
         getValueAssetCategoryId(value){
             this.asset.fixed_asset_category_id = value;
-            this.getAssetCategory();
+            const assetCategory = this.dataComboboxAssetCategory.find(function(assetCategory){
+                return assetCategory.fixed_asset_category_id == value;
+            })
+            // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
+            this.asset.fixed_asset_category_code = assetCategory.fixed_asset_category_code;
+            this.asset.fixed_asset_category_name = assetCategory.fixed_asset_category_name;
+            // Nếu thay đổi loại tài sản thì sẽ lấy:
+            // --> số năm sử dụng theo loại tài sản
+            this.asset.life_time = assetCategory.life_time;
+            // --> tỷ lệ khấu hao theo loại tài sản
+            this.asset.depreciation_rate = assetCategory.depreciation_rate;
+            this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
+            this.getDepreciationRateInput();
+            // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
+            this.depreciationValueYear = this.getDepreciationValueYear;
+            this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
+            this.keyDepreciationRate = ++this.keyDepreciationRate;
+            this.keyLifeTime = ++this.keyLifeTime;
+            
         },
 
         /**

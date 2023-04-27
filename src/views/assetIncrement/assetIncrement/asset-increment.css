@@ -1,0 +1,69 @@
+.asset-selected__residual-value{
+    padding-right: 20px !important;
+}
+
+
+
+.asset-selected--column2{
+    min-width: 65px;
+    box-sizing: border-box;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset-selected--column3{
+    min-width: 120px;
+    padding-right: 10px;
+    text-align: left;
+}
+
+
+.asset-selected--column4{
+    min-width: 130px;
+    padding-right: 10px;
+    text-align: left;
+}
+
+.asset-selected--column6{
+    min-width: 270px;
+    padding-right: 5px;
+    text-align: left;
+}
+
+.asset-selected--column8{
+    min-width: 150px;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+
+
+.asset-selected--column9{
+    min-width: 150px ;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+
+
+
+
+.asset-selected--column10{
+    min-width: 150px;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+
+
+.asset-selected--column11{
+    min-width: 100px;
+    padding-left: 10px;
+    padding-right: 15px;
+    text-align: center;
+}
+
+.asset-selected--footer-left{
+    min-width: 636px;
+}
+

@@ -1,7 +1,7 @@
 <template>
     <div class="input__date" >
         <!-- label của input  -->
-        <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
+        <label v-if="label" for="">{{ label }}<span v-if="required" class="required"> *</span></label>
         
         <div class="date" :class="{'input--error':inValid}">
             <div class="datePicker"></div>
@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import commonJS from '@/js/common';
 import resourceJS from '@/js/resourceJS';
 import enumJS from '@/js/enum';
+import commonJS from '@/js/common';
 export default {
     name:"TheSidebar",
     props: {
@@ -95,23 +95,21 @@ export default {
         // nếu có dữ liệu truyền vào thì hiển thị dữ liệu đó
         if(this.valueInputDate){
             this.propValue = this.valueInputDate;
-            this.propValue = commonJS.formatDate(this.propValue);
-            let date = new Date(this.valueInputDate);
+            this.propValue = commonJS.formatDate(this.propValue,"",resourceJS.date.format.yyyyMMdd);
             this.txtInputDate = this.propValue;
-            this.txtDate = date.getDate();
-            this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
-            this.txtMonth = date.getMonth()+1;
-            this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
-            this.txtYear = date.getFullYear();
-            this.value = this.getFormatDate(this.propValue,resourceJS.date.format.yyyyMMdd,this.format);
             
         }else{
             //nếu không có dữ liệu truyền vào thì hiển thị thời gian hiện tại
             let currentDate = this.getCurrentDate();
             this.txtInputDate = currentDate;
-            this.value = this.getFormatDate(currentDate,resourceJS.date.format.yyyyMMdd,this.format);
         }
-
+        let date = new Date(this.txtInputDate);
+        this.txtDate = date.getDate();
+        this.txtDate = this.txtDate < 10 ? `0${this.txtDate}` : this.txtDate;
+        this.txtMonth = date.getMonth()+1;
+        this.txtMonth = this.txtMonth < 10 ? `0${this.txtMonth}` : this.txtMonth;
+        this.txtYear = date.getFullYear();
+        this.value = this.getFormatDate(this.txtInputDate,resourceJS.date.format.yyyyMMdd,this.format);
         if(this.format.split("/")[0].length == 4){
             this.regex = resourceJS.date.regex.regexYearBegin;
         }else{
@@ -187,8 +185,11 @@ export default {
                             let result = this.format.replace("dd",this.txtDate);
                             result = result.replace("mm",this.txtMonth);
                             result = result.replace("yyyy",this.txtYear);
+                            
                             this.value = result;
+                            
                             this.txtInputDate = this.getFormatDate(this.value,this.format,resourceJS.date.format.yyyyMMdd);
+                            
                             this.keyValueInput = ++this.keyValueInput;
                         }
                         

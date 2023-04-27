@@ -372,7 +372,7 @@ import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';
 export default {
-  name: "MTable",
+  name: "MOldTable",
   components: {
     MContextMenu
   },

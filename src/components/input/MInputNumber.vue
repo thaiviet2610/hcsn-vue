@@ -1,12 +1,12 @@
 <template>
     <div class="input__container" >
         <!-- label của input  -->
-        <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
+        <label v-if="label" for="">{{ label }}<span v-if="required" class="required"> *</span></label>
         <!-- input nhập dữ liệu -->    
         <input 
             ref="mInputNumber"
             :id="idInput"
-            :class="[{'input--error':inValid}]" 
+            :class="[{'input--error':inValid},{'disableInputClass':disable}]" 
             :disabled="disable"
             class="classInput inputNumber" :style="styleInput"
             v-model="value"

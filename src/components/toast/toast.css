@@ -16,6 +16,7 @@
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     border-radius: 4px;
     margin-top: 16px;
+    z-index: 20;
 }
 
 .toast--success{

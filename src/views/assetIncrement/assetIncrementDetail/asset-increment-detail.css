@@ -1,13 +1,13 @@
 .asset_increment__form-data{
-    width: 65%;
-    min-width: 465px;
+    width: 80%;
+    min-width: 808px;
     min-height: 500px;
     background-color: #fff;
     border-radius: 4px;
 }
 
 .asset_increment__form_body{
-    padding: 0px 16px 20px 16px;
+    padding: 0px 16px 15px 16px;
     border-radius: 0 0 4px 4px;
     display: flex;
     flex-direction: column;
@@ -58,9 +58,53 @@
     padding: 16px 16px 0 16px;
 }
 
-.asset_increment_detail--column8{
+.asset_increment_detail--column2{
+    min-width: 70px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset_increment_detail--column2-no-data{
+    width: 70px;
+    min-width: unset;
+}
+
+.asset_increment_detail--column3{
+    min-width: 120px;
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+.asset_increment_detail--column3-no-data{
     width: 120px;
-    min-width: 100px;
+    min-width: unset;
+}
+
+.asset_increment_detail--column4{
+    min-width: 120px;
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+.asset_increment_detail--column6-no-data{
+    width: 120px;
+    min-width: unset;
+}
+
+.asset_increment_detail--column6{
+    min-width: 321px;
+    padding-right: 5px;
+    text-align: left;
+}
+
+.asset_increment_detail--column6-no-data{
+    width: 321px;
+    min-width: unset;
+}
+
+.asset_increment_detail--column8{
+    width: 140px;
+    min-width: 140px;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -68,27 +112,43 @@
 
 
 .asset_increment_detail--column9{
-    width: 120px;
-    min-width: 100px ;
+    width: 140px ;
+    min-width: 140px ;
     padding: 0 0 0 10px;
     text-align: right;
 }
 
+.asset_increment_detail--column10{
+    width: 140px;
+    min-width: 140px;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+.asset_increment_detail--column11{
+    width: 110px;
+    min-width: 110px;
+    padding-left: 10px;
+    padding-right: 15px;
+    text-align: center;
+}
+
 .table_container{
     width: 100%;
-    height: 200px; 
+    height: 195px; 
     overflow: auto;
-    border: 1px solid #afafaf;
+    /* border: 1px solid #afafaf; */
     box-sizing: border-box;
 }
 
 
 
-.asset_increment_detail--column10{
-    width: 120px;
-    min-width: 100px;
-    padding: 0 0 0 10px;
-    text-align: right;
+
+
+
+
+.asset-increment-detail__footer-left{
+    min-width: 627px !important;
 }
 
 

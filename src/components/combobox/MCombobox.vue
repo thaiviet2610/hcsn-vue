@@ -79,7 +79,6 @@
 <script>
 import resourceJS from '@/js/resourceJS.js'
 import enumJS from '@/js/enum.js'
-import axios from 'axios'
 export default {
     name:"TheCombobox",
     props: {
@@ -123,6 +122,11 @@ export default {
             type: Number,
             default: 0
         },
+        dataCombobox:{
+            type: [Object,Array],
+            default: null
+        }
+
     },
     data() {
         return {
@@ -149,30 +153,20 @@ export default {
         
     },
     created(){
-
-        /**
-         * gọi api để lấy dữ liệu của đối tượng asset
-         * @author LTVIET (05/03/2023)
-         */
-        if(this.api){
-            this.isShowLoad = true;
-            axios.get(this.api)
-            .then(res=>{
-                this.entities = res.data;
-                this.entitiesSearch = res.data;
-                this.setItemSelected();
-                this.isShowLoad=false;
-            })
-            .catch(error=>{
-                console.log(error);
-                this.isShowLoad = false;
-                this.scrollY = 0;
-                this.contentDialogNotifyLoadError = resourceJS.notify.errorLoadCombobox.replace("{0}",this.label);
-            })
+        if(this.dataCombobox){
+            this.entities = this.dataCombobox;
+            this.entitiesSearch = this.dataCombobox;
+            this.setItemSelected();
+            this.isShowLoad=false;
+            if(this.valueInput){
+                let me = this;
+                let findIndex = this.entitiesSearch.findIndex(item=>item[me.propValue] == me.valueInput);
+                if(findIndex!=-1){
+                    this.indexItemSelect = findIndex;
+                    this.itemSelected = this.entitiesSearch[findIndex];
+                }
+            }
         }
-
-        
-
         /**
          * nếu combobox không có icon thì set lại style cho input
          * @author LTVIET (05/03/2023)
@@ -511,10 +505,6 @@ export default {
             this.isShowDialogNotifyLoadError = false;
         },
 
-        handleEventFocusInput(){
-            this.isShow = true;
-            this.zIndex = 2;
-        }
     }
 }
 </script>

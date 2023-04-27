@@ -53,6 +53,8 @@ const enumJS = {
         purchaseDateGreaterThanProductionYear : 8,
         // Lỗi vượt quá độ dài ký tự cho phép
         maxLength : 9,
+        // Lỗi khi insert chứng từ thì danh sách tài sản rỗng
+        noAssetIncrements : 10,
     },
     type: {
         add: 1,
@@ -69,7 +71,15 @@ const enumJS = {
         checkbox: 6,
         function: 7
     },
-    
+    percent:{
+        zero: 0,
+        oneHundred: 100
+    },
+    paneSize:{
+        zeroPercent: 0,
+        oneHundredPercent: 1,
+        diffrentPercent: 2,
+    }
 }
 
 export default enumJS;

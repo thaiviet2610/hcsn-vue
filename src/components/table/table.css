@@ -2,26 +2,27 @@ table{
     width: 100%;
     background-color: #ffffff;
     border-collapse: separate;
-    border-bottom: 1px solid #afafaf;
     box-shadow: 0 3px 10px rgba(0, 0, 0, .16);
     border-spacing: 0;
 }
 
 .table{
     height: 100%;
+    position: relative;
+     overflow: auto;
     /* max-height: 100%;
     overflow: auto ; */
     
 }
 
 
+
+
+
 th{
-    height: 38px;
+    height: 42px;
     box-sizing: border-box;
     border-bottom: 1px solid #afafaf;
-    
-    /* resize: horizontal;
-    overflow: auto; */
 }
 
 
@@ -29,7 +30,7 @@ th{
 td{
     height: 40px !important;
     box-sizing: border-box;
-    border-bottom: 1px solid #afafaf;
+    border-bottom: 1px solid #e2e2e2;
 }
 
 tfoot td{
@@ -75,14 +76,13 @@ tbody td{
 
 
 tfoot{
-    height: 40px;
+    height: 42px;
     box-sizing: border-box;
     background-color: #ffffff;
     border-collapse: separate;
     position: sticky;
     bottom: 0;
     padding: 0;
-    outline: 1px solid #afafaf;
     opacity: 100%;
 }
 
@@ -99,7 +99,7 @@ tfoot{
 }
 
 .column1{
-    width: 50px;
+    min-width: 50px;
     /* min-width: 50px; */
     padding: 0 20px 0 16px;
     box-sizing: border-box;
@@ -107,32 +107,28 @@ tfoot{
 }
 
 .column2{
-    width: 60px;
-    min-width: 29px;
+    min-width: 50px;
     box-sizing: border-box;
     padding-right: 10px;
     text-align: center;
 }
 
 .column3{
-    width: 95px;
-    min-width: 70px;
+    min-width: 90px;
     padding-right: 10px;
     text-align: left;
 }
 
 
 .column4{
-    width: 120px;
-    min-width: 90px;
+    min-width: 110px;
     padding-right: 10px;
     text-align: left;
 }
 
 
 .column5{
-    width: 140px;
-    min-width: 90px;
+    min-width: 130px;
     padding-right: 10px;
     text-align: left;
 }
@@ -140,7 +136,7 @@ tfoot{
 
 
 .column6{
-    min-width: 90px;
+    min-width: 250px;
     padding-right: 5px;
     text-align: left;
 }
@@ -150,8 +146,7 @@ tfoot{
 
 
 .column7{
-    width: 80px;
-    min-width: 55px;
+    min-width: 60px;
     text-align: right;
 }
 
@@ -162,12 +157,14 @@ tfoot{
     font-weight: 700;
 }
 
+.footer_left{
+    min-width: 680px;
+}
 
 
 
 .column8{
-    width: 140px;
-    min-width: 100px;
+    min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -175,8 +172,7 @@ tfoot{
 
 
 .column9{
-    width: 140px;
-    min-width: 100px ;
+    min-width: 130px ;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -184,8 +180,7 @@ tfoot{
 
 
 .column10{
-    width: 140px;
-    min-width: 100px;
+    min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -193,8 +188,7 @@ tfoot{
 
 
 .column11{
-    width: 90px;
-    min-width: 60px;
+    min-width: 90px;
     padding-left: 10px;
     padding-right: 15px;
     text-align: center;
@@ -254,6 +248,7 @@ tfoot{
 
 
 .content-footer__item3--icon1{
+    background-color: #ffffff;
     width: 20px;
     height: 20px;
     display: flex;
@@ -261,7 +256,6 @@ tfoot{
     align-items: center;
     padding: 0;
     font-weight: 400 !important;
-    background-color: white;
     border: none;
     outline: none;
     cursor: pointer;
@@ -274,6 +268,12 @@ tfoot{
 .cursor--disable:focus{
     border: none;
     background-color: none;
+    outline: none !important;
+}
+
+.cursor--disable:hover{
+    border: none;
+    background-color: unset !important;
     outline: none !important;
 }
 
@@ -293,60 +293,72 @@ tfoot{
 	height: 8px;
 }
 
-/* [status="row__selecter"]{
-    background-color: rgba(26, 164, 200, .2);
-} */
 
 .row__selected{
     background-color: rgba(162, 240, 243, 0.829);
 }
 
-/* .table__no_data{
-    overflow: auto;
-    max-width: 100%;
-} */
-
-/* .table__no_data::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
-} */
-
-.abc{
-    width: 100%;
-    overflow: auto;
-    max-height: calc(100% - 78px);
-    position: absolute;
-    top: 38px;
-}
-
-
-
-.abc::-webkit-scrollbar {
-
-    height: 2px;
-    width: 1px;
-}
 
 .content__table::-webkit-scrollbar {
     height: 4px;
     width: 4px;
 }
 
+
+
 .content__table{
     width: 100%;
     height: 100%;
     max-height: 100%;
-    /* max-height: calc(100% - 40.5px); */
-    /* overflow: auto ;
-    position: absolute;
-    top: 0; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #ffffff;
+    overflow: auto ;
+    position: relative;
     border-bottom: none !important;
 }
 
 .content__table tbody tr:hover{
-    height: 38px;
     background-color: rgba(162, 240, 243, 0.829);
 }
+
+.no-data{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    column-gap: 15px;
+    top: 42px;
+    bottom: 42px;
+    cursor: unset !important;
+}
+
+.text-no-data{
+    color: red;
+    font-family: Roboto-Bold;
+}
+
+.no-data-no-footer{
+    bottom: 0 !important;
+}
+
+.icon-no-data{
+    background: url('../../assets/icon/qlts-icon.png') no-repeat -464px -68px;
+	width: 18px;
+	height: 16px;
+}
+
+.footer-no-data td{
+    border-top: 1px solid #afafaf !important;
+}
+
+.content__table tbody tr.no-data:hover{
+    background-color: unset !important;
+    cursor: unset !important;
+}
+
 
 .content__table tbody tr:hover .function {
     visibility: visible !important;
@@ -366,7 +378,7 @@ tfoot{
 }
 
 .content-footer__left{
-    width: 402px;
+    min-width: 310px;
     height: 100%;
     box-sizing: border-box;
     display: flex;
@@ -401,7 +413,7 @@ tfoot{
 }
 
 .content-footer__item3{
-    min-width: 180px;
+    min-width: max-content;
     display: flex;
     column-gap: 10px;
     position: absolute;
@@ -425,7 +437,6 @@ tfoot{
 }
 
 .page__index{
-    background-color: #ffffff;
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -525,15 +536,20 @@ tfoot{
     color: red;
 }
 
-.a{
-    position: absolute;
-    bottom:0;
+.no_data:hover{
+    background-color: red !important;
 }
 
-.b{
-    position: relative;
-    bottom:0;
+.footer-text{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-family: Roboto-Bold;
+    padding-left: 25px;
 }
+
+
 
 
 

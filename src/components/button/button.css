@@ -2,6 +2,8 @@
     background-color: #1aa4c8 !important;
     color: white !important;
     border: none !important;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+    cursor: pointer;
 }
 
 .btn--main:focus{
@@ -25,6 +27,7 @@
     border: 1px solid #afafaf;
     border-radius: 3px;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 16%);
 }
 
 .btn--outline:focus{
@@ -36,12 +39,15 @@
 .btn--outline:hover{
     background-color: #1aa4c8;
     outline: none !important;
+    color: #ffffff;
 }
 
 .btn--sub{
     background-color: white !important;
     border: 1px solid rgba(14, 143, 179, 0.904) !important; 
     color: rgba(65, 152, 177, 0.904) !important;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+    cursor: pointer;
 }
 
 .btn--sub:focus{
@@ -84,6 +90,11 @@
 .btn__icon{
     border: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
     cursor: pointer;
 }
 

@@ -20,12 +20,13 @@
                     <div class="input1">
                         <MCombobox  
                             iconCombobox="combobox__icon--image" 
-                            :api="this.assetCategoryApi"
                             :ref="refElements.comboboxAssetCategory"
                             propName="fixed_asset_category_name" 
                             placeholder="Loại tài sản" 
                             :itemHeight = "36"
                             propValue="fixed_asset_category_id"
+                            :dataCombobox="dataComboboxAssetCategory"
+                            :key="keyComboboxAssetCategory"
                             :quantityItemDisplay = "4"
                             @getInputCombobox="getValueAssetCategory">
                         </MCombobox>
@@ -34,11 +35,12 @@
                     <div class="input1">
                         <MCombobox  
                             iconCombobox="combobox__icon--image" 
-                            :api="this.departApi"
                             :ref="refElements.comboboxDepartment"
                             propName="department_name" 
                             placeholder="Bộ phận sử dụng" 
                             propValue="department_id"
+                            :dataCombobox="dataComboboxDepartment"
+                            :key="keyComboboxDepartment"
                             :itemHeight = "36"
                             :quantityItemDisplay = "4"
                             @getInputCombobox="getValueDepartment">
@@ -88,14 +90,25 @@
                 <!-- table hiển thị danh sách tài sản  -->
                 <Mtable 
                     :ref="refElements.table"
-                    @btnDblClickRow="handleEventDblClickRow"
                     @btnClickFunctionOpenForm="handleEventOpenForm"
                     :tableInfo="tableInfo"
                     :dataPageSize="dataPageSize"
+                    :dataHeader="dataHeaderTable"
+                    :dataBody="dataBodyTable"
+                    :dataFooter="dataFooterTable"
+                    :totalRecord="totalRecord"
+                    :valuePageNumber="pageNumber"
+                    :valuePageSize="pageSize"
+                    :isPaging="true"
+                    :isCheckbox="true"
+                    :isFunction="true"
+                    :dataEntities="dataAssets"
+                    :isContextmenu="true"
                     :key="keyTable"
                     @addOnClickContextMenu="handleEventClickContextMenu"
-                    @handleEventLoadTable="handleEventLoadTable"
-                    :api="assetFilterApi"></Mtable>
+                    @getValuePageNumber="getValuePageNumber"
+                    @getValuePageSize="getValuePageSize"
+                    @handleEventLoadTable="handleEventLoadTable"></Mtable>
             </div>
         </div>
     </div>
@@ -170,17 +183,12 @@ import axios from 'axios'
 import enumJS from '@/js/enum.js';
 import { saveAs } from 'file-saver';
 import configJS from '@/js/config';
+import commonJS from '@/js/common';
 export default {
     name: "AssetList",
     components:{
         AssetDetail,MCombobox,MButtonIcon,
         Mtable
-    },
-    created() {
-        
-
-        this.assetFilterApi = this.getAssetFilterApi();
-        
     },
     data() {
         return {
@@ -196,12 +204,12 @@ export default {
             contentDialogConfirmDeleteOneAsset: "",
             contentDialogConfirmDeleteMultiAsset: "",
             assets : [],
-            assetFilterApi: configJS.api.assetFilterApi,
-            assetApi: configJS.api.assetApi,
-            departApi: configJS.api.departmentApi,
-            assetCategoryApi: configJS.api.assetCategoryApi,
-            exportExcelApi: configJS.api.exportExcelApi,
-            deleteMultipleAssetApi: configJS.api.deleteMultipleAsset,
+            dataAssets: [],
+            assetFilterApi: configJS.api.asset.assetFilterApi,
+            assetApi: configJS.api.asset.assetApi,
+            departApi: configJS.api.department.departmentApi,
+            assetCategoryApi: configJS.api.assetCategory.assetCategoryApi,
+            exportExcelApi: configJS.api.asset.exportExcelApi,
             isShowLoad: false,
             isShowToastSucess: false,
             isButtonUndo: false,
@@ -214,7 +222,7 @@ export default {
             keyword: "",
             keyTable: 0,
             newCode: "",
-            generateNewCodeApi: configJS.api.assetGenerateNewCodeApi,
+            generateNewCodeApi: configJS.api.asset.assetGenerateNewCodeApi,
             keyAssetDetail: 0,
             invalid: false,
             contextMenuDelete: false,
@@ -229,13 +237,23 @@ export default {
             tooltipBtnExcel: resourceJS.tooltip.assetList.buttonExcel,
             tooltipBtnDelete: resourceJS.tooltip.assetList.buttonDelete,
             tooltipBtnAdd: resourceJS.tooltip.assetList.buttonAdd,
-            tableInfo: resourceJS.table.tableAsset.tableInfo,
+            tableInfo: resourceJS.table.tableAsset,
             dataPageSize: resourceJS.table.tableAsset.dataPageSize,
             assetDeleteMultiple: [],
+            dataBodyTable: [],
+            dataFooterTable: [],
+            dataHeaderTable: resourceJS.table.tableAsset.header,
+            dataComboboxAssetCategory: [],
+            dataComboboxDepartment: [],
+            keyComboboxDepartment: 0,
+            keyComboboxAssetCategory: 0,
+            pageSize: 0,
+            pageNumber: 1,
+            totalRecord: 0,
         }
     },
     mounted() {
-        this.keyTable = ++this.keyTable;
+        // this.keyTable = ++this.keyTable;
         // mặc định focus vào input tìm kiếm khi load trang
         this.$nextTick(function() {
             this.setFocusDefault();
@@ -248,16 +266,121 @@ export default {
         document.removeEventListener('keydown',this.handleEventKeyDown);
         document.removeEventListener('keyup',this.handleEventKeyUp);
     },
-
+    created() {
+        this.pageSize = Number(this.dataPageSize[0]);
+        this.getDataTable();
+        this.getDepartment();
+        this.getAssetCategory();
+    },
     
    
     methods: {
+        /**
+         * Hàm goi api lấy danh sách phòng ban truyền vào combobox
+         * @author LTVIET (15/04/2023)
+         */
+        getDepartment(){
+            this.isShowLoad = true;
+            axios.get(this.departApi)
+            .then(res=>{
+                this.dataComboboxDepartment = res.data;
+                this.keyComboboxDepartment = ++this.keyComboboxDepartment;
+                this.isShowLoad = false;
+            })
+            .catch(err=>{
+                console.log(err);
+                this.isShowLoad = false;
+            })
+        },
+
+        /**
+         * Hàm goi api lấy danh sách loại tài sản truyền vào combobox
+         * @author LTVIET (15/04/2023)
+         */
+        getAssetCategory(){
+            this.isShowLoad = true;
+            axios.get(this.assetCategoryApi)
+            .then(res=>{
+                this.dataComboboxAssetCategory = res.data;
+                this.keyComboboxAssetCategory = ++this.keyComboboxAssetCategory;
+                this.isShowLoad = false;
+            })
+            .catch(err=>{
+                console.log(err);
+                this.isShowLoad = false;
+            })
+        },
+
+        /**
+         * Hàm gọi api lấy dư liệu của table
+         * @author LTVIET (15/04/2023)
+         */
+        getDataTable(){
+            const api = this.getAssetFilterApi();
+            this.isShowLoad = true;
+            axios.get(api)
+            .then(res=>{
+                this.assets = res.data.Data;
+                this.dataBodyTable = res.data.Data.map(function(asset){
+                    return {
+                        index: asset.index,
+                        fixed_asset_code: asset.fixed_asset_code,
+                        fixed_asset_name: asset.fixed_asset_name,
+                        fixed_asset_category_name: asset.fixed_asset_category_name,
+                        department_name: asset.department_name,
+                        quantity: commonJS.formatNumber(Math.round(asset.quantity)),
+                        cost: commonJS.formatNumber(Math.round(asset.cost)),
+                        depreciation_value: commonJS.formatNumber(Math.round(asset.depreciation_value)),
+                        residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
+                    }
+                })
+                this.dataFooterTable = [
+                    commonJS.formatNumber(Math.round(res.data.QuantityTotal)),
+                    commonJS.formatNumber(Math.round(res.data.CostTotal)),
+                    commonJS.formatNumber(Math.round(res.data.DepreciationValueTotal)),
+                    commonJS.formatNumber(Math.round(res.data.ResidualValueTotal)),
+                ];
+                this.dataAssets = res.data.Data;
+                this.totalRecord = res.data.TotalRecord;
+                this.$refs["mTable"].totalRecord = this.totalRecord;
+                this.$refs[this.refElements.table].getUnitData();
+                this.isShowLoad = false;
+
+            })
+            .catch(err=>{
+                console.log(err);
+                this.isShowLoad = false;
+            })
+        },
+
+        /**
+         * Hàm nhận giá trị pageSize khi chọn giá trị trong dropdown trong table
+         * @param {*} value giá trị của pageSize
+         * @author LTVIET (15/04/2023)
+         */
+        getValuePageSize(value){
+            this.pageSize = value;
+            this.getDataTable();
+        },
+
+        /**
+         * Hàm nhận giá trị pageNumber khi chọn giá trị khi chuyển trang trong table
+         * @param {*} value giá trị của pageNumber
+         * @author LTVIET (15/04/2023)
+         */
+        getValuePageNumber(value){
+            this.pageNumber = value;
+            this.getDataTable();
+        },
+
         /**
          * Hàm xử lý sự kiện lấy ra giá trị api từ keyword,departmentId,assetCategoryId
          * @author LTVIET (15/04/2023)
          */
         getAssetFilterApi(){
-            let api = configJS.api.assetFilterApi.replace("{2}",this.keyword);
+            let api = configJS.api.asset.assetFilterApi.replace("{0}",this.pageSize);
+            api = api.replace("{1}",this.pageNumber);
+            api = api.replace("{2}",this.keyword);
             api = api.replace("{3}",this.assetCategoryId);
             api = api.replace("{4}",this.departmentId);
             return api;
@@ -299,7 +422,7 @@ export default {
             this.isShowToastSucess = false;
             this.isShowForm = true;
             this.typeForm = enumJS.type.add;
-            this.labelForm = resourceJS.titlteForm.addAssetForm;
+            this.labelForm = resourceJS.titlteForm.asset.addForm;
             this.getNewCode();
         },
         
@@ -315,17 +438,17 @@ export default {
                 this.btnOnClick();
             }else{
                 if(this.typeForm == enumJS.type.edit){
-                    this.labelForm = resourceJS.titlteForm.editAssetForm;
+                    this.labelForm = resourceJS.titlteForm.asset.editForm;
                 } 
                 else{
                     if(this.typeForm == enumJS.type.clone){
-                        this.labelForm = resourceJS.titlteForm.cloneAssetForm;
+                        this.labelForm = resourceJS.titlteForm.asset.cloneForm;
                     }else if(this.typeForm == enumJS.type.add){
-                        this.labelForm = resourceJS.titlteForm.addAssetForm;
+                        this.labelForm = resourceJS.titlteForm.asset.addForm;
                     }
                     this.getNewCode();
                 }
-                this.getAssetById(values[1]);
+                this.getAssetById(values[1].fixed_asset_id);
                 this.isShowForm = true;
             }
         },
@@ -336,7 +459,7 @@ export default {
          * @author LTVIET (06/03/2023)
          */
         getAssetById(id){
-            axios.get(`${configJS.api.assetApi}/${id}`)
+            axios.get(`${configJS.api.asset.assetApi}/${id}`)
             .then(res=>{
                 this.assetInput = res.data;
                 this.keyAssetDetail = ++this.keyAssetDetail;
@@ -389,7 +512,7 @@ export default {
             let codeAsset = asset.fixed_asset_code;
             let nameAsset = asset.fixed_asset_name;
             // 2. hiển thị thông báo xác nhận có muốn xóa không
-            let message = resourceJS.confirm.oneAssetDelete.replace("{0}", codeAsset);
+            let message = resourceJS.confirm.asset.oneAssetDelete.replace("{0}", codeAsset);
             message = message.replace("{1}", nameAsset);
             this.contentDialogConfirmDeleteOneAsset = message;
             this.isShowDialogConfirmDeleteOneAsset = true;
@@ -405,7 +528,7 @@ export default {
             if(quantity < 10){
                 quantity = `0${quantity}`; 
             }
-            this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.multiAssetDelete.replace("{0}", quantity);
+            this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.asset.multiAssetDelete.replace("{0}", quantity);
         },
 
         /**
@@ -470,18 +593,18 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện xóa 1 tài sản
-         * @param {*} checkboxSelected Danh sách các tài sản cần xóa
+         * Hàm xử lý sự kiện xóa nhiều tài sản
+         * @param {*} assets Danh sách các tài sản cần xóa
          * @author LTVIET (06/03/2023) 
          */
-         handleEventCloseDialogDeleteMultiple(checkboxSelected){
-            //-->ẩn đi dialog xác nhận xóa nhiều tái sản
+         handleEventCloseDialogDeleteMultiple(assets){
+            //-->ẩn đi dialog xác nhận xóa nhiều tài sản
             this.isShowDialogConfirmDeleteMultiAsset = false;
             let assetsId = [];
             // duyệt mảng các tài sản cần xóa
-            for(let i =0;i<checkboxSelected.length;i++){
+            for(let i =0;i<assets.length;i++){
                 // lấy id của từng tài sản cần xóa
-                let id = checkboxSelected[i].fixed_asset_id;
+                let id = assets[i].fixed_asset_id;
                 assetsId.push(id);
             }
             this.deleteMultipleAsset(assetsId);
@@ -502,11 +625,11 @@ export default {
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
-                this.notifyToastSuccess = resourceJS.toastSuccess.success;
-                this.contentToastSuccess = resourceJS.toastSuccess.deleteSuccess;
+                this.notifyToastSuccess = resourceJS.toastSuccess.asset.success;
+                this.contentToastSuccess = resourceJS.toastSuccess.asset.deleteSuccess;
                 this.isShowToastSucess = true;
                 //--> thực hiện hành động xóa 1 tài sản
-                setTimeout(this.closeToastSucess,5000);
+                setTimeout(this.closeToastSucess,3000);
                 
             })
             .catch(error=>{
@@ -524,7 +647,7 @@ export default {
          * @author LTVIET (06/03/2023) 
          */
          deleteMultipleAsset(assetsId){
-            axios.delete(this.deleteMultipleAssetApi,{
+            axios.delete(this.assetApi,{
                 data: Object.values(assetsId)
             })
             .then( ()=>{
@@ -534,11 +657,11 @@ export default {
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
-                this.notifyToastSuccess = resourceJS.toastSuccess.success;
-                this.contentToastSuccess = resourceJS.toastSuccess.deleteSuccess;
+                this.notifyToastSuccess = resourceJS.toastSuccess.asset.success;
+                this.contentToastSuccess = resourceJS.toastSuccess.asset.deleteSuccess;
                 this.isShowToastSucess = true;
                 //--> thực hiện hành động xóa 1 tài sản
-                setTimeout(this.closeToastSucess,5000);
+                setTimeout(this.closeToastSucess,3000);
             })
             .catch(error=>{
                 console.log(error);
@@ -587,7 +710,7 @@ export default {
             this.isShowForm = false;
             this.$refs[this.refElements.table].pageNumber = 1;
             this.$refs[this.refElements.table].loadData();
-            let message = resourceJS.toastSuccess.saveSuccess;
+            let message = resourceJS.toastSuccess.asset.saveSuccess;
             this.$refs[this.refElements.table].checkboxActive = [];
             this.showToastSucess(message);
             
@@ -614,7 +737,7 @@ export default {
          */
         addOnClicKBtnExportExcel(){
             this.isShowDialogConfirmExportExcel = true;
-            this.contentDialogConfirmExportExcel = resourceJS.confirm.exportExcel;
+            this.contentDialogConfirmExportExcel = resourceJS.confirm.asset.exportExcel;
         },
 
         /**
@@ -669,7 +792,7 @@ export default {
             if(!value){
                 this.assetCategoryId = "";
             }
-            this.assetFilterApi = this.getAssetFilterApi();
+            this.getDataTable();
         },
 
         /**
@@ -682,7 +805,7 @@ export default {
             if(!value){
                 this.departmentId = "";
             }
-            this.assetFilterApi = this.getAssetFilterApi();
+            this.getDataTable();
         },
 
         /**
@@ -695,7 +818,7 @@ export default {
             if(!value){
                 this.keyword = "";
             }
-            this.assetFilterApi = this.getAssetFilterApi();
+            this.getDataTable();
         },
 
         /**

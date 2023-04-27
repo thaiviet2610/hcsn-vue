@@ -5,6 +5,7 @@
         class="btn--outline"
         @click="addEventClickBtn"
         >
+        <div :class="classImage"></div>
             {{ label }}
     </button>
 </template>

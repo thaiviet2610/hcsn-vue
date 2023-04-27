@@ -5,7 +5,7 @@
                 <!-- phần header của form  -->
                 <div class="form-header">
                     <!-- title của form  -->
-                    <div class="asset_increment__form-header__text">Thêm chứng từ ghi tăng</div>
+                    <div class="asset_increment__form-header__text">{{ labelForm }}</div>
                     <!-- button đóng form  -->
                     <MButtonIcon
                         class="btn-header__icon"
@@ -21,11 +21,12 @@
                             <div class="input down-left">
                                 <!-- input nhập số lượng  -->
                                 <MInput
-                                    ref="refVoucherCode"
-                                    :required="true"
-                                    :disable="false"
-                                    placeholder="Mã chứng từ"
-                                    label="Mã chứng từ"
+                                    :ref="assetIncrementDetailInfo.voucherCode.ref"
+                                    :required="assetIncrementDetailInfo.voucherCode.required"
+                                    :disable="assetIncrementDetailInfo.voucherCode.disable"
+                                    :placeholder="assetIncrementDetailInfo.voucherCode.placeholder"
+                                    :label="assetIncrementDetailInfo.voucherCode.label"
+                                    :valueInput="assetIncrement.voucher_code"
                                     @getValueInput="handleEventGetValueInputVoucherCode"
                                     @getValueEventInput="handleEventGetValueInputVoucherCode"
                                     >
@@ -33,24 +34,30 @@
                             </div>
                             
                             <div class="input down-center">
-                                <!-- input nhập nguyên giá  -->
+                                <!-- input nhập ngày chứng từ  -->
                                 <MInputDate
-                                    :required="true"
-                                    :disable="false"
-                                    label="Ngày bắt đầu sử dụng"
-                                    format="dd/mm/yyyy"
+                                    :ref="assetIncrementDetailInfo.voucherDate.ref"
+                                    :required="assetIncrementDetailInfo.voucherDate.required"
+                                    :disable="assetIncrementDetailInfo.voucherDate.disable"
+                                    :label="assetIncrementDetailInfo.voucherDate.label"
+                                    :valueInputDate="assetIncrement.voucher_date"
+                                    :placeholder="assetIncrementDetailInfo.voucherDate.placeholder"
+                                    :format="assetIncrementDetailInfo.voucherDate.format"
                                     @getValueInputDate="getValueVoucherDate"
                                     >
                                 </MInputDate>
                             </div>
                            
                             <div class="input down-right">
-                                <!-- input nhập số năm sử dụng  -->
+                                <!-- input nhập ngày ghi tăng -->
                                 <MInputDate
-                                    :required="true"
-                                    :disable="false"
-                                    label="Ngày ghi tăng"
-                                    format="dd/mm/yyyy"
+                                    :ref="assetIncrementDetailInfo.incrementDate.ref"
+                                    :required="assetIncrementDetailInfo.incrementDate.required"
+                                    :disable="assetIncrementDetailInfo.incrementDate.disable"
+                                    :label="assetIncrementDetailInfo.incrementDate.label"
+                                    :valueInputDate="assetIncrement.increment_date"
+                                    :placeholder="assetIncrementDetailInfo.incrementDate.placeholder"
+                                    :format="assetIncrementDetailInfo.incrementDate.format"
                                     @getValueInputDate="getValueIncrementDate"
                                     >
                                 </MInputDate>
@@ -58,14 +65,16 @@
                         </div>
 
                         <div class="m-row">
-                            <!-- input tìm kiếm  -->
+                            <!-- input nhập ghi chú  -->
                             <MInput
-                                :required="false"
-                                :disable="false"
-                                placeholder="Ghi chú"
-                                @keyDownEnter="getValueInputDescription"
+                                :ref="assetIncrementDetailInfo.description.ref"
+                                :required="assetIncrementDetailInfo.description.required"
+                                :disable="assetIncrementDetailInfo.description.disable"
+                                :placeholder="assetIncrementDetailInfo.description.placeholder"
+                                :valueInput="assetIncrement.description"
+                                @getValueInput="getValueInputDescription"
                                 @getValueEventInput="getValueInputDescription"
-                                label="Ghi chú"
+                                :label="assetIncrementDetailInfo.description.label"
                                 >
                             </MInput>
                         </div>
@@ -96,8 +105,14 @@
                             <MTable 
                             ref="mTable"
                             :tableInfo="tableInfo"
-                            :dataTable="dataTable"
-                            :dataPageSize="dataPageSize"
+                            :dataHeader="dataHeaderTable"
+                            :dataBody="dataBodyTable"
+                            :dataFooter="dataFooterTable"
+                            :isPaging="false"
+                            :isCheckbox="false"
+                            :isFunction="true"
+                            :dataEntities="dataAssets"
+                            :isContextmenu="true"
                             :key="keyTable"
                             @btnClickFunctionOpenForm="handleEventClickFunctionTable">
                             </MTable>
@@ -140,6 +155,21 @@
             v-if="isShowDialogNotify" 
             @onClickBtn="handleEventCloseDialogNotify">
         </MDialog>
+        <!-- dialog xác nhận sự kiện hủy của form thêm mới hoặc nhân bản -->
+        <MDialog 
+            :content="contentDialogAddFormCancel"
+            :buttonInfo="btnDialogCancelAddForm"
+            v-if="isShowDialogAddFormCancel"
+            @onClickBtn="handleEventCloseDialogCancelAddForm">
+        </MDialog>
+        <!-- dialog xác nhận sự kiện hủy của form sửa -->
+        <MDialog
+            :content="contentDialogEditFormCancel"
+            v-if="isShowDialogEditFormCancel"
+            :buttonInfo="btnDialogCancelEditForm"
+            @onClickBtn="handleEventCloseDialogCancelEditForm"
+            >
+        </MDialog>
         
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
@@ -154,50 +184,118 @@ import enumJS from '@/js/enum';
 import BudgetAsset from '@/views/budgetAsset/BudgetAsset.vue';
 import configJS from '@/js/config';
 import axios from 'axios';
+import commonJS from '@/js/common';
 export default {
     name: "AssetIncrementDetail",
     components:{
         AssetIncrement,BudgetAsset
     },
     props:{
-
+        propAssetIncrementCode: {
+            type: String,
+            default: ""
+        },
+        assetIncrementInput:{
+            type: Object,
+            default: null
+        },
+        typeForm:{
+            type: Number,
+            default: 0
+        },
+        labelForm: {
+            type: String,
+            default: ""
+        }
     },
     data() {
         return {
-            tableInfo: resourceJS.table.tableAssetIncrementDetail.tableInfo,
+            tableInfo: resourceJS.table.tableAssetIncrementDetail,
             dataPageSize: resourceJS.table.tableAssetIncrementDetail.dataPageSize ,
+            isShowDialogAddFormCancel: false,
+            isShowDialogEditFormCancel: false,
             isShowSelectAssetIncrement: false,
             isShowBudgetAsset: false,
             assets: [],
-            dataTable: null,
             keyTable: 0,
             keyword: "",
-            dataBodyApi: [],
+            dataBodyApi: null,
             assetId: null,
             assetIncrement: null,
-            assetIncrementApi: configJS.api.assetIncrementApi,
-            assetIncrementDetailApi: configJS.api.assetIncrementDetailApi,
+            assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
+            assetIncrementDetailApi: configJS.api.assetIncrementDetail.assetIncrementDetailApi,
             itemError: null,
             contentDialogNotify: "",
             btnDialogNotify: resourceJS.buttonDialog.notify,
-            isShowDialogNotify: false
+            isShowDialogNotify: false,
+            isShowLoad: false,
+            assetIncrementDetailInfo: resourceJS.assetIncrementDetail,
+            oldValueAssetIncrement: null,
+            contentDialogAddFormCancel: resourceJS.confirm.assetIncrement.cancelFormAssetIncrement,
+            contentDialogEditFormCancel: resourceJS.confirm.assetIncrement.changeCancelFormAssetIncrement,
+            btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
+            btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
+            oldValueAsset: "",
+            assetsAdd: [],
+            assetsDelete: [],
+            dataBodyTable: [],
+            dataFooterTable: [0,0,0],
+            dataHeaderTable: resourceJS.table.tableAssetIncrementDetail.header,
+            dataAssets: []
         }
     },
     created() {
-        this.assetIncrement = {
-            voucher_id: "0000000-0000-0000-00000000",
-            voucher_code: "",
-            voucher_date: this.getCurrentDate(),
-            increment_date: this.getCurrentDate(),
-            price: 0,
-            description: ""
+        if(this.typeForm == enumJS.type.add){
+            this.assetIncrement = this.getDefaultAssetIncrement();
+            this.oldValueAssetIncrement = JSON.stringify(this.assetIncrement);
+        }else if(this.typeForm == enumJS.type.edit){
+            if(this.assetIncrementInput){
+                this.oldValueAssetIncrement = JSON.stringify(this.assetIncrementInput);
+                this.assetIncrement = JSON.parse(this.oldValueAssetIncrement);
+            }else{
+                this.assetIncrement = this.getDefaultAssetIncrement();
+                this.oldValueAssetIncrement = JSON.stringify(this.assetIncrement);
+            }
         }
-        this.getUnitDataTable();
+        this.dataBodyApi = {
+            NotInAssets: [],
+            ActiveAssets: []
+        }
+        let oldValueAssets = [];
+        if(this.assetIncrement.assets){
+            oldValueAssets = this.assetIncrement.assets.map(function(asset){
+                return asset.fixed_asset_id;
+            })
+        }
+        this.oldValueAsset = JSON.stringify(oldValueAssets);
+        if(this.assetIncrement.assets){
+            this.dataBodyApi.NotInAssets = this.assetIncrement.assets.map(function(asset){
+                return asset.fixed_asset_id;
+            });
+            this.getDataTable();
+        }
+
     },
     mounted() {
         this.setFocus();
     },
     methods: {
+        /**
+         * Hàm khởi tạo đối tượng chứng từ mặc định
+         * @author LTVIET (23/04/2023)
+         */
+        getDefaultAssetIncrement(){
+            const assetIncrement = {
+                voucher_id: "00000000-0000-0000-0000-000000000000",
+                voucher_code: this.propAssetIncrementCode,
+                voucher_date: this.getCurrentDate(),
+                increment_date: this.getCurrentDate(),
+                price: 0,
+                description: "",
+                assets: []
+            }
+            return assetIncrement;
+        },
         /**
          * Hàm lấy giá trị thời gian hiện tại
          * @author LTVIET (12/03/2023)
@@ -213,19 +311,43 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện khởi tạo giá trị dữ liệu ban đầu cho data table
-         * @author LTVIET (19/04/2023)
+         * Hàm xử lý sự kiện khi click các button của dialog xác nhận hủy form thêm mới
+         * @param {*} label label của button muốn click
+         * @author LTVIET (03/03/2023)
          */
-        getUnitDataTable(){
-            this.dataTable = {
-                Data: [
-                ],
-                footer: {
-                    colspan: 6,
-                    total: [0,0,0],
-                }, 
-                TotalRecord: 0   
+         handleEventCloseDialogCancelAddForm(label) {
+            // Nếu click button "không" thì ẩn dialog đi
+            if(label == this.btnDialogCancelAddForm[1][2]){
+                this.isShowDialogAddFormCancel = false;
+                return;
             }
+            // Nếu click button "Hủy bỏ" thì ẩn dialog và form đi
+            this.isShowDialogAddFormCancel = false;
+            this.$emit('onClose');
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi click button của dialog xác nhận hủy của form sửa
+         * @param {*} label của button muốn click
+         * @author LTVIET (02/03/2023)
+         */
+         handleEventCloseDialogCancelEditForm(label){
+            // Nếu click button "Không lưu" thì đóng dialog và form sửa lại và không lưu dữ liệu
+            if(label == this.btnDialogCancelEditForm[1][2]){
+                this.isShowDialogEditFormCancel = false;
+                this.$emit('onClose');
+                return;
+            }
+
+            // Nếu click button "Hủy" thì đóng dialog lại
+            if(label == this.btnDialogCancelEditForm[2][2]){
+                this.isShowDialogEditFormCancel = false;
+                this.setFocus();
+                return;
+            }
+
+            // Nếu click button "Lưu" thì đóng dialog và form sửa lại và lưu dữ liệu
+            this.handleEventBtnClickSave();
         },
 
         /**
@@ -233,7 +355,16 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventBtnClickCancel(){
-            this.$emit('onClose');
+            const newValueAssetIncrement = JSON.stringify(this.assetIncrement);
+            if(this.typeForm == enumJS.type.add){
+                this.isShowDialogAddFormCancel = true;
+            }else if(this.typeForm == enumJS.type.edit){
+                if(newValueAssetIncrement != this.oldValueAssetIncrement){
+                    this.isShowDialogEditFormCancel = true;
+                }else{
+                    this.$emit('onClose');
+                }
+            }
         },
 
         /**
@@ -242,7 +373,7 @@ export default {
          */
         setFocus(){
             this.$nextTick(function(){
-                this.$refs["refVoucherCode"].setFocus();
+                this.$refs[this.assetIncrementDetailInfo.voucherCode.ref].setFocus();
             });
         },
 
@@ -278,11 +409,10 @@ export default {
         handleEventSelectedAssets(value){
             for(let i =0;i<value.length;i++){
                 let id = value[i].fixed_asset_id;
-                this.dataBodyApi.push(id);
-                this.assets.push(value[i]);
+                this.dataBodyApi.NotInAssets.push(id);
+                this.assetIncrement.assets.push(value[i]);
             }
             this.getDataTable();
-            this.keyTable = ++this.keyTable;
             this.isShowSelectAssetIncrement = false;
         },
 
@@ -294,11 +424,13 @@ export default {
         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
             if(!value){
-                this.keyword = "";
-            }
-            this.dataTable.Data = this.dataTable.Data.filter(item=>
+                this.dataTable.Data = this.assetIncrement.assets;
+            }else{
+                this.dataTable.Data = this.dataTable.Data.filter(item=>
                         (item.fixed_asset_code.toLowerCase().includes(this.keyword.toLowerCase()) || 
                         item.fixed_asset_name.toLowerCase().includes(this.keyword.toLowerCase())));
+            }
+            
 
             this.keyTable = ++this.keyTable;
         },
@@ -314,19 +446,18 @@ export default {
         },
         handleEventClickFunctionTable(values){
             let type = values[0];
-            let id = values[1];
+            let item = values[1];
             if(type == enumJS.type.edit){
                 this.isShowBudgetAsset = true;
-                this.assetId = id;
+                this.assetId = item.fixed_asset_id;
             }else if(type == enumJS.type.delete){
-                let assetsDelete = this.$refs["mTable"].getEntityCheckboxActiveList();
-                for (const itemDelete of assetsDelete) {
-                    let index = this.assets.indexOf(itemDelete);
-                    this.assets.splice(index,1);
-                    this.dataBodyApi.splice(index,1);
+                let index = this.assetIncrement.assets.indexOf(item);
+                this.assetIncrement.assets.splice(index,1);
+                this.dataBodyApi.NotInAssets.splice(index,1);
+                if(JSON.parse(this.oldValueAsset).indexOf(item.fixed_asset_id) != -1){
+                    this.dataBodyApi.ActiveAssets.push(item.fixed_asset_id);
                 }
                 this.getDataTable();
-                this.keyTable = ++this.keyTable;
             }
         },
 
@@ -335,31 +466,75 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         getDataTable(){
-            this.dataTable.Data = this.assets;
-            this.dataTable.TotalRecord = this.assets.length;
+            this.dataAssets = this.assetIncrement.assets;
+            const assets = this.assetIncrement.assets.map(function(asset){
+                return {
+                    index: asset.index,
+                    fixed_asset_code: asset.fixed_asset_code,
+                    fixed_asset_name: asset.fixed_asset_name,
+                    department_name: asset.department_name,
+                    cost: commonJS.formatNumber(Math.round(asset.cost)),
+                    depreciation_value: commonJS.formatNumber(Math.round(asset.depreciation_value)),
+                    residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
+                }
+            });
+            this.dataBodyTable = assets;
             let costTotal = 0;
             let deprectionValueTotal = 0;
             let residualTotal = 0;
-            for(let i =0;i<this.assets.length;i++){
-                costTotal += this.assets[i].cost;
-                deprectionValueTotal += this.assets[i].depreciation_value;
-                if(this.assets[i].residual_value > 0){
-                    residualTotal += this.assets[i].residual_value;
+            for(let i =0;i<this.assetIncrement.assets.length;i++){
+                costTotal += this.assetIncrement.assets[i].cost;
+                deprectionValueTotal += this.assetIncrement.assets[i].depreciation_value;
+                if(this.assetIncrement.assets[i].residual_value > 0){
+                    residualTotal += this.assetIncrement.assets[i].residual_value;
                 }
-                this.dataTable.Data[i].index = i+1;
+                this.dataBodyTable[i].index = i+1;
             }
-            this.dataTable.footer.total = [costTotal,deprectionValueTotal,residualTotal];
+            costTotal = commonJS.formatNumber(Math.round(costTotal));
+            deprectionValueTotal = commonJS.formatNumber(Math.round(deprectionValueTotal));
+            residualTotal = commonJS.formatNumber(Math.round(residualTotal));
+            this.dataFooterTable = [costTotal,deprectionValueTotal,residualTotal];
+            this.keyTable = ++this.keyTable;
         },
+
 
         /**
          * Hàm xử lý sự kiện click btn lưu
          * @author LTVIET (19/04/2023)
          */
         handleEventBtnClickSave(){
-            console.log(this.assetIncrement);
-            console.log(this.assets);
-            if(this.validateAssetActives & this.validateAssetActives()){
-                this.addAssetIncrement();
+            if(this.validateAssetIncrement() & this.validateAssetActives()){
+                const price = this.assetIncrement.assets.reduce(function (total,asset) {
+                    return total + asset.cost;
+                },0);
+                this.assetIncrement.price = Math.round(price);
+                this.isShowLoad  = true;
+                if(this.typeForm == enumJS.type.add){
+                    this.addAssetIncrement();
+                }else{
+                    const newValueAsset = this.assetIncrement.assets.map(function(asset){
+                        return asset.fixed_asset_id;
+                    })
+                    if(this.oldValueAsset != JSON.stringify(newValueAsset)){
+                        const newValueIdAssets = this.assetIncrement.assets.map(function (asset) {
+                            return asset.fixed_asset_id;
+                        })
+                        for (const idAsset of JSON.parse(this.oldValueAsset)) {
+                            const index = newValueIdAssets.indexOf(idAsset);
+                            if(index == -1){
+                                this.assetsDelete.push(idAsset);
+                            }
+                        }
+                        for (const idAsset of newValueIdAssets) {
+                            const index = JSON.parse(this.oldValueAsset).indexOf(idAsset);
+                            if(index == -1){
+                                this.assetsAdd.push(idAsset);
+                            }
+                        }
+                    }
+                    this.updateAssetIncrement();
+                }
+                
             }
         },
 
@@ -368,13 +543,125 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         addAssetIncrement(){
-            axios.post(this.assetIncrementApi,this.assetIncrement)
-            .then(res=>{
-                console.log(res);
+            axios.post(this.assetIncrementApi, this.assetIncrement)
+            .then(()=>{
+                this.isShowLoad  = false;
+                this.$emit('addOnClickBtnSaveAssetIncrement');
+            })
+            .catch(error=>{
+                this.handleEventErrorAPI(error);
+            })
+        },
+
+        /**
+         * Hàm xử lý sự kiện gọi api để sửa đối tượng chứng từ
+         * @author LTVIET (19/04/2023)
+         */
+        updateAssetIncrement(){
+            const entity = {
+                AssetIncrement: this.assetIncrement,
+                AssetsAdd: this.assetsAdd.length == 0 ? null: this.assetsAdd,
+                AssetsDelete: this.assetsDelete.length == 0 ? null: this.assetsDelete
+            }
+            console.log(entity);
+            this.isShowLoad = false;
+            axios.put(this.assetIncrementApi,entity)
+            .then(()=>{
+                this.isShowLoad = false;
+                this.$emit('addOnClickBtnSaveAssetIncrement');
             })
             .catch(err=>{
-                console.log(err);
+                this.handleEventErrorAPI(err);
             })
+        },
+
+        /**
+         * Hàm xử lý sự kiện gặp lỗi khi gọi API
+         * @param {*} error Lỗi cần xử lý
+         * @author LTVIET(04/03/2023)
+         */
+         handleEventErrorAPI(error){
+            console.log(error);
+            this.isShowLoad = false;
+            this.isShowDialogNotify = true;
+            // lỗi kết nối
+            if(error.code == "ERR_NETWORK"){
+                this.contentDialogNotify = resourceJS.errorMsg.errorConnection;
+            }
+            else{
+                let errorData = error.response.data;
+                let errorCode = errorData.ErrorCode;
+                let message = errorData.UserMsg;
+                // Nếu là lỗi về dữ liệu
+                if(errorCode == enumJS.errorCode.inValid){
+                    this.contentDialogNotify = resourceJS.error.notify;
+                    this.handleEventErrorInvalid(errorData.MoreInfo);
+                }
+                // Các lỗi khác
+                else{
+                    this.contentDialogNotify = message;
+                    this.itemError = null;
+                }
+                
+            }
+        },
+
+        /**
+         * Hàm nhận và xử lý lỗi từ backend
+         * @param {*} errors lỗi nhận được từ backend
+         * @author LTVIET (12/04/2023)
+         */
+         handleEventErrorInvalid(errors){
+            for (let error of errors) {
+                // validate lỗi code bị trùng
+                if(error.ValidateCode == enumJS.validateCode.duplicate){
+                    let itemVoucherCode = this.$refs[this.assetIncrementDetailInfo.voucherCode.ref];
+                    if(!itemVoucherCode.inValid){
+                        this.handleDisplayInputError(itemVoucherCode,error.Message);
+                        if(!this.itemError){
+                            this.itemError = itemVoucherCode;
+                        }
+                    }
+                    
+                }
+                // validate lỗi để trống
+                else if(error.ValidateCode == enumJS.validateCode.empty){
+                    for (let item of error.Data) {
+                        let itemEmpty = this.$refs[`ref_${item}`];
+                        if(!itemEmpty.inValid){
+                            let message = itemEmpty.label + error.Message;
+                            this.handleDisplayInputError(itemEmpty,message);
+                            if(!this.itemError){
+                                this.itemError = itemEmpty;
+                            }
+                        }
+                    }
+                }
+                else if(error.ValidateCode == enumJS.validateCode.noAssetIncrements){
+                    this.contentDialogNotify = error.Message;
+                }
+                // validate các lỗi còn lại
+                else{
+                    let item = this.$refs[`ref_${error.Data}`];
+                    if(!item.inValid){
+                        this.handleDisplayInputError(item,error.Message);
+                        if(!this.itemError){
+                            this.itemError = item;
+                        }
+                    }
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện hiển thị lỗi thông báo của input 
+         * @param {*} item đối tượng cần hiển thị lỗi
+         * @param {*} message nội dung thông báo lỗi
+         * @author LTVIET (26/03/2023)
+         */
+         handleDisplayInputError(item,message){
+            item.inValid = true;
+            item.notifyError = message;
         },
 
         /**
@@ -382,7 +669,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         validateAssetIncrement(){
-            const refs = ["refVoucherCode","refVoucherDate","refIncrementDate"];
+            const refs = this.assetIncrementDetailInfo.refElements;
             let check = true;
             for (const ref of refs) {
                 let item = this.$refs[ref];
@@ -405,7 +692,7 @@ export default {
          */
          validateAssetActives(){
             let check = true;
-            if(this.assets.length <= 0){
+            if(this.assetIncrement.assets.length <= 0){
                 this.isShowDialogNotify = true;
                 this.contentDialogNotify = resourceJS.notify.noAsset;
                 check = false;

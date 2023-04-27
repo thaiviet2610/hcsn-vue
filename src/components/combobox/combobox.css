@@ -159,5 +159,5 @@ div::-webkit-scrollbar {
 
 ::-webkit-scrollbar-thumb {
     background-color: #afafaf;
-    /* border-radius: 1.5px; */
+    border-radius: 1.5px;
 }

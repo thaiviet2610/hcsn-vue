@@ -1,16 +1,39 @@
+import resourceJS from "./resourceJS";
+
 const commonJS = {
-    formatDate (dateTime) {
+    formatDate (dateTime,formatBefore,formatAfter) {
         try {
             if(dateTime !=null && dateTime != undefined) {
-                //chuyen du lieu thanh ngay thang
-                dateTime = new Date(dateTime);
-                let date = dateTime.getDate();
-                date = date < 10 ? `0${date}` : date;
-                let month = dateTime.getMonth()+1;
-                month =  month < 10 ? `0${month}` : month;
-                let year = dateTime.getFullYear();
-                year = year < 10 ? `0${year}` : year;
-                return `${year}-${month}-${date}`;
+                if(!formatBefore){
+                    //chuyen du lieu thanh ngay thang
+                    dateTime = new Date(dateTime);
+                    let date = dateTime.getDate();
+                    date = date < 10 ? `0${date}` : date;
+                    let month = dateTime.getMonth()+1;
+                    month =  month < 10 ? `0${month}` : month;
+                    let year = dateTime.getFullYear();
+                    year = year < 10 ? `0${year}` : year;
+                    dateTime = `${year}-${month}-${date}`;
+                    formatBefore = resourceJS.date.format.yyyyMMdd;
+                }
+                let arrBefore = formatBefore.split(/[/-]/);
+                let indexDayBefore = arrBefore.indexOf("dd");
+                let indexMonthBefore = arrBefore.indexOf("mm");
+                let indexYearBefore = arrBefore.indexOf("yyyy");
+                // Lấy giá trị ngày , tháng, năm ở định dạng ban đầu theo vị trí
+                let arrValue = dateTime.split(/[/,-]/);
+                let txtDate = Number(arrValue[indexDayBefore]);
+                let txtMonth = Number(arrValue[indexMonthBefore]);
+                let txtYear = Number(arrValue[indexYearBefore]);
+                // format lại giá trị ngày , tháng, năm
+                txtDate = Number(txtDate) < 10 ? `0${Number(txtDate)}` : txtDate;
+                txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
+                // gán giá trị ngày , tháng, năm của format ban đầu vào định dạng muốn format
+                let result = formatAfter.replace("dd",txtDate);
+                result = result.replace("mm",txtMonth);
+                result = result.replace("yyyy",txtYear);
+                return result;
+                
             
             }else {
                 return "";

@@ -21,7 +21,8 @@
                             <div class="budget__body--up" style="padding-bottom: 16px;">
                                 <MInput
                                     label="Bộ phận sử dụng"
-                                    valueInput="Trung tâm GDTX"
+                                    :valueInput="departmentName"
+                                    :key="keyDepartment"
                                     :disable="true"
                                     >
                                 </MInput>
@@ -47,20 +48,20 @@
                                     <div class="budget__container--left">
                                         <div class="input budget_combobox">
                                             <div class="input__container ">
-                                                <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
+                                                <!-- combobox nhập giá trị tên nguồn hình thành  -->
                                                 <MCombobox  
                                                     :ref="`mCombobox_${index}`"
                                                     :is-icon="false" 
                                                     :required="true"
                                                     :disable="false"
-                                                    :api="budgetApi"
                                                     :valueInput="priceList[index].budget_id"
+                                                    :dataCombobox="dataComboboxBudget"
+                                                    :key="keyComboboxBudget"
                                                     propName="budget_name" 
                                                     propValue="budget_id" 
                                                     :itemHeight = 36
                                                     :quantityItemDisplay = 4
-                                                    @getInputCombobox="getValueBudget($event,index)"
-                                                    :key="keyDepartment">
+                                                    @getInputCombobox="getValueBudget($event,index)">
                                                 </MCombobox>
                                             </div>
                                         </div>
@@ -143,7 +144,13 @@
                 </div>
             </div>
         </div>
-        
+        <MDialog
+            :content="contentDialogFormCancel"
+            v-if="isShowDialogFormCancel"
+            :buttonInfo="btnDialogCancelForm"
+            @onClickBtn="handleEventCloseDialogCancelForm"
+            >
+        </MDialog>
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     </div>
@@ -170,8 +177,11 @@ export default {
     data() {
         return {
             isShowLoad: false,
-            budgetApi: configJS.api.budgetApi,
-            assetApi: configJS.api.assetApi,
+            isShowDialogFormCancel: false,
+            contentDialogFormCancel: resourceJS.confirm.budget.cancelForm,
+            btnDialogCancelForm: resourceJS.buttonDialog.cancelEditForm,
+            budgetApi: configJS.api.budget.budgetApi,
+            assetApi: configJS.api.asset.assetApi,
             quantityBudget: 2,
             keyBudget: 0,
             budgetList: [],
@@ -179,11 +189,17 @@ export default {
             mountTotal: 0,
             keyInputMountTotal: 0,
             itemError: null,
-            asset: null
+            asset: null,
+            oldvalueBudget: "",
+            departmentName: "",
+            keyDepartment: 0,
+            dataComboboxBudget: [],
+            keyComboboxBudget: 0,
         }
     },
     created() {
         this.getAssetbyId(this.propAsset);
+        this.getBudget();
     },
     mounted() {
     },
@@ -211,6 +227,24 @@ export default {
     },
     methods: {
         /**
+         * Hàm gọi api lấy danh sách nguồn chi phí
+         * @author LTVIET (19/04/2023)
+         */
+        getBudget(){
+            this.isShowLoad = true;
+            axios.get(this.budgetApi)
+            .then(res=>{
+                this.dataComboboxBudget = res.data;
+                this.keyComboboxBudget = ++this.keyComboboxBudget;
+                this.isShowLoad = false;
+            })
+            .catch(err=>{
+                console.log(err);
+                this.isShowLoad = false;
+            })
+        },
+        
+        /**
          * Hàm lấy ra đối tượng asset theo id
          * @param {*} id id của đối tượng cần truy vấn
          * @author LTVIET (18/04/2023)
@@ -220,6 +254,9 @@ export default {
             axios.get(`${this.assetApi}/${id}`)
             .then(res=>{
                 this.asset = res.data;
+                this.departmentName = this.asset.department_name;
+                this.keyDepartment = ++this.keyDepartment;
+                this.oldvalueBudget = this.asset.cost_new;
                 let budgets  = JSON.parse(this.asset.cost_new);
                 for (const item of budgets) {
                     this.priceList.push(item);
@@ -238,7 +275,15 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         handleEventBtnClickCancel(){
-            this.$emit('onClose');
+            const newValueBudget = JSON.stringify(this.priceList);
+            if(newValueBudget == this.oldvalueBudget){
+                console.log(1);
+                this.$emit('onClose');
+            }else{
+                this.isShowDialogFormCancel = true;
+            }
+
+            
         },
 
         /**
@@ -254,6 +299,30 @@ export default {
             }
             this.priceList.push(price);
             this.keyBudget = ++this.keyBudget;
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi click button của dialog xác nhận hủy của form
+         * @param {*} label của button muốn click
+         * @author LTVIET (02/03/2023)
+         */
+        handleEventCloseDialogCancelForm(label){
+            // Nếu click button "Không lưu" thì đóng dialog và form lại và không lưu dữ liệu
+            if(label == this.btnDialogCancelForm[1][2]){
+                this.isShowDialogFormCancel = false;
+                this.$emit('onClose');
+                return;
+            }
+
+            // Nếu click button "Hủy" thì đóng dialog lại
+            if(label == this.btnDialogCancelForm[2][2]){
+                this.isShowDialogFormCancel = false;
+                this.setFocus();
+                return;
+            }
+
+            // Nếu click button "Lưu" thì đóng dialog và form sửa lại và lưu dữ liệu
+            this.handleEventBtnClickSave();
         },
 
         /**

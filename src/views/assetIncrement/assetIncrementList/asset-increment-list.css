@@ -3,12 +3,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70px;
+    width: 65px;
     height: 36px;
     background-color: #ffffff;
     border-radius: 4px;
-    padding: 8px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .interface__container{
@@ -59,17 +59,23 @@
 	height: 7px;
 }
 
-.interface--selected{
 
-}
 
 .asset_increment--icon12{
-    width: 11px;
-	height: 7px;
+    width: 100%;
+	height: 100%;
     display: flex;
     align-items: center;
+    padding: 8px !important;
+    justify-content: space-between;
     padding: 0;
     border: 0;
+    background-color: #ffffff;
+}
+
+.asset_increment--icon22{
+    width: 18px;
+	height: 18px;
     background-color: #ffffff;
 }
 
@@ -90,6 +96,12 @@
     align-items: center;
 }
 
+.content-body__up--right{
+    display: flex;
+    align-items: center;
+    column-gap: 18px;
+}
+
 .content-body__down{
     width: 100%;
     height: 40px;
@@ -106,7 +118,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 45px;
+    width: 50px;
     height: 36px;
     background-color: #ffffff;
     border-radius: 4px;
@@ -122,7 +134,7 @@
 
 .asset_increment--item22{
     background: url('../../../assets/icon/qlts-icon.png') no-repeat -383px -26px;
-	width: 3px;
+	width: 2px;
 	height: 13px;
 }
 
@@ -189,23 +201,34 @@
     position: relative;
 }
 
+.asset-increment-list-container{
+    height: calc(100% - 38px); 
+    padding-top: 13px; 
+    padding-bottom: 16px;
+    box-sizing: border-box;
+}
+
 
 .splitpanes__splitter{
     cursor: row-resize !important;
     height: 10px;
-
 }
 
-.abcd .splitpanes__splitter{
-    height: 0;
+
+.pansize1{
+    padding-top: 3px;
 }
+
+.pansize2{
+    padding-bottom: 6px;
+}
+
 
 .splitpanes__pane {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    box-shadow: 0 0 3px rgba(0, 0, 0, .2) inset;
   }
   
   
@@ -219,5 +242,50 @@
     right: 0;
     text-align: center;
   }
+
+.asset-increment--index{
+    min-width: 80px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset-increment--voucher-code{
+    min-width: 130px;
+    padding-right: 10px;
+    text-align: left;
+}
+
+.asset-increment--voucher-code--text{
+    color: dodgerblue;
+}
+
+.asset-increment--voucher-date{
+    min-width: 130px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset-increment--increment-date{
+    min-width: 130px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset-increment--price{
+    min-width: 140px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.asset-increment--description{
+    width: 475px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.asset-increment--footer-left{
+    min-width: 520px !important;
+}
+
 
 

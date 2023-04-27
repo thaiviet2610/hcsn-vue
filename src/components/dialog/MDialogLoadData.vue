@@ -1,5 +1,5 @@
 <template>
-    <div id="load">
+    <div class="load">
     <div class="lds-ring">
       <div></div>
       <div></div>

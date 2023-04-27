@@ -1,43 +1,54 @@
 <template>
-  <div  class="table" ref="mTable" style="position: relative; overflow: auto;">
     <!-- Khi table có dữ liệu phù hợp  -->
-    <div class="content__table">
-      <table ref="table1" class="ab" :key="keyTable"  style="border-bottom: none;box-shadow: none;height: 100%;position: absolute;top:0;" >
+    <div v-if="dataBody.length == 0" class="content__table" >
+      <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none; height: 100%;"  >
+        <!-- phần title của table  -->
         <thead>
           <tr>
-            <th v-if="tableInfo.isCheckbox" class="column1 text-align-center">
+            <th v-if="isCheckbox" class="column1 text-align-center">
               <MCheckbox 
                 ref="mCheckbox_0"
+                :disabled="true"
+                style="cursor: unset;"
                 idCheckbox="idCheckbox_0"
                 :checked="checkboxAll"
                 @addOnClick="markCheckboxAll"
                 >
               </MCheckbox>
             </th>
-            <th v-for="(itemHeader,indexHeader) in tableInfo.header" :key="indexHeader"
-                :class="itemHeader.columnClass" :data_tooltip_bottom="itemHeader.tooltip">{{ itemHeader.title }}
+            <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
+                :class="itemHeader.columnClass" style="position: relative;">
+                  <div>{{ itemHeader.title }}</div>
+                  <MTooltip
+                      :text="itemHeader.tooltip"
+                      :class="itemHeader.classTooltip"
+                  ></MTooltip>
             </th>
-            <th class="column11 text-align-center">{{ titleColumn.function }}</th>
+            <th v-if="isFunction" class="column11 text-align-center" :class="tableInfo.function.columnClass">{{ titleColumn.function }}</th>
           </tr>
         </thead>
         <!-- phần body của table  -->
+        
         <tbody>
-          <tr>
-            <td style="border-bottom: none;"></td>
+          <tr class="no-data" :class="{'no-data-no-footer':!isFooter}">
+            <div class="icon-no-data"></div>
+            <div class="text-no-data">{{ textNoData }}</div>
           </tr>
+
         </tbody>
         
         <!-- phần footer của table  -->
-        <tfoot v-if="!check">
-            <td :colspan="tableInfo.footer.colspan" style="border: none;">
-              <div v-if="tableInfo.footer.isPaging" class="content-footer__left">
+        
+        <tfoot v-if="isFooter" class="footer-no-data">
+            <td :colspan="tableInfo.footer.colspan" style="border: none;" >
+              <div v-if="isPaging" class="content-footer__left">
                 <div class="content-footer__item1">
                   <div class="content-footer__item1--text">
                     {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
                   </div>
                 </div>
                 <div class="dropdown_table">
-                  <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
+                  <MDropdown :valueInput="pageSize" :data="dataPageSize" @getValueDropdown="getValuePageSize"> </MDropdown>
                 </div>
                 <div class="content-footer__item3"> 
                   <MButtonIcon
@@ -158,14 +169,15 @@
                   </MButtonIcon>
                 </div>
               </div>
+              <div v-else class="footer-text"> Tổng cộng:</div>
             </td>
-            <td v-for="(itemFooter,indexFooter) in tableInfo.footer.total" :key="indexFooter" 
-              class="footer_right" :class="itemFooter.columnClass" style="border: none;">
-                {{ formatValue(totalFooter[indexFooter],itemFooter.typeValue) }}
+            <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
+              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;">
+                {{ itemFooter }}
             </td>
-            <td v-for="(item,indexEmpty) in tableInfo.footer.quantityColumnEmpty" :key="indexEmpty" style="border: none;"></td>
-            <td v-if="tableInfo.isFunction" :class="tableInfo.function.columnClass" style="transform: scale(0);border: none;" >
-              <div class="function">
+            <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
+            <td v-if="isFunction" :class="tableInfo.function.columnClass" style="border: none;">
+              <div class="function" style="visibility: hidden;">
                 <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
                   <MButtonIcon
                     :class="itemFunction.classIcon"
@@ -175,13 +187,15 @@
               </div>
             </td>
         </tfoot>
-        
       </table>
-      <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none;" >
+      
+    </div>
+    <div v-else class="content__table" >
+      <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
         <!-- phần title của table  -->
         <thead>
           <tr>
-            <th v-if="tableInfo.isCheckbox" class="column1 text-align-center">
+            <th v-if="isCheckbox" class="column1 text-align-center">
               <MCheckbox 
                 ref="mCheckbox_0"
                 idCheckbox="idCheckbox_0"
@@ -190,7 +204,7 @@
                 >
               </MCheckbox>
             </th>
-            <th v-for="(itemHeader,indexHeader) in tableInfo.header" :key="indexHeader"
+            <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
                 :class="itemHeader.columnClass" style="position: relative;">
                   <div :id="`column_${indexHeader+1}`" style="min-width: max-content;">{{ itemHeader.title }}</div>
                   <MTooltip
@@ -198,26 +212,24 @@
                       :class="itemHeader.classTooltip"
                   ></MTooltip>
             </th>
-            
-            
-            <th class="column11 text-align-center" style="min-width: max-content;">{{ titleColumn.function }}</th>
+            <th v-if="isFunction" class="column11 text-align-center" :class="tableInfo.function.columnClass">{{ titleColumn.function }}</th>
           </tr>
         </thead>
         <!-- phần body của table  -->
         <tbody @keyup="handleEventKeyUp" @keydown="handleEventKeyDown">
           <tr style="position: relative;"
-            :ref="`mRow_${index+1}`"
-            @contextmenu="handleEventClickRightMouse($event,item)"
-            @dblclick="btnAddOnDblClickRowTable(item,index+1)"
+            :ref="`mRow_${1+1}`"
+            @contextmenu="handleEventClickRightMouse($event,index)"
+            @dblclick="btnAddOnDblClickRowTable(index+1)"
             @click="addOnClickRowTable(index + 1)"
             
-            v-for="(item, index) of this.assets"
+            v-for="(item, index) of dataBody"
             :key="index"
             :class="{
               row__selected: rowSelected[index+1]||checkbox[index+1],
             }"
           >
-            <td v-if="tableInfo.isCheckbox" class="column1 text-align-center">
+            <td v-if="isCheckbox" class="column1 text-align-center">
               <MCheckbox 
                 :ref="`mCheckbox_${index+1}`"
                 :idCheckbox="`idCheckbox_${index+1}`"
@@ -226,16 +238,16 @@
                 >
               </MCheckbox>
             </td>
-            <td v-for="(itemBody,indexBody) in tableInfo.body" :key="indexBody"
-                :class="itemBody.columnClass">{{ formatValue(item[itemBody.propName], itemBody.typeValue) }}
+            <td v-for="(itemBody,indexBody) in item" :key="indexBody"
+                :class="tableInfo.bodyClass[indexBody]">{{ itemBody }}
             </td>
-            <td v-if="tableInfo.isFunction" :class="tableInfo.function.columnClass" >
+            <td v-if="isFunction" :class="tableInfo.function.columnClass" >
               <div class="function" :style="styleFunction(index + 1)">
                 <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
                   <MButtonIcon
                     :class="itemFunction.classIcon"
                     @addOnClickBtnIcon="
-                      handleEventClickFunction(itemFunction.type, item)
+                      handleEventClickFunction(itemFunction.type, index)
                     "
                   >
                   </MButtonIcon>
@@ -251,16 +263,20 @@
         </tbody>
         
         <!-- phần footer của table  -->
-        <tfoot v-if="check">
-            <td :colspan="tableInfo.footer.colspan" style="border: none;">
-              <div v-if="tableInfo.footer.isPaging" class="content-footer__left">
+        
+        
+      </table>
+      <table v-if="isFooter" :key="keyTable" style="position: sticky;bottom: 0; border-top: 1px solid #b2b2b2 ;">
+        <tfoot >
+            <td class="footer_left" :class="tableInfo.footer.pagingClass" style="border: none;" >
+              <div v-if="isPaging" class="content-footer__left">
                 <div class="content-footer__item1">
                   <div class="content-footer__item1--text">
                     {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
                   </div>
                 </div>
                 <div class="dropdown_table">
-                  <MDropdown v-model="pageSize" :data="dataPageSize"> </MDropdown>
+                  <MDropdown :valueInput="pageSize" :data="dataPageSize" @getValueDropdown="getValuePageSize"> </MDropdown>
                 </div>
                 <div class="content-footer__item3"> 
                   <MButtonIcon
@@ -381,14 +397,15 @@
                   </MButtonIcon>
                 </div>
               </div>
+              <div v-else class="footer-text"> Tổng cộng:</div>
             </td>
-            <td v-for="(itemFooter,indexFooter) in tableInfo.footer.total" :key="indexFooter" 
-              class="footer_right" :class="itemFooter.columnClass" style="border: none;">
-                {{ formatValue(totalFooter[indexFooter],itemFooter.typeValue) }}
+            <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
+              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;">
+                {{ itemFooter }}
             </td>
-            <td v-for="(item,indexEmpty) in tableInfo.footer.quantityColumnEmpty" :key="indexEmpty" style="border: none;"></td>
-            <td v-if="tableInfo.isFunction" :class="tableInfo.function.columnClass" style="border: none;">
-              <div class="function" style="transform: scale(0);">
+            <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
+            <td v-if="isFunction" :class="tableInfo.function.columnClass" style="border: none;">
+              <div class="function" style="visibility: hidden;">
                 <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
                   <MButtonIcon
                     :class="itemFunction.classIcon"
@@ -398,7 +415,6 @@
               </div>
             </td>
         </tfoot>
-        
       </table>
       
     </div>
@@ -428,7 +444,6 @@
       @addOnClickItem="addOnClickItemContextMenu"
       >
     </MContextMenu>
-  </div>
   
 </template>
 
@@ -440,15 +455,11 @@ import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';
 import configJS from '@/js/config';
 export default {
-  name: "MBase",
+  name: "MTable",
   components: {
     MContextMenu
   },
   props: {
-    api: {
-      type: String,
-      default: "",
-    },
     dataBodyApi:{
       type: [Object,Array,String,Number],
       default: null
@@ -458,18 +469,57 @@ export default {
       default: null
     },
     dataPageSize:{
-      type: [Array],
+      type: Array,
       default: null
     },
-    dataTable: {
+    dataHeader: {
       type: [Object,Array],
       default: null
     },
+    dataEntities:{
+      type: [Object,Array],
+      default: null
+    },
+    dataBody: {
+      type: [Object,Array],
+      default: null
+    },
+    dataFooter: {
+      type: [Object,Array],
+      default: null
+    },
+    isPaging:{
+      type: Boolean,
+      default: true
+    },
+    isCheckbox:{
+      type: Boolean,
+      default: true
+    },
+    isFunction:{
+      type: Boolean,
+      default: true
+    },
+    selectedFirtRow:{
+      type: Boolean,
+      default: false
+    },
+    isFooter:{
+      type: Boolean,
+      default: true
+    },
     
+    valuePageSize:{
+      type: Number,
+      default: 0
+    },
+    valuePageNumber:{
+      type: Number,
+      default: 0
+    },
   },
   data() {
     return {
-      assets: [],
       checkboxAll: false,
       checkbox: [],
       checkboxActive: [],
@@ -478,17 +528,15 @@ export default {
       isShowLoad: false,
       isShowDialogNotifyLoadError: false,
       contentDialogNotifyLoadError: "",
-      pageSize: Number(this.dataPageSize[0]),
+      pageSize: 0,
       pageNumber: 1,
-      totalRecord: 0,
       totalPage: 0,
-      clickFunction: false,
       clickCheckbox: false,
       isShowContextMenu: false,
-      dataContextMenu: resourceJS.table.tableAsset.dataContextMenu,
-      contentFooterBefore: resourceJS.table.tableAsset.contentFooterBefore,
-      contentFooterAfter: resourceJS.table.tableAsset.contentFooterAfter,
-      notitfyNoDataTable: resourceJS.table.tableAsset.noDataTable,
+      dataContextMenu: this.tableInfo.dataContextMenu,
+      contentFooterBefore: this.tableInfo.contentFooterBefore,
+      contentFooterAfter: this.tableInfo.contentFooterAfter,
+      notitfyNoDataTable: this.tableInfo.noDataTable,
       contextMenuPageX: 0,
       contextMenuPageY: 0,
       keyContextMenu: 0,
@@ -499,38 +547,27 @@ export default {
       indexDeleteEnd: 0,
       btnDialogNotify: resourceJS.buttonDialog.notify,
       keyTable: 0,
-      titleColumn: resourceJS.table.tableAsset.titleColumm,
+      titleColumn: this.tableInfo.titleColumm,
       widthContextMenu: 156,
       heightContextMenu: 152,
       totalFooter: [],
       rowSelected: [],
       indexRowSelected: 0,
-      check:true,
+      totalRecord: 0,
+      clickFunction: false,
+      textNoData: resourceJS.table.noDataTable
     };
   },
-  updated() {
-    if(this.$refs["table1"]){
-      let a = this.$refs["table1"].offsetHeight;
-      let b = this.$refs["table2"].offsetHeight;
-      if(a>b){
-        this.check = false;
-      }else{
-        this.check = true;
+  created() {
+    this.getUnitData();
+    if(this.pageSize){
+      for(let i=0;i<=this.pageSize;i++){
+        this.checkbox[i] = false;
+        this.rowSelected[i] = false;
       }
     }
-  },
-  created() {
-    
-    // lấy api để load danh sách asset
-    if (this.api) {
-      this.loadData();
-    }else{
-      this.totalFooter = this.dataTable.footer.total;
-      this.getUnitData(this.dataTable);
-    }
-    for(let i=0;i<=this.pageSize;i++){
-      this.checkbox[i] = false;
-      this.rowSelected[i] = false;
+    if(this.selectedFirtRow){
+      this.selectedRowTable(1);
     }
   },
 
@@ -554,9 +591,6 @@ export default {
     document.removeEventListener('click',this.handleEventCloseContextMenu);
   },
   methods: {
-    abc(){
-      console.log(1);
-    },
     /**
      * Hàm xử lý sự kiện click chuột trái ra ngoài contextmenu thì sẽ ẩn đi contextment
      * @author LTVIET (16/04/2023)
@@ -582,11 +616,12 @@ export default {
     /**
      * Hàm xử lý sự kiện click chuột phải vào từng dòng của table
      * @param {*} event Đối tượng sự kiện cần xử lý
-     * @param {*} item Đối tượng dữ liệu của dòng vừa click
+     * @param {*} index Vị trí của đối tượng dữ liệu của dòng vừa click
      * @author LTVIET (24/03/2023)
      */
-    handleEventClickRightMouse(event,item){
+    handleEventClickRightMouse(event,index){
         event.preventDefault();
+        const item = this.dataEntities[index];
         this.contextMenuEnity = item;
         this.contextMenuPageX = event.pageX+10;
         this.contextMenuPageY = event.pageY+10;
@@ -599,6 +634,7 @@ export default {
         }
         this.isShowContextMenu = true;
         this.indexRowSelected = item.index - this.pageSize*(this.pageNumber-1);
+        this.rowSelected.fill(false);
         this.rowSelected[this.indexRowSelected] = true;
         this.keyContextMenu=++this.keyContextMenu;
     },
@@ -614,12 +650,22 @@ export default {
     },
 
     /**
+     * Hàm xử lý sự kiện chọn dòng của table
+     * @param {*} index vị trí của dòng muốn chọn
+     * @author LTVIET (02/03/2023)
+     */
+    selectedRowTable(index){
+      this.indexRowSelected = index;
+      this.rowSelected.fill(false);
+      this.rowSelected[this.indexRowSelected] = true;
+      this.$emit('getIndexRowSelected',this.dataEntities[index-1]);
+    },
+
+    /**
      * Hàm xử lý sự kiện gọi api load dữ liệu mTable
      * @author LTVIET (02/03/2023)
      */
     loadData() {
-      
-      
       this.isShowLoad = true;
       let api = this.getApiFilter();
       if(this.tableInfo.http == configJS.http.get){
@@ -665,16 +711,18 @@ export default {
       }
     },
 
-    getUnitData(value){
-      this.assets =  value.Data;
-      this.totalRecord =  value.TotalRecord;
-      
-      
-      // Tính tổng số trang
-      this.getTotalPage();
-      // Đặt lại các giá trị của table về mặc định ban đầu
+    /**
+     * Hàm khởi tạo các giá trị ban đầu cho table
+     * @author LTVIET (02/03/2023)
+     */
+    getUnitData(){
       this.reloadTable();
-      this.isShowLoad = false;
+      if(this.isPaging){
+        this.pageSize = this.valuePageSize;
+        this.pageNumber = this.valuePageNumber;
+        this.getTotalPage();
+      }
+      // Đặt lại các giá trị của table về mặc định ban đầu
       this.keyTable = ++this.keyTable;
       // Đặt lại trạng thái cũ của các checkbox 
       if(!this.checkboxActive[this.pageNumber]){
@@ -697,7 +745,6 @@ export default {
      * @author LTVIET (15/03/2023)
      */
     getTotalPage() {
-      this.pageSize = Number(this.pageSize);
       this.totalPage = this.totalRecord / this.pageSize;
       this.totalPage = Math.ceil(this.totalPage);
       if(!this.totalPage){
@@ -716,7 +763,7 @@ export default {
         value = Math.round(value);
         return commonJS.formatNumber(value);
       } else if (type == enumJS.typeValue.date) {
-        return commonJS.formatDate(value);
+        return commonJS.formatDate(value,"",resourceJS.date.format.ddMMyyyy);
       }
       return value;
     },
@@ -724,17 +771,13 @@ export default {
     /**
      * Hàm xử lý sự kiện click chức năng(sửa hoặc nhân bản) của table
      * @param {*} title tiêu đề form (sửa tài sản hoặc nhân bản tài sản)
-     * @param {*} item đối tượng cần xử lý
+     * @param {*} index vị trí của đối tượng cần xử lý trong danh sách
      * @author LTVIET (02/03/2023)
      */
-    handleEventClickFunction(type, item) {
-      
-      let quantityCheckbox = this.entityCheckboxActive[this.pageNumber].length;
-      if(!(type == enumJS.type.delete && quantityCheckbox > 1)){
-        this.addOnClickRowTable(item.index);
-      }
+    handleEventClickFunction(type, index) {
       this.clickFunction = true;
-      this.$emit("btnClickFunctionOpenForm", [type, item.fixed_asset_id]);
+      const item = this.dataEntities[index];
+      this.$emit("btnClickFunctionOpenForm", [type, item]);
     },
 
     /**
@@ -755,13 +798,11 @@ export default {
 
     /**
      * Hàm xử lý sự kiện double click 1 dòng của table
-     * @param {*} item dòng của table được dblclick
      * @param {*} index vị trí dòng của table được dblclick
      * @author LTVIET (02/03/2023)
      */
-    btnAddOnDblClickRowTable(item) {
-      this.handleEventClickFunction(enumJS.type.edit,item);
-      // this.$emit("btnDblClickRow", item.fixed_asset_id);
+    btnAddOnDblClickRowTable(index) {
+      this.handleEventClickFunction(enumJS.type.edit,index-1);
     },
 
     /**
@@ -770,22 +811,30 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     addOnClickRowTable(index) {
-      if(this.tableInfo.isCheckbox){
-        if(this.previousKeyShift){
-          this.handleEventKeyStrokesShift(index);
-        }else if (!this.clickCheckbox && !this.clickFunction) {
-          if(!this.previousKeyCtrl){
-            this.rowSelected.fill(false);
-            this.rowSelected[index] = (index != this.indexRowSelected);
-            this.indexRowSelected = this.rowSelected[index] ? index : 0;
-          }
-          else{
-            this.markCheckbox(index);
-          }
-          this.indexDeleteStart = index;
+      if(this.previousKeyShift){
+        this.handleEventKeyStrokesShift(index);
+      }else if (!this.clickCheckbox) {
+        if(!this.previousKeyCtrl){
+          this.rowSelected.fill(false);
+          this.rowSelected[index] = this.clickFunction ? true : (index != this.indexRowSelected);
+          this.indexRowSelected = this.rowSelected[index] ? index : 0;
         }
-        this.clickCheckbox = false;
-        this.clickFunction = false;
+        else{
+          this.markCheckbox(index);
+        }
+        this.indexDeleteStart = index;
+      }
+      this.clickCheckbox = false;
+      if(this.rowSelected[index] || this.checkbox[index]){
+        this.$emit('getIndexRowSelected',this.dataEntities[index-1]);
+      }
+      if(!this.rowSelected[index]){
+        let check = this.checkbox.every(cb => {
+          return !cb;
+        });
+        if(check){
+          this.$emit('getIndexRowSelected',null);
+        }
       }
     },
 
@@ -898,16 +947,27 @@ export default {
         for(let i = 1;i<=this.pageSize;i++){
           this.pushCheckboxActive(i);
         }
+        this.$emit('getIndexRowSelected',this.dataEntities[this.dataBody.length-1]);
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
         this.resetCheckbox();
+        this.$emit('getIndexRowSelected',null);
       }
       this.checkbox.fill(this.checkboxAll);
+      this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
       this.indexCheckbox = -1;
       this.clickCheckbox = false;
-      this.clickFunction = false;
       this.setFocusCheckbox(0);
+    },
+
+    /**
+     * Hàm đếm số lượng đối tượng được chọn trong table
+     * @author LTVIET (16/03/2023)
+     */
+    getQuantityItemSelected(){
+      const items = this.getItemSelected();
+      return items.length;
     },
 
     /**
@@ -918,7 +978,6 @@ export default {
       this.checkbox.fill(false);
       this.checkboxActive[this.pageNumber] = [];
       this.entityCheckboxActive[this.pageNumber] = [];
-      this.clickFunction = false;
       this.clickCheckbox = false;
       this.indexCheckbox = -1;
     },
@@ -970,7 +1029,10 @@ export default {
         //2.2. nếu checkbox = false 
         this.checkboxAll = false;
         this.popCheckboxActive(index);
+        const items = this.entityCheckboxActive[this.pageNumber];
+        this.$emit('getIndexRowSelected',items[items.length-1]);
       }
+      this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
       this.setFocusCheckbox(index);
       this.clickCheckbox = true;
     },
@@ -985,10 +1047,10 @@ export default {
         this.checkboxActive[this.pageNumber] = [];
         this.entityCheckboxActive[this.pageNumber] = [];
       }
-      const asset = this.assets[index-1];
+      const entity = this.dataEntities[index-1];
       if(this.checkboxActive[this.pageNumber].indexOf(index) == -1){
         this.checkboxActive[this.pageNumber].push(index);
-        this.entityCheckboxActive[this.pageNumber].push(asset);
+        this.entityCheckboxActive[this.pageNumber].push(entity);
       }
     },
 
@@ -1008,14 +1070,24 @@ export default {
     },
 
     /**
+     * Hàm xử lý sự kiện lấy giá trị pageSize mới khi chọn trong dropdown
+     */
+    getValuePageSize(value){
+      this.pageSize = value;
+      this.$emit('getValuePageSize',this.pageSize);
+    },
+
+    /**
      * Hàm lấy ra danh sách các đối tượng được chọn trong table
      * @author LTVIET (15/03/2023)
      */
     getItemSelected() {
       let entitiesCheckboxActive = [];
       for(let i=1; i<this.entityCheckboxActive.length;i++){
-        for(let j=0;j<this.entityCheckboxActive[i].length;j++){
-          entitiesCheckboxActive.push(this.entityCheckboxActive[i][j]);
+        if(this.entityCheckboxActive[i]){
+          for(let j=0;j<this.entityCheckboxActive[i].length;j++){
+            entitiesCheckboxActive.push(this.entityCheckboxActive[i][j]);
+          }
         }
       }
       return entitiesCheckboxActive;
@@ -1042,10 +1114,10 @@ export default {
      */
     addOnIncreaseNumberPage() {
       this.pageNumber += 1;
-
       if (this.pageNumber > this.totalPage) {
         this.pageNumber = this.totalPage;
       }
+      this.$emit('getValuePageNumber',this.pageNumber);
     },
 
     /**
@@ -1058,6 +1130,7 @@ export default {
       if (this.pageNumber < 1) {
         this.pageNumber = 1;
       }
+      this.$emit('getValuePageNumber',this.pageNumber);
     },
 
     /**
@@ -1075,6 +1148,7 @@ export default {
      */
     addOnClickPageNumber(index) {
       this.pageNumber = index;
+      this.$emit('getValuePageNumber',this.pageNumber);
     },
 
     /**
@@ -1086,7 +1160,6 @@ export default {
       this.checkboxAll = false;
       this.indexCheckbox = -1;
       this.clickCheckbox = false;
-      this.clickFunction = false;
       this.indexDeleteStart = 0;
       this.indexDeleteEnd = 0;
     },
@@ -1099,12 +1172,12 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    pageSize: function (newValue) {
-      this.pageNumber = 1;
-      this.pageSize = newValue;
-      this.loadData();
-      this.$emit('handleEventLoadTable');
-    },
+    // pageSize: function (newValue) {
+    //   this.pageNumber = 1;
+    //   this.pageSize = newValue;
+    //   this.loadData();
+    //   this.$emit('handleEventLoadTable');
+    // },
 
     
 
@@ -1113,15 +1186,15 @@ export default {
      * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
      * @author LTVIET (15/03/2023)
      */
-    pageNumber: function () {
-      this.loadData();
-      this.$emit('handleEventLoadTable');
-    },
+    // pageNumber: function () {
+    //   this.loadData();
+    //   this.$emit('handleEventLoadTable');
+    // },
 
-    api: function(){
-      this.loadData();
+    // api: function(){
+    //   this.loadData();
       
-    },
+    // },
   },
   
 };
@@ -1129,9 +1202,5 @@ export default {
 
 <style scoped>
 @import url(./table.css);
-.ab::-webkit-scrollbar {
-    height: 4px;
-    width: 2px;
-}
 </style>
 

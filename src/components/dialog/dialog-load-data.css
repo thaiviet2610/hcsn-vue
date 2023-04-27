@@ -37,8 +37,8 @@
       transform: rotate(360deg);
     }
   }
-  #load{
-    position: fixed;
+  .load{
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;

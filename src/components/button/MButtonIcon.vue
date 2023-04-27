@@ -4,6 +4,7 @@
         :id="idButtonIcon"
         @click="addEventClickBtnIcon"
         class="btn__icon">
+            <div v-if="classImage" :class="classImage"></div>
             <div :class="classIcon"></div>
     </button>
 </template>
@@ -30,6 +31,10 @@ export default {
             type: String,
             default: ""
         },
+        classImage:{
+            type: String,
+            default: ""
+        }
         
     },
     data() {
@@ -38,7 +43,6 @@ export default {
         }
     },
     created() {
-        
     },
     components:{
 
