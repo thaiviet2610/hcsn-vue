@@ -18,7 +18,7 @@
             </th>
             <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
                 :class="itemHeader.columnClass" style="position: relative;">
-                  <div>{{ itemHeader.title }}</div>
+                  <div style="cursor: default !important;">{{ itemHeader.title }}</div>
                   <MTooltip
                       :text="itemHeader.tooltip"
                       :class="itemHeader.classTooltip"
@@ -43,7 +43,7 @@
             <td :colspan="tableInfo.footer.colspan" style="border: none;" >
               <div v-if="isPaging" class="content-footer__left">
                 <div class="content-footer__item1">
-                  <div class="content-footer__item1--text">
+                  <div class="content-footer__item1--text" style="cursor: default !important;">
                     {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
                   </div>
                 </div>
@@ -172,7 +172,7 @@
               <div v-else class="footer-text"> Tổng cộng:</div>
             </td>
             <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
-              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;">
+              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;">
                 {{ itemFooter }}
             </td>
             <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
@@ -206,7 +206,7 @@
             </th>
             <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
                 :class="itemHeader.columnClass" style="position: relative;">
-                  <div :id="`column_${indexHeader+1}`" style="min-width: max-content;">{{ itemHeader.title }}</div>
+                  <div :id="`column_${indexHeader+1}`" style="min-width: max-content;cursor: default !important;">{{ itemHeader.title }}</div>
                   <MTooltip
                       :text="itemHeader.tooltip"
                       :class="itemHeader.classTooltip"
@@ -271,7 +271,7 @@
             <td class="footer_left" :class="tableInfo.footer.pagingClass" style="border: none;" >
               <div v-if="isPaging" class="content-footer__left">
                 <div class="content-footer__item1">
-                  <div class="content-footer__item1--text">
+                  <div class="content-footer__item1--text" style="cursor: default !important;">
                     {{ contentFooterBefore }} <span style="font-family: Roboto-Bold"> {{ totalRecord }} </span> {{ contentFooterAfter }}
                   </div>
                 </div>
@@ -400,7 +400,7 @@
               <div v-else class="footer-text"> Tổng cộng:</div>
             </td>
             <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
-              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;">
+              class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;" >
                 {{ itemFooter }}
             </td>
             <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
@@ -450,10 +450,8 @@
 <script>
 import commonJS from "@/js/common.js";
 import resourceJS from "@/js/resourceJS.js";
-import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';
-import configJS from '@/js/config';
 export default {
   name: "MTable",
   components: {
@@ -577,15 +575,6 @@ export default {
   },
   mounted() {
     document.addEventListener('click',this.handleEventCloseContextMenu);
-    if(this.$refs["table1"]){
-      let a = this.$refs["table1"].offsetHeight;
-      let b = this.$refs["table2"].offsetHeight;
-      if(a>b){
-        this.check = false;
-      }else{
-        this.check = true;
-      }
-    }
   },
   unmounted() {
     document.removeEventListener('click',this.handleEventCloseContextMenu);
@@ -640,16 +629,6 @@ export default {
     },
 
     /**
-     * Hàm nhận dữu liệu truyền vào từ bên ngoài và chuyển thanh api filter
-     * @author LTVIET (02/03/2023)
-     */
-    getApiFilter(){
-      let api = this.api.replace("{0}",this.pageSize);
-      api = api.replace("{1}",this.pageNumber);
-      return api;
-    },
-
-    /**
      * Hàm xử lý sự kiện chọn dòng của table
      * @param {*} index vị trí của dòng muốn chọn
      * @author LTVIET (02/03/2023)
@@ -658,57 +637,7 @@ export default {
       this.indexRowSelected = index;
       this.rowSelected.fill(false);
       this.rowSelected[this.indexRowSelected] = true;
-      this.$emit('getIndexRowSelected',this.dataEntities[index-1]);
-    },
-
-    /**
-     * Hàm xử lý sự kiện gọi api load dữ liệu mTable
-     * @author LTVIET (02/03/2023)
-     */
-    loadData() {
-      this.isShowLoad = true;
-      let api = this.getApiFilter();
-      if(this.tableInfo.http == configJS.http.get){
-        axios
-        .get(api,this.dataBodyApi)
-        .then( (res) => {
-          // Lấy dữ liệu ra gán vào các biến
-          this.totalFooter = [];
-          if(this.tableInfo.footer.total){
-            for (let item of this.tableInfo.footer.total) {
-              this.totalFooter.push(res.data[item.propName]);
-            }
-          }
-          this.getUnitData(res.data);
-          
-        })
-        .catch((error) => {
-          console.log(error);
-          this.isShowLoad = false;
-          this.isShowDialogNotifyLoadError = true;
-          this.contentDialogNotifyLoadError = resourceJS.errorMsg.errorLoadDataTable;
-        });
-      }else if(this.tableInfo.http == configJS.http.post){
-        axios
-        .post(api,this.dataBodyApi)
-        .then( (res) => {
-          // Lấy dữ liệu ra gán vào các biến
-          this.totalFooter = [];
-          if(this.tableInfo.footer.total){
-            for (let item of this.tableInfo.footer.total) {
-              this.totalFooter.push(res.data[item.propName]);
-            }
-          }
-          this.getUnitData(res.data);
-          
-        })
-        .catch((error) => {
-          console.log(error);
-          this.isShowLoad = false;
-          this.isShowDialogNotifyLoadError = true;
-          this.contentDialogNotifyLoadError = resourceJS.errorMsg.errorLoadDataTable;
-        });
-      }
+      this.$emit('getItemRowSelected',this.dataEntities[index-1]);
     },
 
     /**
@@ -826,16 +755,18 @@ export default {
       }
       this.clickCheckbox = false;
       if(this.rowSelected[index] || this.checkbox[index]){
-        this.$emit('getIndexRowSelected',this.dataEntities[index-1]);
+        this.$emit('getItemRowSelected',this.dataEntities[index-1]);
       }
       if(!this.rowSelected[index]){
-        let check = this.checkbox.every(cb => {
-          return !cb;
-        });
-        if(check){
-          this.$emit('getIndexRowSelected',null);
+        const listEntityActive = this.getEntityCheckboxActiveList();
+        const listEntityActiveLength = listEntityActive.length;
+        if(listEntityActiveLength == 0){
+          this.$emit('getItemRowSelected',null);
+        }else{
+          this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
         }
       }
+      this.clickFunction = false;
     },
 
     /**
@@ -947,12 +878,12 @@ export default {
         for(let i = 1;i<=this.pageSize;i++){
           this.pushCheckboxActive(i);
         }
-        this.$emit('getIndexRowSelected',this.dataEntities[this.dataBody.length-1]);
+        this.$emit('getItemRowSelected',this.dataEntities[this.dataBody.length-1]);
       } else {
         //2.2. nếu checkboxAll = false
         //--> gán giá trị false cho tất cả cac checkbox
         this.resetCheckbox();
-        this.$emit('getIndexRowSelected',null);
+        this.$emit('getItemRowSelected',null);
       }
       this.checkbox.fill(this.checkboxAll);
       this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
@@ -1029,8 +960,13 @@ export default {
         //2.2. nếu checkbox = false 
         this.checkboxAll = false;
         this.popCheckboxActive(index);
-        const items = this.entityCheckboxActive[this.pageNumber];
-        this.$emit('getIndexRowSelected',items[items.length-1]);
+        const listEntityActive = this.getEntityCheckboxActiveList();
+        const listEntityActiveLength = listEntityActive.length;
+        if(listEntityActiveLength == 0){
+          this.$emit('getItemRowSelected',null);
+        }else{
+          this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
+        }
       }
       this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
       this.setFocusCheckbox(index);
@@ -1074,6 +1010,8 @@ export default {
      */
     getValuePageSize(value){
       this.pageSize = value;
+      this.indexRowSelected = 0;
+      this.rowSelected.fill(false);
       this.$emit('getValuePageSize',this.pageSize);
     },
 
@@ -1117,6 +1055,8 @@ export default {
       if (this.pageNumber > this.totalPage) {
         this.pageNumber = this.totalPage;
       }
+      this.indexRowSelected = 0;
+      this.rowSelected.fill(false);
       this.$emit('getValuePageNumber',this.pageNumber);
     },
 
@@ -1163,38 +1103,6 @@ export default {
       this.indexDeleteStart = 0;
       this.indexDeleteEnd = 0;
     },
-  },
-
-  
-  watch: {
-    /** 
-     * Hàm theo dõi số bản ghi trong 1 trang (pageSize),
-     * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
-     * @author LTVIET (15/03/2023)
-     */
-    // pageSize: function (newValue) {
-    //   this.pageNumber = 1;
-    //   this.pageSize = newValue;
-    //   this.loadData();
-    //   this.$emit('handleEventLoadTable');
-    // },
-
-    
-
-    /** 
-     * Hàm theo dõi số trang hiện tại (pageNumber),
-     * nếu có sự thay đổi thì gọi đến hàm loadData để gọi dữ liệu mới
-     * @author LTVIET (15/03/2023)
-     */
-    // pageNumber: function () {
-    //   this.loadData();
-    //   this.$emit('handleEventLoadTable');
-    // },
-
-    // api: function(){
-    //   this.loadData();
-      
-    // },
   },
   
 };

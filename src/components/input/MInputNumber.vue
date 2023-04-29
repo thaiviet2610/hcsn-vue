@@ -6,11 +6,12 @@
         <input 
             ref="mInputNumber"
             :id="idInput"
-            :class="[{'input--error':inValid},{'disableInputClass':disable}]" 
+            :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
             :disabled="disable"
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
             autocomplete="off"
+            :tabindex="disable ? -1:0"
             @input="handleEventInput"
             @keydown="handleEventKeyDown"
             @keyup="handleEventKeyUp"
@@ -98,7 +99,10 @@ export default {
             type: String,
             default: ""
         },
-
+        classInput: {
+            type: String,
+            default: ""
+        },
 
     },
     components:{
@@ -112,7 +116,6 @@ export default {
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
-            classInput: null,
             previousKeyShift: false,
             previousKeyCtrl: false,
             decimalPartValue: 0,

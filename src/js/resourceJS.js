@@ -52,7 +52,7 @@ const resourceJS = {
             label: "Nguyên giá",
             placeholder: "Nhập nguyên giá",
             required : true,
-            disable: false
+            disable: true
         },
         lifeTime:{
             ref: 'ref_life_time',
@@ -133,6 +133,8 @@ const resourceJS = {
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
         exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!",
         noAsset: "Chọn ít nhất 1 tài sản",
+        deleteAssetIncrement: "<div>Tài sản có mã <b> {0} </b> đã phát sinh chứng từ ghi tăng có mã <b> {1} </b></div>",
+        deleteMultipleAssetIncrement: "<div><b> {0} </b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
@@ -180,6 +182,10 @@ const resourceJS = {
             saveSuccess: "Lưu dữ liệu thành công.",
             deleteSuccess: "Chứng từ đã được xóa.",
             undo: "Hoàn tác"
+        },
+        budget:{
+            success: "Thành công.",
+            saveSuccess: "Lưu dữ liệu thành công.",
         }
     },
     titlteForm: {
@@ -191,6 +197,11 @@ const resourceJS = {
         assetIncrement:{
             addForm: "Thêm chứng từ ghi tăng",
             editForm: "Sửa chứng từ ghi tăng",
+        },
+        budget: {
+            editForm: "Sửa tài sản {0}",
+            addForm: "Thêm nguồn chi phí {0}"
+
         }
     },
     tooltip: {
@@ -208,7 +219,8 @@ const resourceJS = {
         assetDetail:{
             btnCloseForm: "Đóng (Esc)",
             saveForm: "Ctrl+s",
-            cancelForm: "Esc"
+            cancelForm: "Esc",
+            btnEditBudget: "Sửa nguyên giá"
         },
         theMenu:{
             header: "MISA QUẢN LÝ TÀI SẢN",
@@ -235,7 +247,25 @@ const resourceJS = {
             zoomIn: "Phóng to",
             zoomOut: "Thu nhỏ",
             seeMore: "Xem thêm",
-            print: "In"
+            print: "In",
+            btnDeleteMultiple: "Xóa nhiều"
+        },
+        asssetIncrementDetail:{
+            btnCloseForm: "Đóng (ESC)",
+            btnSaveForm: "Lưu (Ctrl+S)",
+            btnCancelForm: "Hủy (ESC)",
+        },
+        asssetSelected:{
+            btnCloseForm: "Đóng (ESC)",
+            btnSaveForm: "Lưu (Ctrl+S)",
+            btnCancelForm: "Hủy (ESC)",
+        },
+        budget:{
+            btnCloseForm: "Đóng (ESC)",
+            btnSaveForm: "Lưu (Ctrl+S)",
+            btnCancelForm: "Hủy (ESC)",
+            btnAddBudget: "Thêm nguồn chi phí",
+            btnDeleteBudget: "Bỏ nguồn chi phí",
         }
     },
     theSidebar: {
@@ -259,7 +289,7 @@ const resourceJS = {
         invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
     },
     table: {
-        noDataTable: "Không có dữ liệu.",
+        noDataTable: "Không tìm thấy dữ liệu phù hợp.",
         tableAsset:{
             dataContextMenu: 
             {
@@ -407,8 +437,7 @@ const resourceJS = {
                     title: "STT",
                     columnClass: "asset_increment_detail--column2",
                     tooltip: "Số thứ tự",
-                    classTooltip: "table-header-column2-tooltip",
-                    noDataClass: "asset_increment_detail--column2-no-data"
+                    classTooltip: "asset_increment_detail--column2-tooltip",
                 },
                 {
                     title: "Mã tài sản",
@@ -430,7 +459,7 @@ const resourceJS = {
                     title: "KH/HM lũy kế",
                     columnClass: "asset_increment_detail--column9",
                     tooltip: "Khấu hao/Hao mòn lũy kế",
-                    classTooltip: "table-header-column9-tooltip"
+                    classTooltip: "asset_increment_detail--column9-tooltip"
                 },
                 {
                     title: "Giá trị còn lại",
@@ -458,12 +487,14 @@ const resourceJS = {
                     {
                         type: enumJS.type.edit,
                         classIcon: "function__edit",
-                        tooltip: "Sửa(Ctrl+S)"
+                        tooltip: "Sửa(Ctrl+S)",
+                        classTooltip: "function__edit--tooltip"
                     },
                     {
                         type: enumJS.type.delete,
                         classIcon: "function__delete",
-                        tooltip: "Xóa(Ctrl+D)"
+                        tooltip: "Xóa(Ctrl+D)",
+                        classTooltip: "function__delete--tooltip"
                     },
                 ]
             }      
@@ -502,20 +533,21 @@ const resourceJS = {
             header: [
                 {
                     title: "STT",
-                    columnClass: "column2",
-                    tooltip: "Số thứ tự"
+                    columnClass: "asset_increment_detail--column2",
+                    tooltip: "Số thứ tự",
+                    classTooltip: "asset_increment_detail--column2-tooltip",
                 },
                 {
                     title: "Mã tài sản",
-                    columnClass: "column3",
+                    columnClass: "asset_increment_detail--column3",
                 },
                 {
                     title: "Tên tài sản",
-                    columnClass: "column4",
+                    columnClass: "asset_increment_detail--column4",
                 },
                 {
                     title: "Bộ phận sử dụng",
-                    columnClass: "column6",
+                    columnClass: "asset_increment_detail--column6",
                 },
                 {
                     title: "Nguyên giá",
@@ -524,7 +556,8 @@ const resourceJS = {
                 {
                     title: "KH/HM lũy kế",
                     columnClass: "asset_increment_detail--column9",
-                    tooltip: "Khấu hao/Hao mòn lũy kế"
+                    tooltip: "Khấu hao/Hao mòn lũy kế",
+                    classTooltip: "asset_increment_detail--column9-tooltip"
                 },
                 {
                     title: "Giá trị còn lại",
@@ -554,12 +587,14 @@ const resourceJS = {
                     {
                         type: enumJS.type.edit,
                         classIcon: "function__edit",
-                        tooltip: "Sửa(Ctrl+S)"
+                        tooltip: "Sửa(Ctrl+S)",
+                        classTooltip: "function__edit--tooltip"
                     },
                     {
                         type: enumJS.type.delete,
                         classIcon: "function__delete",
-                        tooltip: "Xóa(Ctrl+D)"
+                        tooltip: "Xóa(Ctrl+D)",
+                        classTooltip: "function__delete--tooltip"
                     },
                 ]
             }      
@@ -601,7 +636,8 @@ const resourceJS = {
                     {
                         title: "STT",
                         columnClass: "asset-selected--column2",
-                        tooltip: "Số thứ tự"
+                        tooltip: "Số thứ tự",
+                        classTooltip: "asset-selected--column2-tooltip"
                     },
                     {
                         title: "Mã tài sản",
@@ -617,12 +653,13 @@ const resourceJS = {
                     },
                     {
                         title: "Nguyên giá",
-                        columnClass: "column8",
+                        columnClass: "asset-selected--column8",
                     },
                     {
                         title: "KH/HM lũy kế",
-                        columnClass: "asset-selected--column8",
-                        tooltip: "Khấu hao/Hao mòn lũy kế"
+                        columnClass: "asset-selected--column9",
+                        tooltip: "Khấu hao/Hao mòn lũy kế",
+                        classTooltip: "asset-selected--column8-tooltip"
                     },
                     {
                         title: "Giá trị còn lại",
@@ -700,7 +737,8 @@ const resourceJS = {
                 {
                     title: "STT",
                     columnClass: "asset-increment--index",
-                    tooltip: "Số thứ tự"
+                    tooltip: "Số thứ tự",
+                    classTooltip: "asset-increment--index-tooltip"
                 },
                 {
                     title: "Mã chứng từ",
@@ -746,12 +784,14 @@ const resourceJS = {
                     {
                         type: enumJS.type.edit,
                         classIcon: "function__edit",
-                        tooltip: "Sửa(Ctrl+S)"
+                        tooltip: "Sửa(Ctrl+S)",
+                        classTooltip: "function__edit--tooltip"
                     },
                     {
                         type: enumJS.type.delete,
                         classIcon: "function__delete",
-                        tooltip: "Xóa(Ctrl+D)"
+                        tooltip: "Xóa(Ctrl+D)",
+                        classTooltip: "function__delete--tooltip"
                     },
                     
                 ]

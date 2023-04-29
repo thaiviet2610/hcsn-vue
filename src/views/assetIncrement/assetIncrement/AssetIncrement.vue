@@ -8,11 +8,17 @@
                     <!-- title của form  -->
                     <div class="asset_increment__form-header__text">Chọn tài sản ghi tăng</div>
                     <!-- button đóng form  -->
-                    <MButtonIcon
-                        class="btn-header__icon"
-                        classIcon="form-header__icon"
-                        @addOnClickBtnIcon="handleEventBtnClickCancel">
-                    </MButtonIcon>
+                    <div class="btn-close-asset-selected">
+                        <MButtonIcon
+                            class="btn-header__icon"
+                            classIcon="form-header__icon"
+                            @addOnClickBtnIcon="handleEventBtnClickCancel">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="btnCloseFormTooltip"
+                            class="btn-close-asset-selected-tooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
                 <!-- phần body của form  -->
                 <div class="asset_increment__form_body" style="padding: 0;">
@@ -28,7 +34,7 @@
                         </div>
                     </div>
                     
-                    <div style="width: 100%;height: 478px;overflow: auto;">
+                    <div style="width: 100%;height: 515px;overflow: auto;">
                         <MTable 
                         ref="mTable"
                         :tableInfo="tableInfo"
@@ -54,17 +60,29 @@
                 <!-- phần footer của form  -->
                 <div class="form-footer">
                     <!-- button lưu form  -->
-                    <MButton
-                        class="btn--main"
-                        label="Lưu"
-                        @btnAddOnClickBtn="handleEventBtnClickSave">
-                    </MButton>
+                    <div class="btn-save-asset-selected">
+                        <MButton
+                            class="btn--main"
+                            label="Lưu"
+                            @btnAddOnClickBtn="handleEventBtnClickSave">
+                        </MButton>
+                        <MTooltip
+                            :text="btnSaveFormTooltip"
+                            class="btn-save-asset-selected-tooltip"
+                        ></MTooltip>
+                    </div>
                     <!-- button hủy form  -->
-                    <MButton
-                        label="Hủy"
-                        style="border: 0;"
-                        @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                    </MButton>
+                    <div class="btn-cancel-asset-selected">
+                        <MButton
+                            label="Hủy"
+                            style="border: 0;"
+                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                        </MButton>
+                        <MTooltip
+                            :text="btnCancelFormTooltip"
+                            class="btn-cancel-asset-selected-tooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +119,10 @@ export default {
             dataBodyTable: [],
             dataFooterTable: [],
             totalRecord: 0,
-            dataAssets: []
+            dataAssets: [],
+            btnCancelFormTooltip: resourceJS.tooltip.asssetSelected.btnCancelForm,
+            btnSaveFormTooltip: resourceJS.tooltip.asssetSelected.btnSaveForm,
+            btnCloseFormTooltip: resourceJS.tooltip.asssetSelected.btnCloseForm,
         }
     },
     created() {

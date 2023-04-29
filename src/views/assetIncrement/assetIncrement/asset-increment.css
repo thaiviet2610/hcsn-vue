@@ -5,14 +5,24 @@
 
 
 .asset-selected--column2{
-    min-width: 65px;
+    min-width: 55px;
     box-sizing: border-box;
     padding-right: 10px;
     text-align: center;
 }
 
+.asset-selected--column2-tooltip{
+    top: 90%;
+    right: 50%;
+}
+
+.asset-selected--column2:hover .asset-selected--column2-tooltip{
+    transform: scale(1);
+    z-index: 10000;
+}
+
 .asset-selected--column3{
-    min-width: 120px;
+    min-width: 110px;
     padding-right: 10px;
     text-align: left;
 }
@@ -25,21 +35,30 @@
 }
 
 .asset-selected--column6{
-    min-width: 270px;
+    min-width: 276px;
     padding-right: 5px;
     text-align: left;
 }
 
 .asset-selected--column8{
-    min-width: 150px;
+    min-width: 140px;
     padding: 0 0 0 10px;
     text-align: right;
 }
 
+.asset-selected--column8-tooltip{
+    top: 90%;
+    right: 30%;
+}
+
+.asset-selected--column8:hover .asset-selected--column8-tooltip{
+    transform: scale(1);
+    z-index: 10000;
+}
 
 
 .asset-selected--column9{
-    min-width: 150px ;
+    min-width: 140px ;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -49,7 +68,7 @@
 
 
 .asset-selected--column10{
-    min-width: 150px;
+    min-width: 140px;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -64,6 +83,47 @@
 }
 
 .asset-selected--footer-left{
-    min-width: 636px;
+    min-width: 621px;
 }
 
+.btn-close-asset-selected{
+    position: relative;
+}
+
+.btn-close-asset-selected-tooltip{
+    top: 100%;
+    right: 50%;
+}
+
+.btn-close-asset-selected:hover .btn-close-asset-selected-tooltip{
+    transform: scale(1);
+    z-index: 100;
+}
+
+.btn-save-asset-selected{
+    position: relative;
+}
+
+.btn-save-asset-selected-tooltip{
+    top: 110%;
+    left: 50%;
+}
+
+.btn-save-asset-selected:hover .btn-save-asset-selected-tooltip{
+    transform: scale(1);
+    z-index: 100;
+}
+
+.btn-cancel-asset-selected{
+    position: relative;
+}
+
+.btn-cancel-asset-selected-tooltip{
+    top: 110%;
+    left: 50%;
+}
+
+.btn-cancel-asset-selected:hover .btn-cancel-asset-selected-tooltip{
+    transform: scale(1);
+    z-index: 100;
+}

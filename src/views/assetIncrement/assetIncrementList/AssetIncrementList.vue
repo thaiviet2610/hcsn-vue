@@ -1,19 +1,18 @@
 <template>
-    <div class="main" :key="keyBody" style="min-width: 719px;">
+    <div class="main" :key="keyBody" style="min-width: 719px;" @keypress="handleEventKeyDown" @keyup="handleEventKeyUp">
         <div class="content" style="padding-bottom: 0;">
             <div class="content-header">
                 <div class="content-header__left">
-                    <!-- input tìm kiếm tài sản  -->
                     <div class="asset_increment--text1" >Ghi tăng tài sản</div>
-                </div>
-                <div class="content-header__right">
-                    <!-- button thêm tài sản  -->
+                </div> 
+                <div class="content-header__right" >
+                    <!-- button thêm tài sản chứng từ -->
                     <MButton
                         label="Thêm"
                         class="item1 btn--main"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
-                    <div class="asset_increment--item1" style="position: relative;">
+                    <div class="asset_increment--item1" style="position: relative;" v-outside="handleEventClickOutsideInterfaceSelected">
                         <MButtonIcon
                             class="asset_increment--icon12"
                             :classImage="classInterface"
@@ -53,9 +52,10 @@
                                     </MInput>
                                 </div>
                                 <div class="content-body__up--right">
-                                    <div v-if="isShowDeleteButton" style="position: relative;">
+                                    <div v-if="isShowDeleteButton" style="position: relative;" class="function__delete--multiple">
+                                        <!-- button xóa nhiều  -->
                                         <MButtonIcon
-                                            classIcon="function__delete"
+                                            classIcon="function__delete "
                                             @addOnClickBtnIcon="addOnClickBtnDeleteMultiple">
                                         </MButtonIcon>
                                         <MTooltip
@@ -72,10 +72,9 @@
                                             </MTooltip>
                                         </div>
                                         <div class="see-more">
-                                            <MButtonIcon
-                                                class="asset_increment--icon22"
-                                                classIcon="asset_increment--item22">
-                                            </MButtonIcon>
+                                            <div class="asset_increment--icon22">
+                                                <div class="asset_increment--item22"></div>
+                                            </div>
                                             <MTooltip
                                                     :text="tooltipSeeMore"
                                                     class="asset_increment--item22-tooltip">
@@ -84,7 +83,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="width: 100%;height: calc(100% - 60px);position: relative;">
+                            <div style="width: 100%;height: calc(100% - 59px);position: relative;">
                                 <MTable 
                                 ref="mTableMaster"
                                 :tableInfo="tableMasterInfo"
@@ -106,7 +105,7 @@
                                 @getValuePageSize="getValuePageSize"
                                 @getQuantityItemSelected="getQuantityAssetIncrementSelected"
                                 @btnClickFunctionOpenForm="handleEventClickFunctionTableMaster"
-                                @getIndexRowSelected="getAssetIncrementSelected">
+                                @getItemRowSelected="getAssetIncrementSelected">
                                 </MTable>
                                 <MDialogLoadData v-if="isShowLoadTableMaster" style="width: 100%;height: 100%;"></MDialogLoadData>
 
@@ -191,7 +190,7 @@
     </MDialog>
 
     <MToastSucess 
-        v-if="isShowToastSucess"
+        v-if="isShowToastSuccess"
         :notify="notifyToastSuccess"
         :content="contentToastSuccess"
         :buttonUndo="false"
@@ -227,7 +226,7 @@ export default {
             isShowLoadTableDetail: false,
             isShowLoadTableMaster: false,
             isShowDeleteButton: false,
-            isShowToastSucess: false,
+            isShowToastSuccess: false,
             isShowDetail: false,
             isShowLoad: false,
             isShowInterfaceSelecte: false,
@@ -276,7 +275,8 @@ export default {
             dataBodyTableDetail: [],
             dataHeaderTableDetail: resourceJS.table.tableDetailAssetIncrementList.header,
             dataAssetIncrements: [],
-            dataAssets: []
+            dataAssets: [],
+            tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple
         }
     },
     created() {
@@ -306,6 +306,13 @@ export default {
     },
     methods: {
         /**
+         * Hàm xử lý sự kiện khi ẩn đi danh sách chọn giao diện khi click ra ngoài
+         * @author LTVIET (15/04/2023)
+         */
+        handleEventClickOutsideInterfaceSelected(){
+            this.isShowInterfaceSelecte = false;
+        },
+        /**
          * Hàm nhận giá trị pageSize khi chọn giá trị trong dropdown trong table master
          * @param {*} value giá trị của pageSize
          * @author LTVIET (15/04/2023)
@@ -313,6 +320,8 @@ export default {
          getValuePageSize(value){
             this.pageSizeTableMaster = value;
             this.getDataTableMaster();
+            this.$refs["mTableMaster"].checkboxActive = [];
+            this.$refs["mTableMaster"].entityCheckboxActive = [];
         },
 
         /**
@@ -323,6 +332,10 @@ export default {
         getValuePageNumber(value){
             this.pageNumberTableMaster = value;
             this.getDataTableMaster();
+        },
+
+        handleEventKeyDown(){
+
         },
 
         /**
@@ -353,8 +366,11 @@ export default {
                 this.$refs["mTableMaster"].totalRecord = this.totalRecordTableMaster;
                 this.$refs["mTableMaster"].getUnitData();
                 if(this.assetIncrements.length > 0){
-                    this.$refs["mTableMaster"].selectedRowTable(1);
-                    this.getAssetIncrementDetailById(this.assetIncrements[0]);
+                    const quantityAssetIncrementActive = this.$refs["mTableMaster"].getEntityCheckboxActiveList().length;
+                    if(quantityAssetIncrementActive == 0){
+                        this.$refs["mTableMaster"].selectedRowTable(1);
+                        this.getAssetIncrementDetailById(this.assetIncrements[0]);
+                    }
                 }else{
                     this.dataBodyTableDetail = [];
                     this.keyTableDetail = ++this.keyTableDetail;
@@ -584,6 +600,8 @@ export default {
             }
             this.pageNumberTableMaster = 1;
             this.getDataTableMaster();
+            this.$refs["mTableMaster"].checkboxActive = [];
+            this.$refs["mTableMaster"].entityCheckboxActive = [];
         },
 
         /**
@@ -603,7 +621,7 @@ export default {
          */
         handleEventSaveAssetIncrement(){
             this.handleEventCloseFormAssetIncrementDetail();
-            this.isShowToastSucess = true;
+            this.isShowToastSuccess = true;
             this.notifyToastSuccess = resourceJS.toastSuccess.asset.success;
             this.contentToastSuccess = resourceJS.toastSuccess.asset.saveSuccess;
             setTimeout(() => {
@@ -612,7 +630,8 @@ export default {
             this.pageNumberTableMaster = 1;
             this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
             this.getDataTableMaster();
-
+            this.$refs["mTableMaster"].checkboxActive = [];
+            this.$refs["mTableMaster"].entityCheckboxActive = [];
         },
 
         /**
@@ -630,7 +649,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         closeToastSucess(){
-            this.isShowToastSucess = false;
+            this.isShowToastSuccess = false;
         },
         
         /**
@@ -748,14 +767,15 @@ export default {
             this.pageNumberTableMaster = 1;
             this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
             this.getDataTableMaster();
-            
+            this.$refs["mTableMaster"].checkboxActive = [];
+            this.$refs["mTableMaster"].entityCheckboxActive = [];
 
             //hiển thị dialog thông báo xóa thành công
             this.isButtonUndo = false;
             this.isButtonClose = true;
             this.notifyToastSuccess = resourceJS.toastSuccess.assetIncrement.success;
             this.contentToastSuccess = resourceJS.toastSuccess.assetIncrement.deleteSuccess;
-            this.isShowToastSucess = true;
+            this.isShowToastSuccess = true;
             //--> thực hiện hành động xóa 1 tài sản
             setTimeout(this.closeToastSucess,3000);
         },

@@ -3,7 +3,7 @@
         <!-- label của input  -->
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required"> *</span></label>
         
-        <div class="date" :class="{'input--error':inValid}">
+        <div class="date" :class="[{'input--error':inValid},{'input-focus':isFocus}]">
             <div class="datePicker"></div>
             <!-- input nhập dữ liệu  -->   
             <input
@@ -21,6 +21,8 @@
                 :placeholder="placeholder"
                 autocomplete="off"
                 :disabled="disable"
+                :tabindex="disable ? -1:0"
+                @focus="isFocus=true"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
                 @keydown="handleEventKeyDown"
@@ -87,6 +89,7 @@ export default {
             previousKeyShift: false,
             previousKeyCtrl: false,
             isBlur: true,
+            isFocus: false
         }
     },
     watch: {
@@ -422,6 +425,14 @@ export default {
 @import url(./input-date.css);
 input:focus{
     border: none !important;
+}
+
+input:hover{
+    border: unset !important;
+}
+
+.input-focus{
+    border: 1px solid #1AA4C8 !important;
 }
 
 </style>

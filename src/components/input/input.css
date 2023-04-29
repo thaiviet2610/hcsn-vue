@@ -3,8 +3,15 @@
 }
 
 input:focus{
-    border: 1px solid rgba(84, 173, 225, 0.829) !important;
+    border: 1px solid #1AA4C8 !important;
 }
+
+input:hover{
+    border: 1px solid #1AA4C8 !important;
+}
+
+
+
 
 .input__icon2--image:hover{
     background-color: rgb(207, 203, 203);
@@ -40,8 +47,12 @@ input:focus{
     padding: 0;
 }
 
-.disableInputClass{
-    background-color: #e6e6e6;
+input.disableInputClass{
+    background-color: #f5f5f5;
+}
+
+.input__container input.disableInputClass:hover{
+    border: 1px solid #d4d4d4 !important;
 }
 
 .input__icon--dropdown2{
@@ -121,7 +132,7 @@ input:focus{
 .input__container input{
     width: 100% !important;
     height: 36px !important;
-    border: 1px solid #afafaf;
+    border: 1px solid #d4d4d4;
     opacity: 100%;
     outline: none;
     border-radius: 4px;

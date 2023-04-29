@@ -162,6 +162,54 @@
 }
 
 
+.budget__icon--add-asset{
+    height: 18px;
+    display: flex;
+    align-items: top;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.btn-edit-budget{
+    width: 100%;
+    height: 36px;
+    border-radius: 4px;
+    position: absolute;
+    top:23px;
+    background-color: #ffffff00;
+    box-shadow: unset !important;
+}
+
+.btn-edit-budget:hover{
+    background-color: #ffffff00 !important;
+    border: 1px solid #1AA4C8 !important;
+
+}
+
+.btn-edit-budget:focus{
+    background-color: #ffffff00 !important;
+    outline: unset !important;
+    border: 1px solid #1AA4C8 !important;
+}
+
+.btn-edit-budget--tooltip{
+    top: 110%;
+    right: 30%;
+}
+
+.btn-edit-budget:hover~.btn-edit-budget--tooltip{
+    transform: scale(1);
+    z-index: 100;
+}
+
+.class-input__tracked-year{
+    text-align: right;
+}
+
+
+
+
+
 
 
 

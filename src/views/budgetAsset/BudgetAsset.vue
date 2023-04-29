@@ -6,7 +6,7 @@
                 <!-- phần header của form  -->
                 <div class="form-header">
                     <!-- title của form  -->
-                    <div class="asset_increment__form-header__text">Sửa tài sản</div>
+                    <div class="asset_increment__form-header__text">{{ label }}</div>
                     <!-- button đóng form  -->
                     <MButtonIcon
                         class="btn-header__icon"
@@ -21,7 +21,7 @@
                             <div class="budget__body--up" style="padding-bottom: 16px;">
                                 <MInput
                                     label="Bộ phận sử dụng"
-                                    :valueInput="departmentName"
+                                    :valueInput="asset.department_name"
                                     :key="keyDepartment"
                                     :disable="true"
                                     >
@@ -46,7 +46,7 @@
                             <div class="budget__container">
                                 <div v-for="(item,index) in priceList.length" :key="index" class="m-row budget__item" style="justify-content: left;">
                                     <div class="budget__container--left">
-                                        <div class="input budget_combobox">
+                                        <div class="input budget_combobox" style="min-width: none;">
                                             <div class="input__container ">
                                                 <!-- combobox nhập giá trị tên nguồn hình thành  -->
                                                 <MCombobox  
@@ -172,6 +172,14 @@ export default {
         propAsset: {
             type: Object,
             default: null
+        },
+        label: {
+            type:String,
+            default: ""
+        },
+        autoUpdate: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -181,7 +189,6 @@ export default {
             contentDialogFormCancel: resourceJS.confirm.budget.cancelForm,
             btnDialogCancelForm: resourceJS.buttonDialog.cancelEditForm,
             budgetApi: configJS.api.budget.budgetApi,
-            assetApi: configJS.api.asset.assetApi,
             quantityBudget: 2,
             keyBudget: 0,
             budgetList: [],
@@ -191,14 +198,30 @@ export default {
             itemError: null,
             asset: null,
             oldvalueBudget: "",
-            departmentName: "",
             keyDepartment: 0,
             dataComboboxBudget: [],
             keyComboboxBudget: 0,
+            assetApi: configJS.api.asset.assetApi,
+
         }
     },
     created() {
-        this.getAssetbyId(this.propAsset);
+        this.asset = this.propAsset;
+        this.oldvalueBudget = this.asset.cost_new;
+        if(this.oldvalueBudget){
+            let budgets  = JSON.parse(this.asset.cost_new);
+            for (const item of budgets) {
+                this.priceList.push(item);
+            }
+        }else{
+            this.priceList.push({
+                budget_id: "00000000-0000-0000-0000-000000000000",
+                budget_code: "",
+                budget_name: "",
+                mount: null
+            });
+        }
+        
         this.getBudget();
     },
     mounted() {
@@ -236,31 +259,6 @@ export default {
             .then(res=>{
                 this.dataComboboxBudget = res.data;
                 this.keyComboboxBudget = ++this.keyComboboxBudget;
-                this.isShowLoad = false;
-            })
-            .catch(err=>{
-                console.log(err);
-                this.isShowLoad = false;
-            })
-        },
-        
-        /**
-         * Hàm lấy ra đối tượng asset theo id
-         * @param {*} id id của đối tượng cần truy vấn
-         * @author LTVIET (18/04/2023)
-         */
-         getAssetbyId(id){
-            this.isShowLoad = true;
-            axios.get(`${this.assetApi}/${id}`)
-            .then(res=>{
-                this.asset = res.data;
-                this.departmentName = this.asset.department_name;
-                this.keyDepartment = ++this.keyDepartment;
-                this.oldvalueBudget = this.asset.cost_new;
-                let budgets  = JSON.parse(this.asset.cost_new);
-                for (const item of budgets) {
-                    this.priceList.push(item);
-                }
                 this.setFocus();
                 this.isShowLoad = false;
             })
@@ -269,6 +267,8 @@ export default {
                 this.isShowLoad = false;
             })
         },
+        
+        
 
         /**
          * Hàm xử lý sự kiện đóng form
@@ -276,8 +276,9 @@ export default {
          */
         handleEventBtnClickCancel(){
             const newValueBudget = JSON.stringify(this.priceList);
+            console.log("newValue:",newValueBudget);
+            console.log("oldvalueBudget:",this.oldvalueBudget);
             if(newValueBudget == this.oldvalueBudget){
-                console.log(1);
                 this.$emit('onClose');
             }else{
                 this.isShowDialogFormCancel = true;
@@ -299,6 +300,9 @@ export default {
             }
             this.priceList.push(price);
             this.keyBudget = ++this.keyBudget;
+            this.$nextTick(function() {
+                this.$refs[`mCombobox_${this.priceList.length-1}`][0].setFocus();
+            })
         },
 
         /**
@@ -307,16 +311,15 @@ export default {
          * @author LTVIET (02/03/2023)
          */
         handleEventCloseDialogCancelForm(label){
+            this.isShowDialogFormCancel = false;
             // Nếu click button "Không lưu" thì đóng dialog và form lại và không lưu dữ liệu
             if(label == this.btnDialogCancelForm[1][2]){
-                this.isShowDialogFormCancel = false;
                 this.$emit('onClose');
                 return;
             }
 
             // Nếu click button "Hủy" thì đóng dialog lại
             if(label == this.btnDialogCancelForm[2][2]){
-                this.isShowDialogFormCancel = false;
                 this.setFocus();
                 return;
             }
@@ -332,6 +335,9 @@ export default {
         handleEventDeleteBudgetAsset(index){
             this.priceList.splice(index,1);
             this.keyBudget = ++this.keyBudget;
+            this.$nextTick(function() {
+                this.$refs[`mCombobox_${this.priceList.length-1}`][0].setFocus();
+            })
         },
 
         /**
@@ -382,7 +388,6 @@ export default {
         setFocus(){
             this.$nextTick(function() {
                 this.$refs["mCombobox_0"][0].setFocus();
-                this.$refs["mCombobox_0"][0].isShow = false;
             })
         },
 
@@ -394,7 +399,12 @@ export default {
             let check = this.validateEmpty();
             if(check){
                 this.asset.cost_new = JSON.stringify(this.priceList);
-                this.updateAsset();
+                this.asset.cost = this.mountTotal;
+                if(this.autoUpdate){
+                    this.updateAsset();
+                }else{
+                    this.$emit('getValueCost',[this.asset.cost,this.asset.cost_new]);
+                }
             }
         },
 
@@ -403,9 +413,11 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         updateAsset(){
+            this.isShowLoad = true;
             axios.put(`${this.assetApi}/${this.asset.fixed_asset_id}`,this.asset)
             .then(()=>{
-                this.handleEventBtnClickCancel();
+                this.$emit('getNewValueAsset',this.asset);
+                this.isShowLoad = false;
             })
             .catch(err=>{
                 console.log(err);
@@ -431,7 +443,7 @@ export default {
         /**
          * Hàm validate giá trị của các combobox
          * @param {*} combobox đối tượng cần validate
-         * @param {*} index vị trí của đối tượng cuối cùng trong dnah sách cần kiểm tra xem có bị trùng không
+         * @param {*} index vị trí của đối tượng cuối cùng trong danh sách cần kiểm tra xem có bị trùng không
          * @author LTVIET (18/04/2023)
          */
         validateCombobox(combobox,index){

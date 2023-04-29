@@ -16,6 +16,7 @@ import MCombobox from './components/combobox/MCombobox.vue';
 import MToastSucess from '@/components/toast/MToastSucess.vue';
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css';
+import clickOutside from './js/clickoutside';
 
 
 // import các views
@@ -55,6 +56,7 @@ const router = createRouter({
 
 // Bước 4: User router trong app
 app.use(router);
+app.directive('outside',clickOutside);
 app.use(ElementPlus)
 
 app.component("MToastSucess",MToastSucess);

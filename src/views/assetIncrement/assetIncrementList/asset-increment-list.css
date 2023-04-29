@@ -76,6 +76,9 @@
 .asset_increment--icon22{
     width: 18px;
 	height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #ffffff;
 }
 
@@ -232,7 +235,7 @@
   }
   
   
-  em.specs {
+em.specs {
     font-size: 0.2em;
     line-height: 1;
     position: absolute;
@@ -241,13 +244,55 @@
     left: 0;
     right: 0;
     text-align: center;
-  }
+}
+
+.function__edit--tooltip{
+    top: 110%;
+    right: 80%;
+}
+
+.function__delete--tooltip{
+    top: 120%;
+    right: 40%;
+}
+
+.function__edit:hover~.function__edit--tooltip{
+    transform: scale(1) !important;
+    z-index: 100000;
+}
+
+.function__delete:hover~.function__delete--tooltip{
+    transform: scale(1) !important;
+    z-index: 100000;
+}
+
+.asset-list-btn-delete-tooltip{
+    top: 120%;
+    right: 50%;
+}
+
+
+.function__delete--multiple:hover .asset-list-btn-delete-tooltip{
+    transform: scale(1) !important;
+    z-index: 10000;
+}
 
 .asset-increment--index{
     min-width: 80px;
     padding-right: 10px;
     text-align: center;
 }
+
+.asset-increment--index-tooltip{
+    top: 90% !important;
+    right: 60% !important;
+}
+
+.asset-increment--index:hover .asset-increment--index-tooltip{
+    transform: scale(1) !important;
+    z-index: 10000;
+}
+
 
 .asset-increment--voucher-code{
     min-width: 130px;
@@ -278,9 +323,10 @@
 }
 
 .asset-increment--description{
-    width: 475px;
+    width: 478px;
+    min-width: 478px;
     text-align: left;
-    padding-left: 10px;
+    padding-left: 20px;
 }
 
 .asset-increment--footer-left{

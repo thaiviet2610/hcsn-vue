@@ -72,13 +72,13 @@
                             
                             <div class="input up-right">
                                 <!-- input nhập tên bộ phận sử dụng  -->
-                                <MInputDisable
+                                <MInput 
                                     :required="assetDetailInfo.departmentName.required"
-                                    :value="asset.department_name"
+                                    :disable="assetDetailInfo.departmentName.disable"
+                                    :valueInput="asset.department_name"
                                     :label="assetDetailInfo.departmentName.label"
-                                    :key="keyDepartmentName"
-                                    >
-                                </MInputDisable>
+                                    :key="keyDepartmentName">
+                                </MInput>
                             </div>
                         </div>
                         <div class="m-row">
@@ -104,13 +104,13 @@
                             
                             <div class="input up-right">
                                 <!-- input nhập tên loại tài sản  -->
-                                <MInputDisable 
+                                <MInput 
                                     :required="assetDetailInfo.assetCategoryName.required"
+                                    :disable="assetDetailInfo.assetCategoryName.disable"
+                                    :valueInput="asset.fixed_asset_category_name"
                                     :label="assetDetailInfo.assetCategoryName.label"
-                                    :value="asset.fixed_asset_category_name"
-                                    :key="keyAssetCategoryName"
-                                    >
-                                </MInputDisable>
+                                    :key="keyAssetCategoryName">
+                                </MInput>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                                 </MInputNumber>
                             </div>
                             
-                            <div class="input down-center">
+                            <div class="input down-center" style="position: relative;">
                                 <!-- input nhập nguyên giá  -->
                                 <MInputNumber
                                     :ref="assetDetailInfo.cost.ref"
@@ -144,9 +144,24 @@
                                     @getValueInput="getValueCostInput"
                                     @getValueEventInput="getValueCostInput"
                                     :valueInput="asset.cost"
+                                    classInput="class-input__cost"
                                     :label="assetDetailInfo.cost.label"
+                                    :key="keyCost"
                                     >
                                 </MInputNumber>
+                                <MButton 
+                                    class="btn-edit-budget"
+                                    @btnAddOnClickBtn="handleEventEditBudget">
+                                </MButton>
+                                <MTooltip
+                                    :text="btnEditBudgetTooltip"
+                                    class="btn-edit-budget--tooltip"
+                                ></MTooltip>
+                                <!-- <MButtonIcon 
+                                    class="budget__icon--add-asset"
+                                    classIcon="budget__icon--add"
+                                    @addOnClickBtnIcon="handleEventAddBudgetAsset">
+                                </MButtonIcon> -->
                             </div>
                            
                             <div class="input down-right">
@@ -180,26 +195,27 @@
                             </div>
                             <div class="down-center">
                                 <!-- input nhập giá trị hao mòn  -->
-                                <MInputDisable
+                                <MInputNumber
                                     :required="assetDetailInfo.depreciationValueYear.required"
                                     :placeholder="assetDetailInfo.depreciationValueYear.placeholder"
                                     :label="assetDetailInfo.depreciationValueYear.label"
-                                    :value="depreciationValueYear"
                                     :key="keyDepreciationValueYear"
-                                    :typeValue="typeNumber"
+                                    :valueInput="depreciationValueYear"
+                                    :disable="assetDetailInfo.depreciationValueYear.disable"
                                     >
-                                </MInputDisable>
+                                </MInputNumber>
                             </div>
                             <div class="input down-right">
                                 <!-- inptu nhập năm theo dõi  -->
-                                <MInputDisable
+                                <MInput
                                     :required="assetDetailInfo.trackedYear.required"
                                     :placeholder="assetDetailInfo.trackedYear.placeholder"
                                     :label="assetDetailInfo.trackedYear.label"
-                                    :value="asset.tracked_year"
-                                    :typeValue="typeNumber"
+                                    :valueInput="asset.tracked_year"
+                                    classInput="class-input__tracked-year"
+                                    :disable="assetDetailInfo.trackedYear.disable"
                                     >
-                                </MInputDisable>
+                                </MInput>
                             </div>
                         </div>
                         <div class="m-row ">
@@ -255,6 +271,15 @@
                 </div>
             </div>
         </div>
+        <BudgetAsset 
+            v-if="isShowBudget"
+            :label="labelBudgetForm"
+            :propAsset="asset"
+            :typeForm="typeForm"
+            :autoUpdate="false"
+            @getValueCost="handleEventSaveBudget"
+            @onClose="handleEventCloseFormBudgetAsset">
+        </BudgetAsset>
         <!-- dialog thông báo  -->
         <MDialog 
             v-if="isShowDialogNotify" 
@@ -277,6 +302,7 @@
             @onClickBtn="handleEventCloseDialogCancelEditForm"
             >
         </MDialog>
+
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     </div>
@@ -290,9 +316,9 @@ import axios from 'axios'
 import enumJS from '@/js/enum.js';
 import commonJS from '@/js/common';
 import moment from 'moment';
-import MInputDisable from '@/components/input/MInputDisable.vue';
 import configJS from '@/js/config';
 import MInputNumber from '@/components/input/MInputNumber.vue';
+import BudgetAsset from '@/views/budgetAsset/BudgetAsset.vue';
 export default {
     name:"assetDetail",
     props: {
@@ -315,14 +341,15 @@ export default {
 
     },
     components:{
-    MCombobox,
-    MInput,
-    MInputDisable,
-    MInputNumber
-},
+        MCombobox,
+        MInput,
+        MInputNumber,
+        BudgetAsset
+    },
     data() {
         return {
             oldValueAseet: null,
+            isShowBudget: false,
             isShowDialogNotify: false,
             isShowDialogAddFormCancel: false,
             isShowDialogEditFormCancel: false,
@@ -359,6 +386,7 @@ export default {
             tooltipBtnCloseForm: resourceJS.tooltip.assetDetail.btnCloseForm,
             tooltipSaveForm: resourceJS.tooltip.assetDetail.saveForm,
             tooltipCancelForm: resourceJS.tooltip.assetDetail.cancelForm,
+            btnEditBudgetTooltip: resourceJS.tooltip.assetDetail.btnEditBudget,
             formatDate: resourceJS.date.format.ddMMyyyy,
             typeNumber: enumJS.typeValue.number,
             depreciationRateInput: "0",
@@ -366,6 +394,9 @@ export default {
             keyComboboxAssetCategory: 0,
             dataComboboxDepartment: [],
             keyComboboxDepartment: 0,
+            assetId: null,
+            labelBudgetForm: "",
+            keyCost: 0
         }
     },
 
@@ -376,7 +407,7 @@ export default {
          */
         getDepreciationValueYear: function(){
             let value = this.asset.cost*this.asset.depreciation_rate;
-            return commonJS.formatNumber(value);
+            return commonJS.formatNumber(Math.round(value));
         }
     },
     
@@ -437,6 +468,47 @@ export default {
     },
     
     methods: {
+        /**
+         * Hàm xử lý sự kiện đóng form sửa nguồn chi phí
+         * @author LTVIET (19/04/2023)
+         */
+         handleEventCloseFormBudgetAsset(){
+            this.isShowBudget = false;
+        },
+
+        /**
+         * Hàm nhận giá trị nguồn chi phí từ form
+         * @param {*} values mảng chứa các giá trị (cost,cost_new)
+         */
+        handleEventSaveBudget(values){
+            const cost = values[0];
+            const cost_new = values[1];
+            this.cost = cost;
+            this.asset.cost = cost;
+            this.asset.cost_new = cost_new;
+            this.keyCost = ++this.keyCost;
+            this.depreciationValueYear = this.getDepreciationValueYear;
+            this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
+            this.isShowBudget = false;
+        },
+
+        /**
+         * Hàm xử lý sự kiện mở form sửa nguồn chi phí
+         * @author LTVIET (02/03/2023)
+         */
+        handleEventEditBudget(){
+            this.isShowBudget = true;
+            if(this.typeForm == enumJS.type.add){
+                this.labelBudgetForm = resourceJS.titlteForm.budget.addForm.replace("{0}",this.asset.fixed_asset_name);
+            }else if(this.typeForm == enumJS.type.edit){
+                this.assetId = this.asset.fixed_asset_id;
+                this.labelBudgetForm = resourceJS.titlteForm.budget.editForm.replace("{0}",this.asset.fixed_asset_name);
+            }
+        },
+        /**
+         * Hàm format lại định dạng giá trị tỷ lệ hao mòn
+         * @author LTVIET (02/03/2023)
+         */
         getDepreciationRateInput(){
             this.depreciationRateInput = String(this.depreciationRate).replaceAll(".",",");
         },
@@ -507,6 +579,7 @@ export default {
                     fixed_asset_category_name : this.asset.fixed_asset_category_name,
                     purchase_date : this.asset.purchase_date,
                     cost : Number(this.asset.cost),
+                    cost_new: this.asset.cost_new,
                     quantity : Number(this.asset.quantity),
                     depreciation_rate : Number(this.asset.depreciation_rate),
                     tracked_year : Number(this.asset.tracked_year),
@@ -857,13 +930,6 @@ export default {
             return check;
         },
         
-        /**
-         * Hàm đóng toast thông báo lưu thành công
-         * @author LTVIET (06/03/2023)
-         */
-        closeToastSaveSuccess(){
-            this.isShowToastSucess = false;
-        },
 
         /**
          * Hàm xử lý sự kiện khi click các button của dialog xác nhận hủy form thêm mới
@@ -1072,6 +1138,7 @@ export default {
                 fixed_asset_category_name: "",
                 quantity: 0,
                 cost: 0,
+                cost_new: "",
                 life_time: 0,
                 depreciation_rate: 0,
                 tracked_year: this.getYear(),
@@ -1095,6 +1162,7 @@ export default {
             })
             this.asset.department_code = department.department_code;
             this.asset.department_name = department.department_name;
+            this.keyDepartmentName = ++this.keyDepartmentName;
         },
 
         /**
@@ -1110,6 +1178,7 @@ export default {
             // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
             this.asset.fixed_asset_category_code = assetCategory.fixed_asset_category_code;
             this.asset.fixed_asset_category_name = assetCategory.fixed_asset_category_name;
+            this.keyAssetCategoryName = ++this.keyAssetCategoryName;
             // Nếu thay đổi loại tài sản thì sẽ lấy:
             // --> số năm sử dụng theo loại tài sản
             this.asset.life_time = assetCategory.life_time;

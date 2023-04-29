@@ -144,7 +144,10 @@
         </AssetIncrement>
         <BudgetAsset 
             v-if="isShowBudgetAsset"
-            :propAsset="assetId"
+            :propAsset="asset"
+            :label="labelBudgetForm"
+            :autoUpdate="true"
+            @getNewValueAsset="handleEventEditBudgetAsset"
             @onClose="handleEventCloseFormBudgetAsset">
         </BudgetAsset>
 
@@ -170,6 +173,16 @@
             @onClickBtn="handleEventCloseDialogCancelEditForm"
             >
         </MDialog>
+
+        <MToastSucess 
+            v-if="isShowToastSuccess"
+            :notify="notifyToastSuccess"
+            :content="contentToastSuccess"
+            :buttonUndo="false"
+            :buttonClose="true"
+            @onClose="closeToastSucess"
+            >
+        </MToastSucess>
         
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
@@ -217,10 +230,10 @@ export default {
             isShowSelectAssetIncrement: false,
             isShowBudgetAsset: false,
             assets: [],
+            asset: null,
             keyTable: 0,
             keyword: "",
             dataBodyApi: null,
-            assetId: null,
             assetIncrement: null,
             assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
             assetIncrementDetailApi: configJS.api.assetIncrementDetail.assetIncrementDetailApi,
@@ -241,7 +254,13 @@ export default {
             dataBodyTable: [],
             dataFooterTable: [0,0,0],
             dataHeaderTable: resourceJS.table.tableAssetIncrementDetail.header,
-            dataAssets: []
+            dataAssets: [],
+            labelBudgetForm: resourceJS.titlteForm.budget.editForm,
+            assetApi: configJS.api.asset.assetApi,
+            typeBudgetForm: enumJS.type.edit,
+            isShowToastSuccess: false,
+            notifyToastSuccess: "",
+            contentToastSuccess: "",
         }
     },
     created() {
@@ -280,6 +299,25 @@ export default {
         this.setFocus();
     },
     methods: {
+        /**
+         * Hàm lấy ra đối tượng asset theo id
+         * @param {*} id id của đối tượng cần truy vấn
+         * @author LTVIET (18/04/2023)
+         */
+         getAssetbyId(id){
+            this.isShowLoad = true;
+            axios.get(`${this.assetApi}/${id}`)
+            .then(res=>{
+                this.asset = res.data;
+                this.isShowBudgetAsset = true;
+                this.isShowLoad = false;
+            })
+            .catch(err=>{
+                console.log(err);
+                this.isShowLoad = false;
+            })
+        },
+
         /**
          * Hàm khởi tạo đối tượng chứng từ mặc định
          * @author LTVIET (23/04/2023)
@@ -332,16 +370,15 @@ export default {
          * @author LTVIET (02/03/2023)
          */
          handleEventCloseDialogCancelEditForm(label){
+            this.isShowDialogEditFormCancel = false;
             // Nếu click button "Không lưu" thì đóng dialog và form sửa lại và không lưu dữ liệu
             if(label == this.btnDialogCancelEditForm[1][2]){
-                this.isShowDialogEditFormCancel = false;
                 this.$emit('onClose');
                 return;
             }
 
             // Nếu click button "Hủy" thì đóng dialog lại
             if(label == this.btnDialogCancelEditForm[2][2]){
-                this.isShowDialogEditFormCancel = false;
                 this.setFocus();
                 return;
             }
@@ -398,7 +435,38 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventCloseFormBudgetAsset(){
-            this.isShowBudgetAsset = false
+            this.isShowBudgetAsset = false;
+            this.getDataTable();
+        },
+
+        /**
+         * Hàm xử lý sự kiện nhận giá trị nguyên giá mới sửa từ form
+         * @param {*} newAsset đối tượng tài snar mới sửa
+         * @author LTVIET (19/04/2023)
+         */
+        handleEventEditBudgetAsset(newAsset){
+            const asset = this.assetIncrement.assets.find(function(asset){
+                return asset.fixed_asset_code == newAsset.fixed_asset_code;
+            });
+            asset.cost = newAsset.cost;
+            asset.cost_new = newAsset.cost_new;
+            this.assetIncrement.assets[asset.index-1] = asset;
+            this.getDataTable();
+            this.isShowBudgetAsset = false;
+            this.isShowToastSuccess = true;
+            this.notifyToastSuccess = resourceJS.toastSuccess.budget.success;
+            this.contentToastSuccess = resourceJS.toastSuccess.budget.saveSuccess;
+            setTimeout(() => {
+                this.closeToastSucess();
+            }, 3000);
+        },
+
+        /**
+         * Hàm xử lý sự kiện đóng toast message
+         * @author LTVIET (19/04/2023)
+         */
+         closeToastSucess(){
+            this.isShowToastSuccess = false;
         },
 
         /**
@@ -444,12 +512,18 @@ export default {
                 this.handleEventKeyDownEnterInputSearch();
             }
         },
+
+        /**
+         * Hàm xử lý sự kiện click vào chức năng trong table 
+         * @param {*} values mảng chứa các giá trị (kiểu chức năng(sửa,xóa), đối tượng tài sản)
+         * @author LTVIET (16/03/2023)
+         */
         handleEventClickFunctionTable(values){
             let type = values[0];
             let item = values[1];
             if(type == enumJS.type.edit){
-                this.isShowBudgetAsset = true;
-                this.assetId = item.fixed_asset_id;
+                this.labelBudgetForm = this.labelBudgetForm.replace("{0}",item.fixed_asset_name);
+                this.getAssetbyId(item.fixed_asset_id);
             }else if(type == enumJS.type.delete){
                 let index = this.assetIncrement.assets.indexOf(item);
                 this.assetIncrement.assets.splice(index,1);

@@ -6,9 +6,10 @@
         <input
             :id="idInput"
             ref="mInput"
-            :class="[{'input--error':inValid},{'disableInputClass':disable}]" 
+            :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
             :style="styleInput"
             v-model="value"
+            :tabindex="disable ? -1:0"
             type="text" 
             autocomplete="off"
             :disabled="disable"
@@ -70,6 +71,10 @@ export default {
         textAlign:{
             type: String,
             default: "left"
+        },
+        classInput:{
+            type: String,
+            default: ""
         }
     },
     components:{
