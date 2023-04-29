@@ -1,5 +1,5 @@
 <template>
-    <div class="main" :key="keyBody" style="min-width: 719px;" @keypress="handleEventKeyDown" @keyup="handleEventKeyUp">
+    <div class="main" :key="keyBody" style="min-width: 719px;outline: none;" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
         <div class="content" style="padding-bottom: 0;">
             <div class="content-header">
                 <div class="content-header__left">
@@ -10,7 +10,7 @@
                     <MButton
                         label="Thêm"
                         class="item1 btn--main"
-                        @btnAddOnClickBtn="btnClickOpenForm">
+                        @btnAddOnClickBtn="btnClickOpenAddAssetIncrementForm">
                     </MButton>
                     <div class="asset_increment--item1" style="position: relative;" v-outside="handleEventClickOutsideInterfaceSelected">
                         <MButtonIcon
@@ -276,7 +276,9 @@ export default {
             dataHeaderTableDetail: resourceJS.table.tableDetailAssetIncrementList.header,
             dataAssetIncrements: [],
             dataAssets: [],
-            tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple
+            tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple,
+            previousKeyCtrl: false,
+            previousKeyShift: false,
         }
     },
     created() {
@@ -312,6 +314,7 @@ export default {
         handleEventClickOutsideInterfaceSelected(){
             this.isShowInterfaceSelecte = false;
         },
+
         /**
          * Hàm nhận giá trị pageSize khi chọn giá trị trong dropdown trong table master
          * @param {*} value giá trị của pageSize
@@ -334,9 +337,27 @@ export default {
             this.getDataTableMaster();
         },
 
-        handleEventKeyDown(){
-
+        handleEventKeyDown(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+            if(this.previousKeyCtrl){
+                event.preventDefault();
+                if(keyCode == enumJS.key1){
+                    this.btnClickOpenAddAssetIncrementForm();
+                }
+            }
+            
         },
+
+        handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
+            }
+        },
+
 
         /**
          * Hàm gọi api lấy dư liệu của table master
@@ -418,13 +439,14 @@ export default {
         handleEventCloseFormAssetIncrementDetail(){
             this.$refs["mTableMaster"].selectedRowTable(1);
             this.isShowDetail = false;
+            this.setFocusDefault();
         },
 
         /**
-         * Hàm xử lý sự kiện hiển thị danh sách lựa chọn loại giao diện (giao diện ngang, giao diện dọc)
+         * Hàm xử lý sự kiện hiển thị form thêm chứng từ mới
          * @author LTVIET (19/04/2023)
          */
-        btnClickOpenForm(){
+        btnClickOpenAddAssetIncrementForm(){
             this.isShowDetail = true;
             this.labelForm = resourceJS.titlteForm.assetIncrement.addForm;
             this.typeForm = enumJS.type.add;
@@ -632,6 +654,7 @@ export default {
             this.getDataTableMaster();
             this.$refs["mTableMaster"].checkboxActive = [];
             this.$refs["mTableMaster"].entityCheckboxActive = [];
+            this.setFocusDefault();
         },
 
         /**

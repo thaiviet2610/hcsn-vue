@@ -900,6 +900,7 @@ export default {
             this.handleEventKeyStrokesShift(event,keyCode);
         },
 
+
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Shift + keycode
          * @param {*} event Sự kiện khi bấm phím
@@ -935,27 +936,28 @@ export default {
          */
         handleEventKeyStrokesCtrl(event,keyCode){
             if(this.previousKeyCtrl){
+                event.preventDefault();
                 let table = this.$refs[this.refElements.table];
                 switch (keyCode) {
                     // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:
-                        this.handleEventKeyStrokesCtrl1(event);
+                        this.handleEventKeyStrokesCtrl1();
                         break;
                     // nếu tổ hợp phím là Ctrl+0 thì gọi đến form nhân bản tài sản
                     case enumJS.key0:
-                        this.handleEventKeyStrokesCtrl0(event,table);
+                        this.handleEventKeyStrokesCtrl0(table);
                         break;
                     // nếu tổ hợp phím là Ctrl+E thì gọi đến form sửa tài sản
                     case enumJS.keyE:
-                        this.handleEventKeyStrokesCtrlE(event,table);
+                        this.handleEventKeyStrokesCtrlE(table);
                         break;
                     // nếu tổ hợp phím là Ctrl+D thì gọi đến form xóa tài sản
                     case enumJS.keyD:
-                        this.handleEventKeyStrokesCtrlD(event);
+                        this.handleEventKeyStrokesCtrlD();
                         break;
                     // nếu tổ hợp phím là Ctrl+P thì gọi đến form xuất ra file excel
                     case enumJS.keyP:
-                        this.handleEventKeyStrokesCtrlP(event);
+                        this.handleEventKeyStrokesCtrlP();
                         break;
                     default:
                         break;
@@ -965,24 +967,20 @@ export default {
 
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + 1 thì gọi đến chức năng thêm tài sản
-         * @param {*} event Sự kiện khi bấm phím
          * @author LTVIET (29/03/2023)
          */
-        handleEventKeyStrokesCtrl1(event){
-            event.preventDefault();
+        handleEventKeyStrokesCtrl1(){
             this.btnClickOpenForm();
             this.previousKeyCtrl = false;
         },
 
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + 0 thì gọi đến chức năng nhân bản tài sản
-         * @param {*} event Sự kiện khi bấm phím
          * @param {*} table Đối tượng table
          * @author LTVIET (29/03/2023)
          */
-         handleEventKeyStrokesCtrl0(event,table){
+         handleEventKeyStrokesCtrl0(table){
             let quantityCheckbox = table.entityCheckboxActive.length;
-            event.preventDefault();
             if(quantityCheckbox == 1){
                 let asset = table.getItemSelected();
                 table.handleEventClickFunction(enumJS.type.clone,asset[0]);
@@ -992,38 +990,33 @@ export default {
 
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + E thì gọi đến chức năng sửa tài sản
-         * @param {*} event Sự kiện khi bấm phím
          * @param {*} table Đối tượng table
          * @author LTVIET (29/03/2023)
          */
-         handleEventKeyStrokesCtrlE(event,table){
-            let quantityCheckbox = table.table.entityCheckboxActive.length;
-            event.preventDefault();
+         handleEventKeyStrokesCtrlE(table){
+            const assets = table.getEntityCheckboxActiveList();
+            let quantityCheckbox = assets.length;
             if(quantityCheckbox == 1){
-                let asset = table.getItemSelected();
-                table.handleEventClickFunction(enumJS.type.edit,asset[0]);
+                let asset = this.dataAssets[assets[0].index - 1];
+                this.handleEventOpenForm([enumJS.type.edit,asset]);
                 this.previousKeyCtrl = false;
             }
         },
 
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + D thì gọi đến chức năng xóa tài sản
-         * @param {*} event Sự kiện khi bấm phím
          * @author LTVIET (29/03/2023)
          */
-         handleEventKeyStrokesCtrlD(event){
-            event.preventDefault();
+         handleEventKeyStrokesCtrlD(){
             this.btnOnClick();
             this.previousKeyCtrl = false;
         },
 
         /**
          * Hàm xử lý sự kiện khi bấm tổ hợp phím Ctrl + P thì gọi đến chức năng xuất dữ liệu ra file excel
-         * @param {*} event Sự kiện khi bấm phím
          * @author LTVIET (29/03/2023)
          */
-         handleEventKeyStrokesCtrlP(event){
-            event.preventDefault();
+         handleEventKeyStrokesCtrlP(){
             this.addOnClicKBtnExportExcel();
             this.previousKeyCtrl = false;
         },

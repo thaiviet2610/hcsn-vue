@@ -317,6 +317,7 @@ tfoot{
     overflow: auto ;
     position: relative;
     border-bottom: none !important;
+    outline: none;
 }
 
 .content__table tbody tr:hover{

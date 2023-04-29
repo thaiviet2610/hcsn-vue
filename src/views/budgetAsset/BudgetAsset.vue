@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div  class="form editForm"
+        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp"
         >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
@@ -54,6 +54,7 @@
                                                     :is-icon="false" 
                                                     :required="true"
                                                     :disable="false"
+                                                    :idCombobox="`mCombobox_${index}`"
                                                     :valueInput="priceList[index].budget_id"
                                                     :dataCombobox="dataComboboxBudget"
                                                     :key="keyComboboxBudget"
@@ -61,6 +62,7 @@
                                                     propValue="budget_id" 
                                                     :itemHeight = 36
                                                     :quantityItemDisplay = 4
+                                                    @getValueIdComboboxFocus="getValueIdComboboxFocus"
                                                     @getInputCombobox="getValueBudget($event,index)">
                                                 </MCombobox>
                                             </div>
@@ -162,6 +164,7 @@ import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import configJS from '@/js/config';
 import axios from 'axios';
 import resourceJS from '@/js/resourceJS';
+import enumJS from '@/js/enum';
 export default {
     name: "BudgetsAsset",
     components:{
@@ -202,7 +205,8 @@ export default {
             dataComboboxBudget: [],
             keyComboboxBudget: 0,
             assetApi: configJS.api.asset.assetApi,
-
+            previousKeyCtrl: false,
+            indexComboboxFocus: -1
         }
     },
     created() {
@@ -259,7 +263,7 @@ export default {
             .then(res=>{
                 this.dataComboboxBudget = res.data;
                 this.keyComboboxBudget = ++this.keyComboboxBudget;
-                this.setFocus();
+                this.setFocus(0);
                 this.isShowLoad = false;
             })
             .catch(err=>{
@@ -268,7 +272,19 @@ export default {
             })
         },
         
-        
+        /**
+         * Hàm lấy ra giá trị id của combobox đang được focus
+         * @param {*} id id của combobox
+         * @author LTVIET (18/04/2023)
+         */
+        getValueIdComboboxFocus(id){
+            for(let i = id.length-1; i>=0;i--){
+                if(!Number(id[i])){
+                    this.indexComboboxFocus = Number(id.substring(i+1,id.length));
+                    break;
+                }
+            }
+        },
 
         /**
          * Hàm xử lý sự kiện đóng form
@@ -276,15 +292,64 @@ export default {
          */
         handleEventBtnClickCancel(){
             const newValueBudget = JSON.stringify(this.priceList);
-            console.log("newValue:",newValueBudget);
-            console.log("oldvalueBudget:",this.oldvalueBudget);
             if(newValueBudget == this.oldvalueBudget){
                 this.$emit('onClose');
             }else{
                 this.isShowDialogFormCancel = true;
             }
 
-            
+        },
+
+        /**
+         * Hàm xử lý sự kiện keydown
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyDown(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+
+            if(keyCode == enumJS.keyEsc){
+                this.handleEventBtnClickCancel();
+            }
+
+            if(this.previousKeyCtrl){
+                event.preventDefault();
+                switch (keyCode) {
+                    case enumJS.keyS:
+                        this.handleEventBtnClickSave();
+                        break;
+                    case enumJS.keyA:
+                        this.handleEventAddBudgetAsset();
+                        break;
+                    case enumJS.keyD:
+                        if(this.indexComboboxFocus >= 0){
+                            this.handleEventDeleteBudgetAsset(this.indexComboboxFocus);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                for(let i=0;i<=this.priceList.length;i++){
+                    if(keyCode == (i+48)){
+                        this.setFocus(i-1);
+                    }
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
+            }
         },
 
         /**
@@ -320,7 +385,7 @@ export default {
 
             // Nếu click button "Hủy" thì đóng dialog lại
             if(label == this.btnDialogCancelForm[2][2]){
-                this.setFocus();
+                this.setFocus(0);
                 return;
             }
 
@@ -382,12 +447,13 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện focus vào combobox đầu tiên khi khởi tạo form 
+         * Hàm xử lý sự kiện focus vào combobox
+         * @param {*} index vị trí combobox muốn focus
          * @author LTVIET (18/04/2023)
          */
-        setFocus(){
+        setFocus(index){
             this.$nextTick(function() {
-                this.$refs["mCombobox_0"][0].setFocus();
+                this.$refs[`mCombobox_${index}`][0].setFocus();
             })
         },
 

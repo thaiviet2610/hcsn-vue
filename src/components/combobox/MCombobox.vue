@@ -125,6 +125,10 @@ export default {
         dataCombobox:{
             type: [Object,Array],
             default: null
+        },
+        idCombobox: {
+            type: String,
+            default: ""
         }
 
     },
@@ -247,6 +251,14 @@ export default {
                 this.$refs["mInputCombobox"].focus();
             })
         }, 
+
+        /**
+         * Hàm gửi id của combobx ra lớp cha khi được focus
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventFocusInput(){
+            this.$emit('getValueIdComboboxFocus',this.idCombobox);
+        },
 
         /**
          * Hàm tìm item tương ứng với giá trị truyền từ ngoài vào và gán vào value

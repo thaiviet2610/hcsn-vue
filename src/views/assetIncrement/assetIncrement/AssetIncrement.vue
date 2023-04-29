@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div  class="form editForm"
+        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp"
         >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
@@ -97,6 +97,7 @@ import configJS from '@/js/config';
 import resourceJS from '@/js/resourceJS';
 import commonJS from '@/js/common';
 import axios from 'axios';
+import enumJS from '@/js/enum';
 export default {
     name: "AssetIncrement",
     components:{
@@ -123,6 +124,7 @@ export default {
             btnCancelFormTooltip: resourceJS.tooltip.asssetSelected.btnCancelForm,
             btnSaveFormTooltip: resourceJS.tooltip.asssetSelected.btnSaveForm,
             btnCloseFormTooltip: resourceJS.tooltip.asssetSelected.btnCloseForm,
+            previousKeyCtrl: false
         }
     },
     created() {
@@ -198,6 +200,39 @@ export default {
             this.$nextTick(function(){
                 this.$refs["refSearch"].setFocus();
             })
+        },
+
+        /**
+         * Hàm xử lý sự kiện keydown
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyDown(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+
+            if(keyCode == enumJS.keyEsc){
+                this.handleEventBtnClickCancel();
+            }
+
+            if(this.previousKeyCtrl && keyCode == enumJS.keyS){
+                event.preventDefault();
+                this.handleEventBtnClickSave();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
+            }
         },
 
         /**

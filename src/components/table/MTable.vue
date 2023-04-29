@@ -1,7 +1,7 @@
 <template>
     <!-- Khi table có dữ liệu phù hợp  -->
     <div v-if="dataBody.length == 0" class="content__table" >
-      <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none; height: 100%;"  >
+      <table ref="table2"  :key="keyTable"   style="border-bottom: none;box-shadow: none; height: 100%;"  >
         <!-- phần title của table  -->
         <thead>
           <tr>
@@ -190,7 +190,7 @@
       </table>
       
     </div>
-    <div v-else class="content__table" >
+    <div v-else class="content__table" :tabindex="0" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown">
       <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
         <!-- phần title của table  -->
         <thead>
@@ -216,7 +216,7 @@
           </tr>
         </thead>
         <!-- phần body của table  -->
-        <tbody @keyup="handleEventKeyUp" @keydown="handleEventKeyDown">
+        <tbody>
           <tr style="position: relative;"
             :ref="`mRow_${1+1}`"
             @contextmenu="handleEventClickRightMouse($event,index)"
@@ -235,6 +235,7 @@
                 :idCheckbox="`idCheckbox_${index+1}`"
                 :checked="checkbox[index + 1]"
                 @addOnClick="markCheckbox(index + 1)"
+                v-outside="handleEventClickOutsideCheckbox"
                 >
               </MCheckbox>
             </td>
@@ -553,7 +554,8 @@ export default {
       indexRowSelected: 0,
       totalRecord: 0,
       clickFunction: false,
-      textNoData: resourceJS.table.noDataTable
+      textNoData: resourceJS.table.noDataTable,
+      isDblClick: true,
     };
   },
   created() {
@@ -626,6 +628,14 @@ export default {
         this.rowSelected.fill(false);
         this.rowSelected[this.indexRowSelected] = true;
         this.keyContextMenu=++this.keyContextMenu;
+    },
+
+    /**
+     * Hàm xử lý sự kiện khi click ra ngoài checkbox
+     * @author LTVIET (02/03/2023)
+     */
+    handleEventClickOutsideCheckbox(){
+      this.isDblClick = true;
     },
 
     /**
@@ -731,7 +741,9 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     btnAddOnDblClickRowTable(index) {
-      this.handleEventClickFunction(enumJS.type.edit,index-1);
+      if(this.isDblClick){
+        this.handleEventClickFunction(enumJS.type.edit,index-1);
+      }
     },
 
     /**
@@ -825,9 +837,16 @@ export default {
      * @author LTVIET (01/04/2023)
      */
      handleEventKeyArrowUp(){
-      if(this.indexCheckbox > 0){
-        let index = (this.indexCheckbox - 1) > 0 ? (this.indexCheckbox - 1) : 1;
-        this.resetCheckbox();
+      
+      if(this.indexRowSelected > 0){
+        let index = (this.indexRowSelected - 1) > 0 ? (this.indexRowSelected - 1) : this.pageSize;
+        this.rowSelected.fill(false);
+        this.rowSelected[index] = true;
+        this.indexRowSelected = index;
+      }
+      else if(this.indexCheckbox > 0){
+        this.markCheckbox(this.indexCheckbox,false);
+        let index = (this.indexCheckbox - 1) > 0 ? (this.indexCheckbox - 1) : this.pageSize;
         this.markCheckbox(index,true);
       }
     },
@@ -837,9 +856,15 @@ export default {
      * @author LTVIET (01/04/2023)
      */
     handleEventKeyArrowDown(){
-      if(this.indexCheckbox > 0){
-        let index = (this.indexCheckbox + 1) > this.pageSize ? this.pageSize : (this.indexCheckbox + 1);
-        this.resetCheckbox();
+      if(this.indexRowSelected > 0){
+        let index = (this.indexRowSelected + 1) > this.pageSize ? 1 : (this.indexRowSelected + 1);
+        this.rowSelected.fill(false);
+        this.rowSelected[index] = true;
+        this.indexRowSelected = index;
+      }
+      else if(this.indexCheckbox > 0){
+        this.markCheckbox(this.indexCheckbox,false);
+        let index = (this.indexCheckbox + 1) > this.pageSize ? 1 : (this.indexCheckbox + 1);
         this.markCheckbox(index,true);
       }
     },
@@ -924,6 +949,7 @@ export default {
           this.$refs["mCheckbox_0"].setFocus();
           
         }else if(index > 0){
+
           this.$refs[`mCheckbox_${index}`][0].setFocus();
         }
       }
@@ -971,6 +997,7 @@ export default {
       this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
       this.setFocusCheckbox(index);
       this.clickCheckbox = true;
+      this.isDblClick = false;
     },
 
     /**

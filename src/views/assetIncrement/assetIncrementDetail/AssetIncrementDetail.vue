@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div  class="form editForm">
+        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
                 <div class="form-header">
@@ -261,6 +261,7 @@ export default {
             isShowToastSuccess: false,
             notifyToastSuccess: "",
             contentToastSuccess: "",
+            previousKeyCtrl: false
         }
     },
     created() {
@@ -299,6 +300,9 @@ export default {
         this.setFocus();
     },
     methods: {
+        
+
+
         /**
          * Hàm lấy ra đối tượng asset theo id
          * @param {*} id id của đối tượng cần truy vấn
@@ -420,6 +424,57 @@ export default {
          */
         handleEventCloseformSelecteAssetIncrement(){
             this.isShowSelectAssetIncrement = false;
+            this.setFocus();
+        },
+
+        /**
+         * Hàm xử lý sự kiện keydown
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyDown(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = true;
+            }
+
+            if(keyCode == enumJS.keyEsc){
+                this.handleEventBtnClickCancel();
+            }
+
+            if(this.previousKeyCtrl){
+                event.preventDefault();
+                const index = this.$refs["mTable"].indexRowSelected;
+                const asset = this.assetIncrement.assets[index - 1];
+                switch (keyCode) {
+                    case enumJS.keyS:
+                        this.handleEventBtnClickSave();
+                        break;
+                    case enumJS.key1:
+                        this.btnClickOpenFormSelectedAsset();
+                        break;
+                    case enumJS.keyE:
+                        this.handleEventClickFunctionTable([enumJS.type.edit,asset]);
+                        break;
+                    case enumJS.keyD:
+                        this.handleEventClickFunctionTable([enumJS.type.delete,asset]);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (18/04/2023)
+         */
+         handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
+            }
         },
 
         /**
@@ -437,6 +492,7 @@ export default {
         handleEventCloseFormBudgetAsset(){
             this.isShowBudgetAsset = false;
             this.getDataTable();
+            this.setFocus();
         },
 
         /**
@@ -459,6 +515,7 @@ export default {
             setTimeout(() => {
                 this.closeToastSucess();
             }, 3000);
+            this.setFocus();
         },
 
         /**
@@ -482,6 +539,7 @@ export default {
             }
             this.getDataTable();
             this.isShowSelectAssetIncrement = false;
+            this.setFocus();
         },
 
         /**
@@ -637,7 +695,6 @@ export default {
                 AssetsAdd: this.assetsAdd.length == 0 ? null: this.assetsAdd,
                 AssetsDelete: this.assetsDelete.length == 0 ? null: this.assetsDelete
             }
-            console.log(entity);
             this.isShowLoad = false;
             axios.put(this.assetIncrementApi,entity)
             .then(()=>{

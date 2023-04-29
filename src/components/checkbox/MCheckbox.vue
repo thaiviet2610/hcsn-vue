@@ -1,18 +1,17 @@
 <template>
-    <button 
+    <!-- <button 
         ref="mCheckbox"
         v-if="checked"
         @click="addOnClick" 
         class="checkbox">
         <div class="checkbox__true"></div>
-    </button>
+    </button> -->
 
     <button 
         ref="mCheckbox"
-        v-else  
         @click="addOnClick" 
         class="checkbox">
-        <div class="checkbox__false"></div>
+        <div class="checkbox__false" :class="{'checkbox__true':checked}"></div>
     </button>
 </template>
 
