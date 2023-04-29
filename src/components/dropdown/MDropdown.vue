@@ -1,5 +1,5 @@
 <template>
-    <div class="dropdown">
+    <div class="dropdown" v-outside="handleEventClickOutside">
         <!-- phần label của dropdown (nếu có)  -->
         <label v-if="label" for=""></label>
         <!-- phần input của dropdown  -->
@@ -112,6 +112,14 @@ export default {
     },
     methods: {
         /**
+         * Hàm sử lý sự kiện ẩn đi dropdown-data khi click ra ngoài
+         * @author LTVIET (11/03/2023)
+         */
+        handleEventClickOutside(){
+            this.isShowData = false;
+        },
+        
+        /**
          * Hàm xử lý sự kiến click button ẩn/hiện data
          * @author LTVIET (11/03/2023)
          */
@@ -168,29 +176,29 @@ export default {
          * Hàm xử lý sự kiện blur khỏi input
          * @author LTVIET (11/03/2023)
          */
-        addEventBlurInput(){
-            //1. ẩn đi danh sách data
-            this.isShowData = false;
-            if(!this.valueSelected){
-                this.indexItemSelected = 0;
-                this.valueSelected = this.dataSearch[0];
-                this.$emit("getValueDropdown",Number(this.valueSelected));
-            }
-            if(this.findIndexSelected == -1){
-                //2. nếu độ dài danh sách tìm kiếm = 0
-                //--> giá trị input không có trong danh sách data
-                //2.1. gán lại dữ liệu cho dánh sách tìm kiếm 
-                this.dataSearch = this.data;
-                //2.1. gán giá trị input cho giá trị đầu tiên của danh sách
-                this.valueSelected = this.dataSearch[0];
-                this.indexItemSelected = 0;
-                this.$emit("getValueDropdown",Number(this.valueSelected));
-                //2.2. hiển thị thông báo không có trong danh sách data
-                this.isShowDialogNotify = true;
-            }else{
-                this.$emit("getValueDropdown",Number(this.valueSelected));
-            }
-        },
+        // addEventBlurInput(){
+        //     //1. ẩn đi danh sách data
+        //     this.isShowData = false;
+        //     if(!this.valueSelected){
+        //         this.indexItemSelected = 0;
+        //         this.valueSelected = this.dataSearch[0];
+        //         // this.$emit("getValueDropdown",Number(this.valueSelected));
+        //     }
+        //     if(this.findIndexSelected == -1){
+        //         //2. nếu độ dài danh sách tìm kiếm = 0
+        //         //--> giá trị input không có trong danh sách data
+        //         //2.1. gán lại dữ liệu cho dánh sách tìm kiếm 
+        //         this.dataSearch = this.data;
+        //         //2.1. gán giá trị input cho giá trị đầu tiên của danh sách
+        //         this.valueSelected = this.dataSearch[0];
+        //         this.indexItemSelected = 0;
+        //         // this.$emit("getValueDropdown",Number(this.valueSelected));
+        //         //2.2. hiển thị thông báo không có trong danh sách data
+        //         this.isShowDialogNotify = true;
+        //     }else{
+        //         this.$emit("getValueDropdown",Number(this.valueSelected));
+        //     }
+        // },
 
         /**
          * Hàm xử lý sự kiện xóa bỏ mặc định của data khi blur input
