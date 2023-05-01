@@ -4,7 +4,6 @@
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required"> *</span></label>
         <!-- input nhập dữ liệu -->    
         <input
-            :id="idInput"
             ref="mInput"
             :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
             :style="styleInput"
@@ -61,10 +60,6 @@ export default {
             default: null
         },
         valueInput: {
-            type: String,
-            default: ""
-        },
-        idInput: {
             type: String,
             default: ""
         },

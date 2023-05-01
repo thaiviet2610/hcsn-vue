@@ -1,7 +1,6 @@
 <template>
     <button 
         ref="mButton"
-        :id="idButton"
         class="btn--outline"
         @click="addEventClickBtn"
         >
@@ -14,18 +13,11 @@
 export default {
     name:"MButton",
     props: {
+        // tên button
         label: {
             type: String,
             required: false
         },
-        typeButton: {
-            type: String,
-            required: false
-        },
-        idButton: {
-            type: String,
-            default: ""
-        }
     },
     data() {
         return {

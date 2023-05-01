@@ -156,14 +156,26 @@ export default {
         }
     },
     methods: {
+        /**
+         * Hàm xử lý sự kiện click btn thu gọn sidebar
+         * @author LTVIET (01/04/2023)
+         */
         handleEventClickBtnCollapseSidebar(){
             this.isShow = false;
         },
 
+        /**
+         * Hàm xử lý sự kiện click btn mở sidebar
+         * @author LTVIET (01/04/2023)
+         */
         handleEventOpenSidebar(){
             this.isShow = true;
         },
 
+        /**
+         * Hàm xử lý sự kiện click button hiển thị danh sách lựa chọn trong tài sản
+         * @author LTVIET (01/04/2023)
+         */
         addOnClicKBtnshowDetailAsset(){
             this.isShowDetailAsset = !this.isShowDetailAsset;
         }

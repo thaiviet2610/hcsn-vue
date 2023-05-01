@@ -6,17 +6,17 @@
                 <!-- phần header của form  -->
                 <div class="form-header">
                     <!-- title của form  -->
-                    <div class="asset_increment__form-header__text">Chọn tài sản ghi tăng</div>
+                    <div class="asset_increment__form-header__text">{{ assetNoActiveInfo.label }}</div>
                     <!-- button đóng form  -->
-                    <div class="btn-close-asset-selected">
+                    <div class="btn-close-asset-no-active">
                         <MButtonIcon
                             class="btn-header__icon"
                             classIcon="form-header__icon"
                             @addOnClickBtnIcon="handleEventBtnClickCancel">
                         </MButtonIcon>
                         <MTooltip
-                            :text="btnCloseFormTooltip"
-                            class="btn-close-asset-selected-tooltip"
+                            :text="assetNoActiveInfo.button.btnClose.tooltip"
+                            class="btn-close-asset-no-active-tooltip"
                         ></MTooltip>
                     </div>
                 </div>
@@ -25,9 +25,9 @@
                     <div class="header__body--down" style="padding-bottom: 16px;">
                         <div class="input down-left">
                             <MInput 
+                                :ref="assetNoActiveInfo.ref.inputSearch"
                                 @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                                 @getValueEventInput="handleEventGetValueInputSearch"
-                                ref="refSearch"
                                 placeholder="Tìm kiếm theo Mã, tên tài sản"
                                 :iconInput="true">
                             </MInput>
@@ -36,7 +36,7 @@
                     
                     <div style="width: 100%;height: 515px;overflow: auto;">
                         <MTable 
-                        ref="mTable"
+                        :ref="this.assetNoActiveInfo.ref.table"
                         :tableInfo="tableInfo"
                         :dataPageSize="dataPageSize"
                         :dataHeader="dataHeaderTable"
@@ -60,27 +60,26 @@
                 <!-- phần footer của form  -->
                 <div class="form-footer">
                     <!-- button lưu form  -->
-                    <div class="btn-save-asset-selected">
+                    <div class="btn-save-asset-no-active">
                         <MButton
                             class="btn--main"
-                            label="Lưu"
+                            :label="assetNoActiveInfo.button.btnSave.label"
                             @btnAddOnClickBtn="handleEventBtnClickSave">
                         </MButton>
                         <MTooltip
-                            :text="btnSaveFormTooltip"
-                            class="btn-save-asset-selected-tooltip"
+                            :text="assetNoActiveInfo.button.btnSave.tooltip"
+                            class="btn-save-asset-no-active-tooltip"
                         ></MTooltip>
                     </div>
                     <!-- button hủy form  -->
-                    <div class="btn-cancel-asset-selected">
+                    <div class="btn-cancel-asset-no-active">
                         <MButton
-                            label="Hủy"
-                            style="border: 0;"
+                            :label="assetNoActiveInfo.button.btnCancel.label"
                             @btnAddOnClickBtn="handleEventBtnClickCancel"  >
                         </MButton>
                         <MTooltip
-                            :text="btnCancelFormTooltip"
-                            class="btn-cancel-asset-selected-tooltip"
+                            :text="assetNoActiveInfo.button.btnCancel.tooltip"
+                            class="btn-cancel-asset-no-active-tooltip"
                         ></MTooltip>
                     </div>
                 </div>
@@ -99,7 +98,7 @@ import commonJS from '@/js/common';
 import axios from 'axios';
 import enumJS from '@/js/enum';
 export default {
-    name: "AssetIncrement",
+    name: "AssetNoActive",
     components:{
     },
     props:{
@@ -111,20 +110,18 @@ export default {
     data() {
         return {
             assetFilterApi: configJS.api.asset.assetFilterNotInApi,
-            tableInfo: resourceJS.table.tableAssetIncrementDetailSelected,
-            dataPageSize: resourceJS.table.tableAssetIncrementDetailSelected.dataPageSize ,
+            tableInfo: resourceJS.table.tableAssetNoActive,
+            dataPageSize: resourceJS.table.tableAssetNoActive.dataPageSize ,
             keyword: "",
             pageSize: 0,
             pageNumber: 1,
-            dataHeaderTable: resourceJS.table.tableAssetIncrementDetailSelected.header,
+            dataHeaderTable: resourceJS.table.tableAssetNoActive.header,
             dataBodyTable: [],
             dataFooterTable: [],
             totalRecord: 0,
             dataAssets: [],
-            btnCancelFormTooltip: resourceJS.tooltip.asssetSelected.btnCancelForm,
-            btnSaveFormTooltip: resourceJS.tooltip.asssetSelected.btnSaveForm,
-            btnCloseFormTooltip: resourceJS.tooltip.asssetSelected.btnCloseForm,
-            previousKeyCtrl: false
+            previousKeyCtrl: false,
+            assetNoActiveInfo: resourceJS.assetNoActive
         }
     },
     created() {
@@ -181,8 +178,8 @@ export default {
                 ];
                 this.dataAssets = res.data.Data;
                 this.totalRecord = res.data.TotalRecord;
-                this.$refs["mTable"].totalRecord = this.totalRecord;
-                this.$refs["mTable"].getUnitData();
+                this.$refs[this.assetNoActiveInfo.ref.table].totalRecord = this.totalRecord;
+                this.$refs[this.assetNoActiveInfo.ref.table].getUnitData();
                 this.isShowLoad = false;
 
             })
@@ -198,7 +195,7 @@ export default {
          */
         setFocus(){
             this.$nextTick(function(){
-                this.$refs["refSearch"].setFocus();
+                this.$refs[this.assetNoActiveInfo.ref.inputSearch].setFocus();
             })
         },
 
@@ -292,5 +289,5 @@ export default {
 </script>
 
 <style scoped>
-@import url(./asset-increment.css);
+@import url(./asset-no-active.css);
 </style>

@@ -232,6 +232,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
+    overflow: none !important;
   }
   
   
@@ -331,6 +332,95 @@ em.specs {
 
 .asset-increment--footer-left{
     min-width: 520px !important;
+}
+
+.asset_increment_detail_list--column2{
+    width: 65px;
+    min-width: 65px;
+    padding-right: 10px;
+    text-align: center;
+}
+
+.asset_increment_detail_list--column2-tooltip{
+    top: 80% !important;
+    left: 30% !important;
+    /* transform: scale(1) !important; */
+}
+
+.asset_increment_detail_list--column2:hover{
+    cursor: default;
+}
+
+.asset_increment_detail_list--column2:hover .asset_increment_detail_list--column2-tooltip{
+    transform: scale(1) !important;
+    z-index: 100000 !important;
+}
+
+.asset_increment_detail_list--column3{
+    width: 110px;
+    min-width: 110px;
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+
+.asset_increment_detail_list--column4{
+    width: 140px;
+    min-width: 140px;
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+
+.asset_increment_detail_list--column6{
+    width: 357px;
+    min-width: 357px;
+    padding-right: 5px;
+    text-align: left;
+}
+
+
+.asset_increment_detail_list--column8{
+    width: 150px;
+    min-width: 150px;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+
+
+.asset_increment_detail_list--column9{
+    width: 150px;
+    min-width: 150px ;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+.asset_increment_detail_list--column9-tooltip{
+    top: 80% !important;
+    right: 30% !important;
+    /* transform: scale(1) !important; */
+}
+
+
+.asset_increment_detail_list--column9:hover .asset_increment_detail_list--column9-tooltip{
+    transform: scale(1) !important;
+    z-index: 100000 !important;
+}
+
+.asset_increment_detail_list--column10{
+    min-width: 150px;
+    width: 150px;
+    padding: 0 0 0 10px;
+    text-align: right;
+}
+
+.asset_increment_detail_list--column11{
+    width: 110px;
+    min-width: 110px;
+    padding-left: 10px;
+    padding-right: 15px;
+    text-align: center;
 }
 
 

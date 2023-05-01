@@ -146,6 +146,14 @@
                 </div>
             </div>
         </div>
+        <!-- dialog thông báo  -->
+        <MDialog 
+            v-if="isShowDialogNotify" 
+            :content="contentDialogNotifyErrorValidate"
+            :buttonInfo="btnDialogNotify"
+            @onClickBtn="handleEventCloseDialogNotify">
+        </MDialog>
+        <!-- dialog xác nhận đóng form  -->
         <MDialog
             :content="contentDialogFormCancel"
             v-if="isShowDialogFormCancel"
@@ -206,14 +214,17 @@ export default {
             keyComboboxBudget: 0,
             assetApi: configJS.api.asset.assetApi,
             previousKeyCtrl: false,
-            indexComboboxFocus: -1
+            indexComboboxFocus: -1,
+            btnDialogNotify: resourceJS.buttonDialog.notify,
+            contentDialogNotifyErrorValidate: "",
+            isShowDialogNotify: false
         }
     },
     created() {
         this.asset = this.propAsset;
-        this.oldvalueBudget = this.asset.cost_new;
+        this.oldvalueBudget = this.asset.cost_source;
         if(this.oldvalueBudget){
-            let budgets  = JSON.parse(this.asset.cost_new);
+            let budgets  = JSON.parse(this.asset.cost_source);
             for (const item of budgets) {
                 this.priceList.push(item);
             }
@@ -435,15 +446,24 @@ export default {
         },
 
         /**
+         * Hàm xử lý sự kiện click button đóng dialog
+         * @author LTVIET (29/04/2023)
+         */
+         handleEventCloseDialogNotify(){
+            this.isShowDialogNotify = false;
+            // if(this.itemError){
+            //     this.itemError.setFocus();
+            // }
+        },
+
+        /**
          * Hàm xử lý sự kiện lấy ra giá trị chi phí của nguồn từ input
          * @param {*} value giá trị chi phí của nguồn trong input
          * @param {*} index vị trí của đối tượng nguồn chi phí trong danh sách
          * @author LTVIET (18/04/2023)
          */
         getValueMountBudget(value,index){
-            if(value){
-                this.priceList[index].mount = value;
-            }
+            this.priceList[index].mount = value;
         },
 
         /**
@@ -462,16 +482,18 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         handleEventBtnClickSave(){
-            let check = this.validateEmpty();
+            let check = this.validateForm();
+            // let check = true;
             if(check){
-                this.asset.cost_new = JSON.stringify(this.priceList);
+                this.asset.cost_source = JSON.stringify(this.priceList);
                 this.asset.cost = this.mountTotal;
                 if(this.autoUpdate){
                     this.updateAsset();
                 }else{
-                    this.$emit('getValueCost',[this.asset.cost,this.asset.cost_new]);
+                    this.$emit('getValueCost',[this.asset.cost,this.asset.cost_source]);
                 }
             }
+            this.itemError = null;
         },
 
         /**
@@ -479,6 +501,7 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         updateAsset(){
+            console.log(this.asset);
             this.isShowLoad = true;
             axios.put(`${this.assetApi}/${this.asset.fixed_asset_id}`,this.asset)
             .then(()=>{
@@ -486,15 +509,128 @@ export default {
                 this.isShowLoad = false;
             })
             .catch(err=>{
-                console.log(err);
+                this.handleEventErrorAPI(err);
             })
         },
 
         /**
-         * Hàm validate các trường dữ liệu trống
+         * Hàm xử lý sự kiện gặp lỗi khi gọi API
+         * @param {*} error Lỗi cần xử lý
+         * @author LTVIET(24/04/2023)
+         */
+         handleEventErrorAPI(error){
+            console.log(error);
+            this.isShowLoad = false;
+            this.isShowDialogNotify = true;
+            // lỗi kết nối
+            if(error.code == "ERR_NETWORK"){
+                this.contentDialogNotifyErrorValidate = resourceJS.errorMsg.errorConnection;
+            }
+            else{
+                let errorData = error.response.data;
+                let errorCode = errorData.ErrorCode;
+                let message = errorData.UserMsg;
+                // Nếu là lỗi về dữ liệu
+                if(errorCode == enumJS.errorCode.inValid){
+                    this.handleEventErrorInvalid(errorData.MoreInfo);
+                }
+                // Các lỗi khác
+                else{
+                    this.contentDialogNotifyErrorValidate = message;
+                }
+                
+            }
+        },
+
+        /**
+         * Hàm nhận và xử lý lỗi từ backend
+         * @param {*} errors lỗi nhận được từ backend
+         * @author LTVIET(24/04/2023)
+         */
+        handleEventErrorInvalid(errors){
+            for (let error of errors) {
+                // validate lỗi code bị trùng
+                if(error.ValidateCode == enumJS.validateCode.CostSourceInValid){
+                    this.handleEventCostSourceError(error.Data);
+                }else{
+                    this.contentDialogNotifyErrorValidate = resourceJS.error.exception;
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý lỗi từ dữ liêu nguồn chi phí không hợp lệ
+         * @param {*} errors lỗi nhận được từ backend
+         * @author LTVIET(24/04/2023)
+         */
+        handleEventCostSourceError(erros){
+            this.isShowDialogNotify = false;
+            for (const error of erros) {
+                const validateCode = error.ValidateCode;
+                const dataError = error.Data;
+                if(validateCode == enumJS.validateCode.CostSourceEmpty){
+                    const index = dataError.Index;
+                    for (const propName of dataError.Data.reverse()) {
+                        console.log(propName);
+                        if(propName == "mount"){
+                            let item = this.$refs[`mInput_${index}`][0];
+                            item.inValid = true;
+                            item.notifyError = resourceJS.error.emptyInput;
+                            if(!this.itemError){
+                                this.itemError = item;
+                                this.itemError.setFocus();
+                            }
+                        }else{
+                            let item = this.$refs[`mCombobox_${index}`][0];
+                            item.inValid = true;
+                            item.notifyError = resourceJS.error.emptyInput;
+                            if(!this.itemError){
+                                this.itemError = item;
+                                this.itemError.setFocus();
+                            }
+                        }
+                    }
+                }
+                if(validateCode == enumJS.validateCode.CostSourceDuplicate){
+                    const index = dataError;
+                    let item = this.$refs[`mCombobox_${index}`][0];
+                    item.inValid = true;
+                    item.notifyError = resourceJS.validateBudget.duplicateBudget;
+                    if(!this.itemError){
+                        this.itemError = item;
+                        this.itemError.setFocus();
+                    }
+                }
+                if(validateCode == enumJS.validateCode.CostSourceMountLessOrEqualThanZero){
+                    const index = dataError;
+                    let item = this.$refs[`mInput_${index}`][0];
+                    item.inValid = true;
+                    item.notifyError = resourceJS.error.emptyInputNumber;
+                    if(!this.itemError){
+                        this.itemError = item;
+                        this.itemError.setFocus();
+                    }
+                }
+                
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện hiển thị lỗi thông báo của input 
+         * @param {*} item đối tượng cần hiển thị lỗi
+         * @param {*} message nội dung thông báo lỗi
+         * @author LTVIET(24/04/2023)
+         */
+        handleDisplayInputError(item,message){
+            item.inValid = true;
+            item.notifyError = message;
+        },
+
+        /**
+         * Hàm validate các trường dữ liệu
          * @author LTVIET (18/04/2023)
          */
-        validateEmpty(){
+        validateForm(){
             let check = true;
             for(let i = 0; i< this.priceList.length;i++){
                 let combobox = this.$refs[`mCombobox_${i}`][0];
@@ -541,7 +677,7 @@ export default {
         
         /**
          * Hàm validate giá trị của các input
-         * @param {*} input đốit tượng cần validate
+         * @param {*} input đối tượng cần validate
          * @author LTVIET (18/04/2023)
          */
         validateInput(input){

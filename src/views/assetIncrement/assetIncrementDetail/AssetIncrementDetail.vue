@@ -136,12 +136,12 @@
                 </div>
             </div>
         </div>
-        <AssetIncrement 
-            v-if="isShowSelectAssetIncrement"
+        <AssetNoActive 
+            v-if="isShowSelectAssetNoActive"
             :dataBodyApi="dataBodyApi"
             @onSave="handleEventSelectedAssets"
-            @onClose="handleEventCloseformSelecteAssetIncrement">
-        </AssetIncrement>
+            @onClose="handleEventCloseformSelecteAssetNoActive">
+        </AssetNoActive>
         <BudgetAsset 
             v-if="isShowBudgetAsset"
             :propAsset="asset"
@@ -192,16 +192,16 @@
 
 <script>
 import resourceJS from '@/js/resourceJS';
-import AssetIncrement from '../assetIncrement/AssetIncrement.vue';
 import enumJS from '@/js/enum';
 import BudgetAsset from '@/views/budgetAsset/BudgetAsset.vue';
 import configJS from '@/js/config';
 import axios from 'axios';
 import commonJS from '@/js/common';
+import AssetNoActive from '../assetNoActive/AssetNoActive.vue';
 export default {
     name: "AssetIncrementDetail",
     components:{
-        AssetIncrement,BudgetAsset
+        BudgetAsset,AssetNoActive
     },
     props:{
         propAssetIncrementCode: {
@@ -227,7 +227,7 @@ export default {
             dataPageSize: resourceJS.table.tableAssetIncrementDetail.dataPageSize ,
             isShowDialogAddFormCancel: false,
             isShowDialogEditFormCancel: false,
-            isShowSelectAssetIncrement: false,
+            isShowSelectAssetNoActive: false,
             isShowBudgetAsset: false,
             assets: [],
             asset: null,
@@ -422,8 +422,8 @@ export default {
          * Hàm xử lý sự kiện đóng form chọn tài sản
          * @author LTVIET (19/04/2023)
          */
-        handleEventCloseformSelecteAssetIncrement(){
-            this.isShowSelectAssetIncrement = false;
+        handleEventCloseformSelecteAssetNoActive(){
+            this.isShowSelectAssetNoActive = false;
             this.setFocus();
         },
 
@@ -482,7 +482,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
          btnClickOpenFormSelectedAsset(){
-            this.isShowSelectAssetIncrement = true;
+            this.isShowSelectAssetNoActive = true;
         },
 
         /**
@@ -505,7 +505,7 @@ export default {
                 return asset.fixed_asset_code == newAsset.fixed_asset_code;
             });
             asset.cost = newAsset.cost;
-            asset.cost_new = newAsset.cost_new;
+            asset.cost_source = newAsset.cost_source;
             this.assetIncrement.assets[asset.index-1] = asset;
             this.getDataTable();
             this.isShowBudgetAsset = false;
@@ -538,7 +538,7 @@ export default {
                 this.assetIncrement.assets.push(value[i]);
             }
             this.getDataTable();
-            this.isShowSelectAssetIncrement = false;
+            this.isShowSelectAssetNoActive = false;
             this.setFocus();
         },
 

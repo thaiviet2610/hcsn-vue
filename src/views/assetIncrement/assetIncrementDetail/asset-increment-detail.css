@@ -59,6 +59,7 @@
 }
 
 .asset_increment_detail--column2{
+    width: 55px;
     min-width: 55px;
     padding-right: 10px;
     text-align: center;
@@ -80,6 +81,7 @@
 }
 
 .asset_increment_detail--column3{
+    width: 100px;
     min-width: 100px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -87,6 +89,7 @@
 
 
 .asset_increment_detail--column4{
+    width: 100px;
     min-width: 100px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -102,6 +105,7 @@
 
 
 .asset_increment_detail--column8{
+    width: 130px;
     min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
@@ -110,6 +114,7 @@
 
 
 .asset_increment_detail--column9{
+    width: 130px;
     min-width: 130px ;
     padding: 0 0 0 10px;
     text-align: right;
@@ -129,6 +134,7 @@
 
 .asset_increment_detail--column10{
     min-width: 130px;
+    width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
 }

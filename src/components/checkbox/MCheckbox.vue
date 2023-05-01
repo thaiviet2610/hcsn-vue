@@ -1,12 +1,4 @@
 <template>
-    <!-- <button 
-        ref="mCheckbox"
-        v-if="checked"
-        @click="addOnClick" 
-        class="checkbox">
-        <div class="checkbox__true"></div>
-    </button> -->
-
     <button 
         ref="mCheckbox"
         @click="addOnClick" 
@@ -23,17 +15,12 @@ export default {
             type: Boolean,
             default: false
         },
-        idCheckbox: {
-            type: String,
-            default: ""
-        }
     },
     components:{
 
     },
     data() {
         return {
-            isFocus: false
         }
     },
     watch: {

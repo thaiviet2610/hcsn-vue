@@ -100,6 +100,26 @@ const resourceJS = {
         refElements: ['ref_fixed_asset_code','ref_fixed_asset_name','ref_department_code','ref_fixed_asset_category_code',
                 'ref_quantity','ref_cost','ref_life_time','ref_purchase_date','ref_production_year']
     },
+    assetNoActive:{
+        label: "Chọn tài sản ghi tăng",
+        ref:{
+            inputSearch: "refSearch",
+            table: "mTable"
+        },
+        button: {
+            btnSave: {
+                label: "Lưu",
+                tooltip: "Lưu (Ctrl+S)"
+            },
+            btnCancel: {
+                label: "Hủy",
+                tooltip: "Hủy (ESC)"
+            },
+            btnClose:{
+                tooltip: "Đóng (ESC)"
+            }
+        }
+    },
     validateProfessionalAssetDetail: {
         depreciationYearGreaterCost: "Hao mòn năm phải nhỏ hơn hoặc bằng giá trị nguyên giá!",
         depreciationRateDifferentLifeTimeValue: "Tỷ lệ hao mòn phải bằng 1/Số năm sử dụng!",
@@ -122,7 +142,8 @@ const resourceJS = {
         errorUpdateAssetFail: "Hành động sửa tài sản thất bại. Vui lòng thử lại sau!",
         errorAddAssetFail: "Hành động thêm tài sản thất bại. Vui lòng thử lại sau!",
         errorCloneAssetFail: "Hành động nhân bản tài sản thất bại. Vui lòng thử lại sau!",
-        notify: "Vui lòng điền giá trị hợp lệ vào các trường thông tin trước khi lưu!"
+        notify: "Vui lòng điền giá trị hợp lệ vào các trường thông tin trước khi lưu!",
+        exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!"
     },
     notify: {
         noAssetDelete: "Không có tài sản nào được chọn. Vui lòng chọn tài sản muốn xóa!",
@@ -251,11 +272,6 @@ const resourceJS = {
             btnDeleteMultiple: "Xóa nhiều"
         },
         asssetIncrementDetail:{
-            btnCloseForm: "Đóng (ESC)",
-            btnSaveForm: "Lưu (Ctrl+S)",
-            btnCancelForm: "Hủy (ESC)",
-        },
-        asssetSelected:{
             btnCloseForm: "Đóng (ESC)",
             btnSaveForm: "Lưu (Ctrl+S)",
             btnCancelForm: "Hủy (ESC)",
@@ -477,6 +493,7 @@ const resourceJS = {
             },
             footer: {
                 colspan: 4,
+                footerText: "Tổng cộng:",
                 pagingClass: "asset-increment-detail__footer-left",
                 footerClass: ["asset_increment_detail--column8","asset_increment_detail--column9","asset_increment_detail--column10"],
                 columnEmpty:[]
@@ -500,7 +517,7 @@ const resourceJS = {
             }      
             
         },
-        tableDetailAssetIncrementList:{
+        tableDownAssetIncrementList:{
             dataContextMenu: 
             {
                 add: {
@@ -533,56 +550,54 @@ const resourceJS = {
             header: [
                 {
                     title: "STT",
-                    columnClass: "asset_increment_detail--column2",
+                    columnClass: "asset_increment_detail_list--column2",
                     tooltip: "Số thứ tự",
-                    classTooltip: "asset_increment_detail--column2-tooltip",
+                    classTooltip: "asset_increment_detail_list--column2-tooltip",
                 },
                 {
                     title: "Mã tài sản",
-                    columnClass: "asset_increment_detail--column3",
+                    columnClass: "asset_increment_detail_list--column3",
                 },
                 {
                     title: "Tên tài sản",
-                    columnClass: "asset_increment_detail--column4",
+                    columnClass: "asset_increment_detail_list--column4",
                 },
                 {
                     title: "Bộ phận sử dụng",
-                    columnClass: "asset_increment_detail--column6",
+                    columnClass: "asset_increment_detail_list--column6",
                 },
                 {
                     title: "Nguyên giá",
-                    columnClass: "asset_increment_detail--column8",
+                    columnClass: "asset_increment_detail_list--column8",
                 },
                 {
                     title: "KH/HM lũy kế",
-                    columnClass: "asset_increment_detail--column9",
+                    columnClass: "asset_increment_detail_list--column9",
                     tooltip: "Khấu hao/Hao mòn lũy kế",
-                    classTooltip: "asset_increment_detail--column9-tooltip"
+                    classTooltip: "asset_increment_detail_list--column9-tooltip"
                 },
                 {
                     title: "Giá trị còn lại",
-                    columnClass: "asset_increment_detail--column10",
+                    columnClass: "asset_increment_detail_list--column10",
                 },
             ],
             bodyClass:{
-                index:"column2",
-                fixed_asset_code:"column3",
-                fixed_asset_name: "column4",
-                fixed_asset_category_name:"column5",
-                department_name: "column6",
-                quantity: "column7",
-                cost: "asset_increment_detail--column8",
-                depreciation_value: "asset_increment_detail--column9",
-                residual_value:"asset_increment_detail--column10"
+                index:"asset_increment_detail_list--column2",
+                fixed_asset_code:"asset_increment_detail_list--column3",
+                fixed_asset_name: "asset_increment_detail_list--column4",
+                department_name: "asset_increment_detail_list--column6",
+                cost: "asset_increment_detail_list--column8",
+                depreciation_value: "asset_increment_detail_list--column9",
+                residual_value:"asset_increment_detail_list--column10"
             },
             footer: {
-                footerText: "Tổng cộng:",
+                
                 pagingClass: "asset-increment-detail__footer-left",
-                footerClass: ["asset_increment_detail--column8","asset_increment_detail--column9","asset_increment_detail--column10"],
+                footerClass: ["asset_increment_detail_list--column8","asset_increment_detail_list--column9","asset_increment_detail_list--column10"],
                 columnEmpty:[]
             },
             function:{
-                columnClass: "column11",
+                columnClass: "asset_increment_detail_list--column11",
                 detail:[
                     {
                         type: enumJS.type.edit,
@@ -600,7 +615,7 @@ const resourceJS = {
             }      
             
         },
-        tableAssetIncrementDetailSelected:{
+        tableAssetNoActive:{
             dataContextMenu: 
             {
                 add: {
@@ -635,54 +650,54 @@ const resourceJS = {
                 header: [
                     {
                         title: "STT",
-                        columnClass: "asset-selected--column2",
+                        columnClass: "asset-no-active--column2",
                         tooltip: "Số thứ tự",
-                        classTooltip: "asset-selected--column2-tooltip"
+                        classTooltip: "asset-no-active--column2-tooltip"
                     },
                     {
                         title: "Mã tài sản",
-                        columnClass: "asset-selected--column3",
+                        columnClass: "asset-no-active--column3",
                     },
                     {
                         title: "Tên tài sản",
-                        columnClass: "asset-selected--column4",
+                        columnClass: "asset-no-active--column4",
                     },
                     {
                         title: "Bộ phận sử dụng",
-                        columnClass: "asset-selected--column6",
+                        columnClass: "asset-no-active--column6",
                     },
                     {
                         title: "Nguyên giá",
-                        columnClass: "asset-selected--column8",
+                        columnClass: "asset-no-active--column8",
                     },
                     {
                         title: "KH/HM lũy kế",
-                        columnClass: "asset-selected--column9",
+                        columnClass: "asset-no-active--column9",
                         tooltip: "Khấu hao/Hao mòn lũy kế",
-                        classTooltip: "asset-selected--column8-tooltip"
+                        classTooltip: "asset-no-active--column9-tooltip"
                     },
                     {
                         title: "Giá trị còn lại",
-                        columnClass: "asset-selected--column10 asset-selected__residual-value",
+                        columnClass: "asset-no-active--column10 asset-no-active__residual-value",
                     },
                 ],
                 bodyClass:{
-                    index: "asset-selected--column2",
-                    fixed_asset_code: "asset-selected--column3",
-                    fixed_asset_name: "asset-selected--column4",
-                    department_name: "asset-selected--column6",
-                    cost: "asset-selected--column8",
-                    depreciation_value: "asset-selected--column9",
-                    residual_value: "asset-selected--column10 asset-selected__residual-value"
+                    index: "asset-no-active--column2",
+                    fixed_asset_code: "asset-no-active--column3",
+                    fixed_asset_name: "asset-no-active--column4",
+                    department_name: "asset-no-active--column6",
+                    cost: "asset-no-active--column8",
+                    depreciation_value: "asset-no-active--column9",
+                    residual_value: "asset-no-active--column10 asset-no-active__residual-value"
                 },
                 footer: {
                     colspan:5,
-                    pagingClass: "asset-selected--footer-left",
-                    footerClass: ["asset-selected--column8","asset-selected--column9","asset-selected--column10 asset-selected__residual-value"],
+                    pagingClass: "asset-no-active--footer-left",
+                    footerClass: ["asset-no-active--column8","asset-no-active--column9","asset-no-active--column10 asset-no-active__residual-value"],
                     columnEmpty:[]
                 },
                 function:{
-                    columnClass: "asset-selected--column11",
+                    columnClass: "asset-no-active--column11",
                     detail:[
                         {
                             type: enumJS.type.edit,
@@ -701,7 +716,7 @@ const resourceJS = {
                     
             
         },
-        tableAssetIncrementMaster:{
+        tableUpAssetIncrementList:{
             dataContextMenu: 
             {
                 add: {
@@ -797,9 +812,6 @@ const resourceJS = {
                 ]
             }
         }
-    },
-    tableAssetIncrement:{
-
     },
     assetList: {
         idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],

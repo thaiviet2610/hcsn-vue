@@ -67,13 +67,6 @@
     <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
     <div v-if="inValid" class="error--info">{{ notifyError }}</div> 
     <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
-    <!-- dialog thông báo có lỗi xảy ra trong quá trình load dữ liệu -->
-    <MDialog
-        :content="contentDialogNotifyLoadError"
-        :buttonInfo="btnDialgNotify"
-        v-if="isShowDialogNotifyLoadError" 
-        @onClickBtn="handleEventCloseDialogNotifyLoadError">
-    </MDialog>
 </template>
 
 <script>
@@ -82,22 +75,22 @@ import enumJS from '@/js/enum.js'
 export default {
     name:"TheCombobox",
     props: {
+        // icon của combobox(nếu có)
         iconCombobox: {
             type: String,
             default: ""
         },
-        api: {
-            type: String,
-            default: ""
-        },
+        // giá trị thuộc tính của đối tượng cần truyền ra ngoài
         propValue: {
             type: [String,Number],
             default: ""
         },
+        // tên thuộc tính của đối tượng cần hiển thị 
         propName: {
             type: [String,Number],
             default: ""
         },
+
         placeholder: {
             type: String,
             default: ""
@@ -110,22 +103,27 @@ export default {
             type: Boolean,
             default: false
         },
+        // giá trị thuộc tính của đối tượng truyền từ ngoài vào
         valueInput: {
             type: String,
             default: ""
         },
+        // số lượng item muốn hiển thị ở combobox-data
         quantityItemDisplay: {
             type: Number,
             default: 0
         },
+        // chiều cao của 1 dòng trong combobox-data
         itemHeight: {
             type: Number,
             default: 0
         },
+        // danh sách dữ liệu trong combobox-data
         dataCombobox:{
             type: [Object,Array],
             default: null
         },
+        // id của combobox
         idCombobox: {
             type: String,
             default: ""
@@ -134,20 +132,17 @@ export default {
     },
     data() {
         return {
-            entities: [],
-            entitiesSearch: [],
-            isShow: false,
+            entities: [], // danh sách các đối tượng
+            entitiesSearch: [], // danh sách tìm kiếm các đối tượng
+            isShow: false, 
             zIndex: 0,
-            valueItem: "",
-            styleInput: null,
-            value: "",
-            itemSelected: null,
-            indexItemSelect: -1,
-            inValid: false,
-            notifyError: null,
-            isShowLoad: false,
-            isShowDialogNotifyLoadError: false,
-            contentDialogNotifyLoadError: "",
+            styleInput: null, // style của input trong combobox
+            value: "", // giá trị hiển thị của combobox
+            itemSelected: null, // đối tượng được chọn của combobox
+            indexItemSelect: -1, // vị trí đối tượng được chọn trong danh sách
+            inValid: false, // biến thể hiện giá trị lỗi của combobox(true:lỗi,false:không lỗi)
+            notifyError: null, // nội dung thông báo lỗi
+            isShowLoad: false, // trạng thái của dialog laod dữ liệu 
             scrollHeight: 0,
             scrollY: 0,
             btnDialgNotify: resourceJS.buttonDialog.notify
@@ -507,14 +502,6 @@ export default {
          */
         onMouseDownInput(event){
             event.preventDefault();
-        },
-
-        /**
-         * Hàm xử lý sự kiện khi click btn close của dialog thông báo lỗi load data
-         * @author LTVIET (06/03/2023) 
-         */
-        handleEventCloseDialogNotifyLoadError(){
-            this.isShowDialogNotifyLoadError = false;
         },
 
     }

@@ -20,23 +20,29 @@ export default {
 
     },
     props: {
+        // danh sách dữ liệu
         data: [Object,Array],
+        // vị trí của context menu theo trục X
         pageX: {
             type: Number,
             default: 0,
         },
+        // vị trí của context menu theo trục Y
         pageY: {
             type: Number,
             default: 0,
         },
+        // đối tượng gửi từ ngoài vào
         entity: {
             type: Object,
             default: null
         },
+        // độ cao của contextmenu
         height: {
             type: Number,
             default: 0
         },
+        // độ dài của contextmenu
         width: {
             type: Number,
             default: 0

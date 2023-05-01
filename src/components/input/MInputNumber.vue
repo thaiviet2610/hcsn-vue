@@ -116,10 +116,10 @@ export default {
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
-            previousKeyShift: false,
+            previousKeyShift: false, 
             previousKeyCtrl: false,
-            decimalPartValue: 0,
-            stepValue: 0,
+            decimalPartValue: 0, // giá trị phần thập phân của số
+            stepValue: 0, // số đơn vị khi tăng giảm giá trị
             keyInput: 0
         }
     },
@@ -327,6 +327,8 @@ export default {
                 if(this.value===0){
                     this.inValid = false;
                 }
+            }else{
+                this.inValid = false;
             }
             this.$emit("getValueEventInput",this.valueNumber);
         },

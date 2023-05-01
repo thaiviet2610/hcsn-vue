@@ -271,6 +271,7 @@
                 </div>
             </div>
         </div>
+        <!-- form nguồn chi phí  -->
         <BudgetAsset 
             v-if="isShowBudget"
             :label="labelBudgetForm"
@@ -348,6 +349,10 @@ export default {
     },
     data() {
         return {
+            /**
+             * giá trị ban đầu của đối tượng tài sản  
+             * @author LTVIET (01/04/2023)
+             */
             oldValueAseet: null,
             isShowBudget: false,
             isShowDialogNotify: false,
@@ -359,7 +364,6 @@ export default {
             departApi: configJS.api.department.departmentApi,
             assetApi: configJS.api.asset.assetApi,
             assetCategoryApi: configJS.api.assetCategory.assetCategoryApi,
-            generateNewCodeApi: configJS.api.asset.assetGenerateNewCodeApi,
             depart: [],
             isShowLoad: false,
             asset: [],
@@ -478,14 +482,14 @@ export default {
 
         /**
          * Hàm nhận giá trị nguồn chi phí từ form
-         * @param {*} values mảng chứa các giá trị (cost,cost_new)
+         * @param {*} values mảng chứa các giá trị (cost,cost_source)
          */
         handleEventSaveBudget(values){
             const cost = values[0];
-            const cost_new = values[1];
+            const cost_source = values[1];
             this.cost = cost;
             this.asset.cost = cost;
-            this.asset.cost_new = cost_new;
+            this.asset.cost_source = cost_source;
             this.keyCost = ++this.keyCost;
             this.depreciationValueYear = this.getDepreciationValueYear;
             this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
@@ -579,7 +583,7 @@ export default {
                     fixed_asset_category_name : this.asset.fixed_asset_category_name,
                     purchase_date : this.asset.purchase_date,
                     cost : Number(this.asset.cost),
-                    cost_new: this.asset.cost_new,
+                    cost_source: this.asset.cost_source,
                     quantity : Number(this.asset.quantity),
                     depreciation_rate : Number(this.asset.depreciation_rate),
                     tracked_year : Number(this.asset.tracked_year),
@@ -1138,7 +1142,7 @@ export default {
                 fixed_asset_category_name: "",
                 quantity: 0,
                 cost: 0,
-                cost_new: "",
+                cost_source: "",
                 life_time: 0,
                 depreciation_rate: 0,
                 tracked_year: this.getYear(),

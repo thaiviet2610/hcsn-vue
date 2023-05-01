@@ -1,6 +1,6 @@
 <template>
     <!-- Khi table có dữ liệu phù hợp  -->
-    <div v-if="dataBody.length == 0" class="content__table" >
+    <div v-if="dataBody.length == 0" class="content__table" :tabindex="-1" >
       <table ref="table2"  :key="keyTable"   style="border-bottom: none;box-shadow: none; height: 100%;"  >
         <!-- phần title của table  -->
         <thead>
@@ -190,7 +190,7 @@
       </table>
       
     </div>
-    <div v-else class="content__table" :tabindex="0" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown">
+    <div v-else class="content__table" :tabindex="isCheckbox ? 0:-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
       <table ref="table2"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
         <!-- phần title của table  -->
         <thead>
@@ -459,59 +459,106 @@ export default {
     MContextMenu
   },
   props: {
-    dataBodyApi:{
-      type: [Object,Array,String,Number],
-      default: null
-    },
+    /**
+     * các thông tin của table
+     * @author LTVIET (01/04/2023)
+     */
     tableInfo:{
       type: [Object,Array],
       default: null
     },
+    /**
+     * danh sách các kích thước của số bản ghi trong 1 trang
+     * @author LTVIET (01/04/2023)
+     */
     dataPageSize:{
       type: Array,
       default: null
     },
+    /**
+     * dữ liệu phần header của table
+     * @author LTVIET (01/04/2023)
+     */
     dataHeader: {
       type: [Object,Array],
       default: null
     },
+    /**
+     * dữ liệu đầy đủ của danh sách các đối tượng của table
+     * @author LTVIET (01/04/2023)
+     */
     dataEntities:{
       type: [Object,Array],
       default: null
     },
+    /**
+     * danh sách dữ liệu cần hiển thị của các đối tượng của table
+     * @author LTVIET (01/04/2023)
+     */
     dataBody: {
       type: [Object,Array],
       default: null
     },
+    /**
+     * danh sách dữ liệu của phần footer table
+     * @author LTVIET (01/04/2023)
+     */
     dataFooter: {
       type: [Object,Array],
       default: null
     },
+    /**
+     * trạnh thái phân trang của table(true: có phân trang,false: không có phân trang)
+     * @author LTVIET (01/04/2023)
+     */ 
     isPaging:{
       type: Boolean,
       default: true
     },
+    /**
+     * trạnh thái checkbox của table(true: có checkbox,false: không có checkbox)
+     * @author LTVIET (01/04/2023)
+     */ 
     isCheckbox:{
       type: Boolean,
       default: true
     },
+    /**
+     * trạnh thái chức năng của table(true: có chức năng,false: không có chức năng)
+     * @author LTVIET (01/04/2023)
+     */ 
     isFunction:{
       type: Boolean,
       default: true
     },
+    /**
+     * trạnh thái có chọn dòng đầu tiên của table khi khởi tạo lần đầu (true: có,false: không)
+     * @author LTVIET (01/04/2023)
+     */
     selectedFirtRow:{
       type: Boolean,
       default: false
     },
+    /**
+     * trạnh thái footer của table(true: có footer,false: không có footer)
+     * @author LTVIET (01/04/2023)
+     */ 
     isFooter:{
       type: Boolean,
       default: true
     },
-    
+    /**
+     * số bản ghi trong 1 trang của table truyền từ ngoài vào khi khởi tạo table
+     * @author LTVIET (01/04/2023)
+     */
     valuePageSize:{
       type: Number,
       default: 0
     },
+    /**
+     * vị trí cả trang hiện trong 1 trang của table truyền từ ngoài vào khi khởi tạo table
+     * @author LTVIET (01/04/2023)
+     */
     valuePageNumber:{
       type: Number,
       default: 0
@@ -519,19 +566,51 @@ export default {
   },
   data() {
     return {
+      /**
+       * trạng thái của checkbox all
+       * @author LTVIET (01/03/2023)
+       */
       checkboxAll: false,
+      /**
+       * danh sách chứa trạng thái của checkbox
+       * @author LTVIET (01/03/2023)
+       */
       checkbox: [],
+      /**
+       * danh sách chứa vị trí của các checkbox được chọn
+       * @author LTVIET (01/03/2023)
+       */
       checkboxActive: [],
+      /**
+       * danh sách chứa thông tin của các đối tượng có checkbox được chọn
+       * @author LTVIET (01/03/2023)
+       */
       entityCheckboxActive:[],
+      /**
+       * vị trí của checkbox được chọn gần nhất
+       * @author LTVIET (01/03/2023)
+       */
       indexCheckbox: -1,
       isShowLoad: false,
       isShowDialogNotifyLoadError: false,
       contentDialogNotifyLoadError: "",
+      /**
+       * số bản ghi trong 1 trang
+       * @author LTVIET (01/03/2023)
+       */
       pageSize: 0,
+      /**
+       * vị trí của trang hiện tại
+       * @author LTVIET (01/03/2023)
+       */
       pageNumber: 1,
+      /**
+       * tổng số trang theo phân trang
+       * @author LTVIET (01/03/2023)
+       */
       totalPage: 0,
       clickCheckbox: false,
-      isShowContextMenu: false,
+      isShowContextMenu: false, 
       dataContextMenu: this.tableInfo.dataContextMenu,
       contentFooterBefore: this.tableInfo.contentFooterBefore,
       contentFooterAfter: this.tableInfo.contentFooterAfter,
@@ -542,20 +621,45 @@ export default {
       contextMenuEnity: null,
       previousKeyShift: false,
       previousKeyCtrl: false,
+      /**
+       * vị trí checkbox bắt đầu của danh sách đối tượng cần xóa nhiều
+       * @author LTVIET (01/03/2023)
+       */
       indexDeleteStart: 0,
+      /**
+       * vị trí checkbox kết thúc của danh sách đối tượng cần xóa nhiều
+       * @author LTVIET (01/03/2023)
+       */
       indexDeleteEnd: 0,
       btnDialogNotify: resourceJS.buttonDialog.notify,
       keyTable: 0,
       titleColumn: this.tableInfo.titleColumm,
       widthContextMenu: 156,
       heightContextMenu: 152,
+      /**
+       * danh sách chứa dữ liệu tổng của các cột trong footer
+       * @author LTVIET (01/03/2023)
+       */
       totalFooter: [],
+      /**
+       * danh sách chứa trạng thái của các dòng trong table
+       * @author LTVIET (01/03/2023)
+       */
       rowSelected: [],
+      /**
+       * vị trí của dòng đang được chọn
+       * @author LTVIET (01/03/2023)
+       */
       indexRowSelected: 0,
+      /**
+       * tổng số bản ghi của danh sách trong table
+       * @author LTVIET (01/03/2023)
+       */
       totalRecord: 0,
       clickFunction: false,
       textNoData: resourceJS.table.noDataTable,
       isDblClick: true,
+      isClickRow: []
     };
   },
   created() {
@@ -564,6 +668,7 @@ export default {
       for(let i=0;i<=this.pageSize;i++){
         this.checkbox[i] = false;
         this.rowSelected[i] = false;
+        this.isClickRow[i] = true;
       }
     }
     if(this.selectedFirtRow){
@@ -743,6 +848,7 @@ export default {
     btnAddOnDblClickRowTable(index) {
       if(this.isDblClick){
         this.handleEventClickFunction(enumJS.type.edit,index-1);
+        this.isClickRow[index] = true;
       }
     },
 
@@ -752,33 +858,40 @@ export default {
      * @author LTVIET (02/03/2023)
      */
     addOnClickRowTable(index) {
-      if(this.previousKeyShift){
-        this.handleEventKeyStrokesShift(index);
-      }else if (!this.clickCheckbox) {
-        if(!this.previousKeyCtrl){
-          this.rowSelected.fill(false);
-          this.rowSelected[index] = this.clickFunction ? true : (index != this.indexRowSelected);
-          this.indexRowSelected = this.rowSelected[index] ? index : 0;
+      if(this.isClickRow[index]){
+        if(this.previousKeyShift){
+          this.handleEventKeyStrokesShift(index);
+        }else if (!this.clickCheckbox) {
+          if(!this.previousKeyCtrl){
+            this.rowSelected.fill(false);
+            this.rowSelected[index] = this.clickFunction ? true : (index != this.indexRowSelected);
+            this.indexRowSelected = this.rowSelected[index] ? index : 0;
+          }
+          else{
+            this.markCheckbox(index);
+          }
+          this.indexDeleteStart = index;
         }
-        else{
-          this.markCheckbox(index);
+        this.clickCheckbox = false;
+
+        if(this.rowSelected[index] || this.checkbox[index]){
+          this.$emit('getItemRowSelected',this.dataEntities[index-1]);
         }
-        this.indexDeleteStart = index;
-      }
-      this.clickCheckbox = false;
-      if(this.rowSelected[index] || this.checkbox[index]){
-        this.$emit('getItemRowSelected',this.dataEntities[index-1]);
-      }
-      if(!this.rowSelected[index]){
-        const listEntityActive = this.getEntityCheckboxActiveList();
-        const listEntityActiveLength = listEntityActive.length;
-        if(listEntityActiveLength == 0){
-          this.$emit('getItemRowSelected',null);
-        }else{
-          this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
+        if(!this.rowSelected[index]){
+          const listEntityActive = this.getEntityCheckboxActiveList();
+          const listEntityActiveLength = listEntityActive.length;
+          if(listEntityActiveLength == 0){
+            this.$emit('getItemRowSelected',null);
+          }else{
+            this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
+          }
         }
+        this.clickFunction = false;
+        this.isClickRow[index] = false;
       }
-      this.clickFunction = false;
+      setTimeout(() => {
+        this.isClickRow[index] = true;
+      }, 1000);
     },
 
     /**
@@ -787,25 +900,22 @@ export default {
      * @author LTVIET (29/03/2023)
      */
     handleEventKeyStrokesShift(index){
-      if(this.tableInfo.isCheckbox){
+      if(this.isCheckbox){
         if(this.indexDeleteStart == 0){
             this.indexDeleteStart = index;
         }
         this.indexDeleteEnd = index;
-        this.resetCheckbox();
-        // table.checkbox.fill(false);
         if(this.indexDeleteStart <= this.indexDeleteEnd){
-            for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
-              this.markCheckbox(i,true);
-              this.pushCheckboxActive(i);
-            }
+          for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
+            this.markCheckbox(i,true);
+          }
         }else{
-            for(let i = this.indexDeleteEnd; i<= this.indexDeleteStart; i++){
-              this.markCheckbox(i,true);
-              this.pushCheckboxActive(i);
-            }
+          for(let i = this.indexDeleteEnd; i<= this.indexDeleteStart; i++){
+            this.markCheckbox(i,true);
+          }
         }
       }
+      this.previousKeyCtrl = false;
     },
     /**
      * Hàm xử lý sự kiện lên xuống dòng dữ liệu trong table bằng phím lên, xuống
@@ -986,13 +1096,6 @@ export default {
         //2.2. nếu checkbox = false 
         this.checkboxAll = false;
         this.popCheckboxActive(index);
-        const listEntityActive = this.getEntityCheckboxActiveList();
-        const listEntityActiveLength = listEntityActive.length;
-        if(listEntityActiveLength == 0){
-          this.$emit('getItemRowSelected',null);
-        }else{
-          this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
-        }
       }
       this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
       this.setFocusCheckbox(index);

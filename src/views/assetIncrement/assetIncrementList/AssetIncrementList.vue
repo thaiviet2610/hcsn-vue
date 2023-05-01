@@ -39,7 +39,7 @@
             <splitpanes class="asset-increment-list-container" horizontal 
                 :class="classSplitpanes" 
                 @resize="handleEventResizeSplitpanes">
-                    <Pane :size="paneSize" >
+                    <Pane :size="paneSize" style="overflow: unset;">
                         <div min-size="0" class="asset_increment__content-body--up" style="border: none;box-shadow: none">
                             <div class="content-body__up">
                                 <div class="input1">
@@ -243,8 +243,8 @@ export default {
             assetIncrementFilterApi: configJS.api.assetIncrement.assetIncrementFilterApi,
             assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
             assetIncrementGenerateNewCodeApi: configJS.api.assetIncrement.assetIncrementGenerateNewCodeApi,
-            tableMasterInfo: resourceJS.table.tableAssetIncrementMaster,
-            tableDetailInfo: resourceJS.table.tableDetailAssetIncrementList,
+            tableMasterInfo: resourceJS.table.tableUpAssetIncrementList,
+            tableDetailInfo: resourceJS.table.tableDownAssetIncrementList,
             keyTableMaster: 0,
             keyTableDetail: 0,
             paneSize: 60,
@@ -267,15 +267,16 @@ export default {
             contextMenuDelete: false,
             dataBodyTableMaster: [],
             dataFooterTableMaster: [],
-            dataHeaderTableMaster: resourceJS.table.tableAssetIncrementMaster.header,
-            dataPageSizeTableMaster: resourceJS.table.tableAssetIncrementMaster.dataPageSize,
+            dataHeaderTableMaster: resourceJS.table.tableUpAssetIncrementList.header,
+            dataPageSizeTableMaster: resourceJS.table.tableUpAssetIncrementList.dataPageSize,
             pageSizeTableMaster: 0,
             pageNumberTableMaster: 1,
             totalRecordTableMaster: 0,
             dataBodyTableDetail: [],
-            dataHeaderTableDetail: resourceJS.table.tableDetailAssetIncrementList.header,
+            dataHeaderTableDetail: resourceJS.table.tableDownAssetIncrementList.header,
             dataAssetIncrements: [],
             dataAssets: [],
+            idVoucherSelected: null,
             tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple,
             previousKeyCtrl: false,
             previousKeyShift: false,
@@ -337,6 +338,11 @@ export default {
             this.getDataTableMaster();
         },
 
+        /**
+         * Hàm xử lý sự kiện keydown
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (15/04/2023)
+         */
         handleEventKeyDown(event){
             const keyCode = event.keyCode;
             if(keyCode == enumJS.keyCtrl){
@@ -347,10 +353,54 @@ export default {
                 if(keyCode == enumJS.key1){
                     this.btnClickOpenAddAssetIncrementForm();
                 }
+                if(keyCode == enumJS.keyE || keyCode == enumJS.keyD){
+                    this.handleEventShortcutsFunctionTableMaster(keyCode);
+                }
             }
             
         },
 
+        /**
+         * Hàm xử lý sự kiện bấm phím tắt gọi đến chức năng trong table
+         * @param {*} keyCode mã phím tắt
+         * @author LTVIET (15/04/2023)
+         */
+        handleEventShortcutsFunctionTableMaster(keyCode){
+            let tableMaster = this.$refs["mTableMaster"];
+            // khi chọn 1 dòng trong 1 table
+            if(tableMaster.indexRowSelected > 0){
+                const assetIncrement = this.dataAssetIncrements[tableMaster.indexRowSelected - 1];
+                if(keyCode == enumJS.keyE){
+                    this.handleEventClickFunctionTableMaster([enumJS.type.edit,assetIncrement]);
+                }else if(keyCode == enumJS.keyD){
+                    this.handleEventClickFunctionTableMaster([enumJS.type.delete,assetIncrement]);
+                }
+            }
+            // khi không chọn dong nào trong table
+            else{
+                let assetIncrements = tableMaster.getEntityCheckboxActiveList();
+                const quantityAssetIncrementActive = assetIncrements.length;
+                // khi có 1 checkbox được được
+                if(quantityAssetIncrementActive == 1){
+                    const assetIncrement = assetIncrements[0];
+                    if(keyCode == enumJS.keyE){
+                    this.handleEventClickFunctionTableMaster([enumJS.type.edit,assetIncrement]);
+                    }else if(keyCode == enumJS.keyD){
+                        this.handleEventClickFunctionTableMaster([enumJS.type.delete,assetIncrement]);
+                    }
+                }
+                // khi có nhiều checkbox được chọn
+                else if(quantityAssetIncrementActive > 1){
+                    this.addOnClickBtnDeleteMultiple();
+                }
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (15/04/2023)
+         */
         handleEventKeyUp(event){
             const keyCode = event.keyCode;
             if(keyCode == enumJS.keyCtrl){
@@ -662,7 +712,7 @@ export default {
          * @param {*} value số lượng được chọn
          * @author LTVIET (19/04/2023)
          */
-        getQuantityAssetIncrementSelected(value){
+         getQuantityAssetIncrementSelected(value){
             this.isShowDeleteButton = (value > 1) ;
             return value;
         },
@@ -704,6 +754,7 @@ export default {
                 this.isShowLoad = true;
                 this.labelForm = resourceJS.titlteForm.assetIncrement.editForm;
                 this.typeForm = enumJS.type.edit;
+                this.idVoucherSelected = null;
                 this.getAssetIncrementDetailById(item);
             }else if(type == enumJS.type.delete){
                 this.assetsDeleteMultiple = [item];
@@ -833,41 +884,57 @@ export default {
             if(!this.isShowDetail){
                 this.isShowLoadTableDetail = true;
             }
-            axios.get(`${this.assetIncrementApi}/${assetIncrement.voucher_id}`)
-            .then(res=>{
-                const assets = res.data.assets;
-                this.dataBodyTableDetail = assets.map(function(asset){
-                    return {
-                        index: asset.index,
-                        fixed_asset_code: asset.fixed_asset_code,
-                        fixed_asset_name: asset.fixed_asset_name,
-                        department_name: asset.department_name,
-                        cost: commonJS.formatNumber(Math.round(asset.cost)),
-                        depreciation_value: commonJS.formatNumber(Math.round(asset.depreciation_value)),
-                        residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
-                    }
+            if(this.idVoucherSelected != assetIncrement.voucher_id){
+                this.idVoucherSelected = assetIncrement.voucher_id;
+                axios.get(`${this.assetIncrementApi}/${this.idVoucherSelected}`)
+                .then(res=>{
+                    const assets = res.data.assets;
+                    this.dataBodyTableDetail = assets.map(function(asset){
+                        return {
+                            index: asset.index,
+                            fixed_asset_code: asset.fixed_asset_code,
+                            fixed_asset_name: asset.fixed_asset_name,
+                            department_name: asset.department_name,
+                            cost: commonJS.formatNumber(Math.round(asset.cost)),
+                            depreciation_value: commonJS.formatNumber(Math.round(asset.depreciation_value)),
+                            residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
+                        }
+                    })
+                    this.keyTableDetail = ++this.keyTableDetail;
+                    this.getDataTableDetail(assetIncrement,assets);
                 })
-                this.keyTableDetail = ++this.keyTableDetail;
+                .catch(err=>{
+                    console.log(err);
+                    this.isShowLoadTableDetail = false;
+                })
+            }else{
                 this.isShowLoadTableDetail = false;
-                if(this.isShowDetail){
-                    this.assetIncrement = {
-                        voucher_id: assetIncrement.voucher_id,
-                        voucher_code: assetIncrement.voucher_code,
-                        voucher_date: commonJS.formatDate(assetIncrement.voucher_date,"",resourceJS.date.format.yyyyMMdd),
-                        increment_date: commonJS.formatDate(assetIncrement.increment_date,"",resourceJS.date.format.yyyyMMdd),
-                        price: assetIncrement.price,
-                        description: assetIncrement.description,
-                        assets: assets
-                    };
-                    this.keyAssetIncrementDetail = ++this.keyAssetIncrementDetail;
-                    this.isShowLoad = false;
-                }
-            })
-            .catch(err=>{
-                console.log(err);
-                
-            })
+            }
+            
         },
+
+        /**
+         * Hàm lấy dữ liệu table detail
+         * @param {*} assetIncrement thông tin chứng từ
+         * @param {*} assets thông tin danh sách tài sản chứng từ
+         * @author LTVIET (19/04/2023)
+         */
+        getDataTableDetail(assetIncrement,assets){
+            this.isShowLoadTableDetail = false;
+            if(this.isShowDetail){
+                this.assetIncrement = {
+                    voucher_id: assetIncrement.voucher_id,
+                    voucher_code: assetIncrement.voucher_code,
+                    voucher_date: commonJS.formatDate(assetIncrement.voucher_date,"",resourceJS.date.format.yyyyMMdd),
+                    increment_date: commonJS.formatDate(assetIncrement.increment_date,"",resourceJS.date.format.yyyyMMdd),
+                    price: assetIncrement.price,
+                    description: assetIncrement.description,
+                    assets: assets
+                };
+                this.keyAssetIncrementDetail = ++this.keyAssetIncrementDetail;
+                this.isShowLoad = false;
+            }
+        }
     },
 }
 </script>

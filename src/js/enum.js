@@ -55,6 +55,18 @@ const enumJS = {
         maxLength : 9,
         // Lỗi khi insert chứng từ thì danh sách tài sản rỗng
         noAssetIncrements : 10,
+
+        // Lỗi khi 1 trong các thuộc tính của nguồn chi phí rỗng
+        CostSourceEmpty : 11,
+
+		/// Lỗi khi giá trị của nguồn chi phí nhỏ hơn hoặc bằng 0
+        CostSourceMountLessOrEqualThanZero : 12,
+
+		/// Lỗi khi có 2 nguồn chi phí trùng nhau
+		CostSourceDuplicate : 13,
+
+		/// Lỗi khi dữ liệu của nguồn chi phí không hợp lệ
+		CostSourceInValid : 14,
     },
     type: {
         add: 1,

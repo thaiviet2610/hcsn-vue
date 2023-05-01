@@ -13,23 +13,9 @@
 export default {
     name:"MButtonIcon",
     props: {
-        label: {
-            type: String,
-            required: false,
-            default: null
-        },
-        typeButton: {
-            type: String,
-            required: false,
-            default: null
-        },
         classIcon: {
             type: String,
             default: null
-        },
-        idButtonIcon: {
-            type: String,
-            default: ""
         },
         classImage:{
             type: String,
@@ -39,7 +25,6 @@ export default {
     },
     data() {
         return {
-            isFocus: false
         }
     },
     created() {
