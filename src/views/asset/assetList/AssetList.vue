@@ -53,7 +53,7 @@
                         :ref="refElements.buttonAdd"
                         label=" + Thêm tài sản"
                         :data_tooltip_bottom="tooltipBtnAdd"
-                        class="item1 btn--main"
+                        class="btn--main"
                         @btnAddOnClickBtn="btnClickOpenForm">
                     </MButton>
                     <!-- button xuất dữu liệu ra excel  -->
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div id="abcd123" class="content-body" >
+            <div class="content-body" >
                 <!-- table hiển thị danh sách tài sản  -->
                 <Mtable 
                     :ref="refElements.table"
@@ -96,14 +96,13 @@
                     :dataHeader="dataHeaderTable"
                     :dataBody="dataBodyTable"
                     :dataFooter="dataFooterTable"
-                    :totalRecord="totalRecord"
                     :valuePageNumber="pageNumber"
                     :valuePageSize="pageSize"
                     :isPaging="true"
                     :isCheckbox="true"
                     :isFunction="true"
                     :dataEntities="dataAssets"
-                    :isContextmenu="true"
+                    :isContextMenu="true"
                     :key="keyTable"
                     @addOnClickContextMenu="handleEventClickContextMenu"
                     @getValuePageNumber="getValuePageNumber"
@@ -177,7 +176,7 @@
 import AssetDetail from '../assetDetail/AssetDetail.vue'
 import MCombobox from '../../../components/combobox/MCombobox.vue'
 import Mtable from '../../../components/table/MTable.vue'
-import resourceJS from '@/js/resourceJS.js';
+import resourceJS from '@/js/resource.js';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import axios from 'axios'
 import enumJS from '@/js/enum.js';
@@ -249,7 +248,6 @@ export default {
             keyComboboxAssetCategory: 0,
             pageSize: 0,
             pageNumber: 1,
-            totalRecord: 0,
         }
     },
     mounted() {
@@ -320,6 +318,7 @@ export default {
             axios.get(api)
             .then(res=>{
                 this.assets = res.data.Data;
+                console.log(this.assets);
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
                         index: asset.index,
@@ -340,8 +339,7 @@ export default {
                     commonJS.formatNumber(Math.round(res.data.ResidualValueTotal)),
                 ];
                 this.dataAssets = res.data.Data;
-                this.totalRecord = res.data.TotalRecord;
-                this.$refs[this.refElements.table].totalRecord = this.totalRecord;
+                this.$refs[this.refElements.table].totalRecord = res.data.TotalRecord;
                 this.$refs[this.refElements.table].getUnitData();
                 this.isShowLoad = false;
 
@@ -359,7 +357,10 @@ export default {
          */
         getValuePageSize(value){
             this.pageSize = value;
+            this.pageNumber = 1;
             this.getDataTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**
@@ -477,7 +478,6 @@ export default {
             //1. lấy số lượng checkbox = true từ table
             let table = this.$refs[this.refElements.table];
             this.assetsDeleteMultiple = table.getEntityCheckboxActiveList();
-            console.log(this.assetsDeleteMultiple);
             let quantityCheckbox = this.assetsDeleteMultiple.length;
             const checkIncrement = this.assetsDeleteMultiple.some(function(asset){
                 return asset.voucher_code;
@@ -606,8 +606,8 @@ export default {
             if(id){
                 this.deleteAsset(id);
             }
-            this.$refs[this.refElements.table].reloadTable();
             this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**
@@ -626,8 +626,8 @@ export default {
                 assetsId.push(id);
             }
             this.deleteMultipleAsset(assetsId);
-            this.$refs[this.refElements.table].reloadTable();
             this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**
@@ -639,7 +639,7 @@ export default {
             .then(()=>{
                 //gọi hàm load lại dữ liệu table
                 this.$refs[this.refElements.table].pageNumber = 1;
-                this.$refs[this.refElements.table].loadData();
+                this.getDataTable();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -671,7 +671,7 @@ export default {
             .then( ()=>{
                 //gọi hàm load lại dữ liệu table
                 this.$refs[this.refElements.table].pageNumber = 1;
-                this.$refs[this.refElements.table].loadData();
+                this.getDataTable();
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -782,7 +782,6 @@ export default {
                 saveAs(blob,fileName);
                 this.isShowDialogConfirmExportExcel = false;
                 this.isShowLoad=false;
-                
                 this.$refs[this.refElements.table].checkboxActive = [];
                 this.$refs[this.refElements.table].entityCheckboxActive = [];
                 this.$refs[this.refElements.table].checkbox.fill(false);
@@ -812,6 +811,8 @@ export default {
                 this.assetCategoryId = "";
             }
             this.getDataTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**
@@ -825,6 +826,8 @@ export default {
                 this.departmentId = "";
             }
             this.getDataTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**
@@ -838,6 +841,8 @@ export default {
                 this.keyword = "";
             }
             this.getDataTable();
+            this.$refs[this.refElements.table].checkboxActive = [];
+            this.$refs[this.refElements.table].entityCheckboxActive = [];
         },
 
         /**

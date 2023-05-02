@@ -1,6 +1,6 @@
 import enumJS from "./enum";
 
-const resourceJS = {
+const resourceJSJS = {
     assetDetail: {
         assetCode : {
             ref: 'ref_fixed_asset_code',
@@ -102,22 +102,176 @@ const resourceJS = {
     },
     assetNoActive:{
         label: "Chọn tài sản ghi tăng",
-        ref:{
-            inputSearch: "refSearch",
-            table: "mTable"
+        inputSearch:{
+            ref: "refSearch",
+            placeholder: "Tìm kiếm theo Mã, tên tài sản"
+        },
+        table:{
+            ref: "mTable",
+            isPaging: true,
+            isCheckbox: true,
+            isFunction: false,
+            isContextMenu: true,
         },
         button: {
             btnSave: {
                 label: "Lưu",
-                tooltip: "Lưu (Ctrl+S)"
+                tooltip: "Lưu (Ctrl+S)",
+                classTooltip: "btn-save-asset-no-active-tooltip"
             },
             btnCancel: {
                 label: "Hủy",
-                tooltip: "Hủy (ESC)"
+                tooltip: "Hủy (ESC)",
+                classTooltip: "btn-cancel-asset-no-active-tooltip"
             },
             btnClose:{
-                tooltip: "Đóng (ESC)"
+                tooltip: "Đóng (ESC)",
+                classTooltip: "btn-close-asset-no-active-tooltip"
             }
+        }
+    },
+    budget:{
+        bodyHeader:{
+            departmentName: {
+                label: "Bộ phận sử dụng",
+                disable: true
+            },
+        },
+        bodyContent:{
+            cost: "Nguyên giá",
+            source: "Nguồn hình thành",
+            value: "Giá trị",
+        },
+        bodyFooter:{
+            footerLeft:{
+                text: "Tổng",
+                disable: true
+            },
+            footerRight:{
+                disable: true
+            },
+            
+        },
+        button: {
+            btnSave: {
+                label: "Lưu",
+                tooltip: "Lưu (Ctrl+S)",
+                classTooltip: "btn-save-budget-tooltip"
+            },
+            btnCancel: {
+                label: "Hủy",
+                tooltip: "Hủy (ESC)",
+                classTooltip: "btn-cancel-budget-tooltip"
+            },
+            btnClose:{
+                tooltip: "Đóng (ESC)",
+                classTooltip: "btn-close-budget-tooltip"
+            },
+            btnAddBudget: {
+                tooltip: "Thêm nguồn chi phí",
+                classTooltip: "budget__icon--add-tooltip"
+            },
+            btnMinusBudget: {
+                tooltip: "Bỏ nguồn chi phí",
+                classTooltip: "budget__icon--minus-tooltip"
+            },
+        }
+            
+        
+    },
+    assetIncrementDetail:{
+        bodyUp:{
+            title: "Thông tin chứng từ"
+        },
+        bodyDown:{
+            title: "Thông tin chi tiết",
+            inputSearch: {
+                placeholder: "Tìm kiếm theo mã, tên tài sản"
+            }
+        },
+        voucherCode:{
+            ref: "ref_voucher_code",
+            label: "Mã chứng từ",
+            placeholder: "Nhập mã chứng từ",
+            required: true,
+            disable: false,
+            maxLength: 50
+        },
+        voucherDate:{
+            ref: "ref_voucher_date",
+            label: "Ngày chứng từ",
+            placeholder: "Nhập  ngày chứng từ",
+            required: true,
+            disable: false,
+            format: "dd/mm/yyyy"
+        },
+        incrementDate:{
+            ref: "ref_increment_date",
+            label: "Ngày ghi tăng",
+            placeholder: "Nhập ngày ghi tăng",
+            required: true,
+            disable: false,
+            format: "dd/mm/yyyy"
+        },
+        description:{
+            ref: "ref_description",
+            label: "Ghi chú",
+            placeholder: "Nhập ghi chú",
+            required: false,
+            disable: false,
+            maxLength: 255
+        },
+        table:{
+            ref: "mTable",
+        },
+        refElements: ['ref_voucher_code','ref_voucher_date','ref_increment_date'],
+        button: {
+            btnSave: {
+                label: "Lưu",
+                class: "btn--main",
+                tooltip: "Lưu (Ctrl+S)",
+                classTooltip: "btn-save-asset-increment-detail-tooltip"
+            },
+            btnCancel: {
+                label: "Hủy",
+                class: "",
+                tooltip: "Hủy (ESC)",
+                classTooltip: "btn-cancel-asset-increment-detail-tooltip"
+            },
+            btnClose:{
+                tooltip: "Đóng (ESC)",
+                classTooltip: "btn-close-asset-increment-detail-tooltip"
+            },
+            btnSelectedAsset: {
+                label: "Chọn tài sản",
+                tooltip: "Thêm nguồn chi phí",
+                classTooltip: "budget__icon--add-tooltip"
+            },
+        }
+    },
+    assetIncrementList:{
+        label: "Ghi tăng tài sản",
+        interfaceSeleceted: {
+            verticalInterface: "Giao diện dọc",
+            horizontalInterface: "Giao diện ngang"
+        },
+        inputSearch:{
+            ref: "refSearch",
+            placeholder: "Tìm kiếm tài sản"
+        },
+        text: "Thông tin chi tiết",
+        table: {
+            tableMaster:{
+                ref: "mTableMaster"
+            },
+            tableDetail:{
+                ref: "mTableDetail"
+            },
+        },
+        button: {
+            btnAddAssetIncrement: {
+                label: "Thêm",
+            },
         }
     },
     validateProfessionalAssetDetail: {
@@ -132,10 +286,11 @@ const resourceJS = {
     },
     error: {
         validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div> ",
+        maxLength: " không được vượt quá {0} ký tự!",
         emptyInput: "  không được phép để trống! ",
         emptyInputNumber: " phải nhập giá trị lớn hơn 0",
         errorFormatNumber: " chỉ được nhập số!",
-        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 14 ký tự!",
+        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 19 ký tự!",
         errorFormatRate: "Tỷ lệ chỉ được cho phép trong khoảng từ 0 -> 100%!",
         errorDontFindInData: " phải là giá trị nằm trong danh sách lựa chọn!",
         errorDeleteAssetFail: "Hành động xóa tài sản thất bại. Vui lòng thử lại sau!",
@@ -259,9 +414,15 @@ const resourceJS = {
             }
         },
         theSidebar: {
-            header: "MISA QUẢN LÝ TÀI SẢN",
+            header: {
+                text: "MISA QUẢN LÝ TÀI SẢN",
+                classTooltip: "sidebar-header-tooltip"
+            },
             footer:{
-                collapse: "Thu gọn"
+                collapse: {
+                    text: "Thu gọn",
+                    classTooltip: "sidebar-footer-tooltip"
+                }
             }
         },
         assetIncrementList:{
@@ -291,6 +452,14 @@ const resourceJS = {
         body:{
             txtOverview: "Tổng quan",
             txtAsset: "Tài sản",
+            txtAssetIncrement: "Ghi tăng",
+            txtChangeInfo: "Thay đổi thông tin",
+            txtReEvaluate: "Đánh giá lại",
+            txtWearCalculation: "Tính hao mòn",
+            txtTransferOfAssets: "Điều chuyển tài sản",
+            txtWriteDown: "Ghi giảm",
+            txtInventory: "Kiểm kê",
+            txtOther: "Khác",
             txtAssetHTDB: "Tài sản HT-DB",
             txtTool: "Công cụ dụng cụ",
             txtCategory: "Danh mục",
@@ -307,33 +476,41 @@ const resourceJS = {
     table: {
         noDataTable: "Không tìm thấy dữ liệu phù hợp.",
         tableAsset:{
-            dataContextMenu: 
-            {
-                add: {
-                    icon: "context__menu--icon-add",
-                    text: "Thêm tài sản",
-                    type: 1
+            contextMenu:{
+                width: 156,
+                height: 152,
+                data: 
+                {
+                    add: {
+                        icon: "context__menu--icon-add",
+                        text: "Thêm tài sản",
+                        type: 1
+                    },
+                    clone: {
+                        icon: "context__menu--icon-clone",
+                        text: "Nhân bản tài sản",
+                        type: 2
+                    },
+                    edit: {
+                        icon: "context__menu--icon-edit",
+                        text: "Sửa tài sản",
+                        type: 3
+                    },
+                    delete: {
+                        icon: "context__menu--icon-delete",
+                        text: "Xóa tài sản",
+                        type: 4
+                    }
                 },
-                clone: {
-                    icon: "context__menu--icon-clone",
-                    text: "Nhân bản tài sản",
-                    type: 2
-                },
-                edit: {
-                    icon: "context__menu--icon-edit",
-                    text: "Sửa tài sản",
-                    type: 3
-                },
-                delete: {
-                    icon: "context__menu--icon-delete",
-                    text: "Xóa tài sản",
-                    type: 4
-                }
             },
             dataPageSize: ["15", "50", "100","150"],
             titleColumm:{
                 function: "Chức năng"
             },
+            isPaging: true,
+            isCheckbox: true,
+            isFunction: true,
+            isContextMenu: true,
             contentFooterBefore: "Tổng số: ",
             contentFooterAfter: " bản ghi",
             noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
@@ -419,32 +596,36 @@ const resourceJS = {
             
         },
         tableAssetIncrementDetail:{
-            dataContextMenu: 
-            {
-                add: {
-                    icon: "context__menu--icon-add",
-                    text: "Thêm tài sản",
-                    type: 1
+            contextMenu:{
+                width: 156,
+                height: 115,
+                data: 
+                {
+                    add: {
+                        icon: "context__menu--icon-add",
+                        text: "Thêm tài sản",
+                        type: 1
+                    },
+                    edit: {
+                        icon: "context__menu--icon-edit",
+                        text: "Sửa tài sản",
+                        type: 3
+                    },
+                    delete: {
+                        icon: "context__menu--icon-delete",
+                        text: "Xóa tài sản",
+                        type: 4
+                    }
                 },
-                clone: {
-                    icon: "context__menu--icon-clone",
-                    text: "Nhân bản tài sản",
-                    type: 2
-                },
-                edit: {
-                    icon: "context__menu--icon-edit",
-                    text: "Sửa tài sản",
-                    type: 3
-                },
-                delete: {
-                    icon: "context__menu--icon-delete",
-                    text: "Xóa tài sản",
-                    type: 4
-                }
             },
+            dataPageSize: ["10", "20", "50","100"],
             titleColumm:{
                 function: "Chức năng"
             },
+            isPaging: false,
+            isCheckbox: false,
+            isFunction: true,
+            isContextMenu: true,
             contentFooterBefore: "Tổng số: ",
             contentFooterAfter: " bản ghi",
             noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
@@ -517,133 +698,42 @@ const resourceJS = {
             }      
             
         },
-        tableDownAssetIncrementList:{
-            dataContextMenu: 
-            {
-                add: {
-                    icon: "context__menu--icon-add",
-                    text: "Thêm tài sản",
-                    type: 1
-                },
-                clone: {
-                    icon: "context__menu--icon-clone",
-                    text: "Nhân bản tài sản",
-                    type: 2
-                },
-                edit: {
-                    icon: "context__menu--icon-edit",
-                    text: "Sửa tài sản",
-                    type: 3
-                },
-                delete: {
-                    icon: "context__menu--icon-delete",
-                    text: "Xóa tài sản",
-                    type: 4
-                }
-            },
-            titleColumm:{
-                function: "Chức năng"
-            },
-            contentFooterBefore: "Tổng số: ",
-            contentFooterAfter: " bản ghi",
-            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
-            header: [
-                {
-                    title: "STT",
-                    columnClass: "asset_increment_detail_list--column2",
-                    tooltip: "Số thứ tự",
-                    classTooltip: "asset_increment_detail_list--column2-tooltip",
-                },
-                {
-                    title: "Mã tài sản",
-                    columnClass: "asset_increment_detail_list--column3",
-                },
-                {
-                    title: "Tên tài sản",
-                    columnClass: "asset_increment_detail_list--column4",
-                },
-                {
-                    title: "Bộ phận sử dụng",
-                    columnClass: "asset_increment_detail_list--column6",
-                },
-                {
-                    title: "Nguyên giá",
-                    columnClass: "asset_increment_detail_list--column8",
-                },
-                {
-                    title: "KH/HM lũy kế",
-                    columnClass: "asset_increment_detail_list--column9",
-                    tooltip: "Khấu hao/Hao mòn lũy kế",
-                    classTooltip: "asset_increment_detail_list--column9-tooltip"
-                },
-                {
-                    title: "Giá trị còn lại",
-                    columnClass: "asset_increment_detail_list--column10",
-                },
-            ],
-            bodyClass:{
-                index:"asset_increment_detail_list--column2",
-                fixed_asset_code:"asset_increment_detail_list--column3",
-                fixed_asset_name: "asset_increment_detail_list--column4",
-                department_name: "asset_increment_detail_list--column6",
-                cost: "asset_increment_detail_list--column8",
-                depreciation_value: "asset_increment_detail_list--column9",
-                residual_value:"asset_increment_detail_list--column10"
-            },
-            footer: {
-                
-                pagingClass: "asset-increment-detail__footer-left",
-                footerClass: ["asset_increment_detail_list--column8","asset_increment_detail_list--column9","asset_increment_detail_list--column10"],
-                columnEmpty:[]
-            },
-            function:{
-                columnClass: "asset_increment_detail_list--column11",
-                detail:[
-                    {
-                        type: enumJS.type.edit,
-                        classIcon: "function__edit",
-                        tooltip: "Sửa(Ctrl+S)",
-                        classTooltip: "function__edit--tooltip"
-                    },
-                    {
-                        type: enumJS.type.delete,
-                        classIcon: "function__delete",
-                        tooltip: "Xóa(Ctrl+D)",
-                        classTooltip: "function__delete--tooltip"
-                    },
-                ]
-            }      
-            
-        },
         tableAssetNoActive:{
-            dataContextMenu: 
-            {
-                add: {
-                    icon: "context__menu--icon-add",
-                    text: "Thêm tài sản",
-                    type: 1
+            contextMenu:{
+                width: 156,
+                height: 152,
+                data: 
+                {
+                    add: {
+                        icon: "context__menu--icon-add",
+                        text: "Thêm tài sản",
+                        type: 1
+                    },
+                    clone: {
+                        icon: "context__menu--icon-clone",
+                        text: "Nhân bản tài sản",
+                        type: 2
+                    },
+                    edit: {
+                        icon: "context__menu--icon-edit",
+                        text: "Sửa tài sản",
+                        type: 3
+                    },
+                    delete: {
+                        icon: "context__menu--icon-delete",
+                        text: "Xóa tài sản",
+                        type: 4
+                    }
                 },
-                clone: {
-                    icon: "context__menu--icon-clone",
-                    text: "Nhân bản tài sản",
-                    type: 2
-                },
-                edit: {
-                    icon: "context__menu--icon-edit",
-                    text: "Sửa tài sản",
-                    type: 3
-                },
-                delete: {
-                    icon: "context__menu--icon-delete",
-                    text: "Xóa tài sản",
-                    type: 4
-                }
             },
             dataPageSize: ["20", "50", "100","150"],
             titleColumm:{
                 function: "Chức năng"
             },
-            
+            isPaging: true,
+            isCheckbox: false,
+            isFunction: false,
+            isContextMenu: false,
             contentFooterBefore: "Tổng số: ",
             contentFooterAfter: " bản ghi",
             noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
@@ -716,35 +806,144 @@ const resourceJS = {
                     
             
         },
-        tableUpAssetIncrementList:{
-            dataContextMenu: 
-            {
-                add: {
-                    icon: "context__menu--icon-add",
-                    text: "Thêm tài sản123",
-                    type: 1
+        tableDownAssetIncrementList:{
+            contextMenu:{
+                width: 156,
+                height: 152,
+                data: 
+                {
+                    add: {
+                        icon: "context__menu--icon-add",
+                        text: "Thêm tài sản",
+                        type: 1
+                    },
+                    clone: {
+                        icon: "context__menu--icon-clone",
+                        text: "Nhân bản tài sản",
+                        type: 2
+                    },
+                    edit: {
+                        icon: "context__menu--icon-edit",
+                        text: "Sửa tài sản",
+                        type: 3
+                    },
+                    delete: {
+                        icon: "context__menu--icon-delete",
+                        text: "Xóa tài sản",
+                        type: 4
+                    }
                 },
-                clone: {
-                    icon: "context__menu--icon-clone",
-                    text: "Nhân bản tài sản",
-                    type: 2
-                },
-                edit: {
-                    icon: "context__menu--icon-edit",
-                    text: "Sửa tài sản",
-                    type: 3
-                },
-                delete: {
-                    icon: "context__menu--icon-delete",
-                    text: "Xóa tài sản",
-                    type: 4
-                }
             },
-            dataPageSize: ["10", "50", "100","150"],
+            titleColumm:{
+                function: "Chức năng"
+            },
+            isFooter: false,
+            isCheckbox: false,
+            isFunction: false,
+            isContextMenu: false,
+            contentFooterBefore: "Tổng số: ",
+            contentFooterAfter: " bản ghi",
+            noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
+            header: [
+                {
+                    title: "STT",
+                    columnClass: "asset_increment_detail_list--column2",
+                    tooltip: "Số thứ tự",
+                    classTooltip: "asset_increment_detail_list--column2-tooltip",
+                },
+                {
+                    title: "Mã tài sản",
+                    columnClass: "asset_increment_detail_list--column3",
+                },
+                {
+                    title: "Tên tài sản",
+                    columnClass: "asset_increment_detail_list--column4",
+                },
+                {
+                    title: "Bộ phận sử dụng",
+                    columnClass: "asset_increment_detail_list--column6",
+                },
+                {
+                    title: "Nguyên giá",
+                    columnClass: "asset_increment_detail_list--column8",
+                },
+                {
+                    title: "KH/HM lũy kế",
+                    columnClass: "asset_increment_detail_list--column9",
+                    tooltip: "Khấu hao/Hao mòn lũy kế",
+                    classTooltip: "asset_increment_detail_list--column9-tooltip"
+                },
+                {
+                    title: "Giá trị còn lại",
+                    columnClass: "asset_increment_detail_list--column10",
+                },
+            ],
+            bodyClass:{
+                index:"asset_increment_detail_list--column2",
+                fixed_asset_code:"asset_increment_detail_list--column3",
+                fixed_asset_name: "asset_increment_detail_list--column4",
+                department_name: "asset_increment_detail_list--column6",
+                cost: "asset_increment_detail_list--column8",
+                depreciation_value: "asset_increment_detail_list--column9",
+                residual_value:"asset_increment_detail_list--column10"
+            },
+            footer: {
+                
+                pagingClass: "asset-increment-detail__footer-left",
+                footerClass: ["asset_increment_detail_list--column8","asset_increment_detail_list--column9","asset_increment_detail_list--column10"],
+                columnEmpty:[]
+            },
+            function:{
+                columnClass: "asset_increment_detail_list--column11",
+                detail:[
+                    {
+                        type: enumJS.type.edit,
+                        classIcon: "function__edit",
+                        tooltip: "Sửa(Ctrl+S)",
+                        classTooltip: "function__edit--tooltip"
+                    },
+                    {
+                        type: enumJS.type.delete,
+                        classIcon: "function__delete",
+                        tooltip: "Xóa(Ctrl+D)",
+                        classTooltip: "function__delete--tooltip"
+                    },
+                ]
+            }      
+            
+        },
+        
+        tableUpAssetIncrementList:{
+            contextMenu:{
+                width: 170,
+                height: 115,
+                data: 
+                {
+                    add: {
+                        icon: "context__menu--icon-add",
+                        text: "Thêm chứng từ",
+                        type: 1
+                    },
+                    edit: {
+                        icon: "context__menu--icon-edit",
+                        text: "Sửa chứng từ",
+                        type: 3
+                    },
+                    delete: {
+                        icon: "context__menu--icon-delete",
+                        text: "Xóa chứng từ",
+                        type: 4
+                    }
+                },
+            },
+            dataPageSize: ["10", "20", "50","100"],
             titleColumm:{
                 function: ""
             },
-            
+            isPaging: true,
+            isCheckbox: true,
+            isFunction: true,
+            isContextMenu: true,
             contentFooterBefore: "Tổng số: ",
             contentFooterAfter: " bản ghi",
             noDataTable: "Không tìm thấy dữ liệu phù hợp. Vui lòng kiểm tra lại!",
@@ -852,39 +1051,7 @@ const resourceJS = {
         name: "Danh sách tài sản",
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     },
-    assetIncrementDetail:{
-        voucherCode:{
-            ref: "ref_voucher_code",
-            label: "Mã chứng từ",
-            placeholder: "Nhập mã chứng từ",
-            required: true,
-            disable: false
-        },
-        voucherDate:{
-            ref: "ref_voucher_date",
-            label: "Ngày chứng từ",
-            placeholder: "Nhập  ngày chứng từ",
-            required: true,
-            disable: false,
-            format: "dd/mm/yyyy"
-        },
-        incrementDate:{
-            ref: "ref_increment_date",
-            label: "Ngày ghi tăng",
-            placeholder: "Nhập ngày ghi tăng",
-            required: true,
-            disable: false,
-            format: "dd/mm/yyyy"
-        },
-        description:{
-            ref: "ref_description",
-            label: "Ghi chú",
-            placeholder: "Nhập ghi chú",
-            required: false,
-            disable: false
-        },
-        refElements: ['ref_voucher_code','ref_voucher_date','ref_increment_date']
-    }
+    
 }
 
-export default resourceJS;
+export default resourceJSJS;

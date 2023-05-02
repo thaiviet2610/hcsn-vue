@@ -3,22 +3,29 @@
         <div v-if="isShow" class="sidebar">
             <div class="sidebar-header" >
                 <div class="sidebar-header__item"></div>
-                <div class="sidebar-header__text" :data_tooltip_right="tooltipHeader">MISA QLTS</div>
+                <div class="sidebar-header__text">
+                    <div class="sb-header-text">{{ sidebarInfo.header.txt }}</div>
+                    <MTooltip
+                        :text="tooltip.header.text"
+                        :class="tooltip.header.classTooltip">
+                    </MTooltip>
+                </div>
             </div>
+            
             <div class="sidebar__body">
                 <router-link to="/customer" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon1"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodyOverview }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtOverview }}</div>
                 </router-link>
                 <router-link to="/" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2 ">
                         <div class="sidebar-body__item2--icon2"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodyAsset }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtAsset }}</div>
                     <div style="width: 20px;">
                         <MButtonIcon
                             class="sidebar-body__item2-icon"
@@ -26,42 +33,39 @@
                             @addOnClickBtnIcon="addOnClicKBtnshowDetailAsset">
                         </MButtonIcon>
                     </div>
-                    <!-- <div class="sidebar-body__item2-icon">
-                        <button class="sidebar-body__item2-icon--image"></button>
-                    </div> -->
                 </router-link>
                 <div v-if="isShowDetailAsset" class="sidebar-detail">
                     <router-link to="/AssetIncrementList" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Ghi tăng</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtAssetIncrement }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Thay đổi thông tin</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtChangeInfo }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Đánh giá lại</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtReEvaluate }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Tính hao mòn</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtWearCalculation }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Điều chuyển tài sản</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtTransferOfAssets }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Ghi giảm</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtWriteDown }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Kiểm kê</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtInventory }}</div>
                     </router-link>
                     <router-link to="/a" 
                         class="sidebar-detail__item">
-                        <div class="sidebar-detail__text">Khác</div>
+                        <div class="sidebar-detail__text">{{ sidebarInfo.body.txtOther }}</div>
                     </router-link>
                     
                 </div>
@@ -70,7 +74,7 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon3"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodyAssetHTDB }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtAssetHTDB }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -80,7 +84,7 @@
                         <div class="sidebar-body__item2">
                             <div class="sidebar-body__item2--icon4"></div>
                         </div>
-                        <div class="sidebar-body__text">{{ txtBodyTool }}</div>
+                        <div class="sidebar-body__text">{{ sidebarInfo.body.txtTool }}</div>
                         <div class="sidebar-body__item2-icon">
                             <button class="sidebar-body__item2-icon--image"></button>
                         </div>
@@ -90,14 +94,14 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon5"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodyCategory }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtCategory }}</div>
                 </router-link>
                 <router-link to="/search" 
                     class="sidebar-body__item">
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon6"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodySearch }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtSearch }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -107,7 +111,7 @@
                     <div class="sidebar-body__item2">
                         <div class="sidebar-body__item2--icon7"></div>
                     </div>
-                    <div class="sidebar-body__text">{{ txtBodyReport }}</div>
+                    <div class="sidebar-body__text">{{ sidebarInfo.body.txtReport }}</div>
                     <div class="sidebar-body__item2-icon">
                         <button class="sidebar-body__item2-icon--image"></button>
                     </div>
@@ -116,10 +120,13 @@
             <div class="sidebar-footer">
                 <MButtonIcon
                     class="sidebar-footer__item"
-                    :data_tooltip_right="tooltipFooter"
                     classIcon="sidebar-footer__item--image"
                     @addOnClickBtnIcon="handleEventClickBtnCollapseSidebar">
                 </MButtonIcon>
+                <MTooltip
+                    :text="tooltip.footer.collapse.text"
+                    :class="tooltip.footer.collapse.classTooltip">
+                </MTooltip>
             </div>
         </div>
         <TheMenu v-else
@@ -129,7 +136,7 @@
 </template>
 
 <script>
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import TheMenu from './TheMenu.vue';
 export default {
     name:"TheSidebar",
@@ -140,6 +147,8 @@ export default {
     },
     data() {
         return {
+            tooltip: resourceJS.tooltip.theSidebar,
+            sidebarInfo: resourceJS.theSidebar,
             tooltipHeader: resourceJS.tooltip.theSidebar.header,
             tooltipFooter: resourceJS.tooltip.theSidebar.footer.collapse,
             txtHeader: resourceJS.theSidebar.header.txt,

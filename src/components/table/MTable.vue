@@ -267,7 +267,7 @@
         
         
       </table>
-      <table v-if="isFooter" :key="keyTable" style="position: sticky;bottom: 0; border-top: 1px solid #b2b2b2 ;">
+      <table v-if="isFooter" :key="keyTable" style="position: sticky;bottom: 0; border-top: 1px solid #cccccc ;">
         <tfoot >
             <td class="footer_left" :class="tableInfo.footer.pagingClass" style="border: none;" >
               <div v-if="isPaging" class="content-footer__left">
@@ -432,14 +432,13 @@
     </MDialog>
     <!-- contextmenu của table  -->
     <MContextMenu  
-      ref="mContextMenu"
-      id="idContextMenu"
+      v-if="isContextMenu"
       v-show="isShowContextMenu"
-      :data="dataContextMenu"
+      :data="tableInfo.contextMenu.data"
       :pageX="contextMenuPageX"
       :pageY="contextMenuPageY"
-      :width="widthContextMenu"
-      :height="heightContextMenu"
+      :width="tableInfo.contextMenu.width"
+      :height="tableInfo.contextMenu.height"
       :key="keyContextMenu"
       :entity="contextMenuEnity"
       @addOnClickItem="addOnClickItemContextMenu"
@@ -450,7 +449,7 @@
 
 <script>
 import commonJS from "@/js/common.js";
-import resourceJS from "@/js/resourceJS.js";
+import resourceJS from "@/js/resource.js";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';
 export default {
@@ -532,20 +531,16 @@ export default {
       default: true
     },
     /**
-     * trạnh thái có chọn dòng đầu tiên của table khi khởi tạo lần đầu (true: có,false: không)
-     * @author LTVIET (01/04/2023)
-     */
-    selectedFirtRow:{
-      type: Boolean,
-      default: false
-    },
-    /**
      * trạnh thái footer của table(true: có footer,false: không có footer)
      * @author LTVIET (01/04/2023)
      */ 
     isFooter:{
       type: Boolean,
       default: true
+    },
+    isContextMenu:{
+      type: Boolean,
+      default: false
     },
     /**
      * số bản ghi trong 1 trang của table truyền từ ngoài vào khi khởi tạo table
@@ -611,7 +606,6 @@ export default {
       totalPage: 0,
       clickCheckbox: false,
       isShowContextMenu: false, 
-      dataContextMenu: this.tableInfo.dataContextMenu,
       contentFooterBefore: this.tableInfo.contentFooterBefore,
       contentFooterAfter: this.tableInfo.contentFooterAfter,
       notitfyNoDataTable: this.tableInfo.noDataTable,
@@ -634,8 +628,7 @@ export default {
       btnDialogNotify: resourceJS.buttonDialog.notify,
       keyTable: 0,
       titleColumn: this.tableInfo.titleColumm,
-      widthContextMenu: 156,
-      heightContextMenu: 152,
+      
       /**
        * danh sách chứa dữ liệu tổng của các cột trong footer
        * @author LTVIET (01/03/2023)
@@ -671,9 +664,6 @@ export default {
         this.isClickRow[i] = true;
       }
     }
-    if(this.selectedFirtRow){
-      this.selectedRowTable(1);
-    }
   },
 
 
@@ -705,7 +695,7 @@ export default {
       if(type == enumJS.type.add){
         this.$emit("addOnClickContextMenu",[item,type]);
       }else{
-        this.handleEventClickFunction(type,item);
+        this.handleEventClickFunction(type,item.index-1);
       }
     },
 
@@ -716,23 +706,25 @@ export default {
      * @author LTVIET (24/03/2023)
      */
     handleEventClickRightMouse(event,index){
-        event.preventDefault();
-        const item = this.dataEntities[index];
-        this.contextMenuEnity = item;
-        this.contextMenuPageX = event.pageX+10;
-        this.contextMenuPageY = event.pageY+10;
-        
-        if(this.contextMenuPageX+this.widthContextMenu > window.innerWidth){
-          this.contextMenuPageX = this.contextMenuPageX - this.widthContextMenu - 20;
+        if(this.isContextMenu){
+          event.preventDefault();
+          const item = this.dataEntities[index];
+          this.contextMenuEnity = item;
+          this.contextMenuPageX = event.pageX+10;
+          this.contextMenuPageY = event.pageY+10;
+          
+          if(this.contextMenuPageX+this.widthContextMenu > window.innerWidth){
+            this.contextMenuPageX = this.contextMenuPageX - this.widthContextMenu - 20;
+          }
+          if(this.contextMenuPageY+this.heightContextMenu > window.innerHeight){
+            this.contextMenuPageY = this.contextMenuPageY - this.heightContextMenu - 10;
+          }
+          this.isShowContextMenu = true;
+          this.indexRowSelected = item.index - this.pageSize*(this.pageNumber-1);
+          this.rowSelected.fill(false);
+          this.rowSelected[this.indexRowSelected] = true;
+          this.keyContextMenu=++this.keyContextMenu;
         }
-        if(this.contextMenuPageY+this.heightContextMenu > window.innerHeight){
-          this.contextMenuPageY = this.contextMenuPageY - this.heightContextMenu - 10;
-        }
-        this.isShowContextMenu = true;
-        this.indexRowSelected = item.index - this.pageSize*(this.pageNumber-1);
-        this.rowSelected.fill(false);
-        this.rowSelected[this.indexRowSelected] = true;
-        this.keyContextMenu=++this.keyContextMenu;
     },
 
     /**

@@ -367,7 +367,7 @@
 
 <script>
 import commonJS from "@/js/common.js";
-import resourceJS from "@/js/resourceJS.js";
+import resourceJS from "@/js/resource.js";
 import axios from "axios";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';

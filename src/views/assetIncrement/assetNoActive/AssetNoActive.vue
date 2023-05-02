@@ -4,7 +4,7 @@
         >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
-                <div class="form-header">
+                <div class="asset-no-active-form-header">
                     <!-- title của form  -->
                     <div class="asset_increment__form-header__text">{{ assetNoActiveInfo.label }}</div>
                     <!-- button đóng form  -->
@@ -16,19 +16,19 @@
                         </MButtonIcon>
                         <MTooltip
                             :text="assetNoActiveInfo.button.btnClose.tooltip"
-                            class="btn-close-asset-no-active-tooltip"
+                            :class="assetNoActiveInfo.button.btnClose.classTooltip"
                         ></MTooltip>
                     </div>
                 </div>
                 <!-- phần body của form  -->
-                <div class="asset_increment__form_body" style="padding: 0;">
+                <div class="asset-no-active-form-body" style="padding: 0;">
                     <div class="header__body--down" style="padding-bottom: 16px;">
                         <div class="input down-left">
                             <MInput 
-                                :ref="assetNoActiveInfo.ref.inputSearch"
+                                :ref="assetNoActiveInfo.inputSearch.ref"
                                 @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                                 @getValueEventInput="handleEventGetValueInputSearch"
-                                placeholder="Tìm kiếm theo Mã, tên tài sản"
+                                :placeholder="assetNoActiveInfo.inputSearch.placeholder"
                                 :iconInput="true">
                             </MInput>
                         </div>
@@ -36,19 +36,18 @@
                     
                     <div style="width: 100%;height: 515px;overflow: auto;">
                         <MTable 
-                        :ref="this.assetNoActiveInfo.ref.table"
+                        :ref="assetNoActiveInfo.table.ref"
                         :tableInfo="tableInfo"
                         :dataPageSize="dataPageSize"
                         :dataHeader="dataHeaderTable"
                         :dataBody="dataBodyTable"
                         :dataFooter="dataFooterTable"
                         :valuePageNumber="pageNumber"
-                        :totalRecord="totalRecord"
                         :valuePageSize="pageSize"
-                        :isPaging="true"
-                        :isCheckbox="true"
-                        :isFunction="false"
-                        :isContextmenu="true"
+                        :isPaging="assetNoActiveInfo.table.isPaging"
+                        :isCheckbox="assetNoActiveInfo.table.isCheckbox"
+                        :isFunction="assetNoActiveInfo.table.isFunction"
+                        :isContextMenu="assetNoActiveInfo.table.isConteisContextMenuxtmenu"
                         :dataEntities="dataAssets"
                         @getValuePageNumber="getValuePageNumber"
                         @getValuePageSize="getValuePageSize"
@@ -68,7 +67,7 @@
                         </MButton>
                         <MTooltip
                             :text="assetNoActiveInfo.button.btnSave.tooltip"
-                            class="btn-save-asset-no-active-tooltip"
+                            :class="assetNoActiveInfo.button.btnSave.classTooltip"
                         ></MTooltip>
                     </div>
                     <!-- button hủy form  -->
@@ -79,7 +78,7 @@
                         </MButton>
                         <MTooltip
                             :text="assetNoActiveInfo.button.btnCancel.tooltip"
-                            class="btn-cancel-asset-no-active-tooltip"
+                            :class="assetNoActiveInfo.button.btnCancel.classTooltip"
                         ></MTooltip>
                     </div>
                 </div>
@@ -93,7 +92,7 @@
 
 <script>
 import configJS from '@/js/config';
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import commonJS from '@/js/common';
 import axios from 'axios';
 import enumJS from '@/js/enum';
@@ -118,7 +117,6 @@ export default {
             dataHeaderTable: resourceJS.table.tableAssetNoActive.header,
             dataBodyTable: [],
             dataFooterTable: [],
-            totalRecord: 0,
             dataAssets: [],
             previousKeyCtrl: false,
             assetNoActiveInfo: resourceJS.assetNoActive
@@ -137,7 +135,10 @@ export default {
          */
          getValuePageSize(value){
             this.pageSize = value;
+            this.pageNumber = 1;
             this.getDataTable();
+            this.$refs[this.assetNoActiveInfo.table.ref].checkboxActive = [];
+            this.$refs[this.assetNoActiveInfo.table.ref].entityCheckboxActive = [];
         },
 
         /**
@@ -177,9 +178,8 @@ export default {
                     commonJS.formatNumber(Math.round(res.data.ResidualValueTotal)),
                 ];
                 this.dataAssets = res.data.Data;
-                this.totalRecord = res.data.TotalRecord;
-                this.$refs[this.assetNoActiveInfo.ref.table].totalRecord = this.totalRecord;
-                this.$refs[this.assetNoActiveInfo.ref.table].getUnitData();
+                this.$refs[this.assetNoActiveInfo.table.ref].totalRecord = res.data.TotalRecord;
+                this.$refs[this.assetNoActiveInfo.table.ref].getUnitData();
                 this.isShowLoad = false;
 
             })
@@ -195,7 +195,7 @@ export default {
          */
         setFocus(){
             this.$nextTick(function(){
-                this.$refs[this.assetNoActiveInfo.ref.inputSearch].setFocus();
+                this.$refs[this.assetNoActiveInfo.inputSearch.ref].setFocus();
             })
         },
 
@@ -245,7 +245,7 @@ export default {
          * @author LTVIET (16/03/2023)
          */
         handleEventBtnClickSave(){
-            let assetsSelected = this.$refs['mTable'].getEntityCheckboxActiveList();
+            let assetsSelected = this.$refs[this.assetNoActiveInfo.table.ref].getEntityCheckboxActiveList();
             this.$emit('onSave',assetsSelected);
         },
 
@@ -261,7 +261,8 @@ export default {
             }
             this.pageNumber=1;
             this.getDataTable();
-
+            this.$refs[this.assetNoActiveInfo.table.ref].checkboxActive = [];
+            this.$refs[this.assetNoActiveInfo.table.ref].entityCheckboxActive = [];
         },
 
         /**

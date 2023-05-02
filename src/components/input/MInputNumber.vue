@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import resourceJS from '../../js/resourceJS.js'
+import resourceJS from '../../js/resource.js'
 import commonJS from '@/js/common';
 import enumJS from '@/js/enum.js';
 export default {

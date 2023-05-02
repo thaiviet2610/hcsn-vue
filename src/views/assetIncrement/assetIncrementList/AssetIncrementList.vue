@@ -3,13 +3,13 @@
         <div class="content" style="padding-bottom: 0;">
             <div class="content-header">
                 <div class="content-header__left">
-                    <div class="asset_increment--text1" >Ghi tăng tài sản</div>
+                    <div class="asset_increment--text1" >{{ assetIncrementListInfo.label }}</div>
                 </div> 
                 <div class="content-header__right" >
                     <!-- button thêm tài sản chứng từ -->
                     <MButton
-                        label="Thêm"
-                        class="item1 btn--main"
+                        :label="assetIncrementListInfo.button.btnAddAssetIncrement.label"
+                        class="btn--main"
                         @btnAddOnClickBtn="btnClickOpenAddAssetIncrementForm">
                     </MButton>
                     <div class="asset_increment--item1" style="position: relative;" v-outside="handleEventClickOutsideInterfaceSelected">
@@ -23,11 +23,11 @@
                         <div v-if="isShowInterfaceSelecte" class="interface__container">
                             <div @click="handleEventClickVerticalInterFace" class="interface__item">
                                 <div class="vertical_interface"></div>
-                                <div>Giao diện dọc</div>
+                                <div>{{ assetIncrementListInfo.interfaceSeleceted.verticalInterface }}</div>
                             </div>
                             <div @click="handleEventClickHorizontalInterFace" class="interface__item">
                                 <div class="horizontal_interface"></div>
-                                <div>Giao diện ngang</div>
+                                <div>{{ assetIncrementListInfo.interfaceSeleceted.horizontalInterface }}</div>
                             </div>
                         </div>
                     </div>
@@ -44,8 +44,8 @@
                             <div class="content-body__up">
                                 <div class="input1">
                                     <MInput 
-                                        ref="refSearch"
-                                        placeholder="Tìm kiếm tài sản"
+                                        :ref="assetIncrementListInfo.inputSearch.ref"
+                                        :placeholder="assetIncrementListInfo.inputSearch.placeholder"
                                         :iconInput="true"
                                         @getValueEventInput="handleEventGetValueInputSearch"
                                         @keyDownEnter="handleEventEnterGetValueInputSearch">
@@ -85,7 +85,7 @@
                             </div>
                             <div style="width: 100%;height: calc(100% - 59px);position: relative;">
                                 <MTable 
-                                ref="mTableMaster"
+                                :ref="assetIncrementListInfo.table.tableMaster.ref"
                                 :tableInfo="tableMasterInfo"
                                 :dataPageSize="dataPageSizeTableMaster"
                                 :dataHeader="dataHeaderTableMaster"
@@ -93,19 +93,20 @@
                                 :dataFooter="dataFooterTableMaster"
                                 :totalRecord="totalRecordTableMaster"
                                 :valuePageNumber="pageNumberTableMaster"
-                                :selectedFirtRow="true"
                                 :valuePageSize="pageSizeTableMaster"
-                                :isPaging="true"
-                                :isCheckbox="true"
-                                :isFunction="true"
-                                :isContextmenu="true"
+                                :selectedFirtRow="tableMasterInfo.selectedFirtRow"
+                                :isPaging="tableMasterInfo.isPaging"
+                                :isCheckbox="tableMasterInfo.isCheckbox"
+                                :isFunction="tableMasterInfo.isFunction"
+                                :isContextMenu="tableMasterInfo.isContextMenu"
                                 :dataEntities="dataAssetIncrements"
                                 :key="keyTableMaster"
-                                @getValuePageNumber="getValuePageNumber"
-                                @getValuePageSize="getValuePageSize"
+                                @getValuePageNumber="getValuePageNumberTableMaster"
+                                @getValuePageSize="getValuePageSizeTableMaster"
                                 @getQuantityItemSelected="getQuantityAssetIncrementSelected"
                                 @btnClickFunctionOpenForm="handleEventClickFunctionTableMaster"
-                                @getItemRowSelected="getAssetIncrementSelected">
+                                @getItemRowSelected="getAssetIncrementSelected"
+                                @addOnClickContextMenu="handleEventClickContextMenu">
                                 </MTable>
                                 <MDialogLoadData v-if="isShowLoadTableMaster" style="width: 100%;height: 100%;"></MDialogLoadData>
 
@@ -116,7 +117,7 @@
                     <Pane :size="100 - paneSize">
                         <div class="asset_increment__content-body--down" style="border: none;box-shadow: none" >
                             <div class="content-body__down">
-                                <div class="asset_increment--text2">Thông tin chi tiết
+                                <div class="asset_increment--text2">{{ assetIncrementListInfo.text }}
                                 </div>
 
                                 <div class="asset_increment--item3" style="position: relative;">
@@ -132,15 +133,15 @@
                             </div>
                             <div style="width: 100%;height: calc(100% - 40px);">
                                 <MTable 
-                                    ref="MTableDetail"
+                                    :ref="assetIncrementListInfo.table.tableDetail.ref"
                                     :tableInfo="tableDetailInfo"
                                     :dataHeader="dataHeaderTableDetail"
                                     :dataBody="dataBodyTableDetail"
-                                    :isCheckbox="false"
-                                    :isFunction="true"
-                                    :isContextmenu="true"
+                                    :isCheckbox="tableDetailInfo.isCheckbox"
+                                    :isFunction="tableDetailInfo.isFunction"
+                                    :isContextMenu="tableDetailInfo.isContextMenu"
                                     :dataEntities="dataAssets"
-                                    :isFooter="false"
+                                    :isFooter="tableDetailInfo.isFooter"
                                     :key="keyTableDetail">
                                 </MTable>
                                 <MDialogLoadData v-if="isShowLoadTableDetail" style="width: 100%;height: 100%;"></MDialogLoadData>
@@ -206,7 +207,7 @@
 <script>
 import MButton from '@/components/button/MButton.vue';
 import configJS from '@/js/config';
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import AssetIncrementDetail from '../assetIncrementDetail/AssetIncrementDetail.vue';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
@@ -240,6 +241,7 @@ export default {
             contentDialogNotify: "",
             notifyToastSuccess: "",
             contentToastSuccess: "",
+            assetIncrementListInfo: resourceJS.assetIncrementList,
             assetIncrementFilterApi: configJS.api.assetIncrement.assetIncrementFilterApi,
             assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
             assetIncrementGenerateNewCodeApi: configJS.api.assetIncrement.assetIncrementGenerateNewCodeApi,
@@ -304,7 +306,7 @@ export default {
         }
     },
     mounted() {
-        this.$refs["mTableMaster"].selectedRowTable(1);
+        this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
         this.setFocusDefault();
     },
     methods: {
@@ -321,11 +323,12 @@ export default {
          * @param {*} value giá trị của pageSize
          * @author LTVIET (15/04/2023)
          */
-         getValuePageSize(value){
+         getValuePageSizeTableMaster(value){
             this.pageSizeTableMaster = value;
+            this.pageNumberTableMaster = 1;
             this.getDataTableMaster();
-            this.$refs["mTableMaster"].checkboxActive = [];
-            this.$refs["mTableMaster"].entityCheckboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
         },
 
         /**
@@ -333,9 +336,17 @@ export default {
          * @param {*} value giá trị của pageNumber
          * @author LTVIET (15/04/2023)
          */
-        getValuePageNumber(value){
+        getValuePageNumberTableMaster(value){
             this.pageNumberTableMaster = value;
             this.getDataTableMaster();
+        },
+
+        /**
+         * Hàm xử lý sự kiện khi click chọn thêm chứng từ trong contextmenu
+         * @author LTVIET (15/04/2023)
+         */
+        handleEventClickContextMenu(){
+            this.btnClickOpenAddAssetIncrementForm();
         },
 
         /**
@@ -366,7 +377,7 @@ export default {
          * @author LTVIET (15/04/2023)
          */
         handleEventShortcutsFunctionTableMaster(keyCode){
-            let tableMaster = this.$refs["mTableMaster"];
+            let tableMaster = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref];
             // khi chọn 1 dòng trong 1 table
             if(tableMaster.indexRowSelected > 0){
                 const assetIncrement = this.dataAssetIncrements[tableMaster.indexRowSelected - 1];
@@ -434,12 +445,12 @@ export default {
                 ];
                 this.totalRecordTableMaster = res.data.TotalRecord;
                 this.dataAssetIncrements = res.data.Data;
-                this.$refs["mTableMaster"].totalRecord = this.totalRecordTableMaster;
-                this.$refs["mTableMaster"].getUnitData();
+                this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].totalRecord = this.totalRecordTableMaster;
+                this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getUnitData();
                 if(this.assetIncrements.length > 0){
-                    const quantityAssetIncrementActive = this.$refs["mTableMaster"].getEntityCheckboxActiveList().length;
+                    const quantityAssetIncrementActive = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getEntityCheckboxActiveList().length;
                     if(quantityAssetIncrementActive == 0){
-                        this.$refs["mTableMaster"].selectedRowTable(1);
+                        this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
                         this.getAssetIncrementDetailById(this.assetIncrements[0]);
                     }
                 }else{
@@ -487,7 +498,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventCloseFormAssetIncrementDetail(){
-            this.$refs["mTableMaster"].selectedRowTable(1);
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
             this.isShowDetail = false;
             this.setFocusDefault();
         },
@@ -614,8 +625,6 @@ export default {
             if(id){
                 this.deleteAssetIncrementById(id);
             }
-            this.$refs["mTableMaster"].reloadTable();
-            this.$refs["mTableMaster"].checkboxActive = [];
         },
 
         /**
@@ -634,8 +643,6 @@ export default {
                 ids.push(id);
             }
             this.deleteMultipleAsset(ids);
-            this.$refs["mTableMaster"].reloadTable();
-            this.$refs["mTableMaster"].checkboxActive = [];
         },
 
         /**
@@ -672,8 +679,8 @@ export default {
             }
             this.pageNumberTableMaster = 1;
             this.getDataTableMaster();
-            this.$refs["mTableMaster"].checkboxActive = [];
-            this.$refs["mTableMaster"].entityCheckboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
         },
 
         /**
@@ -700,10 +707,9 @@ export default {
                 this.closeToastSucess();
             }, 3000);
             this.pageNumberTableMaster = 1;
-            this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
             this.getDataTableMaster();
-            this.$refs["mTableMaster"].checkboxActive = [];
-            this.$refs["mTableMaster"].entityCheckboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
             this.setFocusDefault();
         },
 
@@ -827,7 +833,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         addOnClickBtnDeleteMultiple(){
-            const table = this.$refs["mTableMaster"];
+            const table = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref];
             const assetIncrementsDelete = table.getEntityCheckboxActiveList();
             this.assetsDeleteMultiple = assetIncrementsDelete;
             this.showDialogConfirmDeleteMultiple();
@@ -839,10 +845,9 @@ export default {
          */
         handleEventDeleteSuccess(){
             this.pageNumberTableMaster = 1;
-            this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
             this.getDataTableMaster();
-            this.$refs["mTableMaster"].checkboxActive = [];
-            this.$refs["mTableMaster"].entityCheckboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
 
             //hiển thị dialog thông báo xóa thành công
             this.isButtonUndo = false;

@@ -5,7 +5,8 @@
     position: fixed;
     
     z-index: 60;
-    border: 1px solid #afafaf;;
+    border: 1px solid #afafaf;
+    border-bottom: none;
 }
 
 .context__menu--item{

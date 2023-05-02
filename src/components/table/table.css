@@ -17,7 +17,7 @@ table{
 th{
     height: 42px;
     box-sizing: border-box;
-    border-bottom: 1px solid #afafaf;
+    border-bottom: 1px solid #cccccc;
 }
 
 
@@ -299,6 +299,16 @@ tfoot{
     width: 4px;
 }
 
+::-webkit-scrollbar-track {
+    background-color: #C7C7C7 !important;
+
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888787 !important;
+    border-radius: 1.5px;
+}
+
 
 
 .content__table{
@@ -519,7 +529,7 @@ tfoot{
     display: flex;
     align-items: center;
     font-family: Roboto-Bold;
-    padding-left: 25px;
+    padding-left: 16px;
 }
 
 .content__table::-webkit-scrollbar-button:start {

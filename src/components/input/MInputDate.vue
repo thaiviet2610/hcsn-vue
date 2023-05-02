@@ -23,6 +23,7 @@
                 :disabled="disable"
                 :tabindex="disable ? -1:0"
                 @focus="isFocus=true"
+                @focusout="isFocus = false"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
                 @keydown="handleEventKeyDown"
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import enumJS from '@/js/enum';
 import commonJS from '@/js/common';
 export default {

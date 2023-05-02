@@ -51,7 +51,7 @@
 
 <script>
 import enumJS from '@/js/enum';
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 export default {
     name:"TheDropdown",
     components:{},

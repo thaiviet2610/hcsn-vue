@@ -7,15 +7,21 @@
                     <!-- title của form  -->
                     <div class="asset_increment__form-header__text">{{ labelForm }}</div>
                     <!-- button đóng form  -->
-                    <MButtonIcon
-                        class="btn-header__icon"
-                        classIcon="form-header__icon"
-                        @addOnClickBtnIcon="handleEventBtnClickCancel">
-                    </MButtonIcon>
+                    <div class="btn-close-asset-increment-detail">
+                        <MButtonIcon
+                            class="btn-header__icon"
+                            classIcon="form-header__icon"
+                            @addOnClickBtnIcon="handleEventBtnClickCancel">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="assetIncrementDetailInfo.button.btnClose.tooltip"
+                            :class="assetIncrementDetailInfo.button.btnClose.classTooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
                 <!-- phần body của form  -->
                 <div id="formBody" class="asset_increment__form_body">
-                    <div class="asset_increment__form-body--tex1">Thông tin chứng từ</div>
+                    <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyUp.title }}</div>
                     <div class="asset_increment__form-body__up">
                         <div class="m-row">
                             <div class="input down-left">
@@ -80,14 +86,13 @@
                         </div>
                     </div>
 
-                    <div class="asset_increment__form-body--tex1">Thông tin chi tiết</div>
+                    <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyDown.title }}</div>
                     <div class="asset_increment__form-body__down">
                         <!-- input nhập số lượng  -->
                         <div class="header__body--down">
                             <div class="input down-left">
                                 <MInput
-                                    :disable="false"
-                                    placeholder="Tìm kiếm theo mã, tên tài sản"
+                                    :placeholder="assetIncrementDetailInfo.bodyDown.inputSearch.placeholder"
                                     :iconInput="true"
                                     @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                                     @getValueEventInput="handleEventGetValueInputSearch"
@@ -96,25 +101,26 @@
                             </div>
 
                             <MButton
-                                label="Chọn tài sản"
-                                class="item1"
+                                :label="assetIncrementDetailInfo.button.btnSelectedAsset.label"
+                                :class="assetIncrementDetailInfo.button.btnSelectedAsset.class"
                                 @btnAddOnClickBtn="btnClickOpenFormSelectedAsset">
                             </MButton>
                         </div>
                         <div class="table_container">
                             <MTable 
-                            ref="mTable"
+                            :ref="assetIncrementDetailInfo.table.ref"
                             :tableInfo="tableInfo"
                             :dataHeader="dataHeaderTable"
                             :dataBody="dataBodyTable"
                             :dataFooter="dataFooterTable"
-                            :isPaging="false"
-                            :isCheckbox="false"
-                            :isFunction="true"
+                            :isPaging="tableInfo.isPaging"
+                            :isCheckbox="tableInfo.isCheckbox"
+                            :isFunction="tableInfo.isFunction"
                             :dataEntities="dataAssets"
-                            :isContextmenu="true"
+                            :isContextMenu="tableInfo.isContextMenu"
                             :key="keyTable"
-                            @btnClickFunctionOpenForm="handleEventClickFunctionTable">
+                            @btnClickFunctionOpenForm="handleEventClickFunctionTable"
+                            @addOnClickContextMenu="handleEventClickContextMenu">
                             </MTable>
                         </div> 
                     </div>
@@ -122,17 +128,28 @@
                 <!-- phần footer của form  -->
                 <div class="form-footer">
                     <!-- button lưu form  -->
-                    <MButton
-                        class="btn--main"
-                        label="Lưu"
-                        @btnAddOnClickBtn="handleEventBtnClickSave">
-                    </MButton>
+                    <div class="btn-save-asset-increment-detail">
+                        <MButton
+                            :class="assetIncrementDetailInfo.button.btnSave.class"
+                            :label="assetIncrementDetailInfo.button.btnSave.label"
+                            @btnAddOnClickBtn="handleEventBtnClickSave">
+                        </MButton>
+                        <MTooltip
+                            :text="assetIncrementDetailInfo.button.btnSave.tooltip"
+                            :class="assetIncrementDetailInfo.button.btnSave.classTooltip"
+                        ></MTooltip>
+                    </div>
                     <!-- button hủy form  -->
-                    <MButton
-                        label="Hủy"
-                        style="border: 0;"
-                        @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                    </MButton>
+                    <div class="btn-cancel-asset-increment-detail">
+                        <MButton
+                            :label="assetIncrementDetailInfo.button.btnCancel.label"
+                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                        </MButton>
+                        <MTooltip
+                            :text="assetIncrementDetailInfo.button.btnCancel.tooltip"
+                            :class="assetIncrementDetailInfo.button.btnCancel.classTooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,7 +208,7 @@
 
 
 <script>
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import enumJS from '@/js/enum';
 import BudgetAsset from '@/views/budgetAsset/BudgetAsset.vue';
 import configJS from '@/js/config';
@@ -224,7 +241,6 @@ export default {
     data() {
         return {
             tableInfo: resourceJS.table.tableAssetIncrementDetail,
-            dataPageSize: resourceJS.table.tableAssetIncrementDetail.dataPageSize ,
             isShowDialogAddFormCancel: false,
             isShowDialogEditFormCancel: false,
             isShowSelectAssetNoActive: false,
@@ -300,8 +316,13 @@ export default {
         this.setFocus();
     },
     methods: {
-        
-
+        /**
+         * Hàm xử lý sự kiện khi click chọn thêm chứng từ trong contextmenu
+         * @author LTVIET (15/04/2023)
+         */
+         handleEventClickContextMenu(){
+            this.btnClickOpenFormSelectedAsset();
+        },
 
         /**
          * Hàm lấy ra đối tượng asset theo id
@@ -443,21 +464,28 @@ export default {
             }
 
             if(this.previousKeyCtrl){
-                event.preventDefault();
-                const index = this.$refs["mTable"].indexRowSelected;
+                const index = this.$refs[this.assetIncrementDetailInfo.table.ref].indexRowSelected;
                 const asset = this.assetIncrement.assets[index - 1];
                 switch (keyCode) {
                     case enumJS.keyS:
+                        event.preventDefault();
                         this.handleEventBtnClickSave();
                         break;
                     case enumJS.key1:
+                        event.preventDefault();
                         this.btnClickOpenFormSelectedAsset();
                         break;
                     case enumJS.keyE:
-                        this.handleEventClickFunctionTable([enumJS.type.edit,asset]);
+                        event.preventDefault();
+                        if(asset){
+                            this.handleEventClickFunctionTable([enumJS.type.edit,asset]);
+                        }
                         break;
                     case enumJS.keyD:
-                        this.handleEventClickFunctionTable([enumJS.type.delete,asset]);
+                        event.preventDefault();
+                        if(asset){
+                            this.handleEventClickFunctionTable([enumJS.type.delete,asset]);
+                        }
                         break;
                     default:
                         break;
@@ -501,12 +529,14 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventEditBudgetAsset(newAsset){
-            const asset = this.assetIncrement.assets.find(function(asset){
-                return asset.fixed_asset_code == newAsset.fixed_asset_code;
-            });
-            asset.cost = newAsset.cost;
-            asset.cost_source = newAsset.cost_source;
-            this.assetIncrement.assets[asset.index-1] = asset;
+            let assets = this.assetIncrement.assets;
+            for (let i = 0;i<assets.length;i++) {
+                if(newAsset.fixed_asset_code == assets[i]){
+                    assets[i].cost = newAsset.cost;
+                    assets[i].cost_source = newAsset.cost_source;
+                    break;
+                }
+            }
             this.getDataTable();
             this.isShowBudgetAsset = false;
             this.isShowToastSuccess = true;
@@ -635,7 +665,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventBtnClickSave(){
-            if(this.validateAssetIncrement() & this.validateAssetActives()){
+            if(this.validateAssetIncrement() & this.validateAssetNoActives()){
                 const price = this.assetIncrement.assets.reduce(function (total,asset) {
                     return total + asset.cost;
                 },0);
@@ -714,7 +744,6 @@ export default {
          handleEventErrorAPI(error){
             console.log(error);
             this.isShowLoad = false;
-            this.isShowDialogNotify = true;
             // lỗi kết nối
             if(error.code == "ERR_NETWORK"){
                 this.contentDialogNotify = resourceJS.errorMsg.errorConnection;
@@ -725,7 +754,6 @@ export default {
                 let message = errorData.UserMsg;
                 // Nếu là lỗi về dữ liệu
                 if(errorCode == enumJS.errorCode.inValid){
-                    this.contentDialogNotify = resourceJS.error.notify;
                     this.handleEventErrorInvalid(errorData.MoreInfo);
                 }
                 // Các lỗi khác
@@ -743,20 +771,10 @@ export default {
          * @author LTVIET (12/04/2023)
          */
          handleEventErrorInvalid(errors){
+            this.isShowDialogNotify = false;
             for (let error of errors) {
-                // validate lỗi code bị trùng
-                if(error.ValidateCode == enumJS.validateCode.duplicate){
-                    let itemVoucherCode = this.$refs[this.assetIncrementDetailInfo.voucherCode.ref];
-                    if(!itemVoucherCode.inValid){
-                        this.handleDisplayInputError(itemVoucherCode,error.Message);
-                        if(!this.itemError){
-                            this.itemError = itemVoucherCode;
-                        }
-                    }
-                    
-                }
                 // validate lỗi để trống
-                else if(error.ValidateCode == enumJS.validateCode.empty){
+                if(error.ValidateCode == enumJS.validateCode.empty){
                     for (let item of error.Data) {
                         let itemEmpty = this.$refs[`ref_${item}`];
                         if(!itemEmpty.inValid){
@@ -764,10 +782,23 @@ export default {
                             this.handleDisplayInputError(itemEmpty,message);
                             if(!this.itemError){
                                 this.itemError = itemEmpty;
+                                this.itemError.setFocus();
                             }
                         }
                     }
                 }
+                // validate lỗi code bị trùng
+                else if(error.ValidateCode == enumJS.validateCode.duplicate){
+                    let itemVoucherCode = this.$refs[this.assetIncrementDetailInfo.voucherCode.ref];
+                    if(!itemVoucherCode.inValid){
+                        this.handleDisplayInputError(itemVoucherCode,error.Message);
+                        if(!this.itemError){
+                            this.itemError = itemVoucherCode;
+                            this.itemError.setFocus();
+                        }
+                    }  
+                }
+                // validate danh sách tài sản chứng từ rỗng
                 else if(error.ValidateCode == enumJS.validateCode.noAssetIncrements){
                     this.contentDialogNotify = error.Message;
                 }
@@ -778,6 +809,7 @@ export default {
                         this.handleDisplayInputError(item,error.Message);
                         if(!this.itemError){
                             this.itemError = item;
+                            this.itemError.setFocus();
                         }
                     }
                 }
@@ -791,8 +823,10 @@ export default {
          * @author LTVIET (26/03/2023)
          */
          handleDisplayInputError(item,message){
-            item.inValid = true;
-            item.notifyError = message;
+            if(!item.inValid){
+                item.inValid = true;
+                item.notifyError = message;
+            }
         },
 
         /**
@@ -813,15 +847,41 @@ export default {
                         this.itemError.setFocus();
                     }
                 }
+                if(ref == this.assetIncrementDetailInfo.voucherCode.ref){
+                    check = this.validateMaxLength(item,this.assetIncrementDetailInfo.voucherCode.maxLength);
+                }
+                if(ref == this.assetIncrementDetailInfo.description.ref){
+                    check = this.validateMaxLength(item,this.assetIncrementDetailInfo.description.maxLength);
+                }
             }
             return check;
+        },
+
+        /**
+         * Hàm validate các trường không được vượt quá giá trị max length cho trước
+         * @param {*} item đối tượng cần validate
+         * @param {*} maxLength giá trị max length
+         * @author LTVIET (19/04/2023)
+         */
+        validateMaxLength(item,maxLength){
+            let check = true;
+            if(item.value.length > maxLength){
+                check = false;
+                const message = item.label + resourceJS.error.maxLength.replace("{0}",maxLength);
+                this.handleDisplayInputError(item,message);
+                if(!this.itemError){
+                    this.itemError = item;
+                    this.itemError.setFocus();
+                }
+            }   
+            return check;    
         },
 
         /**
          * Hàm validate các trường giá trị của danh sách tài sản ghi tăng
          * @author LTVIET (19/04/2023)
          */
-         validateAssetActives(){
+         validateAssetNoActives(){
             let check = true;
             if(this.assetIncrement.assets.length <= 0){
                 this.isShowDialogNotify = true;

@@ -1,4 +1,4 @@
-import resourceJS from "./resourceJS";
+import resourceJS from "./resource";
 
 const commonJS = {
     formatDate (dateTime,formatBefore,formatAfter) {

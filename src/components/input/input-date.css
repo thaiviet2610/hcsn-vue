@@ -64,8 +64,6 @@ input[type=date]{
     background-color: white;
     display: flex;
     align-items: center;
-    /* position: absolute;
-    left: 12px; */
     justify-content: center;
     border: 0;
     outline: none;

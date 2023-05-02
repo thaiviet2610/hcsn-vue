@@ -152,12 +152,4 @@ div::-webkit-scrollbar {
     width: 8px;
 }
 
-::-webkit-scrollbar-track {
-    background-color: #ffffff;
 
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #afafaf;
-    border-radius: 1.5px;
-}

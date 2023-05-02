@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import resourceJS from '../../js/resourceJS.js'
+import resourceJS from '../../js/resource.js'
 export default {
     name:"MInput",
     props: {

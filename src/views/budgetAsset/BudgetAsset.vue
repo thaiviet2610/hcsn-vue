@@ -8,38 +8,45 @@
                     <!-- title của form  -->
                     <div class="asset_increment__form-header__text">{{ label }}</div>
                     <!-- button đóng form  -->
-                    <MButtonIcon
-                        class="btn-header__icon"
-                        classIcon="form-header__icon"
-                        @addOnClickBtnIcon="handleEventBtnClickCancel">
-                    </MButtonIcon>
+                    <div class="btn-close-budget">
+                        <MButtonIcon
+                            class="btn-header__icon"
+                            classIcon="form-header__icon"
+                            @addOnClickBtnIcon="handleEventBtnClickCancel">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="budgetInfo.button.btnClose.tooltip"
+                            :class="budgetInfo.button.btnClose.classTooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
                 <!-- phần body của form  -->
                 <div class="form-body budget-body" style="row-gap: 0;">
+                    <!-- phần body header của form  -->
                     <div class="form-body__up">
                         <div class="m-row">
                             <div class="budget__body--up" style="padding-bottom: 16px;">
                                 <MInput
-                                    label="Bộ phận sử dụng"
+                                    :label="budgetInfo.bodyHeader.departmentName.label"
                                     :valueInput="asset.department_name"
                                     :key="keyDepartment"
-                                    :disable="true"
+                                    :disable="budgetInfo.bodyHeader.departmentName.disable"
                                     >
                                 </MInput>
                             </div>
                         </div>
                     </div>
+                    <!-- phần body content của form  -->
                     <div class="form-body__down" style="height: calc(100% - 125px);" :key="keyBudget">
-                        <div class="m-row" style="font-family: Roboto-Bold;">Nguyên giá</div>
+                        <div class="m-row" style="font-family: Roboto-Bold;">{{ budgetInfo.bodyContent.cost }}</div>
 
                         <div style="height: calc(100% - 14px - 15px);">
                             <div class="m-row">
                                 <div class="budget__container--left">
-                                    <div class="input budget_combobox">Nguồn hình thành</div>
+                                    <div class="input budget_combobox">{{ budgetInfo.bodyContent.source }}</div>
                                     
                                     <div class="input budget_input">
-                                        <!-- input nhập tên bộ phận sử dụng  -->
-                                        Giá trị
+                                        {{ budgetInfo.bodyContent.value }}
                                     </div>
                                 </div>
                             </div>
@@ -51,9 +58,7 @@
                                                 <!-- combobox nhập giá trị tên nguồn hình thành  -->
                                                 <MCombobox  
                                                     :ref="`mCombobox_${index}`"
-                                                    :is-icon="false" 
                                                     :required="true"
-                                                    :disable="false"
                                                     :idCombobox="`mCombobox_${index}`"
                                                     :valueInput="priceList[index].budget_id"
                                                     :dataCombobox="dataComboboxBudget"
@@ -69,7 +74,7 @@
                                         </div>
                                         
                                         <div class="input budget_input">
-                                            <!-- input nhập tên bộ phận sử dụng  -->
+                                            <!-- input nhập gái trị nguồn hình thành  -->
                                             <MInputNumber
                                                 :ref="`mInput_${index}`"
                                                 :required="true"
@@ -82,24 +87,36 @@
                                         </div>
                                     </div>
                                     <div class="budget__container--right">
-                                        <MButtonIcon 
-                                            class="budget__icon"
-                                            classIcon="budget__icon--add"
-                                            @addOnClickBtnIcon="handleEventAddBudgetAsset">
+                                        <div style="position: relative;">
+                                            <MButtonIcon 
+                                                class="budget__icon"
+                                                classIcon="budget__icon--add"
+                                                @addOnClickBtnIcon="handleEventAddBudgetAsset">
 
-                                        </MButtonIcon>
-                                        <MButtonIcon v-if="priceList.length > 1"
-                                            class="budget__icon"
-                                            classIcon="budget__icon--minus"
-                                            @addOnClickBtnIcon="handleEventDeleteBudgetAsset(index)">
-
-                                        </MButtonIcon>
+                                            </MButtonIcon>
+                                            <MTooltip
+                                                :text="budgetInfo.button.btnAddBudget.tooltip"
+                                                :class="budgetInfo.button.btnAddBudget.classTooltip"
+                                            ></MTooltip>
+                                        </div>
+                                        <div style="position: relative;">
+                                            <MButtonIcon v-if="priceList.length > 1"
+                                                class="budget__icon"
+                                                classIcon="budget__icon--minus"
+                                                @addOnClickBtnIcon="handleEventDeleteBudgetAsset(index)">
+                                            </MButtonIcon>
+                                            <MTooltip
+                                                :text="budgetInfo.button.btnMinusBudget.tooltip"
+                                                :class="budgetInfo.button.btnMinusBudget.classTooltip"
+                                            ></MTooltip>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
+                    <!-- phần body footer của form  -->
                     <div class="form-body__total">
                         <div class="m-row budget__item" style="justify-content: left;">
                             <div class="budget__container--left">
@@ -107,9 +124,8 @@
                                     <div class="input__container ">
                                         <!-- combobox nhập giá trị mã bộ phận sử dụng  -->
                                         <MInput
-                                        :required="false"
-                                        valueInput="Tổng"
-                                        :disable = "true"
+                                        :valueInput="budgetInfo.bodyFooter.footerLeft.text"
+                                        :disable = "budgetInfo.bodyFooter.footerLeft.disable"
                                         >
                                     </MInput>
                                     </div>
@@ -118,7 +134,7 @@
                                 <div class="input budget_input">
                                     <!-- input nhập tên bộ phận sử dụng  -->
                                     <MInputNumber
-                                        :disable="true"
+                                        :disable="budgetInfo.bodyFooter.footerRight.disable"
                                         :valueInput="mountTotal"
                                         :key="keyInputMountTotal"
                                         >
@@ -132,17 +148,28 @@
                 <!-- phần footer của form  -->
                 <div class="form-footer">
                     <!-- button lưu form  -->
-                    <MButton
-                        class="btn--main"
-                        label="Lưu"
-                        @btnAddOnClickBtn="handleEventBtnClickSave">
-                    </MButton>
+                    <div class="btn-save-budget">
+                        <MButton
+                            class="btn--main"
+                            :label="budgetInfo.button.btnSave.label"
+                            @btnAddOnClickBtn="handleEventBtnClickSave">
+                        </MButton>
+                        <MTooltip
+                            :text="budgetInfo.button.btnSave.tooltip"
+                            :class="budgetInfo.button.btnSave.classTooltip"
+                        ></MTooltip>
+                    </div>
                     <!-- button hủy form  -->
-                    <MButton
-                        label="Hủy"
-                        style="border: 0;"
-                        @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                    </MButton>
+                    <div class="btn-cancel-budget">
+                        <MButton
+                            :label="budgetInfo.button.btnCancel.label"
+                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                        </MButton>
+                        <MTooltip
+                            :text="budgetInfo.button.btnCancel.tooltip"
+                            :class="budgetInfo.button.btnCancel.classTooltip"
+                        ></MTooltip>
+                    </div>
                 </div>
             </div>
         </div>
@@ -171,7 +198,7 @@ import MButton from '@/components/button/MButton.vue';
 import MButtonIcon from '@/components/button/MButtonIcon.vue';
 import configJS from '@/js/config';
 import axios from 'axios';
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 import enumJS from '@/js/enum';
 export default {
     name: "BudgetsAsset",
@@ -210,6 +237,7 @@ export default {
             asset: null,
             oldvalueBudget: "",
             keyDepartment: 0,
+            budgetInfo: resourceJS.budget,
             dataComboboxBudget: [],
             keyComboboxBudget: 0,
             assetApi: configJS.api.asset.assetApi,
@@ -451,9 +479,6 @@ export default {
          */
          handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
-            // if(this.itemError){
-            //     this.itemError.setFocus();
-            // }
         },
 
         /**

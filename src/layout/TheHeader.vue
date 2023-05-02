@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import resourceJS from '@/js/resourceJS';
+import resourceJS from '@/js/resource';
 export default {
     name:"TheHeader",
     components:{

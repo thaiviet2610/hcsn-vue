@@ -63,6 +63,20 @@
     z-index: 10000;
 }
 
+.asset-no-active-form-header{
+    display: flex;
+    align-items: center;
+    padding: 20px 16px 20px 16px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.asset-no-active-form-body{
+    padding: 0px 16px 15px 16px;
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    flex-direction: column;
+}
+
 
 
 

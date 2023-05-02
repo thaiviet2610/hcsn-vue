@@ -312,7 +312,7 @@
 <script>
 import MCombobox from '@/components/combobox/MCombobox.vue';
 import MInput from '@/components/input/MInput.vue';
-import resourceJS from '@/js/resourceJS.js'
+import resourceJS from '@/js/resource.js'
 import axios from 'axios'
 import enumJS from '@/js/enum.js';
 import commonJS from '@/js/common';
