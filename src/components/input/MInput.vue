@@ -158,5 +158,10 @@ export default {
     border-color: #ff0000 !important;
 }
 
+input::-webkit-input-placeholder {
+    font-style: italic!important;
+}
+
+
 
 </style>

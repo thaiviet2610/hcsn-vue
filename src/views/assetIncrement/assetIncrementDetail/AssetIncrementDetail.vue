@@ -76,7 +76,6 @@
                                 :ref="assetIncrementDetailInfo.description.ref"
                                 :required="assetIncrementDetailInfo.description.required"
                                 :disable="assetIncrementDetailInfo.description.disable"
-                                :placeholder="assetIncrementDetailInfo.description.placeholder"
                                 :valueInput="assetIncrement.description"
                                 @getValueInput="getValueInputDescription"
                                 @getValueEventInput="getValueInputDescription"
@@ -88,7 +87,7 @@
 
                     <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyDown.title }}</div>
                     <div class="asset_increment__form-body__down">
-                        <!-- input nhập số lượng  -->
+                        <!-- input tìm kiếm danh sách tài sản chứng từ  -->
                         <div class="header__body--down">
                             <div class="input down-left">
                                 <MInput
@@ -96,6 +95,7 @@
                                     :iconInput="true"
                                     @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                                     @getValueEventInput="handleEventGetValueInputSearch"
+                                    :key="keyInputSearch"
                                     >
                                 </MInput>
                             </div>
@@ -116,6 +116,7 @@
                             :isPaging="tableInfo.isPaging"
                             :isCheckbox="tableInfo.isCheckbox"
                             :isFunction="tableInfo.isFunction"
+                            :isShowNoData="isShowNoDataTable"
                             :dataEntities="dataAssets"
                             :isContextMenu="tableInfo.isContextMenu"
                             :key="keyTable"
@@ -157,7 +158,7 @@
             v-if="isShowSelectAssetNoActive"
             :dataBodyApi="dataBodyApi"
             @onSave="handleEventSelectedAssets"
-            @onClose="handleEventCloseformSelecteAssetNoActive">
+            @onClose="handleEventCloseFormSelecteAssetNoActive">
         </AssetNoActive>
         <BudgetAsset 
             v-if="isShowBudgetAsset"
@@ -249,15 +250,18 @@ export default {
             asset: null,
             keyTable: 0,
             keyword: "",
+            assetsSearch: [],
             dataBodyApi: null,
             assetIncrement: null,
             assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
             assetIncrementDetailApi: configJS.api.assetIncrementDetail.assetIncrementDetailApi,
             itemError: null,
             contentDialogNotify: "",
+            keyInputSearch: 0,
             btnDialogNotify: resourceJS.buttonDialog.notify,
             isShowDialogNotify: false,
             isShowLoad: false,
+            isShowNoDataTable: false,
             assetIncrementDetailInfo: resourceJS.assetIncrementDetail,
             oldValueAssetIncrement: null,
             contentDialogAddFormCancel: resourceJS.confirm.assetIncrement.cancelFormAssetIncrement,
@@ -308,6 +312,7 @@ export default {
             this.dataBodyApi.NotInAssets = this.assetIncrement.assets.map(function(asset){
                 return asset.fixed_asset_id;
             });
+            this.assetsSearch = this.assetIncrement.assets;
             this.getDataTable();
         }
 
@@ -443,7 +448,7 @@ export default {
          * Hàm xử lý sự kiện đóng form chọn tài sản
          * @author LTVIET (19/04/2023)
          */
-        handleEventCloseformSelecteAssetNoActive(){
+        handleEventCloseFormSelecteAssetNoActive(){
             this.isShowSelectAssetNoActive = false;
             this.setFocus();
         },
@@ -465,7 +470,7 @@ export default {
 
             if(this.previousKeyCtrl){
                 const index = this.$refs[this.assetIncrementDetailInfo.table.ref].indexRowSelected;
-                const asset = this.assetIncrement.assets[index - 1];
+                const asset = this.assetsSearch[index - 1];
                 switch (keyCode) {
                     case enumJS.keyS:
                         event.preventDefault();
@@ -537,6 +542,13 @@ export default {
                     break;
                 }
             }
+            for (let i = 0;i<this.assetsSearch.length;i++) {
+                if(newAsset.fixed_asset_code == this.assetsSearch[i]){
+                    this.assetsSearch[i].cost = newAsset.cost;
+                    this.assetsSearch[i].cost_source = newAsset.cost_source;
+                    break;
+                }
+            }
             this.getDataTable();
             this.isShowBudgetAsset = false;
             this.isShowToastSuccess = true;
@@ -567,8 +579,12 @@ export default {
                 this.dataBodyApi.NotInAssets.push(id);
                 this.assetIncrement.assets.push(value[i]);
             }
+            this.assetsSearch = this.assetIncrement.assets;
+            this.keyword = "";
+            this.keyInputSearch = ++this.keyInputSearch;
             this.getDataTable();
             this.isShowSelectAssetNoActive = false;
+            this.isShowNoDataTable = false;
             this.setFocus();
         },
 
@@ -580,15 +596,15 @@ export default {
         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
             if(!value){
-                this.dataTable.Data = this.assetIncrement.assets;
+                this.isShowNoDataTable = false;
+                this.assetsSearch = this.assetIncrement.assets;
             }else{
-                this.dataTable.Data = this.dataTable.Data.filter(item=>
+                this.isShowNoDataTable = true;
+                this.assetsSearch = this.assetIncrement.assets.filter(item=>
                         (item.fixed_asset_code.toLowerCase().includes(this.keyword.toLowerCase()) || 
                         item.fixed_asset_name.toLowerCase().includes(this.keyword.toLowerCase())));
             }
-            
-
-            this.keyTable = ++this.keyTable;
+            this.getDataTable();
         },
         /**
          * Hàm xử lý sự kiện khi đữ liệu trong input tìm kiếm được xóa hết thì tự động reload lại data
@@ -609,17 +625,21 @@ export default {
         handleEventClickFunctionTable(values){
             let type = values[0];
             let item = values[1];
+            this.isShowNoDataTable = false;
             if(type == enumJS.type.edit){
                 this.labelBudgetForm = this.labelBudgetForm.replace("{0}",item.fixed_asset_name);
                 this.getAssetbyId(item.fixed_asset_id);
             }else if(type == enumJS.type.delete){
                 let index = this.assetIncrement.assets.indexOf(item);
                 this.assetIncrement.assets.splice(index,1);
-                this.dataBodyApi.NotInAssets.splice(index,1);
+                let indexSearch = this.assetsSearch.indexOf(item);
+                this.assetsSearch.splice(indexSearch,1);
+                this.dataBodyApi.NotInAssets.splice(indexSearch,1);
                 if(JSON.parse(this.oldValueAsset).indexOf(item.fixed_asset_id) != -1){
                     this.dataBodyApi.ActiveAssets.push(item.fixed_asset_id);
                 }
                 this.getDataTable();
+                this.setFocus();
             }
         },
 
@@ -628,8 +648,9 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         getDataTable(){
-            this.dataAssets = this.assetIncrement.assets;
-            const assets = this.assetIncrement.assets.map(function(asset){
+            this.dataAssets = this.assetsSearch;
+            console.log(this.assetsSearch);
+            const assets = this.assetsSearch.map(function(asset){
                 return {
                     index: asset.index,
                     fixed_asset_code: asset.fixed_asset_code,
@@ -644,11 +665,11 @@ export default {
             let costTotal = 0;
             let deprectionValueTotal = 0;
             let residualTotal = 0;
-            for(let i =0;i<this.assetIncrement.assets.length;i++){
-                costTotal += this.assetIncrement.assets[i].cost;
-                deprectionValueTotal += this.assetIncrement.assets[i].depreciation_value;
-                if(this.assetIncrement.assets[i].residual_value > 0){
-                    residualTotal += this.assetIncrement.assets[i].residual_value;
+            for(let i =0;i<this.assetsSearch.length;i++){
+                costTotal += this.assetsSearch[i].cost;
+                deprectionValueTotal += this.assetsSearch[i].depreciation_value;
+                if(this.assetsSearch[i].residual_value > 0){
+                    residualTotal += this.assetsSearch[i].residual_value;
                 }
                 this.dataBodyTable[i].index = i+1;
             }

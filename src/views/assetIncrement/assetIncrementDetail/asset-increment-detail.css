@@ -182,7 +182,7 @@
 
 .btn-save-asset-increment-detail-tooltip{
     top: 110%;
-    left: 20%;
+    left: 35%;
 }
 
 .btn-save-asset-increment-detail:hover .btn-save-asset-increment-detail-tooltip{
@@ -196,7 +196,7 @@
 
 .btn-cancel-asset-increment-detail-tooltip{
     top: 110%;
-    left: 30%;
+    left: 40%;
 }
 
 .btn-cancel-asset-increment-detail:hover .btn-cancel-asset-increment-detail-tooltip{

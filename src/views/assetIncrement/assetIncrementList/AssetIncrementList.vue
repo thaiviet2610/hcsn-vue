@@ -39,7 +39,7 @@
             <splitpanes class="asset-increment-list-container" horizontal 
                 :class="classSplitpanes" 
                 @resize="handleEventResizeSplitpanes">
-                    <Pane :size="paneSize" style="overflow: unset;">
+                    <Pane :size="paneSize" >
                         <div min-size="0" class="asset_increment__content-body--up" style="border: none;box-shadow: none">
                             <div class="content-body__up">
                                 <div class="input1">
@@ -83,7 +83,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="width: 100%;height: calc(100% - 59px);position: relative;">
+                            <div style="width: 100%;height: calc(100% - 62px);position: relative;">
                                 <MTable 
                                 :ref="assetIncrementListInfo.table.tableMaster.ref"
                                 :tableInfo="tableMasterInfo"
@@ -91,6 +91,7 @@
                                 :dataHeader="dataHeaderTableMaster"
                                 :dataBody="dataBodyTableMaster"
                                 :dataFooter="dataFooterTableMaster"
+                                :isShowNoData="isShowNoDataTableMaster"
                                 :totalRecord="totalRecordTableMaster"
                                 :valuePageNumber="pageNumberTableMaster"
                                 :valuePageSize="pageSizeTableMaster"
@@ -137,6 +138,7 @@
                                     :tableInfo="tableDetailInfo"
                                     :dataHeader="dataHeaderTableDetail"
                                     :dataBody="dataBodyTableDetail"
+                                    :isShowNoData="isShowNoDataTableDetail"
                                     :isCheckbox="tableDetailInfo.isCheckbox"
                                     :isFunction="tableDetailInfo.isFunction"
                                     :isContextMenu="tableDetailInfo.isContextMenu"
@@ -282,12 +284,13 @@ export default {
             tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple,
             previousKeyCtrl: false,
             previousKeyShift: false,
+            isShowNoDataTableMaster: false,
+            isShowNoDataTableDetail: false,
         }
     },
     created() {
         this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
         this.getDataTableMaster();
-
     },
     watch: {
         checkPanSize: function(newValue){
@@ -307,6 +310,8 @@ export default {
     },
     mounted() {
         this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
+        this.isShowNoDataTableMaster = true;
+        this.isShowNoDataTableDetail = true;
         this.setFocusDefault();
     },
     methods: {
@@ -326,9 +331,11 @@ export default {
          getValuePageSizeTableMaster(value){
             this.pageSizeTableMaster = value;
             this.pageNumberTableMaster = 1;
-            this.getDataTableMaster();
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+
+            this.getDataTableMaster();
+            
         },
 
         /**
@@ -360,11 +367,12 @@ export default {
                 this.previousKeyCtrl = true;
             }
             if(this.previousKeyCtrl){
-                event.preventDefault();
                 if(keyCode == enumJS.key1){
+                    event.preventDefault();
                     this.btnClickOpenAddAssetIncrementForm();
                 }
                 if(keyCode == enumJS.keyE || keyCode == enumJS.keyD){
+                    event.preventDefault();
                     this.handleEventShortcutsFunctionTableMaster(keyCode);
                 }
             }
@@ -447,6 +455,7 @@ export default {
                 this.dataAssetIncrements = res.data.Data;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].totalRecord = this.totalRecordTableMaster;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getUnitData();
+                
                 if(this.assetIncrements.length > 0){
                     const quantityAssetIncrementActive = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getEntityCheckboxActiveList().length;
                     if(quantityAssetIncrementActive == 0){
@@ -678,9 +687,9 @@ export default {
                 this.keyword = "";
             }
             this.pageNumberTableMaster = 1;
-            this.getDataTableMaster();
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+            this.getDataTableMaster();
         },
 
         /**
@@ -707,9 +716,9 @@ export default {
                 this.closeToastSucess();
             }, 3000);
             this.pageNumberTableMaster = 1;
-            this.getDataTableMaster();
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+            this.getDataTableMaster();
             this.setFocusDefault();
         },
 
@@ -738,10 +747,13 @@ export default {
          */
         getAssetIncrementSelected(value){
             if(value){
+                this.isShowNoDataTableDetail = true;
                 this.getAssetIncrementDetailById(value);
             }
             else{
+                this.idVoucherSelected = null;
                 this.dataBodyTableDetail = [];
+                this.isShowNoDataTableDetail = false;
                 this.keyTableDetail = ++this.keyTableDetail;
             }
             
@@ -845,9 +857,10 @@ export default {
          */
         handleEventDeleteSuccess(){
             this.pageNumberTableMaster = 1;
-            this.getDataTableMaster();
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+            this.getDataTableMaster();
+            
 
             //hiển thị dialog thông báo xóa thành công
             this.isButtonUndo = false;
@@ -949,6 +962,8 @@ export default {
 .btn__icon{
     background-color: #ffffff;
 }
+
+
 
 
 

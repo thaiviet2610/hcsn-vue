@@ -44,6 +44,7 @@
                         :dataFooter="dataFooterTable"
                         :valuePageNumber="pageNumber"
                         :valuePageSize="pageSize"
+                        :isShowNoData="isShowNoDataTable"
                         :isPaging="assetNoActiveInfo.table.isPaging"
                         :isCheckbox="assetNoActiveInfo.table.isCheckbox"
                         :isFunction="assetNoActiveInfo.table.isFunction"
@@ -119,7 +120,8 @@ export default {
             dataFooterTable: [],
             dataAssets: [],
             previousKeyCtrl: false,
-            assetNoActiveInfo: resourceJS.assetNoActive
+            assetNoActiveInfo: resourceJS.assetNoActive,
+            isShowNoDataTable: false
         }
     },
     created() {
@@ -136,9 +138,10 @@ export default {
          getValuePageSize(value){
             this.pageSize = value;
             this.pageNumber = 1;
-            this.getDataTable();
             this.$refs[this.assetNoActiveInfo.table.ref].checkboxActive = [];
             this.$refs[this.assetNoActiveInfo.table.ref].entityCheckboxActive = [];
+            this.getDataTable();
+            
         },
 
         /**
@@ -256,13 +259,15 @@ export default {
          */
         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
+            this.isShowNoDataTable = true;
             if(!value){
+                this.isShowNoDataTable = false;
                 this.keyword = "";
             }
             this.pageNumber=1;
-            this.getDataTable();
             this.$refs[this.assetNoActiveInfo.table.ref].checkboxActive = [];
             this.$refs[this.assetNoActiveInfo.table.ref].entityCheckboxActive = [];
+            this.getDataTable();
         },
 
         /**

@@ -116,12 +116,12 @@ const resourceJSJS = {
         button: {
             btnSave: {
                 label: "Lưu",
-                tooltip: "Lưu (Ctrl+S)",
+                tooltip: "Ctrl+S",
                 classTooltip: "btn-save-asset-no-active-tooltip"
             },
             btnCancel: {
-                label: "Hủy",
-                tooltip: "Hủy (ESC)",
+                label: "Hủy bỏ",
+                tooltip: "ESC",
                 classTooltip: "btn-cancel-asset-no-active-tooltip"
             },
             btnClose:{
@@ -155,12 +155,12 @@ const resourceJSJS = {
         button: {
             btnSave: {
                 label: "Lưu",
-                tooltip: "Lưu (Ctrl+S)",
+                tooltip: "Ctrl+S",
                 classTooltip: "btn-save-budget-tooltip"
             },
             btnCancel: {
                 label: "Hủy",
-                tooltip: "Hủy (ESC)",
+                tooltip: "ESC",
                 classTooltip: "btn-cancel-budget-tooltip"
             },
             btnClose:{
@@ -229,13 +229,13 @@ const resourceJSJS = {
             btnSave: {
                 label: "Lưu",
                 class: "btn--main",
-                tooltip: "Lưu (Ctrl+S)",
+                tooltip: "Ctrl+S",
                 classTooltip: "btn-save-asset-increment-detail-tooltip"
             },
             btnCancel: {
                 label: "Hủy",
                 class: "",
-                tooltip: "Hủy (ESC)",
+                tooltip: "ESC",
                 classTooltip: "btn-cancel-asset-increment-detail-tooltip"
             },
             btnClose:{
@@ -257,7 +257,7 @@ const resourceJSJS = {
         },
         inputSearch:{
             ref: "refSearch",
-            placeholder: "Tìm kiếm tài sản"
+            placeholder: "Tìm kiếm theo số chứng từ, nội dung"
         },
         text: "Thông tin chi tiết",
         table: {
@@ -309,8 +309,8 @@ const resourceJSJS = {
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
         exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!",
         noAsset: "Chọn ít nhất 1 tài sản",
-        deleteAssetIncrement: "<div>Tài sản có mã <b> {0} </b> đã phát sinh chứng từ ghi tăng có mã <b> {1} </b></div>",
-        deleteMultipleAssetIncrement: "<div><b> {0} </b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
+        deleteAssetActive: "<div>Tài sản có mã <b> {0} </b> đã phát sinh chứng từ ghi tăng có mã <b> {1} </b></div>",
+        deleteMultipleAssetActive: "<div><b> {0} </b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",

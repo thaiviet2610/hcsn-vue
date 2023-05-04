@@ -120,7 +120,7 @@
 
 .btn-save-asset-no-active-tooltip{
     top: 110%;
-    left: 50%;
+    left: 35%;
 }
 
 .btn-save-asset-no-active:hover .btn-save-asset-no-active-tooltip{
@@ -134,7 +134,7 @@
 
 .btn-cancel-asset-no-active-tooltip{
     top: 110%;
-    left: 50%;
+    left: 40%;
 }
 
 .btn-cancel-asset-no-active:hover .btn-cancel-asset-no-active-tooltip{

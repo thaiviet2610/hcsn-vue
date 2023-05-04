@@ -89,7 +89,7 @@
 
 .btn-cancel-budget-tooltip{
     top: 110%;
-    right: 30%;
+    right: 40%;
 }
 
 .btn-cancel-budget:hover .btn-cancel-budget-tooltip{
@@ -103,7 +103,7 @@
 
 .btn-save-budget-tooltip{
     top: 110%;
-    right: 20%;
+    right: 35%;
 }
 
 .btn-save-budget:hover .btn-save-budget-tooltip{
