@@ -536,20 +536,24 @@ export default {
         handleEventEditBudgetAsset(newAsset){
             let assets = this.assetIncrement.assets;
             for (let i = 0;i<assets.length;i++) {
-                if(newAsset.fixed_asset_code == assets[i]){
+                if(newAsset.fixed_asset_code == assets[i].fixed_asset_code){
                     assets[i].cost = newAsset.cost;
                     assets[i].cost_source = newAsset.cost_source;
                     break;
                 }
             }
             for (let i = 0;i<this.assetsSearch.length;i++) {
-                if(newAsset.fixed_asset_code == this.assetsSearch[i]){
+                if(newAsset.fixed_asset_code == this.assetsSearch[i].fixed_asset_code){
                     this.assetsSearch[i].cost = newAsset.cost;
                     this.assetsSearch[i].cost_source = newAsset.cost_source;
                     break;
                 }
             }
+            this.assetIncrement.price = this.getTotalPrice();
             this.getDataTable();
+            if(this.typeForm == enumJS.type.edit){
+                this.updateAssetIncrementPrice();
+            }
             this.isShowBudgetAsset = false;
             this.isShowToastSuccess = true;
             this.notifyToastSuccess = resourceJS.toastSuccess.budget.success;
@@ -558,6 +562,17 @@ export default {
                 this.closeToastSucess();
             }, 3000);
             this.setFocus();
+        },
+
+        /**
+         * Hàm tính tổng nguyên giá của chứng từ
+         * @author LTVIET (19/04/2023)
+         */
+        getTotalPrice(){
+            const price = this.assetIncrement.assets.reduce(function (total,asset) {
+                return total + asset.cost;
+            },0);
+            return Math.round(price);
         },
 
         /**
@@ -649,7 +664,6 @@ export default {
          */
         getDataTable(){
             this.dataAssets = this.assetsSearch;
-            console.log(this.assetsSearch);
             const assets = this.assetsSearch.map(function(asset){
                 return {
                     index: asset.index,
@@ -687,10 +701,7 @@ export default {
          */
         handleEventBtnClickSave(){
             if(this.validateAssetIncrement() & this.validateAssetNoActives()){
-                const price = this.assetIncrement.assets.reduce(function (total,asset) {
-                    return total + asset.cost;
-                },0);
-                this.assetIncrement.price = Math.round(price);
+                this.assetIncrement.price = this.getTotalPrice();
                 this.isShowLoad  = true;
                 if(this.typeForm == enumJS.type.add){
                     this.addAssetIncrement();
@@ -746,7 +757,7 @@ export default {
                 AssetsAdd: this.assetsAdd.length == 0 ? null: this.assetsAdd,
                 AssetsDelete: this.assetsDelete.length == 0 ? null: this.assetsDelete
             }
-            this.isShowLoad = false;
+            this.isShowLoad = true;
             axios.put(this.assetIncrementApi,entity)
             .then(()=>{
                 this.isShowLoad = false;
@@ -754,6 +765,20 @@ export default {
             })
             .catch(err=>{
                 this.handleEventErrorAPI(err);
+            })
+        },
+
+        /**
+         * Hàm xử lý sự kiện gọi api để sửa thuộc tính tổng nguyên giá của đối tượng chứng từ
+         * @author LTVIET (19/04/2023)
+         */
+         updateAssetIncrementPrice(){
+            axios.put(`${this.assetIncrementApi}/Price?voucherId=${this.assetIncrement.voucher_id}&price=${this.assetIncrement.price}`)
+            .then(()=>{
+                this.$emit('updateAssetIncrementPrice');
+            })
+            .catch(err=>{
+                console.log(err);
             })
         },
 

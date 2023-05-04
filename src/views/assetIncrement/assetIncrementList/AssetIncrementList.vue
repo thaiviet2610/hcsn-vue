@@ -161,6 +161,7 @@
      :labelForm="labelForm"
      :typeForm="typeForm"
      :key="keyAssetIncrementDetail"
+     @updateAssetIncrementPrice="getDataTableMaster"
      @onClose="handleEventCloseFormAssetIncrementDetail"
      @addOnClickBtnSaveAssetIncrement="handleEventSaveAssetIncrement"
      >
