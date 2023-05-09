@@ -74,8 +74,8 @@
 }
 
 .asset_increment--icon22{
-    width: 18px;
-	height: 18px;
+    width: 16px;
+	height: 36px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,6 +105,13 @@
     column-gap: 18px;
 }
 
+.asset-increment-master-table{
+    width: 100%;
+    max-width: 1232px;
+    height: calc(100% - 63px);
+    position: relative;
+}
+
 .content-body__down{
     width: 100%;
     height: 40px;
@@ -121,7 +128,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 50px;
+    width: 60px;
     height: 36px;
     background-color: #ffffff;
     border-radius: 4px;
@@ -294,6 +301,7 @@ em.specs {
 }
 
 .asset-increment--index{
+    max-width: 70px;
     min-width: 70px;
     padding-right: 20px;
     text-align: center;
@@ -311,6 +319,7 @@ em.specs {
 
 
 .asset-increment--voucher-code{
+    max-width: 130px;
     min-width: 130px;
     padding-right: 10px;
     text-align: left;
@@ -321,36 +330,39 @@ em.specs {
 }
 
 .asset-increment--voucher-date{
+    max-width: 130px;
     min-width: 130px;
     padding-right: 10px;
     text-align: center;
 }
 
 .asset-increment--increment-date{
+    max-width: 130px;
     min-width: 130px;
     padding-right: 10px;
     text-align: center;
 }
 
 .asset-increment--price{
+    max-width: 140px;
     min-width: 140px;
     padding-right: 10px;
     text-align: right;
 }
 
 .asset-increment--description{
-    width: 478px;
-    min-width: 478px;
+    max-width: 488px;
+    min-width: 488px;
     text-align: left;
     padding-left: 20px;
 }
 
 .asset-increment--footer-left{
-    min-width: 520px !important;
+    min-width: 510px !important;
 }
 
 .asset_increment_detail_list--column2{
-    width: 65px;
+    max-width: 65px;
     min-width: 65px;
     padding-right: 10px;
     text-align: center;
@@ -372,7 +384,7 @@ em.specs {
 }
 
 .asset_increment_detail_list--column3{
-    width: 120px;
+    max-width: 120px;
     min-width: 120px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -380,7 +392,7 @@ em.specs {
 
 
 .asset_increment_detail_list--column4{
-    width: 150px;
+    max-width: 150px;
     min-width: 150px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -388,7 +400,7 @@ em.specs {
 
 
 .asset_increment_detail_list--column6{
-    width: 396px;
+    max-width: 396px;
     min-width: 396px;
     padding-right: 5px;
     text-align: left;
@@ -396,16 +408,21 @@ em.specs {
 
 
 .asset_increment_detail_list--column8{
-    width: 160px;
+    max-width: 160px;
     min-width: 160px;
     padding: 0 0 0 10px;
     text-align: right;
 }
 
+.asset-increment__btn-export{
+    width: 36px;
+    height: 36px;
+}
+
 
 
 .asset_increment_detail_list--column9{
-    width: 160px;
+    max-width: 160px;
     min-width: 160px ;
     padding: 0 0 0 10px;
     text-align: right;
@@ -425,7 +442,7 @@ em.specs {
 
 .asset_increment_detail_list--column10{
     min-width: 160px;
-    width: 160px;
+    max-width: 160px;
     padding: 0 25px 0 10px;
     text-align: right;
 }
@@ -439,4 +456,22 @@ em.specs {
 }
 
 
+.table-detail{
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
+.btn-add-asset-increment{
+    position: relative;
+}
+
+.btn-add-asset-increment-tooltip{
+    top: 115%;
+    right: 35%;
+}
+
+.btn-add-asset-increment:hover .btn-add-asset-increment-tooltip{
+    transform: scale(1);
+    z-index: 10000;
+}
 

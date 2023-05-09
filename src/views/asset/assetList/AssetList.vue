@@ -285,7 +285,8 @@ export default {
                 this.isShowLoad = false;
             })
             .catch(err=>{
-                console.log(err);
+                const message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(err,message);
                 this.isShowLoad = false;
             })
         },
@@ -303,7 +304,8 @@ export default {
                 this.isShowLoad = false;
             })
             .catch(err=>{
-                console.log(err);
+                const message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(err,message);
                 this.isShowLoad = false;
             })
         },
@@ -318,7 +320,6 @@ export default {
             axios.get(api)
             .then(res=>{
                 this.assets = res.data.Data;
-                console.log(this.assets);
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
                         index: asset.index,
@@ -345,7 +346,8 @@ export default {
 
             })
             .catch(err=>{
-                console.log(err);
+                const message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(err,message);
                 this.isShowLoad = false;
             })
         },
@@ -406,7 +408,8 @@ export default {
                 this.keyAssetDetail = ++this.keyAssetDetail;
             })
             .catch(error=>{
-                console.log(error);
+                const message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(error,message);
             })
         },
 
@@ -799,6 +802,15 @@ export default {
                 return;
             }
             // Nếu click button "Tải xuống" thì gọi api xuất dữ liệu ra file excel
+            this.exportAsset();
+            
+        },
+
+        /**
+         * Hàm gọi api xuất dữ liệu ra file excel
+         * @author LTVIET (06/03/2023) 
+         */
+        exportAsset(){
             this.isShowLoad = true;
             axios.get(`${this.exportExcelApi}fixedAssetCatagortId=${this.assetCategoryId}&keyword=${this.keyword}&departmentId=${this.departmentId}`,
             { responseType: "blob" })
@@ -819,7 +831,6 @@ export default {
                 let message = resourceJS.errorMsg.exportExcelFailed;
                 this.handleEventErrorAPI(error,message);
             })
-            
         },
 
         
@@ -968,27 +979,31 @@ export default {
          */
         handleEventKeyStrokesCtrl(event,keyCode){
             if(this.previousKeyCtrl){
-                event.preventDefault();
                 let table = this.$refs[this.refElements.table];
                 switch (keyCode) {
                     // nếu tổ hợp phím là Ctrl+1 thì gọi đến form thêm tài sản
                     case enumJS.key1:
+                        event.preventDefault();
                         this.handleEventKeyStrokesCtrl1();
                         break;
                     // nếu tổ hợp phím là Ctrl+0 thì gọi đến form nhân bản tài sản
                     case enumJS.key0:
+                        event.preventDefault();
                         this.handleEventKeyStrokesCtrl0(table);
                         break;
                     // nếu tổ hợp phím là Ctrl+E thì gọi đến form sửa tài sản
                     case enumJS.keyE:
+                        event.preventDefault();
                         this.handleEventKeyStrokesCtrlE(table);
                         break;
                     // nếu tổ hợp phím là Ctrl+D thì gọi đến form xóa tài sản
                     case enumJS.keyD:
+                        event.preventDefault();
                         this.handleEventKeyStrokesCtrlD();
                         break;
                     // nếu tổ hợp phím là Ctrl+P thì gọi đến form xuất ra file excel
                     case enumJS.keyP:
+                        event.preventDefault();
                         this.handleEventKeyStrokesCtrlP();
                         break;
                     default:

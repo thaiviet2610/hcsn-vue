@@ -160,7 +160,8 @@ export default {
             txtBodySearch: resourceJS.theSidebar.body.txtSearch,
             txtBodyReport: resourceJS.theSidebar.body.txtReport,
             isShowDetailAsset: false,
-            isShow: true
+            isShow: true,
+            check: false,
             
         }
     },
@@ -170,6 +171,7 @@ export default {
          * @author LTVIET (01/04/2023)
          */
         handleEventClickBtnCollapseSidebar(){
+            
             this.isShow = false;
         },
 
@@ -185,8 +187,11 @@ export default {
          * Hàm xử lý sự kiện click button hiển thị danh sách lựa chọn trong tài sản
          * @author LTVIET (01/04/2023)
          */
-        addOnClicKBtnshowDetailAsset(){
+        addOnClicKBtnshowDetailAsset(event){
+            event.preventDefault();
+            
             this.isShowDetailAsset = !this.isShowDetailAsset;
+            this.check = this.isShowDetailAsset;
         }
 
     },

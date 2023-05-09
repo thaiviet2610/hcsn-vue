@@ -45,43 +45,39 @@ const commonJS = {
     },
 
     formatNumber(value) {
-        try {
-            let number = value;
-            if(value > 1000){
-                number = String(value).indexOf(",") == -1 ? Number(value) : Number(String(value).replaceAll(',','.'));
-            }
-            if(number < 10 && String(number).indexOf(".") == -1){
-                number = `0${number}`;
-                if(Number(number) == 0){
-                    number = 0;
-                }
-            }else{
-                let arr = String(number).split(".");
-                let moneyString = arr[0];
-                let length = moneyString.length;
-                let dem = 0;
-                let result = "";
-                for(let i = length -1;i>=0;i--){
-                    result = moneyString[i] + result;
-                    dem++;
-                    if(dem==3 && i!=0){
-                        result ="." + result;
-                        dem=0;
-                    }
-                }
-                if(String(number).indexOf(".") != -1){
-                    number = result+","+arr[1];
-                }else{
-                    number = result;
-                }
-                
-                // number = new Intl.NumberFormat("vi").format(number);
-            }
-            return number;
-        } catch (error) {
-            console.log(error);
-            return "";
+        let number = value;
+        if(value > 1000){
+            number = String(value).indexOf(",") == -1 ? Number(value) : Number(String(value).replaceAll(',','.'));
         }
+        if(number < 10 && String(number).indexOf(".") == -1){
+            number = `0${number}`;
+            if(Number(number) == 0){
+                number = 0;
+            }
+        }else{
+            let arr = String(number).split(".");
+            let moneyString = arr[0];
+            let length = moneyString.length;
+            let dem = 0;
+            let result = "";
+            for(let i = length -1;i>=0;i--){
+                result = moneyString[i] + result;
+                dem++;
+                if(dem==3 && i!=0){
+                    result ="." + result;
+                    dem=0;
+                }
+            }
+            if(String(number).indexOf(".") != -1){
+                number = result+","+arr[1];
+            }else{
+                number = result;
+            }
+            
+            // number = new Intl.NumberFormat("vi").format(number);
+        }
+        return number;
+        
     }
 };
 

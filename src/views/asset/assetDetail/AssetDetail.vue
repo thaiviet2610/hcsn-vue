@@ -989,7 +989,7 @@ export default {
                     this.isShowLoad = false;
                 })
                 .catch(error=>{
-                    console.log(error);
+                    this.handleEventErrorAPI(error);
                 })
                 
             }
@@ -1010,7 +1010,7 @@ export default {
                     this.isShowLoad = false;
                 })
                 .catch(error=>{
-                    console.log(error);
+                    this.handleEventErrorAPI(error);
                     this.isShowLoad = false;
                 })
             }

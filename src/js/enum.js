@@ -25,6 +25,17 @@ const enumJS = {
     keyD: 68,
     keyP: 80,
     keyS: 83,
+    /**
+     * Dấu phẩy
+     */
+    keyComma: 188,
+    /**
+     * Dấu chấm
+     */
+    keyDots: 190, 
+    /**
+     * Dấu gạch chéo
+     */
     keySlash: 191,
     errorCode: {
         exception: 1,

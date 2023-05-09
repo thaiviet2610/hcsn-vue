@@ -5,18 +5,20 @@
         <!-- input nhập dữ liệu -->    
         <input 
             ref="mInputNumber"
-            :id="idInput"
             :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
             :disabled="disable"
             class="classInput inputNumber" :style="styleInput"
             v-model="value"
             autocomplete="off"
             :tabindex="disable ? -1:0"
+            @focus="handleEventFocusInput(idInput)"
+            @focusout="handleEventFocusInput(null)"
             @input="handleEventInput"
             @keydown="handleEventKeyDown"
             @keyup="handleEventKeyUp"
             @blur="onValidateBlur"
-            :placeholder="placeholder">    
+            :placeholder="placeholder"
+            :key="keyInput">    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>  
         <!-- thẻ div hiển thị button tăng giảm giá trị (nếu có)  -->
@@ -110,7 +112,13 @@ export default {
     },
     data() {
         return {
+            /**
+             * kiểu dữ liệu dạng chữ của input
+             */
             value: null,
+            /**
+             * kiểu dữ liệu dạng số của input
+             */
             valueNumber: 0,
             inValid: false,
             notifyError: null,
@@ -118,9 +126,16 @@ export default {
             errorFormatNumber: false,
             previousKeyShift: false, 
             previousKeyCtrl: false,
-            decimalPartValue: 0, // giá trị phần thập phân của số
-            stepValue: 0, // số đơn vị khi tăng giảm giá trị
-            keyInput: 0
+            /**
+             * giá trị phần thập phân của số
+             */
+            decimalPartValue: 0, 
+            /**
+             * số đơn vị khi tăng giảm giá trị
+             */
+            stepValue: 0,
+            keyInput: 0,
+            oldValue: ""
         }
     },
     watch: {
@@ -166,6 +181,7 @@ export default {
             value = String(value).indexOf(",") == -1 ? Number(value) : Number(value.replaceAll(',','.'));
             return value;
         },
+
         /**
          * Hàm xử lý sự kiện blur input
          * @author LTVIET (05/03/2023)
@@ -185,15 +201,32 @@ export default {
             }
             else{
                 //2. nếu giá trị nhập vào là số
-                let length = this.value.length;
-                if(length > 14){
+                let length = String(this.valueNumber).length;
+                let index = String(this.valueNumber).indexOf(".");
+                if(length > 19 && index == -1){
                     //2.1. nếu độ dài số nhập vào dài quá 14 ký tự thì không cho nhập vào
                     //--> set invalid = true và hiện thị thông báo lỗi không được nhấp giá trị quá dài
                     this.inValid = true;
                     this.notifyError = resourceJS.error.errorMaxLengthNumber;
-                }else{
-                    this.inValid = false;
                 }
+                else{
+                    if(index != -1){
+                        const arr = String(this.valueNumber).split(".");
+                        if(arr[0].length > 19){
+                            this.inValid = true;
+                            this.notifyError = resourceJS.error.errorMaxLengthIntegerPart;
+                        }else if(arr[1].length > 4){
+                            this.inValid = true;
+                            this.notifyError = resourceJS.error.errorMaxLengthDecimalPart;
+                        }else{
+                            this.inValid = false;
+                        }
+                    }
+                    else{
+                        this.inValid = false;
+                    }  
+                }
+                
             }
             if(!this.inValid){
                 this.$emit('getValueInput',this.valueNumber);
@@ -217,6 +250,14 @@ export default {
             }
             this.$emit('getValueInput',this.valueNumber);
             this.value = this.formatMoney(this.valueNumber);
+        },
+
+        /**
+         * Hàm gửi id của input ra lớp cha khi được focus
+         * @author LTVIET (05/03/2023)
+         */
+         handleEventFocusInput(id){
+            this.$emit('getValueIdInputNumberFocus',id);
         },
 
         /**
@@ -261,16 +302,6 @@ export default {
             if(keyCode == enumJS.keyCtrl){
                 this.previousKeyCtrl = true;
             }
-            
-            if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) || (keyCode >= 96 && keyCode <= 105) 
-                    || (keyCode >=37 && keyCode <= 40)) && keyCode!=188){
-                if(!(this.previousKeyCtrl && keyCode == 65)){
-                    event.preventDefault();
-                }
-            }
-            if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
-                event.preventDefault();
-            }
             switch (keyCode) {
                 
                 case enumJS.arrowDown:
@@ -301,6 +332,12 @@ export default {
          */
          handleEventKeyUp(event){
             let keyCode = event.keyCode;
+            if(!Number(event.key) && Number(event.key) != 0 && keyCode != enumJS.keyBackSpace && keyCode != enumJS.keyComma ){
+                this.value = this.oldValue;
+            }else{
+                this.oldValue = this.value;
+                
+            }
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
             }
@@ -315,14 +352,17 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         handleEventInput(event){
+            // console.log(this.value, this.valueNumber);
             if(!this.value){
                 this.valueNumber = this.value;
             }else{
                 this.valueNumber = this.getNumber(this.value);
             }
+            // console.log(this.value, this.valueNumber);
             if(event.data != ","){
                 this.value = this.formatMoney(this.valueNumber);
             }
+            // console.log(this.value, this.valueNumber);
             if(this.required && (Number(this.value) == null || Number(this.value) == undefined || Number(this.value) == "")){
                 if(this.value===0){
                     this.inValid = false;

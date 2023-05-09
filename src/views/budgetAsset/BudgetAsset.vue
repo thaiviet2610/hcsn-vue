@@ -1,6 +1,10 @@
 <template>
     <div>
-        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp"
+        <div  class="form editForm" :tabindex="0"
+            @keydown.esc.prevent="handleEventBtnClickCancel"
+            @keydown.ctrl.s.prevent="handleEventBtnClickSave"
+            @keydown.ctrl.a.prevent="handleEventAddBudgetAsset"
+            @keydown.ctrl.d.prevent="handleEventDeleteBudgetAsset(indexFocus)"
         >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
@@ -67,7 +71,7 @@
                                                     propValue="budget_id" 
                                                     :itemHeight = 36
                                                     :quantityItemDisplay = 4
-                                                    @getValueIdComboboxFocus="getValueIdComboboxFocus"
+                                                    @getValueIdComboboxFocus="getValueIndexFocus"
                                                     @getInputCombobox="getValueBudget($event,index)">
                                                 </MCombobox>
                                             </div>
@@ -77,8 +81,10 @@
                                             <!-- input nhập gái trị nguồn hình thành  -->
                                             <MInputNumber
                                                 :ref="`mInput_${index}`"
+                                                :idInput="`mInput_${index}`"
                                                 :required="true"
                                                 :valueInput="priceList[index].mount"
+                                                @getValueIdInputNumberFocus="getValueIndexFocus"
                                                 @getValueInput="getValueMountBudget($event,index)"
                                                 @getValueEventInput="getValueMountBudget($event,index)"
                                                 :stepValueInput= 1
@@ -241,8 +247,7 @@ export default {
             dataComboboxBudget: [],
             keyComboboxBudget: 0,
             assetApi: configJS.api.asset.assetApi,
-            previousKeyCtrl: false,
-            indexComboboxFocus: -1,
+            indexFocus: -1,
             btnDialogNotify: resourceJS.buttonDialog.notify,
             contentDialogNotifyErrorValidate: "",
             isShowDialogNotify: false
@@ -306,7 +311,7 @@ export default {
                 this.isShowLoad = false;
             })
             .catch(err=>{
-                console.log(err);
+                this.handleEventErrorAPI(err);
                 this.isShowLoad = false;
             })
         },
@@ -316,12 +321,16 @@ export default {
          * @param {*} id id của combobox
          * @author LTVIET (18/04/2023)
          */
-        getValueIdComboboxFocus(id){
-            for(let i = id.length-1; i>=0;i--){
-                if(!Number(id[i])){
-                    this.indexComboboxFocus = Number(id.substring(i+1,id.length));
-                    break;
+        getValueIndexFocus(id){
+            if(id){
+                for(let i = id.length-1; i>=0;i--){
+                    if(!Number(id[i])){
+                        this.indexFocus = Number(id.substring(i+1,id.length));
+                        break;
+                    }
                 }
+            }else{
+                this.indexFocus = -1;
             }
         },
 
@@ -337,58 +346,6 @@ export default {
                 this.isShowDialogFormCancel = true;
             }
 
-        },
-
-        /**
-         * Hàm xử lý sự kiện keydown
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyDown(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = true;
-            }
-
-            if(keyCode == enumJS.keyEsc){
-                this.handleEventBtnClickCancel();
-            }
-
-            if(this.previousKeyCtrl){
-                event.preventDefault();
-                switch (keyCode) {
-                    case enumJS.keyS:
-                        this.handleEventBtnClickSave();
-                        break;
-                    case enumJS.keyA:
-                        this.handleEventAddBudgetAsset();
-                        break;
-                    case enumJS.keyD:
-                        if(this.indexComboboxFocus >= 0){
-                            this.handleEventDeleteBudgetAsset(this.indexComboboxFocus);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                for(let i=0;i<=this.priceList.length;i++){
-                    if(keyCode == (i+48)){
-                        this.setFocus(i-1);
-                    }
-                }
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện keyup
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyUp(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = false;
-            }
         },
 
         /**
@@ -437,11 +394,13 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         handleEventDeleteBudgetAsset(index){
-            this.priceList.splice(index,1);
-            this.keyBudget = ++this.keyBudget;
-            this.$nextTick(function() {
-                this.$refs[`mCombobox_${this.priceList.length-1}`][0].setFocus();
-            })
+            if( index >=0 ){
+                this.priceList.splice(index,1);
+                this.keyBudget = ++this.keyBudget;
+                this.$nextTick(function() {
+                    this.$refs[`mCombobox_${this.priceList.length-1}`][0].setFocus();
+                })
+            }
         },
 
         /**
@@ -469,7 +428,7 @@ export default {
                 this.priceList[index].budget_name = budget.budget_name;
             })
             .catch(err=>{
-                console.log(err);
+                this.handleEventErrorAPI(err);
             })
         },
 
@@ -526,7 +485,6 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         updateAsset(){
-            console.log(this.asset);
             this.isShowLoad = true;
             axios.put(`${this.assetApi}/${this.asset.fixed_asset_id}`,this.asset)
             .then(()=>{
@@ -697,6 +655,7 @@ export default {
                     }
                 }
             }
+            if(combobox.inValid) check = false;
             return check;
         },
         
@@ -724,6 +683,7 @@ export default {
                     this.itemError.setFocus();
                 }
             }
+            if(input.inValid) check = false;
             return check;
         }
     },

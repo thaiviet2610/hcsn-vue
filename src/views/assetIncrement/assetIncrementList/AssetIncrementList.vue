@@ -1,5 +1,9 @@
 <template>
-    <div class="main" :key="keyBody" style="min-width: 719px;outline: none;" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
+    <div class="main" :key="keyBody" style="min-width: 719px;outline: none;" :tabindex="0"
+        @keydown.ctrl.1.prevent="btnClickOpenAddAssetIncrementForm"
+        @keydown.ctrl.e.prevent="handleEventShortcutsFunctionTableMaster"
+        @keydown.ctrl.d.prevent="handleEventShortcutsFunctionTableMaster"
+    >
         <div class="content" style="padding-bottom: 0;">
             <div class="content-header">
                 <div class="content-header__left">
@@ -7,11 +11,17 @@
                 </div> 
                 <div class="content-header__right" >
                     <!-- button thêm tài sản chứng từ -->
-                    <MButton
-                        :label="assetIncrementListInfo.button.btnAddAssetIncrement.label"
-                        class="btn--main"
-                        @btnAddOnClickBtn="btnClickOpenAddAssetIncrementForm">
-                    </MButton>
+                    <div class="btn-add-asset-increment">
+                        <MButton
+                            :label="assetIncrementListInfo.button.btnAddAssetIncrement.label"
+                            class="btn--main"
+                            @btnAddOnClickBtn="btnClickOpenAddAssetIncrementForm">
+                        </MButton>
+                        <MTooltip
+                            :text="assetIncrementListInfo.button.btnAddAssetIncrement.tooltip"
+                            :class="assetIncrementListInfo.button.btnAddAssetIncrement.classTooltip"
+                        ></MTooltip>
+                    </div>
                     <div class="asset_increment--item1" style="position: relative;" v-outside="handleEventClickOutsideInterfaceSelected">
                         <MButtonIcon
                             class="asset_increment--icon12"
@@ -20,7 +30,7 @@
                             @addOnClickBtnIcon="handleEventOpenInterfaceSeleceted"
                             >
                         </MButtonIcon>
-                        <div v-if="isShowInterfaceSelecte" class="interface__container">
+                        <div v-show="isShowInterfaceSelecte" class="interface__container">
                             <div @click="handleEventClickVerticalInterFace" class="interface__item">
                                 <div class="vertical_interface"></div>
                                 <div>{{ assetIncrementListInfo.interfaceSeleceted.verticalInterface }}</div>
@@ -52,23 +62,27 @@
                                     </MInput>
                                 </div>
                                 <div class="content-body__up--right">
-                                    <div v-if="isShowDeleteButton" style="position: relative;" class="function__delete--multiple">
+                                    <div v-show="isShowDeleteButton" style="position: relative;" class="function__delete--multiple">
                                         <!-- button xóa nhiều  -->
                                         <MButtonIcon
                                             classIcon="function__delete "
                                             @addOnClickBtnIcon="addOnClickBtnDeleteMultiple">
                                         </MButtonIcon>
                                         <MTooltip
-                                            :text="tooltipBtnDelete"
-                                            class="asset-list-btn-delete-tooltip"
+                                            :text="assetIncrementListInfo.button.btnDeleteMultipleAssetIncrement.tooltip"
+                                            :class="assetIncrementListInfo.button.btnDeleteMultipleAssetIncrement.classTooltip"
                                         ></MTooltip>
                                     </div>
                                     <div class="asset_increment--item2">
                                         <div class="print">
-                                            <div class="asset_increment--item21"></div>
+                                            <MButtonIcon
+                                                class="asset-increment__btn-export"
+                                                classIcon="asset_increment--item21"
+                                                @addOnClickBtnIcon="addOnClickBtnExport">
+                                            </MButtonIcon>
                                             <MTooltip
-                                                    :text="tooltipPrint"
-                                                    class="asset_increment--item21-tooltip">
+                                                    :text="assetIncrementListInfo.tooltip.print.text"
+                                                    :class="assetIncrementListInfo.tooltip.print.classTooltip">
                                             </MTooltip>
                                         </div>
                                         <div class="see-more">
@@ -76,14 +90,14 @@
                                                 <div class="asset_increment--item22"></div>
                                             </div>
                                             <MTooltip
-                                                    :text="tooltipSeeMore"
-                                                    class="asset_increment--item22-tooltip">
+                                                    :text="assetIncrementListInfo.tooltip.seeMore.text"
+                                                    :class="assetIncrementListInfo.tooltip.seeMore.classTooltip">
                                             </MTooltip>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style="width: 100%;height: calc(100% - 62px);position: relative;">
+                            <div class="asset-increment-master-table">
                                 <MTable 
                                 :ref="assetIncrementListInfo.table.tableMaster.ref"
                                 :tableInfo="tableMasterInfo"
@@ -109,7 +123,7 @@
                                 @getItemRowSelected="getAssetIncrementSelected"
                                 @addOnClickContextMenu="handleEventClickContextMenu">
                                 </MTable>
-                                <MDialogLoadData v-if="isShowLoadTableMaster" style="width: 100%;height: 100%;"></MDialogLoadData>
+                                <MDialogLoadData v-show="isShowLoadTableMaster" style="width: 100%;height: 100%;"></MDialogLoadData>
 
                             </div>
                         </div>
@@ -128,11 +142,11 @@
                                     </MButtonIcon>
                                     <MTooltip
                                         :text="tooltipFullScreen"
-                                        class="full-screen-tooltip">
+                                        :class="assetIncrementListInfo.tooltip.zoomIn.classTooltip">
                                     </MTooltip>
                                 </div>
                             </div>
-                            <div style="width: 100%;height: calc(100% - 40px);">
+                            <div class="table-detail">
                                 <MTable 
                                     :ref="assetIncrementListInfo.table.tableDetail.ref"
                                     :tableInfo="tableDetailInfo"
@@ -146,7 +160,7 @@
                                     :isFooter="tableDetailInfo.isFooter"
                                     :key="keyTableDetail">
                                 </MTable>
-                                <MDialogLoadData v-if="isShowLoadTableDetail" style="width: 100%;height: 100%;"></MDialogLoadData>
+                                <MDialogLoadData v-show="isShowLoadTableDetail" style="width: 100%;height: 100%;"></MDialogLoadData>
                             </div>
                         </div>
                     </Pane>
@@ -161,40 +175,44 @@
      :labelForm="labelForm"
      :typeForm="typeForm"
      :key="keyAssetIncrementDetail"
-     @updateAssetIncrementPrice="getDataTableMaster"
+     @updateAssetIncrementPrice="handleEventEditAssetIncrementPrice"
      @onClose="handleEventCloseFormAssetIncrementDetail"
      @addOnClickBtnSaveAssetIncrement="handleEventSaveAssetIncrement"
      >
     </AssetIncrementDetail>
-    <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
+    <MDialogLoadData v-show="isShowLoad"></MDialogLoadData>
 
     <MDialog 
-        ref="mDialogNotifyDelete"
         :content="contentDialogNotify"
         :buttonInfo="btnDialogNotify"
-        v-if="isShowDialogNotify" 
+        v-show="isShowDialogNotify" 
         @onClickBtn="handleEventCloseDialogNotify">
     </MDialog>
 
-    <!-- dialog xác nhận hành động xóa 1 tài sản -->
+    <!-- dialog xác nhận hành động xóa 1 tài sản chứng từ-->
     <MDialog 
-        ref="mDialogConfirmDeleteOneAsset"
         :content="contentDialogConfirmDeleteOneAssetIncrement"
         :buttonInfo="btnDialogDelete"
-        v-if="isShowDialogConfirmDeleteOneAssetIncrement"
+        v-show="isShowDialogConfirmDeleteOneAssetIncrement"
         @onClickBtn="handleEventCloseDialogDelete">
     </MDialog>
-    <!-- dialog xác nhận hành động xóa nhiều tài sản -->
+    <!-- dialog xác nhận hành động xóa nhiều tài sản chứng từ-->
     <MDialog 
-        ref="mDialogConfirmDeleteMultiAsset"
         :content="contentDialogConfirmDeleteMultiple"
         :buttonInfo="btnDialogDelete"
-        v-if="isShowDialogConfirmDeleteMultiple"
+        v-show="isShowDialogConfirmDeleteMultiple"
         @onClickBtn="handleEventCloseDialogDelete">
+    </MDialog>
+    <!-- dialog xác nhận hành động xuất chứng từ-->
+    <MDialog 
+        :content="contentDialogConfirmExport"
+        :buttonInfo="btnDialogExport"
+        v-show="isShowDialogConfirmExport"
+        @onClickBtn="handleEventCloseDialogExport">
     </MDialog>
 
     <MToastSucess 
-        v-if="isShowToastSuccess"
+        v-show="isShowToastSuccess"
         :notify="notifyToastSuccess"
         :content="contentToastSuccess"
         :buttonUndo="false"
@@ -212,7 +230,8 @@ import MButton from '@/components/button/MButton.vue';
 import configJS from '@/js/config';
 import resourceJS from '@/js/resource';
 import AssetIncrementDetail from '../assetIncrementDetail/AssetIncrementDetail.vue';
-import { Splitpanes, Pane } from 'splitpanes'
+import { Splitpanes, Pane } from 'splitpanes';
+import { saveAs } from 'file-saver';
 import 'splitpanes/dist/splitpanes.css'
 import axios from 'axios';
 import enumJS from '@/js/enum';
@@ -237,26 +256,28 @@ export default {
             isShowDialogConfirmDeleteOneAssetIncrement: false,
             isShowDialogConfirmDeleteMultiple: false,
             isShowDialogNotify: false,
+            isShowDialogConfirmExport: false,
             btnDialogDelete: resourceJS.buttonDialog.delete,
+            btnDialogExport: resourceJS.buttonDialog.exportExcel,
             btnDialogNotify: resourceJS.buttonDialog.notify,
             contentDialogConfirmDeleteOneAssetIncrement:"",
             contentDialogConfirmDeleteMultiple: "",
             contentDialogNotify: "",
+            contentDialogConfirmExport: "",
             notifyToastSuccess: "",
             contentToastSuccess: "",
             assetIncrementListInfo: resourceJS.assetIncrementList,
             assetIncrementFilterApi: configJS.api.assetIncrement.assetIncrementFilterApi,
             assetIncrementApi: configJS.api.assetIncrement.assetIncrementApi,
             assetIncrementGenerateNewCodeApi: configJS.api.assetIncrement.assetIncrementGenerateNewCodeApi,
+            assetIncrementExportApi: "",
             tableMasterInfo: resourceJS.table.tableUpAssetIncrementList,
             tableDetailInfo: resourceJS.table.tableDownAssetIncrementList,
             keyTableMaster: 0,
             keyTableDetail: 0,
-            paneSize: 60,
+            isUpdateBudget: false,
+            paneSize: 65,
             keyword: "",
-            tooltipFullScreen: resourceJS.tooltip.assetIncrementList.zoomIn,
-            tooltipSeeMore: resourceJS.tooltip.assetIncrementList.seeMore,
-            tooltipPrint: resourceJS.tooltip.assetIncrementList.print,
             classInterface: "horizontal_interface",
             checkPanSize: enumJS.paneSize.diffrentPercent,
             newVoucherCode: "",
@@ -282,11 +303,10 @@ export default {
             dataAssetIncrements: [],
             dataAssets: [],
             idVoucherSelected: null,
-            tooltipBtnDelete: resourceJS.tooltip.assetIncrementList.btnDeleteMultiple,
-            previousKeyCtrl: false,
-            previousKeyShift: false,
             isShowNoDataTableMaster: false,
             isShowNoDataTableDetail: false,
+            tooltipFullScreen: resourceJS.assetIncrementList.tooltip.zoomIn.text,
+            fileNameExcel: ""
         }
     },
     created() {
@@ -358,26 +378,13 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện keydown
-         * @param {*} event sự kiện cần xử lý
+         * Hàm load lại dữ liệu table khi sửa nguyên giá của tài sản trong form chứng từ chi tiết
          * @author LTVIET (15/04/2023)
          */
-        handleEventKeyDown(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = true;
-            }
-            if(this.previousKeyCtrl){
-                if(keyCode == enumJS.key1){
-                    event.preventDefault();
-                    this.btnClickOpenAddAssetIncrementForm();
-                }
-                if(keyCode == enumJS.keyE || keyCode == enumJS.keyD){
-                    event.preventDefault();
-                    this.handleEventShortcutsFunctionTableMaster(keyCode);
-                }
-            }
-            
+        handleEventEditAssetIncrementPrice(){
+            this.idVoucherSelected = null;
+            this.isUpdateBudget = true;
+            this.getDataTableMaster();
         },
 
         /**
@@ -416,17 +423,6 @@ export default {
             }
         },
 
-        /**
-         * Hàm xử lý sự kiện keyup
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (15/04/2023)
-         */
-        handleEventKeyUp(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = false;
-            }
-        },
 
 
         /**
@@ -454,9 +450,10 @@ export default {
                 ];
                 this.totalRecordTableMaster = res.data.TotalRecord;
                 this.dataAssetIncrements = res.data.Data;
+
+
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].totalRecord = this.totalRecordTableMaster;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getUnitData();
-                
                 if(this.assetIncrements.length > 0){
                     const quantityAssetIncrementActive = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getEntityCheckboxActiveList().length;
                     if(quantityAssetIncrementActive == 0){
@@ -471,11 +468,11 @@ export default {
 
             })
             .catch(err=>{
-                console.log(err);
                 this.isShowLoadTableMaster = false;
+                let message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(err,message);
             })
         },
-        
 
         /**
          * Hàm xử lý sự kiện lấy ra giá trị api từ keyword,departmentId,assetCategoryId
@@ -550,12 +547,12 @@ export default {
             if(this.paneSize != enumJS.percent.zero){
                 this.paneSize = enumJS.percent.zero;
                 this.checkPanSize = enumJS.paneSize.zeroPercent;
-                this.tooltipFullScreen = resourceJS.tooltip.assetIncrementList.zoomOut;
+                this.tooltipFullScreen = this.assetIncrementListInfo.tooltip.zoomOut.text;
             }
             else{
                 this.paneSize = 60;
                 this.checkPanSize = enumJS.paneSize.diffrentPercent;
-                this.tooltipFullScreen = resourceJS.tooltip.assetIncrementList.zoomIn;
+                this.tooltipFullScreen = this.assetIncrementListInfo.tooltip.zoomIn.text;
             }
         },
 
@@ -573,6 +570,8 @@ export default {
             })
             .catch(err=>{
                 console.log(err);
+                let message = resourceJS.notify.errorLoadData;
+                this.handleEventErrorAPI(err,message);
                 this.isShowLoad = false;
             })
         },
@@ -583,26 +582,22 @@ export default {
          * @author LTVIET (02/03/2023)
          */
          handleEventCloseDialogDelete(index) {
-            //1.Nếu click button "Không"
-            if(index == this.btnDialogDelete[1][2]){
+            // Nếu click button "Xóa"
+            if(index == this.btnDialogDelete[0][2]){
                 if(this.isShowDialogConfirmDeleteOneAssetIncrement==true){
-                    //--> ẩn đi dialog xác nhận xóa 1 tái sản
-                    this.isShowDialogConfirmDeleteOneAssetIncrement = false;
+                    // 1. Nếu xóa 1 tài sản
+                    this.handleEventCloseDialogDeleteOne(this.assetsDeleteMultiple[0]);
                 }else if(this.isShowDialogConfirmDeleteMultiple==true){
-                    //-->ẩn đi dialog xác nhận xóa nhiều tái sản
-                    this.isShowDialogConfirmDeleteMultiple = false;
+                    // 2. Nếu xóa nhiều tài sản
+                    this.handleEventCloseDialogDeleteMultiple(this.assetsDeleteMultiple);
                 }
-                this.setFocusDefault();
-                return;
             }
-            // 2.Nếu click button "Xóa"
-            // let checkboxSelected = this.$refs[this.refElements.table].getItemSelected();
             if(this.isShowDialogConfirmDeleteOneAssetIncrement==true){
-                // 2.1. Nếu xóa 1 tài sản
-                this.handleEventCloseDialogDeleteOne(this.assetsDeleteMultiple[0]);
+                //--> ẩn đi dialog xác nhận xóa 1 tái sản
+                this.isShowDialogConfirmDeleteOneAssetIncrement = false;
             }else if(this.isShowDialogConfirmDeleteMultiple==true){
-                // 2.2. Nếu xóa nhiều tài sản
-                this.handleEventCloseDialogDeleteMultiple(this.assetsDeleteMultiple);
+                //-->ẩn đi dialog xác nhận xóa nhiều tái sản
+                this.isShowDialogConfirmDeleteMultiple = false;
             }
             this.setFocusDefault();
         },
@@ -622,8 +617,6 @@ export default {
          * @author LTVIET (06/03/2023) 
          */
          handleEventCloseDialogDeleteOne(assetIncrement){
-            //--> ẩn đi dialog xác nhận xóa 1 tái sản
-            this.isShowDialogConfirmDeleteOneAssetIncrement = false;
             //lấy id tài sản cần xóa
             let id = "";
             if(this.contextMenuDelete){
@@ -643,8 +636,6 @@ export default {
          * @author LTVIET (06/03/2023) 
          */
          handleEventCloseDialogDeleteMultiple(assetIncrements){
-            //-->ẩn đi dialog xác nhận xóa nhiều chứng từ
-            this.isShowDialogConfirmDeleteMultiple = false;
             let ids = [];
             // duyệt mảng các chứng từ cần xóa
             for(let i =0;i<assetIncrements.length;i++){
@@ -709,6 +700,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventSaveAssetIncrement(){
+            this.idVoucherSelected = null;
             this.handleEventCloseFormAssetIncrementDetail();
             this.isShowToastSuccess = true;
             this.notifyToastSuccess = resourceJS.toastSuccess.asset.success;
@@ -747,15 +739,11 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         getAssetIncrementSelected(value){
+            this.isShowNoDataTableDetail = true;
             if(value){
-                this.isShowNoDataTableDetail = true;
                 this.getAssetIncrementDetailById(value);
-            }
-            else{
-                this.idVoucherSelected = null;
-                this.dataBodyTableDetail = [];
-                this.isShowNoDataTableDetail = false;
-                this.keyTableDetail = ++this.keyTableDetail;
+            }else{
+                this.getAssetIncrementDetailById(null);
             }
             
         },
@@ -849,7 +837,73 @@ export default {
             const table = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref];
             const assetIncrementsDelete = table.getEntityCheckboxActiveList();
             this.assetsDeleteMultiple = assetIncrementsDelete;
+
             this.showDialogConfirmDeleteMultiple();
+        },
+
+        /**
+         * Hàm xử lý sự kiện click vào btn xuất chứng từ
+         * @author LTVIET (19/04/2023)
+         */
+        addOnClickBtnExport(){
+            const table = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref];
+            const assetIncrementsExport = table.getEntityCheckboxActiveList();
+            let api = configJS.api.assetIncrement.assetIncrementExportApi;
+            let message = "";
+            if(assetIncrementsExport.length == 0){
+                this.assetIncrementExportApi = `${api}?keyword=${this.keyword}`;
+                message = resourceJS.confirm.assetIncrement.exportExcel;
+                this.fileNameExcel = this.assetIncrementListInfo.export.fileName;
+            }else if(assetIncrementsExport.length == 1){
+                const id = assetIncrementsExport[0].voucher_id;
+                this.assetIncrementExportApi = `${api}?voucherId=${id}`;
+                message = resourceJS.confirm.assetIncrement.exportExcelDetail.replace("{0}",assetIncrementsExport[0].voucher_code);
+                this.fileNameExcel = this.assetIncrementListInfo.export.fileNameDetail;
+            }
+            this.isShowDialogConfirmExport = true;
+            this.contentDialogConfirmExport = message;
+        },
+
+        /**
+         * Hàm xử lý sự kiện click vào button của dialog xác nhận hành động xóa
+         * @param {*} index index của button muốn click
+         * @author LTVIET (02/03/2023)
+         */
+         handleEventCloseDialogExport(index) {
+            //1.Nếu click button "Không"
+            if(index == this.btnDialogExport[0][2]){
+                this.exportAssetIncrement();
+            }
+            // 2.Nếu click button "Tải xuống"
+            this.isShowDialogConfirmExport = false;
+            this.setFocusDefault();
+        },
+
+        /**
+         * Hàm gọi api xuất dữ liệu ra file excel
+         * @author LTVIET (02/03/2023)
+         */
+        exportAssetIncrement(){
+            this.isShowLoad = true;
+            axios.get(this.assetIncrementExportApi, {
+                responseType: "blob"
+            })
+            .then(res => {
+                const blob = new Blob([res.data], {
+                    type: resourceJS.excel.type
+                });
+                saveAs(blob,this.fileNameExcel);
+                this.isShowDialogConfirmExport = false;
+                this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
+                this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+                this.getDataTableMaster();
+                this.isShowLoad = false;
+                this.setFocusDefault();
+            })
+            .catch(err => {
+                let message = resourceJS.errorMsg.exportExcelFailed;
+                this.handleEventErrorAPI(err,message);
+            })
         },
 
         /**
@@ -857,6 +911,8 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventDeleteSuccess(){
+            this.idVoucherSelected = null;
+            this.isShowDeleteButton = false;
             this.pageNumberTableMaster = 1;
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
@@ -881,15 +937,13 @@ export default {
          */
          handleEventErrorAPI(error,message){
             console.log("error:",error);
-            console.log(message);
             this.invalid=true;
             this.isShowLoad = false;
+            this.isShowDialogNotify = true;
             if(error.code == "ERR_NETWORK"){
-                this.isShowDialogNotify = true;
                 this.contentDialogNotify = resourceJS.errorMsg.errorConnection;
             }
             else{
-                this.isShowDialogNotify = true;
                 this.contentDialogNotify = message;
             }
         },
@@ -903,7 +957,15 @@ export default {
             if(!this.isShowDetail){
                 this.isShowLoadTableDetail = true;
             }
-            if(this.idVoucherSelected != assetIncrement.voucher_id){
+            if(assetIncrement==null){
+                this.dataBodyTableDetail = [];
+                this.isShowNoDataTableDetail = false;
+                this.idVoucherSelected = null;
+                this.isShowLoadTableDetail = false;
+                return;
+            }
+            const entity = this.dataAssetIncrements.find(entity => entity.voucher_id == assetIncrement.voucher_id);
+            if(this.idVoucherSelected != assetIncrement.voucher_id && entity){
                 this.idVoucherSelected = assetIncrement.voucher_id;
                 axios.get(`${this.assetIncrementApi}/${this.idVoucherSelected}`)
                 .then(res=>{
@@ -919,11 +981,13 @@ export default {
                             residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
                         }
                     })
-                    this.keyTableDetail = ++this.keyTableDetail;
-                    this.getDataTableDetail(assetIncrement,assets);
+                    this.isShowLoadTableDetail = false;
+                    this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].getUnitData();
+                    this.getDataAssetIncrementDetaiForml(assetIncrement,assets);
                 })
                 .catch(err=>{
-                    console.log(err);
+                    let message = resourceJS.notify.errorLoadData;
+                    this.handleEventErrorAPI(err,message);
                     this.isShowLoadTableDetail = false;
                 })
             }else{
@@ -938,8 +1002,7 @@ export default {
          * @param {*} assets thông tin danh sách tài sản chứng từ
          * @author LTVIET (19/04/2023)
          */
-        getDataTableDetail(assetIncrement,assets){
-            this.isShowLoadTableDetail = false;
+        getDataAssetIncrementDetaiForml(assetIncrement,assets){
             if(this.isShowDetail){
                 this.assetIncrement = {
                     voucher_id: assetIncrement.voucher_id,
@@ -950,7 +1013,11 @@ export default {
                     description: assetIncrement.description,
                     assets: assets
                 };
-                this.keyAssetIncrementDetail = ++this.keyAssetIncrementDetail;
+                if(!this.isUpdateBudget){
+                    this.keyAssetIncrementDetail = ++this.keyAssetIncrementDetail;
+                }else{
+                    this.isUpdateBudget = false;
+                }
                 this.isShowLoad = false;
             }
         }
@@ -963,6 +1030,7 @@ export default {
 .btn__icon{
     background-color: #ffffff;
 }
+
 
 
 

@@ -20,12 +20,17 @@ th{
     border-bottom: 1px solid #cccccc;
 }
 
-
+.body-table__text{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 td{
     height: 40px !important;
     box-sizing: border-box;
     border-bottom: 1px solid #e2e2e2;
+    
 }
 
 tfoot td{
@@ -44,7 +49,7 @@ thead{
     font-size: 13px;
     color: #001031;
     font-weight: 700;
-    
+    box-shadow: 0 1px 2px rgb(0 0 0 / 16%);
 }
 
 .content__table tbody tr{
@@ -103,6 +108,7 @@ tfoot{
 }
 
 .column2{
+    max-width: 50px;
     min-width: 50px;
     box-sizing: border-box;
     padding-right: 10px;
@@ -110,6 +116,7 @@ tfoot{
 }
 
 .column3{
+    max-width: 90px;
     min-width: 90px;
     padding-right: 10px;
     text-align: left;
@@ -117,6 +124,7 @@ tfoot{
 
 
 .column4{
+    max-width: 110px;
     min-width: 110px;
     padding-right: 10px;
     text-align: left;
@@ -124,6 +132,7 @@ tfoot{
 
 
 .column5{
+    max-width: 130px;
     min-width: 130px;
     padding-right: 10px;
     text-align: left;
@@ -132,6 +141,7 @@ tfoot{
 
 
 .column6{
+    max-width: 250px;
     min-width: 250px;
     padding-right: 5px;
     text-align: left;
@@ -142,6 +152,7 @@ tfoot{
 
 
 .column7{
+    max-width: 60px;
     min-width: 60px;
     text-align: right;
 }
@@ -160,6 +171,7 @@ tfoot{
 
 
 .column8{
+    max-width: 130px;
     min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
@@ -168,6 +180,7 @@ tfoot{
 
 
 .column9{
+    max-width: 130px;
     min-width: 130px ;
     padding: 0 0 0 10px;
     text-align: right;
@@ -176,6 +189,7 @@ tfoot{
 
 
 .column10{
+    max-width: 130px;
     min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
@@ -184,6 +198,7 @@ tfoot{
 
 
 .column11{
+    max-width: 90px;
     min-width: 90px;
     padding-left: 10px;
     padding-right: 15px;
@@ -225,6 +240,22 @@ tfoot{
     background-color: unset;
 }
 
+.body-table{
+    position: relative;
+}
+
+.body-table__tooltip{
+    top: unset;
+    top: 100%;
+    left: 0%;
+}
+
+.body-table:hover .body-table__tooltip{
+    transform: scale(1);
+    z-index: 10000;
+    padding: 10px !important;
+    color: black;
+}
 
 
 .function__clone{
@@ -335,8 +366,10 @@ tfoot{
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     position: absolute;
+    row-gap: 20px;
     column-gap: 15px;
     top: 42px;
     bottom: 42px;
@@ -344,8 +377,9 @@ tfoot{
 }
 
 .text-no-data{
-    color: red;
-    font-family: Roboto-Bold;
+    font-size: 15px;
+    /* color: red;
+    font-family: Roboto-Bold; */
 }
 
 .no-data-no-footer{
@@ -353,10 +387,17 @@ tfoot{
 }
 
 .icon-no-data{
+    background: url(../../assets/icon/no-data.png);
+    background-repeat: no-repeat;
+	width: 64px;
+	height: 64px;
+}
+
+/* .icon-no-data{
     background: url('../../assets/icon/qlts-icon.png') no-repeat -464px -68px;
 	width: 18px;
 	height: 16px;
-}
+} */
 
 .footer-no-data td{
     border-top: 1px solid #afafaf !important;
@@ -540,6 +581,11 @@ tfoot{
 }
 .content__table::-webkit-scrollbar-button:end {
     height: 21px; 
+    background-color: #ffffff;
+}
+
+.no-footer::-webkit-scrollbar-button:end {
+    height: 0px !important; 
     background-color: #ffffff;
 }
 

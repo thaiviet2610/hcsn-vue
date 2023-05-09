@@ -1,6 +1,12 @@
 <template>
     <div>
-        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
+        <div  class="form editForm" :tabindex="0"
+            @keydown.esc.prevent="handleEventBtnClickCancel"
+            @keydown.ctrl.s.prevent="handleEventBtnClickSave"
+            @keydown.ctrl.1.prevent="btnClickOpenFormSelectedAsset"
+            @keydown.ctrl.e.prevent="handleEventClickFunctionTable"
+            @keydown.ctrl.d.prevent="handleEventClickFunctionTable"
+        >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
                 <div class="form-header">
@@ -100,11 +106,16 @@
                                 </MInput>
                             </div>
 
-                            <MButton
-                                :label="assetIncrementDetailInfo.button.btnSelectedAsset.label"
-                                :class="assetIncrementDetailInfo.button.btnSelectedAsset.class"
-                                @btnAddOnClickBtn="btnClickOpenFormSelectedAsset">
-                            </MButton>
+                            <div class="btn-selected-asset-active">
+                                <MButton
+                                    :label="assetIncrementDetailInfo.button.btnSelectedAsset.label"
+                                    @btnAddOnClickBtn="btnClickOpenFormSelectedAsset">
+                                </MButton>
+                                <MTooltip
+                                    :text="assetIncrementDetailInfo.button.btnSelectedAsset.tooltip"
+                                    :class="assetIncrementDetailInfo.button.btnSelectedAsset.classTooltip"
+                                ></MTooltip>
+                            </div>
                         </div>
                         <div class="table_container">
                             <MTable 
@@ -215,7 +226,7 @@ import BudgetAsset from '@/views/budgetAsset/BudgetAsset.vue';
 import configJS from '@/js/config';
 import axios from 'axios';
 import commonJS from '@/js/common';
-import AssetNoActive from '../assetNoActive/AssetNoActive.vue';
+import AssetNoActive from '../../asset/assetNoActive/AssetNoActive.vue';
 export default {
     name: "AssetIncrementDetail",
     components:{
@@ -268,7 +279,8 @@ export default {
             contentDialogEditFormCancel: resourceJS.confirm.assetIncrement.changeCancelFormAssetIncrement,
             btnDialogCancelAddForm: resourceJS.buttonDialog.cancelAddForm,
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
-            oldValueAsset: "",
+            oldValueIdAssets: "",
+            oldValueAssets: "",
             assetsAdd: [],
             assetsDelete: [],
             dataBodyTable: [],
@@ -281,7 +293,6 @@ export default {
             isShowToastSuccess: false,
             notifyToastSuccess: "",
             contentToastSuccess: "",
-            previousKeyCtrl: false
         }
     },
     created() {
@@ -301,21 +312,24 @@ export default {
             NotInAssets: [],
             ActiveAssets: []
         }
-        let oldValueAssets = [];
+        let oldValueIdAssets = [];
         if(this.assetIncrement.assets){
-            oldValueAssets = this.assetIncrement.assets.map(function(asset){
+            oldValueIdAssets = this.assetIncrement.assets.map(function(asset){
                 return asset.fixed_asset_id;
             })
         }
-        this.oldValueAsset = JSON.stringify(oldValueAssets);
+        this.oldValueIdAssets = JSON.stringify(oldValueIdAssets);
+
         if(this.assetIncrement.assets){
             this.dataBodyApi.NotInAssets = this.assetIncrement.assets.map(function(asset){
                 return asset.fixed_asset_id;
             });
-            this.assetsSearch = this.assetIncrement.assets;
+            const assetsToString = JSON.stringify(this.assetIncrement.assets);
+            this.oldValueAssets = assetsToString;
+            this.assetsSearch = JSON.parse(assetsToString);
+            
             this.getDataTable();
         }
-
     },
     mounted() {
         this.setFocus();
@@ -345,6 +359,8 @@ export default {
             .catch(err=>{
                 console.log(err);
                 this.isShowLoad = false;
+                this.isShowDialogNotify = true;
+                this.contentDialogNotify = resourceJS.notify.errorLoadData;
             })
         },
 
@@ -454,63 +470,6 @@ export default {
         },
 
         /**
-         * Hàm xử lý sự kiện keydown
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyDown(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = true;
-            }
-
-            if(keyCode == enumJS.keyEsc){
-                this.handleEventBtnClickCancel();
-            }
-
-            if(this.previousKeyCtrl){
-                const index = this.$refs[this.assetIncrementDetailInfo.table.ref].indexRowSelected;
-                const asset = this.assetsSearch[index - 1];
-                switch (keyCode) {
-                    case enumJS.keyS:
-                        event.preventDefault();
-                        this.handleEventBtnClickSave();
-                        break;
-                    case enumJS.key1:
-                        event.preventDefault();
-                        this.btnClickOpenFormSelectedAsset();
-                        break;
-                    case enumJS.keyE:
-                        event.preventDefault();
-                        if(asset){
-                            this.handleEventClickFunctionTable([enumJS.type.edit,asset]);
-                        }
-                        break;
-                    case enumJS.keyD:
-                        event.preventDefault();
-                        if(asset){
-                            this.handleEventClickFunctionTable([enumJS.type.delete,asset]);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện keyup
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyUp(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = false;
-            }
-        },
-
-        /**
          * Hàm xử lý sự kiện mở form chọn tài sản
          * @author LTVIET (19/04/2023)
          */
@@ -534,22 +493,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventEditBudgetAsset(newAsset){
-            let assets = this.assetIncrement.assets;
-            for (let i = 0;i<assets.length;i++) {
-                if(newAsset.fixed_asset_code == assets[i].fixed_asset_code){
-                    assets[i].cost = newAsset.cost;
-                    assets[i].cost_source = newAsset.cost_source;
-                    break;
-                }
-            }
-            for (let i = 0;i<this.assetsSearch.length;i++) {
-                if(newAsset.fixed_asset_code == this.assetsSearch[i].fixed_asset_code){
-                    this.assetsSearch[i].cost = newAsset.cost;
-                    this.assetsSearch[i].cost_source = newAsset.cost_source;
-                    break;
-                }
-            }
-            this.assetIncrement.price = this.getTotalPrice();
+            this.updateAssetActive(newAsset);
             this.getDataTable();
             if(this.typeForm == enumJS.type.edit){
                 this.updateAssetIncrementPrice();
@@ -565,11 +509,45 @@ export default {
         },
 
         /**
+         * Hàm sửa lại các giá trị của tài sản vừa được sửa nguyên giá
+         * @param {*} newAsset giá trị mới của tài sản
+         * @author LTVIET (05/05/2023)
+         */
+        updateAssetActive(newAsset){
+            // update lại danh sách tìm kiếm tài sản
+            const indexAssetsSearch = this.assetsSearch.findIndex(asset => asset.fixed_asset_code == newAsset.fixed_asset_code);
+            let assetSearch = this.assetsSearch[indexAssetsSearch];
+            const depreciationValue = (assetSearch.depreciation_value / assetSearch.cost) * newAsset.cost;
+            assetSearch.cost = newAsset.cost;
+            assetSearch.cost_source = newAsset.cost_source;
+            assetSearch.depreciation_value = depreciationValue;
+            const residualValue = assetSearch.cost - assetSearch.depreciation_value;
+            assetSearch.residual_value = residualValue > 0 ? residualValue : 0;
+            // update lại danh sách tài sản
+            const index = this.assetIncrement.assets.findIndex(asset => asset.fixed_asset_code == newAsset.fixed_asset_code);
+            let asset = this.assetIncrement.assets[index];
+            asset.cost = assetSearch.cost;
+            asset.cost_source = assetSearch.cost_source;
+            asset.depreciation_value = depreciationValue;
+            asset.residual_value = asset.cost - asset.depreciation_value;
+            this.assetIncrement.price = this.getTotalPrice(this.assetIncrement.assets);
+            // update lại danh sách tài sản gốc
+            let oldAssets = JSON.parse(this.oldValueAssets);
+            const indexOldAsset = oldAssets.findIndex(asset => asset.fixed_asset_code == newAsset.fixed_asset_code);
+            if(indexOldAsset != -1){
+                oldAssets[indexOldAsset].cost = assetSearch.cost;
+                oldAssets[indexOldAsset].cost_source = assetSearch.cost_source;
+                this.oldValueAssets = JSON.stringify(oldAssets);
+            }
+        },
+
+        /**
          * Hàm tính tổng nguyên giá của chứng từ
+         * @param {*} assets danh sách tài sản cần tính tổng nguyên giá
          * @author LTVIET (19/04/2023)
          */
-        getTotalPrice(){
-            const price = this.assetIncrement.assets.reduce(function (total,asset) {
+        getTotalPrice(assets){
+            const price = assets.reduce(function (total,asset) {
                 return total + asset.cost;
             },0);
             return Math.round(price);
@@ -594,7 +572,8 @@ export default {
                 this.dataBodyApi.NotInAssets.push(id);
                 this.assetIncrement.assets.push(value[i]);
             }
-            this.assetsSearch = this.assetIncrement.assets;
+            const assets = JSON.stringify(this.assetIncrement.assets);
+            this.assetsSearch = JSON.parse(assets);
             this.keyword = "";
             this.keyInputSearch = ++this.keyInputSearch;
             this.getDataTable();
@@ -612,7 +591,8 @@ export default {
             this.keyword = value;
             if(!value){
                 this.isShowNoDataTable = false;
-                this.assetsSearch = this.assetIncrement.assets;
+                const assets = JSON.stringify(this.assetIncrement.assets);
+                this.assetsSearch = JSON.parse(assets);
             }else{
                 this.isShowNoDataTable = true;
                 this.assetsSearch = this.assetIncrement.assets.filter(item=>
@@ -645,12 +625,18 @@ export default {
                 this.labelBudgetForm = this.labelBudgetForm.replace("{0}",item.fixed_asset_name);
                 this.getAssetbyId(item.fixed_asset_id);
             }else if(type == enumJS.type.delete){
-                let index = this.assetIncrement.assets.indexOf(item);
-                this.assetIncrement.assets.splice(index,1);
+                
+                for(let i = 0;i<this.assetIncrement.assets.length;i++){
+                    if(this.assetIncrement.assets[i].fixed_asset_code == item.fixed_asset_code){
+                        this.assetIncrement.assets.splice(i,1);
+                        break;
+                    }
+                }
+                
                 let indexSearch = this.assetsSearch.indexOf(item);
                 this.assetsSearch.splice(indexSearch,1);
                 this.dataBodyApi.NotInAssets.splice(indexSearch,1);
-                if(JSON.parse(this.oldValueAsset).indexOf(item.fixed_asset_id) != -1){
+                if(JSON.parse(this.oldValueIdAssets).indexOf(item.fixed_asset_id) != -1){
                     this.dataBodyApi.ActiveAssets.push(item.fixed_asset_id);
                 }
                 this.getDataTable();
@@ -701,7 +687,7 @@ export default {
          */
         handleEventBtnClickSave(){
             if(this.validateAssetIncrement() & this.validateAssetNoActives()){
-                this.assetIncrement.price = this.getTotalPrice();
+                this.assetIncrement.price = this.getTotalPrice(this.assetIncrement.assets);
                 this.isShowLoad  = true;
                 if(this.typeForm == enumJS.type.add){
                     this.addAssetIncrement();
@@ -709,18 +695,18 @@ export default {
                     const newValueAsset = this.assetIncrement.assets.map(function(asset){
                         return asset.fixed_asset_id;
                     })
-                    if(this.oldValueAsset != JSON.stringify(newValueAsset)){
+                    if(this.oldValueIdAssets != JSON.stringify(newValueAsset)){
                         const newValueIdAssets = this.assetIncrement.assets.map(function (asset) {
                             return asset.fixed_asset_id;
                         })
-                        for (const idAsset of JSON.parse(this.oldValueAsset)) {
+                        for (const idAsset of JSON.parse(this.oldValueIdAssets)) {
                             const index = newValueIdAssets.indexOf(idAsset);
                             if(index == -1){
                                 this.assetsDelete.push(idAsset);
                             }
                         }
                         for (const idAsset of newValueIdAssets) {
-                            const index = JSON.parse(this.oldValueAsset).indexOf(idAsset);
+                            const index = JSON.parse(this.oldValueIdAssets).indexOf(idAsset);
                             if(index == -1){
                                 this.assetsAdd.push(idAsset);
                             }
@@ -773,12 +759,14 @@ export default {
          * @author LTVIET (19/04/2023)
          */
          updateAssetIncrementPrice(){
-            axios.put(`${this.assetIncrementApi}/Price?voucherId=${this.assetIncrement.voucher_id}&price=${this.assetIncrement.price}`)
+            const price = this.getTotalPrice(JSON.parse(this.oldValueAssets));
+            axios.put(`${this.assetIncrementApi}/Price?voucherId=${this.assetIncrement.voucher_id}&price=${price}`)
             .then(()=>{
                 this.$emit('updateAssetIncrementPrice');
             })
             .catch(err=>{
                 console.log(err);
+                this.handleEventErrorAPI(err);
             })
         },
 
@@ -899,6 +887,7 @@ export default {
                 if(ref == this.assetIncrementDetailInfo.description.ref){
                     check = this.validateMaxLength(item,this.assetIncrementDetailInfo.description.maxLength);
                 }
+                if(item.inValid) check = false;
             }
             return check;
         },

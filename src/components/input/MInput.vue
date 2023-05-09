@@ -6,16 +6,26 @@
         <input
             ref="mInput"
             :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
-            :style="styleInput"
+            class="m-input"
+            :style="[styleInput]"
             v-model="value"
             :tabindex="disable ? -1:0"
             type="text" 
             autocomplete="off"
             :disabled="disable"
+            @focus="handleEventFocusInput(idInput)"
+            @focusout="handleEventFocusInput(null)"
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"
-            :placeholder="placeholder">    
+            :placeholder="placeholder">
+        <MTooltip
+            v-if="value.length  * 8 > inputWidth"
+            :text="value"
+            :style="`max-width: ${inputWidth-22}px !important;`"
+            class="m-input-tooltip">
+
+        </MTooltip>    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>
         <!-- button hiển thị icon nếu có  -->
@@ -70,6 +80,10 @@ export default {
         classInput:{
             type: String,
             default: ""
+        },
+        idInput:{
+            type: String,
+            default: null
         }
     },
     components:{
@@ -77,20 +91,23 @@ export default {
     },
     data() {
         return {
-            value: null,
+            value: "",
             inValid: false,
             errorEmpty: "",
             notifyError: null,
             styleInput: null,
             errorFormatNumber: false,
+            inputWidth: 0,
         }
     },
     watch: {
         
     },
     mounted() {
+        this.inputWidth = this.$refs["mInput"].offsetWidth;
     },
     created() {
+        
         //1. nếu valueInput có giá trị thì gán cho value
         if(this.valueInput){
             this.value = this.valueInput;
@@ -98,7 +115,7 @@ export default {
         //3. nếu input có icon set style cho input
         if(this.iconInput){
             //4. nếu input có icon thì set style cho input
-            this.styleInput = `padding-left: 38px;text-align: ${this.textAlign}`;
+            this.styleInput = `padding-left: 38px;text-align: ${this.textAlign};`;
         }
     },
     methods: {
@@ -135,6 +152,14 @@ export default {
          */
         onKeyDownSelecte(){
             this.$emit("keyDownEnter",this.value);
+        },
+
+        /**
+         * Hàm gửi id của input ra lớp cha khi được focus
+         * @author LTVIET (05/03/2023)
+         */
+         handleEventFocusInput(id){
+            this.$emit('getValueIdInputFocus',id);
         },
         
         /**

@@ -20,6 +20,7 @@ const configJS = {
             assetIncrementApi: "https://localhost:7123/api/v1/AssetIncrements",
             assetIncrementFilterApi: "https://localhost:7123/api/v1/AssetIncrements/Filter?keyword={2}&pageSize={0}&pageNumber={1}",
             assetIncrementGenerateNewCodeApi: "https://localhost:7123/api/v1/AssetIncrements/NewCode",
+            assetIncrementExportApi: "https://localhost:7123/api/v1/AssetIncrements/Export",
         },
         assetIncrementDetail:{
             assetIncrementDetailApi: "https://localhost:7123/api/v1/AssetIncrementDetails",

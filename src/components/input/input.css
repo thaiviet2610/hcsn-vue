@@ -129,6 +129,7 @@ input.disableInputClass{
     row-gap: 8px;
     position: relative;
     border-radius: 2.5px;
+    position: relative;
 }
 
 .input__container input{
@@ -142,6 +143,35 @@ input.disableInputClass{
     box-sizing: border-box;
     color: black !important;
     overflow: hidden;
+}
+
+.m-input{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.m-input-tooltip{
+    top: 100%;
+    left: 0%;
+    /* transform: scale(1); */
+    padding: 10px;
+}
+
+.m-input:hover~.m-input-tooltip{
+    transform: scale(1);
+    z-index: 100000;
+}
+
+.m-input__container{
+    width: 100%;
+    height: 36px;
+    position: relative;
+    padding-right: 14px;
+    border: 1px solid #d4d4d4;
+    box-sizing: border-box;
+    border-radius: 4px;
 }
 
 

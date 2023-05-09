@@ -61,7 +61,7 @@
 }
 
 .asset_increment_detail--column2{
-    width: 65px;
+    max-width: 65px;
     padding-left: 10px;
     min-width: 65px;
     padding-right: 10px;
@@ -84,7 +84,7 @@
 }
 
 .asset_increment_detail--column3{
-    width: 100px;
+    max-width: 100px;
     min-width: 100px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -92,7 +92,7 @@
 
 
 .asset_increment_detail--column4{
-    width: 110px;
+    max-width: 110px;
     min-width: 110px;
     padding: 0 10px 0 0;
     text-align: left;
@@ -100,15 +100,15 @@
 
 
 .asset_increment_detail--column6{
-    width: 248px;
-    min-width: 248px;
+    max-width: 258px;
+    min-width: 258px;
     padding-right: 5px;
     text-align: left;
 }
 
 
 .asset_increment_detail--column8{
-    width: 130px;
+    max-width: 130px;
     min-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
@@ -117,7 +117,7 @@
 
 
 .asset_increment_detail--column9{
-    width: 130px;
+    max-width: 130px;
     min-width: 130px ;
     padding: 0 0 0 10px;
     text-align: right;
@@ -137,7 +137,7 @@
 
 .asset_increment_detail--column10{
     min-width: 130px;
-    width: 130px;
+    max-width: 130px;
     padding: 0 0 0 10px;
     text-align: right;
 }
@@ -203,5 +203,19 @@
 .btn-cancel-asset-increment-detail:hover .btn-cancel-asset-increment-detail-tooltip{
     transform: scale(1);
     z-index: 100;
+}
+
+.btn-selected-asset-active{
+    position: relative;
+}
+
+.btn-selected-asset-active-tooltip{
+    top: 110%;
+    right: 30%;
+}
+
+.btn-selected-asset-active:hover .btn-selected-asset-active-tooltip{
+    transform: scale(1);
+    z-index: 10000;
 }
 

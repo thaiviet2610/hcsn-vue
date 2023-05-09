@@ -190,12 +190,12 @@
     </table>
     
   </div>
-  <div v-else class="content__table" :tabindex="isCheckbox ? 0:-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
+  <div v-else class="content__table" :class="{'no-footer':!isFooter}" :tabindex="isCheckbox ? 0:-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
     <table ref="mTable"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
       <!-- phần title của table  -->
       <thead>
         <tr>
-          <th v-if="isCheckbox" class="column1 text-align-center">
+          <th v-show="isCheckbox" class="column1 text-align-center">
             <MCheckbox 
               ref="mCheckbox_0"
               idCheckbox="idCheckbox_0"
@@ -212,7 +212,7 @@
                     :class="itemHeader.classTooltip"
                 ></MTooltip>
           </th>
-          <th v-if="isFunction" class="column11 text-align-center" :class="tableInfo.function.columnClass">{{ titleColumn.function }}</th>
+          <th v-show="isFunction" class="column11 text-align-center" :class="tableInfo.function.columnClass">{{ titleColumn.function }}</th>
         </tr>
       </thead>
       <!-- phần body của table  -->
@@ -229,7 +229,7 @@
             row__selected: rowSelected[index+1]||checkbox[index+1],
           }"
         >
-          <td v-if="isCheckbox" class="column1 text-align-center">
+          <td v-show="isCheckbox" class="column1 text-align-center">
             <MCheckbox 
               :ref="`mCheckbox_${index+1}`"
               :idCheckbox="`idCheckbox_${index+1}`"
@@ -239,10 +239,17 @@
               >
             </MCheckbox>
           </td>
-          <td v-for="(itemBody,indexBody) in item" :key="indexBody"
-              :class="tableInfo.bodyClass[indexBody]">{{ itemBody }}
+          <td v-for="(itemBody,indexBody) of item" :key="indexBody" class="body-table"
+              :class="tableInfo.body[indexBody].class">
+              <div class="body-table__text">{{ itemBody }}</div>
+              <MTooltip
+              v-show="(itemBody.length - 5) * 8 > tableInfo.body[indexBody].maxWidth"
+                :text="itemBody"
+                :class="tableInfo.body[indexBody].class"
+                class="body-table__tooltip"
+              ></MTooltip>
           </td>
-          <td v-if="isFunction" :class="tableInfo.function.columnClass" >
+          <td v-show="isFunction" :class="tableInfo.function.columnClass" >
             <div class="function" :style="styleFunction(index + 1)">
               <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
                 <MButtonIcon
@@ -849,6 +856,7 @@ methods: {
     }
   },
 
+
   /**
    * Hàm xử lý sự kiện click 1 dòng của table
    * @param {*} index vị trí dòng của table được click
@@ -888,7 +896,7 @@ methods: {
     }
     setTimeout(() => {
       this.isClickRow[index] = true;
-    }, 1000);
+    }, 500);
   },
 
   /**

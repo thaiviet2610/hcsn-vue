@@ -38,8 +38,8 @@ export default {
          * Hàm xử lý sự kiện click button
          * @author LTVIET (05/03/2023)
          */
-        addEventClickBtnIcon() {
-            this.$emit('addOnClickBtnIcon');   
+        addEventClickBtnIcon(event) {
+            this.$emit('addOnClickBtnIcon',event);   
         },
 
         /**

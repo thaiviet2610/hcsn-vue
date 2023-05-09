@@ -12,11 +12,13 @@
             class="combobox_input combobox__text" 
             :class="{'input--error':inValid}" 
             autocomplete="off"
-            @focus="handleEventFocusInput"
+            @click="btnOpenDropdown"
+            @focus="handleEventFocusInput(idCombobox)"
+            @focusout="handleEventFocusInput(null)"
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
-            :style="this.styleInput">
+            :style="styleInput">
         <!-- thẻ buton thực hiện chức năng hiện combobox-data  -->
         <MButtonIcon
             v-if="!isShow"
@@ -251,9 +253,10 @@ export default {
          * Hàm gửi id của combobx ra lớp cha khi được focus
          * @author LTVIET (05/03/2023)
          */
-        handleEventFocusInput(){
-            this.$emit('getValueIdComboboxFocus',this.idCombobox);
+        handleEventFocusInput(id){
+            this.$emit('getValueIdComboboxFocus',id);
         },
+
 
         /**
          * Hàm tìm item tương ứng với giá trị truyền từ ngoài vào và gán vào value

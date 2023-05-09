@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div  class="form editForm" :tabindex="0" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp"
+        <div  class="form editForm" :tabindex="0"
+            @keydown.esc.prevent="handleEventBtnClickCancel"
+            @keydown.ctrl.s.prevent="handleEventBtnClickSave"
         >
             <div class="asset_increment__form-data" >
                 <!-- phần header của form  -->
@@ -85,7 +87,13 @@
                 </div>
             </div>
         </div>
-        
+        <!-- dialog thông báo  -->
+        <MDialog 
+            v-if="isShowDialogNotify" 
+            :content="contentDialogNotify"
+            :buttonInfo="btnDialogNotify"
+            @onClickBtn="handleEventCloseDialogNotify">
+        </MDialog>
         <!-- dialog hiển thị đang load dữ liệu  -->
         <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
     </div>
@@ -96,11 +104,12 @@ import configJS from '@/js/config';
 import resourceJS from '@/js/resource';
 import commonJS from '@/js/common';
 import axios from 'axios';
-import enumJS from '@/js/enum';
+import MDialog from '@/components/dialog/MDialog.vue';
 export default {
     name: "AssetNoActive",
     components:{
-    },
+    MDialog
+},
     props:{
         dataBodyApi:{
             type: [Object,Array,String,Number],
@@ -109,6 +118,9 @@ export default {
     },
     data() {
         return {
+            isShowDialogNotify: false,
+            contentDialogNotify: resourceJS.notify.errorLoadData,
+            btnDialogNotify: resourceJS.buttonDialog.notify,
             assetFilterApi: configJS.api.asset.assetFilterNotInApi,
             tableInfo: resourceJS.table.tableAssetNoActive,
             dataPageSize: resourceJS.table.tableAssetNoActive.dataPageSize ,
@@ -119,7 +131,6 @@ export default {
             dataBodyTable: [],
             dataFooterTable: [],
             dataAssets: [],
-            previousKeyCtrl: false,
             assetNoActiveInfo: resourceJS.assetNoActive,
             isShowNoDataTable: false
         }
@@ -152,6 +163,15 @@ export default {
         getValuePageNumber(value){
             this.pageNumber = value;
             this.getDataTable();
+        },
+
+        /**
+         * Hàm xử lý sự kiện click button đóng dialog
+         * @author LTVIET (29/03/2023)
+         */
+         handleEventCloseDialogNotify(){
+            this.isShowDialogNotify = false;
+            this.setFocus();
         },
 
         /**
@@ -189,6 +209,8 @@ export default {
             .catch(err=>{
                 console.log(err);
                 this.isShowLoad = false;
+                this.isShowDialogNotify = true;
+                
             })
         },
 
@@ -200,39 +222,6 @@ export default {
             this.$nextTick(function(){
                 this.$refs[this.assetNoActiveInfo.inputSearch.ref].setFocus();
             })
-        },
-
-        /**
-         * Hàm xử lý sự kiện keydown
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyDown(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = true;
-            }
-
-            if(keyCode == enumJS.keyEsc){
-                this.handleEventBtnClickCancel();
-            }
-
-            if(this.previousKeyCtrl && keyCode == enumJS.keyS){
-                event.preventDefault();
-                this.handleEventBtnClickSave();
-            }
-        },
-
-        /**
-         * Hàm xử lý sự kiện keyup
-         * @param {*} event sự kiện cần xử lý
-         * @author LTVIET (18/04/2023)
-         */
-         handleEventKeyUp(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = false;
-            }
         },
 
         /**
