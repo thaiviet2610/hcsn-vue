@@ -1,8 +1,11 @@
 <template>
     <button 
+        :id="idButton"
         ref="mButton"
         class="btn--outline"
         @click="addEventClickBtn"
+        @focus="handleEventFocus(idButton)"
+        @focusout="handleEventFocus(null)"
         >
         <div :class="classImage"></div>
             {{ label }}
@@ -16,14 +19,20 @@ export default {
         // tên button
         label: {
             type: String,
-            required: false
+            required: ""
         },
+        idButton: {
+            type: String,
+            required: null
+        },
+        
     },
     data() {
         return {
         }
     },
     created() {
+
     },
     components:{
 
@@ -49,6 +58,14 @@ export default {
                 this.$refs["mButton"].focus();
             })
         }, 
+
+        /**
+         * Hàm gửi id của button đang focus cho lớp cha
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventFocus(id){
+            this.$emit('getIdButtonFocus',id);
+        }
 
         
     },

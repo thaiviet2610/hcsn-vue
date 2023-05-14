@@ -161,7 +161,7 @@
     top: 90% !important;
 }
 
-.column9:hover .table-header-column9-tooltip{
+.table-header__text:hover~.table-header-column9-tooltip{
     transform: scale(1) !important;
     z-index: 10000;
 }
@@ -170,7 +170,17 @@
     top: 90% !important;
 }
 
-.column2:hover .table-header-column2-tooltip{
+.table-header__text:hover~.table-header-column2-tooltip{
+    transform: scale(1);
+    z-index: 10000;
+}
+
+.asset-list-btn-add-tooltip{
+    top: 120% !important;
+    right: 30% !important;
+}
+
+.btn--main:hover~.asset-list-btn-add-tooltip{
     transform: scale(1);
     z-index: 10000;
 }

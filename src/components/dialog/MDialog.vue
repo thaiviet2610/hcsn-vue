@@ -1,6 +1,6 @@
 <template>
 
-    <div class="dialog" >
+    <div class="dialog" @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
         <div class="dialog-content">
             <!-- body của dialog  -->
             <div class="dialog-body">
@@ -23,7 +23,6 @@
                             >
                         </MButton>
                     </div>
-                    
             </div>
         </div>
     </div>
@@ -32,6 +31,8 @@
 </template>
 
 <script>
+import enumJS from '@/js/enum';
+import { keyTab } from '@/js/keyTab';
 export default {
     name:"MDialog",
     props: {
@@ -59,9 +60,11 @@ export default {
         this.setFocus();
     },
     created() {
+        
     },
     data() {
         return {
+            previousKeyShift: false
         }
     },
     methods: {
@@ -81,6 +84,28 @@ export default {
          */
         handleEventClickBtn(index){
             this.$emit('onClickBtn',index);
+        },
+
+        handleEventKeyDown(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = true;
+            }
+            if(keyCode == enumJS.keyTab){
+                keyTab(event,`id_0`,`id_${this.buttonInfo.length-1}`,this.previousKeyShift);
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup
+         * @param {*} event sự kiện cần xử lý
+         * @author LTVIET (29/03/2023)
+         */
+         handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = false;
+            }
         },
 
     },

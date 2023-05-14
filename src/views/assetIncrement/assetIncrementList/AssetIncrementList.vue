@@ -41,9 +41,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- button xóa tài sản  -->
-                    
                 </div>
             </div>
             <splitpanes class="asset-increment-list-container" horizontal 
@@ -65,6 +62,7 @@
                                     <div v-show="isShowDeleteButton" style="position: relative;" class="function__delete--multiple">
                                         <!-- button xóa nhiều  -->
                                         <MButtonIcon
+                                            class="btn-delete-multiple"
                                             classIcon="function__delete "
                                             @addOnClickBtnIcon="addOnClickBtnDeleteMultiple">
                                         </MButtonIcon>
@@ -105,7 +103,6 @@
                                 :dataHeader="dataHeaderTableMaster"
                                 :dataBody="dataBodyTableMaster"
                                 :dataFooter="dataFooterTableMaster"
-                                :isShowNoData="isShowNoDataTableMaster"
                                 :totalRecord="totalRecordTableMaster"
                                 :valuePageNumber="pageNumberTableMaster"
                                 :valuePageSize="pageSizeTableMaster"
@@ -137,12 +134,12 @@
 
                                 <div class="asset_increment--item3" style="position: relative;">
                                     <MButtonIcon
-                                        classIcon="icon--full_screen"
+                                        :classIcon="classIconFullScreen"
                                         @addOnClickBtnIcon="handleEventClickBtnFullScreen">
                                     </MButtonIcon>
                                     <MTooltip
                                         :text="tooltipFullScreen"
-                                        :class="assetIncrementListInfo.tooltip.zoomIn.classTooltip">
+                                        :class="assetIncrementListInfo.button.btnFullScreen.classTooltip">
                                     </MTooltip>
                                 </div>
                             </div>
@@ -152,13 +149,11 @@
                                     :tableInfo="tableDetailInfo"
                                     :dataHeader="dataHeaderTableDetail"
                                     :dataBody="dataBodyTableDetail"
-                                    :isShowNoData="isShowNoDataTableDetail"
                                     :isCheckbox="tableDetailInfo.isCheckbox"
                                     :isFunction="tableDetailInfo.isFunction"
                                     :isContextMenu="tableDetailInfo.isContextMenu"
                                     :dataEntities="dataAssets"
-                                    :isFooter="tableDetailInfo.isFooter"
-                                    :key="keyTableDetail">
+                                    :isFooter="tableDetailInfo.isFooter">
                                 </MTable>
                                 <MDialogLoadData v-show="isShowLoadTableDetail" style="width: 100%;height: 100%;"></MDialogLoadData>
                             </div>
@@ -180,12 +175,12 @@
      @addOnClickBtnSaveAssetIncrement="handleEventSaveAssetIncrement"
      >
     </AssetIncrementDetail>
-    <MDialogLoadData v-show="isShowLoad"></MDialogLoadData>
+    <MDialogLoadData v-if="isShowLoad"></MDialogLoadData>
 
     <MDialog 
         :content="contentDialogNotify"
         :buttonInfo="btnDialogNotify"
-        v-show="isShowDialogNotify" 
+        v-if="isShowDialogNotify" 
         @onClickBtn="handleEventCloseDialogNotify">
     </MDialog>
 
@@ -193,26 +188,26 @@
     <MDialog 
         :content="contentDialogConfirmDeleteOneAssetIncrement"
         :buttonInfo="btnDialogDelete"
-        v-show="isShowDialogConfirmDeleteOneAssetIncrement"
+        v-if="isShowDialogConfirmDeleteOneAssetIncrement"
         @onClickBtn="handleEventCloseDialogDelete">
     </MDialog>
     <!-- dialog xác nhận hành động xóa nhiều tài sản chứng từ-->
     <MDialog 
         :content="contentDialogConfirmDeleteMultiple"
         :buttonInfo="btnDialogDelete"
-        v-show="isShowDialogConfirmDeleteMultiple"
+        v-if="isShowDialogConfirmDeleteMultiple"
         @onClickBtn="handleEventCloseDialogDelete">
     </MDialog>
     <!-- dialog xác nhận hành động xuất chứng từ-->
     <MDialog 
         :content="contentDialogConfirmExport"
         :buttonInfo="btnDialogExport"
-        v-show="isShowDialogConfirmExport"
+        v-if="isShowDialogConfirmExport"
         @onClickBtn="handleEventCloseDialogExport">
     </MDialog>
 
     <MToastSucess 
-        v-show="isShowToastSuccess"
+        v-if="isShowToastSuccess"
         :notify="notifyToastSuccess"
         :content="contentToastSuccess"
         :buttonUndo="false"
@@ -274,11 +269,11 @@ export default {
             tableMasterInfo: resourceJS.table.tableUpAssetIncrementList,
             tableDetailInfo: resourceJS.table.tableDownAssetIncrementList,
             keyTableMaster: 0,
-            keyTableDetail: 0,
             isUpdateBudget: false,
             paneSize: 65,
             keyword: "",
             classInterface: "horizontal_interface",
+            classIconFullScreen: "",
             checkPanSize: enumJS.paneSize.diffrentPercent,
             newVoucherCode: "",
             keyAssetIncrementDetail: 0,
@@ -303,13 +298,14 @@ export default {
             dataAssetIncrements: [],
             dataAssets: [],
             idVoucherSelected: null,
-            isShowNoDataTableMaster: false,
-            isShowNoDataTableDetail: false,
-            tooltipFullScreen: resourceJS.assetIncrementList.tooltip.zoomIn.text,
-            fileNameExcel: ""
+            tooltipFullScreen: "",
+            fileNameExcel: "",
+            idsExport: []
         }
     },
     created() {
+        this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomIn;
+        this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomIn;
         this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
         this.getDataTableMaster();
     },
@@ -331,8 +327,6 @@ export default {
     },
     mounted() {
         this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
-        this.isShowNoDataTableMaster = true;
-        this.isShowNoDataTableDetail = true;
         this.setFocusDefault();
     },
     methods: {
@@ -450,8 +444,6 @@ export default {
                 ];
                 this.totalRecordTableMaster = res.data.TotalRecord;
                 this.dataAssetIncrements = res.data.Data;
-
-
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].totalRecord = this.totalRecordTableMaster;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getUnitData();
                 if(this.assetIncrements.length > 0){
@@ -462,7 +454,7 @@ export default {
                     }
                 }else{
                     this.dataBodyTableDetail = [];
-                    this.keyTableDetail = ++this.keyTableDetail;
+                    this.getAssetIncrementDetailById(null);
                 }
                 this.isShowLoadTableMaster = false;
 
@@ -493,11 +485,15 @@ export default {
         handleEventResizeSplitpanes(event){
             if(event[0].size == enumJS.percent.zero){
                 this.checkPanSize = enumJS.paneSize.zeroPercent;
+                this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomOut;
+                this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomOut;
             }else if(event[0].size == enumJS.percent.oneHundred){
                 this.checkPanSize = enumJS.paneSize.oneHundredPercent;
             }
             else{
                 this.checkPanSize = enumJS.paneSize.diffrentPercent;
+                this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomIn;
+                this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomIn;
             }
         },
         /**
@@ -516,6 +512,7 @@ export default {
          */
         btnClickOpenAddAssetIncrementForm(){
             this.isShowDetail = true;
+            this.isShowToastSuccess = false;
             this.labelForm = resourceJS.titlteForm.assetIncrement.addForm;
             this.typeForm = enumJS.type.add;
             this.GenerateNewVoucherCode();
@@ -547,12 +544,14 @@ export default {
             if(this.paneSize != enumJS.percent.zero){
                 this.paneSize = enumJS.percent.zero;
                 this.checkPanSize = enumJS.paneSize.zeroPercent;
-                this.tooltipFullScreen = this.assetIncrementListInfo.tooltip.zoomOut.text;
+                this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomOut;
+                this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomOut;
             }
             else{
                 this.paneSize = 60;
                 this.checkPanSize = enumJS.paneSize.diffrentPercent;
-                this.tooltipFullScreen = this.assetIncrementListInfo.tooltip.zoomIn.text;
+                this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomIn;
+                this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomIn;
             }
         },
 
@@ -643,7 +642,7 @@ export default {
                 let id = assetIncrements[i].voucher_id;
                 ids.push(id);
             }
-            this.deleteMultipleAsset(ids);
+            this.deleteMultipleAssetIncrement(ids);
         },
 
         /**
@@ -679,8 +678,7 @@ export default {
                 this.keyword = "";
             }
             this.pageNumberTableMaster = 1;
-            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].checkboxActive = [];
-            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].reloadCheckbox();
             this.getDataTableMaster();
         },
 
@@ -739,7 +737,6 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         getAssetIncrementSelected(value){
-            this.isShowNoDataTableDetail = true;
             if(value){
                 this.getAssetIncrementDetailById(value);
             }else{
@@ -816,7 +813,7 @@ export default {
          * Hàm gọi api xóa nhiều chứng từ
          * @author LTVIET (19/04/2023) 
          */
-        deleteMultipleAsset(ids){
+         deleteMultipleAssetIncrement(ids){
             axios.delete(this.assetIncrementApi,{
                 data: Object.values(ids)
             })
@@ -856,9 +853,20 @@ export default {
                 this.fileNameExcel = this.assetIncrementListInfo.export.fileName;
             }else if(assetIncrementsExport.length == 1){
                 const id = assetIncrementsExport[0].voucher_id;
-                this.assetIncrementExportApi = `${api}?voucherId=${id}`;
+                this.assetIncrementExportApi = `${api}?voucherIds=${[id]}`;
                 message = resourceJS.confirm.assetIncrement.exportExcelDetail.replace("{0}",assetIncrementsExport[0].voucher_code);
                 this.fileNameExcel = this.assetIncrementListInfo.export.fileNameDetail;
+            }else{
+                let ids = [];
+                for (const assetIncrement of assetIncrementsExport) {
+                    ids.push(assetIncrement.voucher_id);
+                }
+                let quantity = ids.length;
+                quantity = quantity < 10 ? `0${quantity}` : quantity;
+                console.log(ids);
+                this.assetIncrementExportApi = `${api}?voucherIds=${ids}`;
+                message = resourceJS.confirm.assetIncrement.exportMultipleExcel.replace("{0}",quantity);
+                this.fileNameExcel = this.assetIncrementListInfo.export.fileName;
             }
             this.isShowDialogConfirmExport = true;
             this.contentDialogConfirmExport = message;
@@ -885,6 +893,9 @@ export default {
          */
         exportAssetIncrement(){
             this.isShowLoad = true;
+            console.log(this.idsExport);
+            // let check = false;
+            // if(!check) return;
             axios.get(this.assetIncrementExportApi, {
                 responseType: "blob"
             })
@@ -944,7 +955,8 @@ export default {
                 this.contentDialogNotify = resourceJS.errorMsg.errorConnection;
             }
             else{
-                this.contentDialogNotify = message;
+                const errorCode = error.response.data.ErrorCode;
+                this.contentDialogNotify = resourceJS.errorMsg.errorFail.replace("{0}",message).replace("{1}",errorCode);
             }
         },
 
@@ -959,7 +971,6 @@ export default {
             }
             if(assetIncrement==null){
                 this.dataBodyTableDetail = [];
-                this.isShowNoDataTableDetail = false;
                 this.idVoucherSelected = null;
                 this.isShowLoadTableDetail = false;
                 return;
@@ -983,7 +994,7 @@ export default {
                     })
                     this.isShowLoadTableDetail = false;
                     this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].getUnitData();
-                    this.getDataAssetIncrementDetaiForml(assetIncrement,assets);
+                    this.getDataAssetIncrementDetaiForm(assetIncrement,assets);
                 })
                 .catch(err=>{
                     let message = resourceJS.notify.errorLoadData;
@@ -1002,7 +1013,7 @@ export default {
          * @param {*} assets thông tin danh sách tài sản chứng từ
          * @author LTVIET (19/04/2023)
          */
-        getDataAssetIncrementDetaiForml(assetIncrement,assets){
+        getDataAssetIncrementDetaiForm(assetIncrement,assets){
             if(this.isShowDetail){
                 this.assetIncrement = {
                     voucher_id: assetIncrement.voucher_id,

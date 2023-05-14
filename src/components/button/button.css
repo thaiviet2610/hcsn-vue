@@ -103,5 +103,9 @@
 }
 
 .btn__icon:focus{
-    outline: 3px solid #bce7f1 ;
+    outline: 3px solid #D1EDF4 ;
+}
+
+.btn__icon:hover{
+    outline: 3px solid #D1EDF4 ;
 }

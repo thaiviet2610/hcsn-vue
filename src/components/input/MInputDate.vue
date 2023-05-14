@@ -22,7 +22,8 @@
                 autocomplete="off"
                 :disabled="disable"
                 :tabindex="disable ? -1:0"
-                @focus="isFocus=true"
+                @click="handleEventClick"
+                @focus="isFocus = true;"
                 @focusout="isFocus = false"
                 @input="handleEventInput" 
                 @blur="addEventBlurInput"
@@ -86,7 +87,8 @@ export default {
             previousKeyShift: false,
             previousKeyCtrl: false,
             isBlur: true,
-            isFocus: false
+            isFocus: false,
+            keyBackSpace: false
         }
     },
     watch: {
@@ -123,6 +125,7 @@ export default {
          */
          setFocus() {
             this.$nextTick(function() {
+                console.log(1);
                 this.$refs["mInputDate"].focus();
             })
         }, 
@@ -183,7 +186,7 @@ export default {
                             this.txtDate = Number(this.txtDate) < 10 ? `0${Number(this.txtDate)}` : this.txtDate;
                             this.txtMonth = Number(this.txtMonth) < 10 ? `0${Number(this.txtMonth)}` : this.txtMonth;
                             let result = this.format.replace("dd",this.txtDate);
-                            result = result.replace("mm",this.txtMonth);
+                            result = result.replace("MM",this.txtMonth);
                             result = result.replace("yyyy",this.txtYear);
                             
                             this.value = result;
@@ -289,16 +292,19 @@ export default {
          * @author LTVIET (26/03/2023)
          */
         handleEventInput(){
-            
             // Tự động sinh dấu cách khi nhập
-            this.generateAutoSlach();
+            if(!this.keyBackSpace){
+                this.generateAutoSlach();
+            }else{
+                this.keyBackSpace = false;
+            }
             // 1.Kiểm tra xem giá trị nhập vào input có đúng định dạng không ? 
             if(this.regex.test(this.value)){
                 // 2. Nếu đúng định dạng thì:
                 // 2.1. Lấy ra giá trị ngày, tháng, năm
                 let arr = this.format.split("/");
                 let indexDay = arr.indexOf("dd");
-                let indexMonth = arr.indexOf("mm");
+                let indexMonth = arr.indexOf("MM");
                 let indexYear = arr.indexOf("yyyy");
                 let arrValue = this.value.split("/");
                 this.txtDate = Number(arrValue[indexDay]);
@@ -318,6 +324,14 @@ export default {
                 this.$emit('getValueInputDate',null);
 
             }
+        },
+
+        /**
+         * Hàm mở date picker
+         * @author LTVIET (16/04/2023)
+         */
+        handleEventShowPicker(){
+            this.$refs['date'].showPicker();
         },
 
         /**
@@ -353,7 +367,7 @@ export default {
             // Xác định vị trí ngày , tháng, năm ở định dạng ban đầu
             let arrBefore = formatBefore.split(/[/-]/);
             let indexDayBefore = arrBefore.indexOf("dd");
-            let indexMonthBefore = arrBefore.indexOf("mm");
+            let indexMonthBefore = arrBefore.indexOf("MM");
             let indexYearBefore = arrBefore.indexOf("yyyy");
             // Lấy giá trị ngày , tháng, năm ở định dạng ban đầu theo vị trí
             let arrValue = value.split(/[/,-]/);
@@ -365,7 +379,7 @@ export default {
             txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
             // gán giá trị ngày , tháng, năm của format ban đầu vào định dạng muốn format
             let result = formatAfter.replace("dd",txtDate);
-            result = result.replace("mm",txtMonth);
+            result = result.replace("MM",txtMonth);
             result = result.replace("yyyy",txtYear);
             return result;
         },
@@ -377,11 +391,21 @@ export default {
          */
         handleEventKeyDown(event){
             const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyShift){
-                this.previousKeyShift = true;
-            }
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = true;
+            switch (keyCode) {
+                case enumJS.keyShift:
+                    this.previousKeyShift = true;
+                    break;
+                case enumJS.keyCtrl:
+                    this.previousKeyCtrl = true;
+                    break;
+                case enumJS.keyBackSpace:
+                    this.keyBackSpace = true;
+                    break;
+                case enumJS.arrowDown:
+                    this.handleEventShowPicker();
+                    break;
+                default:
+                    break;
             }
             
             if(this.value.length == 10 && keyCode > 31 && !(keyCode >=37 && keyCode <=40)){
@@ -399,6 +423,27 @@ export default {
                 event.preventDefault();
             }
         },
+
+        /**
+         * Hàm xử lý sự kiện click vào input date
+         * @author LTVIET (05/03/2023)
+         */
+        handleEventClick(){
+            this.setSelect();
+            // this.handleEventShowPicker();
+            this.setFocus();
+        },
+
+        /**
+         * Hàm bôi đen giá trị input date
+         * @author LTVIET (05/03/2023)
+         */
+         setSelect() {
+            this.$nextTick(function() {
+                this.$refs["mInputDate"]?.select();
+            })
+        }, 
+
 
         /**
          * Hàm xử lý sự kiện keyup trong input

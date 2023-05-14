@@ -3,6 +3,9 @@
         ref="mButtonIcon"
         :id="idButtonIcon"
         @click="addEventClickBtnIcon"
+        @focus="handleEventFocus(idButtonIcon)"
+        @focusout="handleEventFocus(null)"
+
         class="btn__icon">
             <div v-if="classImage" :class="classImage"></div>
             <div :class="classIcon"></div>
@@ -20,6 +23,10 @@ export default {
         classImage:{
             type: String,
             default: ""
+        },
+        idButtonIcon: {
+            type: String,
+            default: null
         }
         
     },
@@ -51,6 +58,14 @@ export default {
                 this.$refs["mButtonIcon"].focus();
             })
         },
+
+        /**
+         * Hàm gửi id của button đang focus cho lớp cha
+         * @author LTVIET (05/03/2023)
+         */
+         handleEventFocus(id){
+            this.$emit('getIdButtonFocus',id);
+        }
 
         
     }

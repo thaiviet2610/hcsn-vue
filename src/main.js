@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import MTooltip from './components/tooltip/MTooltip.vue';
 import MInput from './components/input/MInput.vue';
+import MForm from './components/form/MForm.vue';
 import MInputNumber from './components/input/MInputNumber.vue';
 import MInputDisable from './components/input/MInputDisable.vue';
 import MButton from './components/button/MButton.vue';
@@ -61,6 +62,7 @@ app.use(ElementPlus)
 
 app.component("MToastSucess",MToastSucess);
 app.component("MTooltip",MTooltip);
+app.component("MForm",MForm);
 app.component("MCombobox",MCombobox);
 app.component("MCheckbox",MCheckbox);
 app.component("MInput",MInput);

@@ -1,6 +1,55 @@
 import enumJS from "./enum";
 
 const resourceJSJS = {
+    theForm:{
+        header:{
+            btnClose:{
+                class: "form-btn-close",
+                tooltip: "Đóng (ESC)",
+                classTooltip: "form-btn-close-tooltip"
+            },
+        },
+        footer:{
+            button:{
+                btnSave:{
+                    class: "btn--main form-btn-save",
+                    label: "Lưu",
+                    tooltip: "Ctrl+S",
+                    classTooltip: "form-btn-save-tooltip"
+                },
+                btnCancel:{
+                    class: "form-btn-cancel",
+                    label: "Hủy",
+                    tooltip: "ESC",
+                    classTooltip: "form-btn-cancel-tooltip"
+                },
+            }
+        }
+        
+    },
+
+    assetList: {
+        idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],
+        refElementAssetList: {
+            inputSearch:"mInputSearch",
+            comboboxAssetCategory:"mComboboxAssetCategory",
+            comboboxDepartment:"mComboboxDepartment",
+            buttonAdd:"mButtonAdd",
+            buttonExport:"mButtonExport",
+            buttonDelete:"mButtonDelete",
+            table:"mTable"
+        },
+        button: {
+            btnAddAsset:{
+                label: " + Thêm tài sản",
+                tooltip: "Ctrl + 1"
+            }
+        },
+        active: {
+            true: "đã sử dụng",
+            false: "chưa sử dụng"
+        }
+    },
     assetDetail: {
         assetCode : {
             ref: 'ref_fixed_asset_code',
@@ -52,7 +101,7 @@ const resourceJSJS = {
             label: "Nguyên giá",
             placeholder: "Nhập nguyên giá",
             required : true,
-            disable: true
+            disable: false
         },
         lifeTime:{
             ref: 'ref_life_time',
@@ -91,11 +140,18 @@ const resourceJSJS = {
             required : true,
             disable: false
         },
-        buttonSave:{
-            label: "Lưu"
-        },
-        buttonCancel:{
-            label: "Hủy"
+        button:{
+            btnSave:{
+                label: "Lưu",
+                tooltip: "Ctrl+S"
+            },
+            btnCancel:{
+                label: "Hủy",
+                tooltip: "ESC"
+            },
+            btnClose:{
+                tooltip: "Đóng (ESC)"
+            },
         },
         refElements: ['ref_fixed_asset_code','ref_fixed_asset_name','ref_department_code','ref_fixed_asset_category_code',
                 'ref_quantity','ref_cost','ref_life_time','ref_purchase_date','ref_production_year']
@@ -103,6 +159,7 @@ const resourceJSJS = {
     assetNoActive:{
         label: "Chọn tài sản ghi tăng",
         inputSearch:{
+            id: "idInputSearch",
             ref: "refSearch",
             placeholder: "Tìm kiếm theo Mã, tên tài sản"
         },
@@ -115,19 +172,17 @@ const resourceJSJS = {
         },
         button: {
             btnSave: {
-                label: "Lưu",
+                class: "btn--main form-btn-save",
+                label: "Đồng ý",
                 tooltip: "Ctrl+S",
-                classTooltip: "btn-save-asset-no-active-tooltip"
+                classTooltip: "form-btn-save-tooltip"
             },
             btnCancel: {
-                label: "Hủy bỏ",
+                class: "form-btn-cancel",
+                label: "Hủy",
                 tooltip: "ESC",
-                classTooltip: "btn-cancel-asset-no-active-tooltip"
+                classTooltip: "form-btn-cancel-tooltip"
             },
-            btnClose:{
-                tooltip: "Đóng (ESC)",
-                classTooltip: "btn-close-asset-no-active-tooltip"
-            }
         }
     },
     budget:{
@@ -168,11 +223,11 @@ const resourceJSJS = {
                 classTooltip: "btn-close-budget-tooltip"
             },
             btnAddBudget: {
-                tooltip: "Thêm nguồn chi phí",
+                tooltip: "Thêm nguồn kinh phí",
                 classTooltip: "budget__icon--add-tooltip"
             },
             btnMinusBudget: {
-                tooltip: "Bỏ nguồn chi phí",
+                tooltip: "Bỏ nguồn kinh phí",
                 classTooltip: "budget__icon--minus-tooltip"
             },
         }
@@ -190,6 +245,7 @@ const resourceJSJS = {
             }
         },
         voucherCode:{
+            id: "id_voucher_code",
             ref: "ref_voucher_code",
             label: "Mã chứng từ",
             placeholder: "Nhập mã chứng từ",
@@ -203,7 +259,7 @@ const resourceJSJS = {
             placeholder: "Nhập  ngày chứng từ",
             required: true,
             disable: false,
-            format: "dd/mm/yyyy"
+            format: "dd/MM/yyyy"
         },
         incrementDate:{
             ref: "ref_increment_date",
@@ -211,7 +267,7 @@ const resourceJSJS = {
             placeholder: "Nhập ngày ghi tăng",
             required: true,
             disable: false,
-            format: "dd/mm/yyyy"
+            format: "dd/MM/yyyy"
         },
         description:{
             ref: "ref_description",
@@ -226,21 +282,20 @@ const resourceJSJS = {
         },
         refElements: ['ref_voucher_code','ref_voucher_date','ref_increment_date'],
         button: {
-            btnSave: {
-                label: "Lưu",
-                class: "btn--main",
-                tooltip: "Ctrl+S",
-                classTooltip: "btn-save-asset-increment-detail-tooltip"
-            },
-            btnCancel: {
-                label: "Hủy",
-                class: "",
-                tooltip: "ESC",
-                classTooltip: "btn-cancel-asset-increment-detail-tooltip"
-            },
-            btnClose:{
-                tooltip: "Đóng (ESC)",
-                classTooltip: "btn-close-asset-increment-detail-tooltip"
+            footer:{
+                btnSave: {
+                    label: "Lưu",
+                    class: "btn--main",
+                    tooltip: "Ctrl+S",
+                    classTooltip: "btn-save-asset-increment-detail-tooltip"
+                },
+                btnCancel: {
+                    id: "id_btn_cancel",
+                    label: "Hủy",
+                    class: "",
+                    tooltip: "ESC",
+                    classTooltip: "btn-cancel-asset-increment-detail-tooltip"
+                },
             },
             btnSelectedAsset: {
                 label: "Chọn tài sản",
@@ -261,10 +316,12 @@ const resourceJSJS = {
         },
         tooltip:{
             zoomIn:{
+                class: "icon--zoom-in",
                 text: "Phóng to",
                 classTooltip: "full-screen-tooltip"
             },
             zoomOut:{
+                class: "icon--zoom-out",
                 text: "Thu nhỏ"
             },
             seeMore:{
@@ -290,6 +347,13 @@ const resourceJSJS = {
                 label: "Thêm",
                 tooltip: "Ctrl+1",
                 classTooltip: "btn-add-asset-increment-tooltip"
+            },
+            btnFullScreen: {
+                classZoomIn: "icon--zoom-in",
+                classZoomOut: "icon--zoom-out",
+                textZoomIn: "Phóng to",
+                textZoomOut: "Thu nhỏ",
+                classTooltip: "full-screen-tooltip"
             },
 
             btnDeleteMultipleAssetIncrement: {
@@ -318,9 +382,9 @@ const resourceJSJS = {
         emptyInput: "  không được phép để trống! ",
         emptyInputNumber: " phải nhập giá trị lớn hơn 0",
         errorFormatNumber: " chỉ được nhập số!",
-        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 19 ký tự!",
-        errorMaxLengthIntegerPart: "Độ dài phần nguyên của số nhập vào không được quá 19 ký tự!",
-        errorMaxLengthDecimalPart: "Độ dài phần thập phân của số nhập vào không được quá 4 ký tự!",
+        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 16 ký tự!",
+        errorMaxLengthIntegerPart: "Độ dài phần nguyên của số nhập vào không được quá 16 số!",
+        errorMaxLengthDecimalPart: "Độ dài phần thập phân của số nhập vào không được quá 4 số!",
         errorFormatRate: "Tỷ lệ chỉ được cho phép trong khoảng từ 0 -> 100%!",
         errorDontFindInData: " phải là giá trị nằm trong danh sách lựa chọn!",
         errorDeleteAssetFail: "Hành động xóa tài sản thất bại. Vui lòng thử lại sau!",
@@ -344,6 +408,7 @@ const resourceJSJS = {
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
+        errorFail: "<div> {0} <br> Error code: <b> {1} </b> </div>",
         exception: "Đã có lỗi xảy ra. Vui lòng liên hệ trung tâm tư vấn!",
         inValid: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
         duplicate: "<div>Mã tài sản <b> << {0} >> </b> đã tồn tại.<br> Vui lòng kiểm tra lại!</div>",
@@ -370,6 +435,7 @@ const resourceJSJS = {
             cancelFormAssetIncrement: "Bạn có muốn hủy bỏ khai báo chứng từ này?",
             changeCancelFormAssetIncrement: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
             exportExcel: "Bạn có muốn in danh sách chứng từ ra file excel ?",
+            exportMultipleExcel: "<div>Bạn có muốn in <b>{0}</b> chứng từ ra file excel ?</div>",
             exportExcelDetail: "<div>Bạn có muốn in thông tin của chứng từ <b><< {0} >></b> ra file Excel ?</div>"
         },
         budget:{
@@ -498,7 +564,7 @@ const resourceJSJS = {
         invalidFormatDate: "Tháng {0} năm {1} chỉ có từ 1 - {2} ngày!"
     },
     table: {
-        noDataTable: "Không tìm thấy dữ liệu phù hợp.",
+        noDataTable: "Không có dữ liệu",
         tableAsset:{
             contextMenu:{
                 width: 156,
@@ -579,15 +645,19 @@ const resourceJSJS = {
                     title: "Giá trị còn lại",
                     columnClass: "column10"
                 },
+                {
+                    title: "Trạng thái",
+                    columnClass: "column12"
+                },
             ],
             body:{
                 index: {
                     class: "column2",
-                    maxWidth: 50
+                    maxWidth: 35
                 },
                 fixed_asset_code:{
                     class: "column3",
-                    maxWidth: 90
+                    maxWidth: 80
                 },
                 fixed_asset_name: {
                     class: "column4",
@@ -599,30 +669,34 @@ const resourceJSJS = {
                 },
                 department_name: {
                     class: "column6",
-                    maxWidth: 250
+                    maxWidth: 204
                 },
                 quantity: {
                     class: "column7",
-                    maxWidth: 60
+                    maxWidth: 55
                 },
                 cost: {
                     class: "column8",
-                    maxWidth: 130
+                    maxWidth: 120
                 },
                 depreciation_value: {
                     class: "column9",
-                    maxWidth: 130
+                    maxWidth: 120
                 },
                 residual_value:{
                     class: "column10",
-                    maxWidth: 130
+                    maxWidth: 120
+                },
+                active:{
+                    class: "column12",
+                    maxWidth: 85
                 },
             },
             footer: {
                 colspan: 6,
                 pagingClass: "",
                 footerClass: ["column7","column8","column9","column10"],
-                columnEmpty:[]
+                columnEmpty:["column12"]
             },
             function:{
                 columnClass: "column11",
@@ -726,7 +800,7 @@ const resourceJSJS = {
                 },
                 department_name: {
                     class: "asset_increment_detail--column6",
-                    maxWidth: 258
+                    maxWidth: 248
                 },
                 cost: {
                     class: "asset_increment_detail--column8",
@@ -1113,9 +1187,7 @@ const resourceJSJS = {
                 colspan: 5,
                 pagingClass: "asset-increment--footer-left",
                 footerClass: ["asset-increment--price"],
-                columnEmpty:[
-                    {classColumn: "asset-increment--description"},
-                ]
+                columnEmpty:["asset-increment--description"]
             },
             function:{
                 
@@ -1138,18 +1210,7 @@ const resourceJSJS = {
             }
         }
     },
-    assetList: {
-        idElementAssetList: ["mElement0","mElement1","mElement2","mElement3","mElement4","mElement5","mElement6"],
-        refElementAssetList: {
-            inputSearch:"mInputSearch",
-            comboboxAssetCategory:"mComboboxAssetCategory",
-            comboboxDepartment:"mComboboxDepartment",
-            buttonAdd:"mButtonAdd",
-            buttonExport:"mButtonExport",
-            buttonDelete:"mButtonDelete",
-            table:"mTable"
-        }
-    },
+    
     
     buttonDialog: {
         exportExcel: [['Tải xuống','btn--main',1],['Không','btn--outline',2]],
@@ -1160,8 +1221,8 @@ const resourceJSJS = {
     },
     date: {
         format:{
-            ddMMyyyy: "dd/mm/yyyy",
-            yyyyMMdd: "yyyy-mm-dd",
+            ddMMyyyy: "dd/MM/yyyy",
+            yyyyMMdd: "yyyy-MM-dd",
         },
         regex: {
             regexYearEnd: /^([0-9]{2}|[0-9]{1})[/]{1}([0-9]{2}|[0-9]{1})[/]{1}[0-9]{4}$/,

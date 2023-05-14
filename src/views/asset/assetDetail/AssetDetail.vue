@@ -8,12 +8,17 @@
                     <!-- title của form  -->
                     <div class="form-header__text">{{ label }}</div>
                     <!-- button đóng form  -->
-                    <MButtonIcon
-                        class="btn-header__icon"
-                        classIcon="form-header__icon"
-                        :data_tooltip_bottom="tooltipBtnCloseForm"
-                        @addOnClickBtnIcon="handleEventBtnClickCancel">
-                    </MButtonIcon>
+                    <div style="position: relative;">
+                        <MButtonIcon
+                            class="btn-header__icon"
+                            classIcon="form-header__icon"
+                            @addOnClickBtnIcon="handleEventBtnClickCancel">
+                        </MButtonIcon>
+                        <MTooltip
+                            :text="assetDetailInfo.button.btnClose.tooltip"
+                            class="asset-detail-btn-close__tooltip">
+                        </MTooltip>
+                    </div>
                 </div>
                 <!-- phần body của form  -->
                 <div id="formBody" class="form-body">
@@ -255,19 +260,30 @@
                 <!-- phần footer của form  -->
                 <div class="form-footer">
                     <!-- button lưu form  -->
-                    <MButton
-                        class="btn--main"
-                        :label="assetDetailInfo.buttonSave.label"
-                        :data_tooltip_bottom="tooltipSaveForm"
-                        @btnAddOnClickBtn="handleEventBtnClickSave">
-                    </MButton>
+                    <div style="position: relative;">
+                        <MButton
+                            class="btn--main"
+                            :label="assetDetailInfo.button.btnSave.label"
+                            @btnAddOnClickBtn="handleEventBtnClickSave">
+                        </MButton>
+                        <MTooltip
+                            :text="assetDetailInfo.button.btnSave.tooltip"
+                            class="asset-detail-btn-save__tooltip">
+                        </MTooltip>
+                    </div>
                     <!-- button hủy form  -->
-                    <MButton
-                        :label="assetDetailInfo.buttonCancel.label"
-                        :data_tooltip_bottom="tooltipCancelForm"
-                        style="border: 0;"
-                        @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                    </MButton>
+                    <div style="position: relative;">
+                        <MButton
+                            class="asset-detail-btn-cancel"
+                            :label="assetDetailInfo.button.btnCancel.label"
+                            style="border: 0;"
+                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
+                        </MButton>
+                        <MTooltip
+                            :text="assetDetailInfo.button.btnCancel.tooltip"
+                            class="asset-detail-btn-cancel__tooltip">
+                        </MTooltip>
+                    </div>
                 </div>
             </div>
         </div>

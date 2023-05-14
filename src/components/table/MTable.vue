@@ -1,6 +1,6 @@
 <template>
   <!-- Khi table có dữ liệu phù hợp  -->
-  <div v-if="dataBody.length == 0 && isShowNoData" class="content__table" :tabindex="-1" >
+  <div v-if="dataBody.length == 0" class="content__table" :tabindex="-1" >
     <table  :key="keyTable"   style="border-bottom: none;box-shadow: none; height: 100%;"  >
       <!-- phần title của table  -->
       <thead>
@@ -18,7 +18,7 @@
           </th>
           <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
               :class="itemHeader.columnClass" style="position: relative;">
-                <div style="cursor: default !important;">{{ itemHeader.title }}</div>
+                <div class="table-header__text" style="cursor: default !important;">{{ itemHeader.title }}</div>
                 <MTooltip
                     :text="itemHeader.tooltip"
                     :class="itemHeader.classTooltip"
@@ -30,9 +30,11 @@
       <!-- phần body của table  -->
       
       <tbody>
-        <tr class="no-data" :class="{'no-data-no-footer':!isFooter}">
-          <div class="icon-no-data"></div>
-          <div class="text-no-data">{{ textNoData }}</div>
+        <tr class="no-data-container" :class="{'no-data-no-footer':!isFooter}">
+          <div class="no-data">
+            <div class="icon-no-data"></div>
+            <h3 class="text-no-data">{{ textNoData }}</h3>
+          </div>
         </tr>
 
       </tbody>
@@ -173,7 +175,7 @@
           </td>
           <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
             class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;">
-              {{ itemFooter }}
+
           </td>
           <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
           <td v-if="isFunction" :class="tableInfo.function.columnClass" style="border: none;">
@@ -190,7 +192,7 @@
     </table>
     
   </div>
-  <div v-else class="content__table" :class="{'no-footer':!isFooter}" :tabindex="isCheckbox ? 0:-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
+  <div v-else class="content__table" :class="{'no-footer':!isFooter}" :tabindex="-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
     <table ref="mTable"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
       <!-- phần title của table  -->
       <thead>
@@ -206,7 +208,7 @@
           </th>
           <th v-for="(itemHeader,indexHeader) in dataHeader" :key="indexHeader"
               :class="itemHeader.columnClass" style="position: relative;">
-                <div :id="`column_${indexHeader+1}`" style="min-width: max-content;cursor: default !important;">{{ itemHeader.title }}</div>
+                <div :id="`column_${indexHeader+1}`" class="table-header__text" >{{ itemHeader.title }}</div>
                 <MTooltip
                     :text="itemHeader.tooltip"
                     :class="itemHeader.classTooltip"
@@ -250,10 +252,12 @@
               ></MTooltip>
           </td>
           <td v-show="isFunction" :class="tableInfo.function.columnClass" >
-            <div class="function" :style="styleFunction(index + 1)">
+            <div  class="function" :style="styleFunction(index + 1)">
               <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
                 <MButtonIcon
+                :tabindex="-1"
                   :class="itemFunction.classIcon"
+                  class="btn-function"
                   @addOnClickBtnIcon="
                     handleEventClickFunction(itemFunction.type, index)
                   "
@@ -411,7 +415,7 @@
             class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;" >
               {{ itemFooter }}
           </td>
-          <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty.classColumn" style="border: none;"></td>
+          <td v-for="(itemEmpty,indexEmpty) of tableInfo.footer.columnEmpty" :key="indexEmpty" :class="itemEmpty" style="border: none;"></td>
           <td v-if="isFunction" :class="tableInfo.function.columnClass" style="border: none;">
             <div class="function" style="visibility: hidden;">
               <div v-for="(itemFunction,indexFunction) in tableInfo.function.detail" :key="indexFunction">
@@ -565,10 +569,6 @@ props: {
     type: Number,
     default: 0
   },
-  isShowNoData:{
-    type: Boolean,
-    default: false
-  }
 },
 data() {
   return {
@@ -624,19 +624,18 @@ data() {
     contextMenuPageY: 0,
     keyContextMenu: 0,
     contextMenuEnity: null,
-    // isShowNoData: false,
     previousKeyShift: false,
     previousKeyCtrl: false,
     /**
      * vị trí checkbox bắt đầu của danh sách đối tượng cần xóa nhiều
      * @author LTVIET (01/03/2023)
      */
-    indexDeleteStart: 0,
+    indexCheckboxMultipleStart: 0,
     /**
      * vị trí checkbox kết thúc của danh sách đối tượng cần xóa nhiều
      * @author LTVIET (01/03/2023)
      */
-    indexDeleteEnd: 0,
+    indexCheckboxMultipleEnd: 0,
     btnDialogNotify: resourceJS.buttonDialog.notify,
     keyTable: 0,
     titleColumn: this.tableInfo.titleColumm,
@@ -869,27 +868,18 @@ methods: {
       }else if (!this.clickCheckbox) {
         if(!this.previousKeyCtrl){
           this.rowSelected.fill(false);
-          this.rowSelected[index] = this.clickFunction ? true : (index != this.indexRowSelected);
-          this.indexRowSelected = this.rowSelected[index] ? index : 0;
+          this.rowSelected[index] = true;
+          this.indexRowSelected = index;
         }
         else{
           this.markCheckbox(index);
         }
-        this.indexDeleteStart = index;
+        this.indexCheckboxMultipleStart = index;
       }
       this.clickCheckbox = false;
 
       if(this.rowSelected[index] || this.checkbox[index]){
         this.$emit('getItemRowSelected',this.dataEntities[index-1]);
-      }
-      if(!this.rowSelected[index]){
-        const listEntityActive = this.getEntityCheckboxActiveList();
-        const listEntityActiveLength = listEntityActive.length;
-        if(listEntityActiveLength == 0){
-          this.$emit('getItemRowSelected',null);
-        }else{
-          this.$emit('getItemRowSelected',listEntityActive[listEntityActiveLength - 1]);
-        }
       }
       this.clickFunction = false;
       this.isClickRow[index] = false;
@@ -906,16 +896,16 @@ methods: {
    */
   handleEventKeyStrokesShift(index){
     if(this.isCheckbox){
-      if(this.indexDeleteStart == 0){
-          this.indexDeleteStart = index;
+      if(this.indexCheckboxMultipleStart == 0){
+          this.indexCheckboxMultipleStart = index;
       }
-      this.indexDeleteEnd = index;
-      if(this.indexDeleteStart <= this.indexDeleteEnd){
-        for(let i = this.indexDeleteStart; i<= this.indexDeleteEnd; i++){
+      this.indexCheckboxMultipleEnd = index;
+      if(this.indexCheckboxMultipleStart <= this.indexCheckboxMultipleEnd){
+        for(let i = this.indexCheckboxMultipleStart; i<= this.indexCheckboxMultipleEnd; i++){
           this.markCheckbox(i,true);
         }
       }else{
-        for(let i = this.indexDeleteEnd; i<= this.indexDeleteStart; i++){
+        for(let i = this.indexCheckboxMultipleEnd; i<= this.indexCheckboxMultipleStart; i++){
           this.markCheckbox(i,true);
         }
       }
@@ -992,8 +982,6 @@ methods: {
     const keyCode = event.keyCode;
     if(keyCode == enumJS.keyShift){
       this.previousKeyShift = false;
-      this.indexDeleteStart = 0;
-      this.indexDeleteEnd = 0;
     }
     if(keyCode == enumJS.keyCtrl){
       this.previousKeyCtrl = false;
@@ -1027,6 +1015,7 @@ methods: {
     }
     this.checkbox.fill(this.checkboxAll);
     this.$emit('getQuantityItemSelected',this.getQuantityItemSelected());
+    this.indexCheckboxMultipleStart = 0;
     this.indexCheckbox = -1;
     this.clickCheckbox = false;
     this.setFocusCheckbox(0);
@@ -1078,6 +1067,9 @@ methods: {
   markCheckbox(index,value) {
     this.rowSelected.fill(false);
     this.indexRowSelected = 0;
+    if(!this.previousKeyShift){
+      this.indexCheckboxMultipleStart = index;
+    }
     //1. set giá trị của checkbox: false-->true hoặc true-->false
     if(value != undefined){
       this.checkbox[index] = value;
@@ -1089,11 +1081,16 @@ methods: {
       this.indexCheckbox = index;
       this.pushCheckboxActive(index);
       //2.1.2 duyệt từng giá trị của checkbox
-      this.checkboxAll = this.checkbox.every(cb => {
-        return cb;
-      });
+      let check = true;
+      for (let i = 1;i <= this.pageSize ; i++) {
+        if(!this.checkbox[i]){
+          check = false;
+          break;
+        }
+      }
+      this.checkboxAll = check;
       if(this.checkboxAll){
-        for(let i=1;i<this.pageSize;i++){
+        for(let i=1;i<=this.pageSize;i++){
           this.pushCheckboxActive(i);
         }
       }
@@ -1235,10 +1232,25 @@ methods: {
     this.checkboxAll = false;
     this.indexCheckbox = -1;
     this.clickCheckbox = false;
-    this.indexDeleteStart = 0;
-    this.indexDeleteEnd = 0;
+    this.indexCheckboxMultipleStart = 0;
+    this.indexCheckboxMultipleEnd = 0;
+  },
+
+  /**
+   * Hàm set tất cả trạng thái của checkbox trong table về lại ban đầu;
+   * @author LTVIET (26/03/2023)
+   */
+   reloadCheckbox(){
+    this.checkboxActive = [];
+    this.entityCheckboxActive = [];
+    this.checkbox.fill(false);
+    this.checkboxAll = false;
+    this.indexCheckbox = -1;
+    this.clickCheckbox = false;
   },
 },
+
+
 
 };
 </script>

@@ -97,8 +97,8 @@ export default {
 
 <style scoped>
 div::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
+    height: 8px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {

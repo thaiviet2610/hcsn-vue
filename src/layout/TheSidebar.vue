@@ -21,7 +21,8 @@
                     <div class="sidebar-body__text">{{ sidebarInfo.body.txtOverview }}</div>
                 </router-link>
                 <router-link to="/" 
-                    class="sidebar-body__item">
+                    
+                    class="sidebar-body__item" id="asset">
                     <div class="sidebar-body__item2 ">
                         <div class="sidebar-body__item2--icon2"></div>
                     </div>
@@ -36,7 +37,7 @@
                 </router-link>
                 <div v-if="isShowDetailAsset" class="sidebar-detail">
                     <router-link to="/AssetIncrementList" 
-                        class="sidebar-detail__item">
+                        class="sidebar-detail__item" id="assetIncrement" >
                         <div class="sidebar-detail__text">{{ sidebarInfo.body.txtAssetIncrement }}</div>
                     </router-link>
                     <router-link to="/a" 
@@ -143,7 +144,13 @@ export default {
     components:{
         TheMenu
     },
+    updated() {
+    },
     created() {
+        
+    },
+    mounted() {
+
     },
     data() {
         return {
@@ -159,9 +166,9 @@ export default {
             txtBodyTool: resourceJS.theSidebar.body.txtCategory,
             txtBodySearch: resourceJS.theSidebar.body.txtSearch,
             txtBodyReport: resourceJS.theSidebar.body.txtReport,
-            isShowDetailAsset: false,
+            isShowDetailAsset: true,
             isShow: true,
-            check: false,
+            check: true,
             
         }
     },
@@ -200,8 +207,8 @@ export default {
 
 <style scoped>
 div::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
+    height: 6px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {

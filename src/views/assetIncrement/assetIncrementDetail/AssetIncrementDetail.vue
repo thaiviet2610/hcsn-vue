@@ -1,170 +1,122 @@
 <template>
-    <div>
-        <div  class="form editForm" :tabindex="0"
-            @keydown.esc.prevent="handleEventBtnClickCancel"
-            @keydown.ctrl.s.prevent="handleEventBtnClickSave"
-            @keydown.ctrl.1.prevent="btnClickOpenFormSelectedAsset"
-            @keydown.ctrl.e.prevent="handleEventClickFunctionTable"
-            @keydown.ctrl.d.prevent="handleEventClickFunctionTable"
-        >
-            <div class="asset_increment__form-data" >
-                <!-- phần header của form  -->
-                <div class="form-header">
-                    <!-- title của form  -->
-                    <div class="asset_increment__form-header__text">{{ labelForm }}</div>
-                    <!-- button đóng form  -->
-                    <div class="btn-close-asset-increment-detail">
-                        <MButtonIcon
-                            class="btn-header__icon"
-                            classIcon="form-header__icon"
-                            @addOnClickBtnIcon="handleEventBtnClickCancel">
-                        </MButtonIcon>
-                        <MTooltip
-                            :text="assetIncrementDetailInfo.button.btnClose.tooltip"
-                            :class="assetIncrementDetailInfo.button.btnClose.classTooltip"
-                        ></MTooltip>
-                    </div>
-                </div>
-                <!-- phần body của form  -->
-                <div id="formBody" class="asset_increment__form_body">
-                    <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyUp.title }}</div>
-                    <div class="asset_increment__form-body__up">
-                        <div class="m-row">
-                            <div class="input down-left">
-                                <!-- input nhập số lượng  -->
-                                <MInput
-                                    :ref="assetIncrementDetailInfo.voucherCode.ref"
-                                    :required="assetIncrementDetailInfo.voucherCode.required"
-                                    :disable="assetIncrementDetailInfo.voucherCode.disable"
-                                    :placeholder="assetIncrementDetailInfo.voucherCode.placeholder"
-                                    :label="assetIncrementDetailInfo.voucherCode.label"
-                                    :valueInput="assetIncrement.voucher_code"
-                                    @getValueInput="handleEventGetValueInputVoucherCode"
-                                    @getValueEventInput="handleEventGetValueInputVoucherCode"
-                                    >
-                                </MInput>
-                            </div>
-                            
-                            <div class="input down-center">
-                                <!-- input nhập ngày chứng từ  -->
-                                <MInputDate
-                                    :ref="assetIncrementDetailInfo.voucherDate.ref"
-                                    :required="assetIncrementDetailInfo.voucherDate.required"
-                                    :disable="assetIncrementDetailInfo.voucherDate.disable"
-                                    :label="assetIncrementDetailInfo.voucherDate.label"
-                                    :valueInputDate="assetIncrement.voucher_date"
-                                    :placeholder="assetIncrementDetailInfo.voucherDate.placeholder"
-                                    :format="assetIncrementDetailInfo.voucherDate.format"
-                                    @getValueInputDate="getValueVoucherDate"
-                                    >
-                                </MInputDate>
-                            </div>
-                           
-                            <div class="input down-right">
-                                <!-- input nhập ngày ghi tăng -->
-                                <MInputDate
-                                    :ref="assetIncrementDetailInfo.incrementDate.ref"
-                                    :required="assetIncrementDetailInfo.incrementDate.required"
-                                    :disable="assetIncrementDetailInfo.incrementDate.disable"
-                                    :label="assetIncrementDetailInfo.incrementDate.label"
-                                    :valueInputDate="assetIncrement.increment_date"
-                                    :placeholder="assetIncrementDetailInfo.incrementDate.placeholder"
-                                    :format="assetIncrementDetailInfo.incrementDate.format"
-                                    @getValueInputDate="getValueIncrementDate"
-                                    >
-                                </MInputDate>
-                            </div>
-                        </div>
-
-                        <div class="m-row">
-                            <!-- input nhập ghi chú  -->
+    <div @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
+        <MForm :label="labelForm"
+            :idItemFirst="assetIncrementDetailInfo.voucherCode.id"
+            idItemLast="idBtnCancelAssetIncrementDetail"
+            @handleEventCloseForm="handleEventBtnClickCancel"
+            @handleEventSaveForm="handleEventBtnClickSave">
+            <div id="formBody" class="asset_increment__form_body">
+                <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyUp.title }}</div>
+                <div class="asset_increment__form-body__up">
+                    <div class="m-row">
+                        <div class="input down-left">
+                            <!-- input nhập số lượng  -->
                             <MInput
-                                :ref="assetIncrementDetailInfo.description.ref"
-                                :required="assetIncrementDetailInfo.description.required"
-                                :disable="assetIncrementDetailInfo.description.disable"
-                                :valueInput="assetIncrement.description"
-                                @getValueInput="getValueInputDescription"
-                                @getValueEventInput="getValueInputDescription"
-                                :label="assetIncrementDetailInfo.description.label"
+                                :idInput="assetIncrementDetailInfo.voucherCode.id"
+                                :ref="assetIncrementDetailInfo.voucherCode.ref"
+                                :required="assetIncrementDetailInfo.voucherCode.required"
+                                :disable="assetIncrementDetailInfo.voucherCode.disable"
+                                :placeholder="assetIncrementDetailInfo.voucherCode.placeholder"
+                                :label="assetIncrementDetailInfo.voucherCode.label"
+                                :valueInput="assetIncrement.voucher_code"
+                                @getValueInput="handleEventGetValueInputVoucherCode"
+                                @getValueEventInput="handleEventGetValueInputVoucherCode"
                                 >
                             </MInput>
                         </div>
+                        
+                        <div class="input down-center">
+                            <!-- input nhập ngày chứng từ  -->
+                            <MInputDate
+                                :ref="assetIncrementDetailInfo.voucherDate.ref"
+                                :required="assetIncrementDetailInfo.voucherDate.required"
+                                :disable="assetIncrementDetailInfo.voucherDate.disable"
+                                :label="assetIncrementDetailInfo.voucherDate.label"
+                                :valueInputDate="assetIncrement.voucher_date"
+                                :placeholder="assetIncrementDetailInfo.voucherDate.placeholder"
+                                :format="assetIncrementDetailInfo.voucherDate.format"
+                                @getValueInputDate="getValueVoucherDate"
+                                >
+                            </MInputDate>
+                        </div>
+                        
+                        <div class="input down-right">
+                            <!-- input nhập ngày ghi tăng -->
+                            <MInputDate
+                                :ref="assetIncrementDetailInfo.incrementDate.ref"
+                                :required="assetIncrementDetailInfo.incrementDate.required"
+                                :disable="assetIncrementDetailInfo.incrementDate.disable"
+                                :label="assetIncrementDetailInfo.incrementDate.label"
+                                :valueInputDate="assetIncrement.increment_date"
+                                :placeholder="assetIncrementDetailInfo.incrementDate.placeholder"
+                                :format="assetIncrementDetailInfo.incrementDate.format"
+                                @getValueInputDate="getValueIncrementDate"
+                                >
+                            </MInputDate>
+                        </div>
                     </div>
 
-                    <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyDown.title }}</div>
-                    <div class="asset_increment__form-body__down">
-                        <!-- input tìm kiếm danh sách tài sản chứng từ  -->
-                        <div class="header__body--down">
-                            <div class="input down-left">
-                                <MInput
-                                    :placeholder="assetIncrementDetailInfo.bodyDown.inputSearch.placeholder"
-                                    :iconInput="true"
-                                    @keyDownEnter ="handleEventKeyDownEnterInputSearch"
-                                    @getValueEventInput="handleEventGetValueInputSearch"
-                                    :key="keyInputSearch"
-                                    >
-                                </MInput>
-                            </div>
-
-                            <div class="btn-selected-asset-active">
-                                <MButton
-                                    :label="assetIncrementDetailInfo.button.btnSelectedAsset.label"
-                                    @btnAddOnClickBtn="btnClickOpenFormSelectedAsset">
-                                </MButton>
-                                <MTooltip
-                                    :text="assetIncrementDetailInfo.button.btnSelectedAsset.tooltip"
-                                    :class="assetIncrementDetailInfo.button.btnSelectedAsset.classTooltip"
-                                ></MTooltip>
-                            </div>
-                        </div>
-                        <div class="table_container">
-                            <MTable 
-                            :ref="assetIncrementDetailInfo.table.ref"
-                            :tableInfo="tableInfo"
-                            :dataHeader="dataHeaderTable"
-                            :dataBody="dataBodyTable"
-                            :dataFooter="dataFooterTable"
-                            :isPaging="tableInfo.isPaging"
-                            :isCheckbox="tableInfo.isCheckbox"
-                            :isFunction="tableInfo.isFunction"
-                            :isShowNoData="isShowNoDataTable"
-                            :dataEntities="dataAssets"
-                            :isContextMenu="tableInfo.isContextMenu"
-                            :key="keyTable"
-                            @btnClickFunctionOpenForm="handleEventClickFunctionTable"
-                            @addOnClickContextMenu="handleEventClickContextMenu">
-                            </MTable>
-                        </div> 
+                    <div class="m-row">
+                        <!-- input nhập ghi chú  -->
+                        <MInput
+                            :ref="assetIncrementDetailInfo.description.ref"
+                            :required="assetIncrementDetailInfo.description.required"
+                            :disable="assetIncrementDetailInfo.description.disable"
+                            :valueInput="assetIncrement.description"
+                            @getValueInput="getValueInputDescription"
+                            @getValueEventInput="getValueInputDescription"
+                            :label="assetIncrementDetailInfo.description.label"
+                            >
+                        </MInput>
                     </div>
                 </div>
-                <!-- phần footer của form  -->
-                <div class="form-footer">
-                    <!-- button lưu form  -->
-                    <div class="btn-save-asset-increment-detail">
-                        <MButton
-                            :class="assetIncrementDetailInfo.button.btnSave.class"
-                            :label="assetIncrementDetailInfo.button.btnSave.label"
-                            @btnAddOnClickBtn="handleEventBtnClickSave">
-                        </MButton>
-                        <MTooltip
-                            :text="assetIncrementDetailInfo.button.btnSave.tooltip"
-                            :class="assetIncrementDetailInfo.button.btnSave.classTooltip"
-                        ></MTooltip>
+
+                <div class="asset_increment__form-body--tex1">{{ assetIncrementDetailInfo.bodyDown.title }}</div>
+                <div class="asset_increment__form-body__down">
+                    <!-- input tìm kiếm danh sách tài sản chứng từ  -->
+                    <div class="header__body--down">
+                        <div class="input down-left">
+                            <MInput
+                                :placeholder="assetIncrementDetailInfo.bodyDown.inputSearch.placeholder"
+                                :iconInput="true"
+                                @keyDownEnter ="handleEventKeyDownEnterInputSearch"
+                                @getValueEventInput="handleEventGetValueInputSearch"
+                                :key="keyInputSearch"
+                                >
+                            </MInput>
+                        </div>
+
+                        <div class="btn-selected-asset-active">
+                            <MButton
+                                :label="assetIncrementDetailInfo.button.btnSelectedAsset.label"
+                                @btnAddOnClickBtn="btnClickOpenFormSelectedAsset">
+                            </MButton>
+                            <MTooltip
+                                :text="assetIncrementDetailInfo.button.btnSelectedAsset.tooltip"
+                                :class="assetIncrementDetailInfo.button.btnSelectedAsset.classTooltip"
+                            ></MTooltip>
+                        </div>
                     </div>
-                    <!-- button hủy form  -->
-                    <div class="btn-cancel-asset-increment-detail">
-                        <MButton
-                            :label="assetIncrementDetailInfo.button.btnCancel.label"
-                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                        </MButton>
-                        <MTooltip
-                            :text="assetIncrementDetailInfo.button.btnCancel.tooltip"
-                            :class="assetIncrementDetailInfo.button.btnCancel.classTooltip"
-                        ></MTooltip>
-                    </div>
+                    <div class="table_container">
+                        <MTable 
+                        :ref="assetIncrementDetailInfo.table.ref"
+                        :tableInfo="tableInfo"
+                        :dataHeader="dataHeaderTable"
+                        :dataBody="dataBodyTable"
+                        :dataFooter="dataFooterTable"
+                        :isPaging="tableInfo.isPaging"
+                        :isCheckbox="tableInfo.isCheckbox"
+                        :isFunction="tableInfo.isFunction"
+                        :dataEntities="dataAssets"
+                        :isContextMenu="tableInfo.isContextMenu"
+                        :key="keyTable"
+                        @btnClickFunctionOpenForm="handleEventClickFunctionTable"
+                        @addOnClickContextMenu="handleEventClickContextMenu">
+                        </MTable>
+                    </div> 
                 </div>
             </div>
-        </div>
+        </MForm>
         <AssetNoActive 
             v-if="isShowSelectAssetNoActive"
             :dataBodyApi="dataBodyApi"
@@ -227,6 +179,8 @@ import configJS from '@/js/config';
 import axios from 'axios';
 import commonJS from '@/js/common';
 import AssetNoActive from '../../asset/assetNoActive/AssetNoActive.vue';
+// import { keyTab } from '@/js/keyTab';
+// import TheForm from '@/components/form/MForm.vue';
 export default {
     name: "AssetIncrementDetail",
     components:{
@@ -272,7 +226,6 @@ export default {
             btnDialogNotify: resourceJS.buttonDialog.notify,
             isShowDialogNotify: false,
             isShowLoad: false,
-            isShowNoDataTable: false,
             assetIncrementDetailInfo: resourceJS.assetIncrementDetail,
             oldValueAssetIncrement: null,
             contentDialogAddFormCancel: resourceJS.confirm.assetIncrement.cancelFormAssetIncrement,
@@ -308,6 +261,13 @@ export default {
                 this.oldValueAssetIncrement = JSON.stringify(this.assetIncrement);
             }
         }
+        const oldValueAssetIncrement = JSON.parse(this.oldValueAssetIncrement);
+        const idAssets = oldValueAssetIncrement.assets.map(function(asset){
+            return asset.fixed_asset_id;
+        })
+        oldValueAssetIncrement.assets = idAssets;
+        oldValueAssetIncrement.price = 0;
+        this.oldValueAssetIncrement = JSON.stringify(oldValueAssetIncrement);
         this.dataBodyApi = {
             NotInAssets: [],
             ActiveAssets: []
@@ -403,6 +363,7 @@ export default {
             // Nếu click button "không" thì ẩn dialog đi
             if(label == this.btnDialogCancelAddForm[1][2]){
                 this.isShowDialogAddFormCancel = false;
+                this.setFocus();
                 return;
             }
             // Nếu click button "Hủy bỏ" thì ẩn dialog và form đi
@@ -438,7 +399,14 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventBtnClickCancel(){
-            const newValueAssetIncrement = JSON.stringify(this.assetIncrement);
+            let newValueAssetIncrement = JSON.stringify(this.assetIncrement);
+            const idAssets = this.assetIncrement.assets.map(function(asset){
+                return asset.fixed_asset_id;
+            })
+            newValueAssetIncrement =  JSON.parse(newValueAssetIncrement);
+            newValueAssetIncrement.assets = idAssets;
+            newValueAssetIncrement.price = 0;
+            newValueAssetIncrement = JSON.stringify(newValueAssetIncrement);
             if(this.typeForm == enumJS.type.add){
                 this.isShowDialogAddFormCancel = true;
             }else if(this.typeForm == enumJS.type.edit){
@@ -475,6 +443,7 @@ export default {
          */
          btnClickOpenFormSelectedAsset(){
             this.isShowSelectAssetNoActive = true;
+            this.isShowToastSuccess = false;
         },
 
         /**
@@ -578,7 +547,6 @@ export default {
             this.keyInputSearch = ++this.keyInputSearch;
             this.getDataTable();
             this.isShowSelectAssetNoActive = false;
-            this.isShowNoDataTable = false;
             this.setFocus();
         },
 
@@ -590,11 +558,9 @@ export default {
         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
             if(!value){
-                this.isShowNoDataTable = false;
                 const assets = JSON.stringify(this.assetIncrement.assets);
                 this.assetsSearch = JSON.parse(assets);
             }else{
-                this.isShowNoDataTable = true;
                 this.assetsSearch = this.assetIncrement.assets.filter(item=>
                         (item.fixed_asset_code.toLowerCase().includes(this.keyword.toLowerCase()) || 
                         item.fixed_asset_name.toLowerCase().includes(this.keyword.toLowerCase())));
@@ -618,9 +584,9 @@ export default {
          * @author LTVIET (16/03/2023)
          */
         handleEventClickFunctionTable(values){
+            this.isShowToastSuccess = false;
             let type = values[0];
             let item = values[1];
-            this.isShowNoDataTable = false;
             if(type == enumJS.type.edit){
                 this.labelBudgetForm = this.labelBudgetForm.replace("{0}",item.fixed_asset_name);
                 this.getAssetbyId(item.fixed_asset_id);
@@ -723,6 +689,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         addAssetIncrement(){
+            console.log(this.assetIncrement);
             axios.post(this.assetIncrementApi, this.assetIncrement)
             .then(()=>{
                 this.isShowLoad  = false;
@@ -743,6 +710,7 @@ export default {
                 AssetsAdd: this.assetsAdd.length == 0 ? null: this.assetsAdd,
                 AssetsDelete: this.assetsDelete.length == 0 ? null: this.assetsDelete
             }
+            console.log(entity);
             this.isShowLoad = true;
             axios.put(this.assetIncrementApi,entity)
             .then(()=>{
@@ -778,6 +746,7 @@ export default {
          handleEventErrorAPI(error){
             console.log(error);
             this.isShowLoad = false;
+            this.isShowDialogNotify = true;
             // lỗi kết nối
             if(error.code == "ERR_NETWORK"){
                 this.contentDialogNotify = resourceJS.errorMsg.errorConnection;
@@ -792,7 +761,8 @@ export default {
                 }
                 // Các lỗi khác
                 else{
-                    this.contentDialogNotify = message;
+                    const errorCode = error.response.data.ErrorCode;
+                    this.contentDialogNotify = resourceJS.errorMsg.errorFail.replace("{0}",message).replace("{1}",errorCode);
                     this.itemError = null;
                 }
                 

@@ -295,7 +295,11 @@
     color: #ffffff;
 }
 
-.router-link-active .sidebar-detail__text,.sidebar-body__text{
+.router-link-active .sidebar-detail__text{
+    color: #ffffff;
+}
+
+.router-link-active .sidebar-body__text{
     color: #ffffff;
 }
 

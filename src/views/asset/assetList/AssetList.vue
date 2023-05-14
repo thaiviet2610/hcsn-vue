@@ -49,13 +49,18 @@
                 </div>
                 <div class="content-header__right">
                     <!-- button thêm tài sản  -->
-                    <MButton
-                        :ref="refElements.buttonAdd"
-                        label=" + Thêm tài sản"
-                        :data_tooltip_bottom="tooltipBtnAdd"
-                        class="btn--main"
-                        @btnAddOnClickBtn="btnClickOpenForm">
-                    </MButton>
+                    <div style="position: relative;">
+                        <MButton
+                            :ref="refElements.buttonAdd"
+                            :label="assetListInfo.button.btnAddAsset.label"
+                            class="btn--main"
+                            @btnAddOnClickBtn="btnClickOpenForm">
+                        </MButton>
+                        <MTooltip
+                            :text="assetListInfo.button.btnAddAsset.tooltip"
+                            class="asset-list-btn-add-tooltip"
+                        ></MTooltip>
+                    </div>
                     <!-- button xuất dữu liệu ra excel  -->
                     <div style="position: relative;">
                         <MButtonIcon
@@ -98,7 +103,6 @@
                     :dataFooter="dataFooterTable"
                     :valuePageNumber="pageNumber"
                     :valuePageSize="pageSize"
-                    :isShowNoData="true"
                     :isPaging="true"
                     :isCheckbox="true"
                     :isFunction="true"
@@ -226,6 +230,7 @@ export default {
             keyAssetDetail: 0,
             contextMenuDelete: false,
             contextMenuItemDelete: null,
+            assetListInfo: resourceJS.assetList,
             previousKey: "",
             previousKeyCtrl: false,
             previousKeyShift: false,
@@ -320,6 +325,7 @@ export default {
             axios.get(api)
             .then(res=>{
                 this.assets = res.data.Data;
+                console.log(this.assets);
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
                         index: asset.index,
@@ -331,6 +337,7 @@ export default {
                         cost: commonJS.formatNumber(Math.round(asset.cost)),
                         depreciation_value: commonJS.formatNumber(Math.round(asset.depreciation_value)),
                         residual_value: commonJS.formatNumber(Math.round(asset.residual_value)),
+                        active: asset.active ? resourceJS.assetList.active.true : resourceJS.assetList.active.false
                     }
                 })
                 this.dataFooterTable = [
@@ -395,6 +402,8 @@ export default {
          */
         addOnClickCloseForm(){
             this.isShowForm = false;
+            this.$refs[this.refElements.table].indexRowSelected = 0;
+            this.$refs[this.refElements.table].rowSelected = [];
             this.setFocusDefault();
         },
         /**
@@ -482,20 +491,16 @@ export default {
             let table = this.$refs[this.refElements.table];
             this.assetsDeleteMultiple = table.getEntityCheckboxActiveList();
             let quantityCheckbox = this.assetsDeleteMultiple.length;
-            // let checkActive = false;
-            const checkActive = this.assetsDeleteMultiple.some(function(asset){
-                return asset.voucher_code;
-            })
             //2. kiểm tra số lượng 
             if(quantityCheckbox == 0){
                 //2.1. nếu số lượng = 0 thì hiển thị thông báo không có tài sản nào được chọn để xóa
                 this.showDialogNotifyDeleteNoAsset();
             }else if(quantityCheckbox == 1){
                 //2.2. nếu nếu số lượng = 1 thì hiển thị thông báo xóa 1 tài sản
-                this.showDialogConfirmDeleteOne(checkActive);
+                this.showDialogConfirmDeleteOne();
             }else{
                 //2.2. nếu nếu số lượng > 1 thì hiển thị thông báo xóa nhiều tài sản
-                this.showDialogConfirmDeleteMultiple(checkActive);
+                this.showDialogConfirmDeleteMultiple();
                 
             }
         },
@@ -511,55 +516,44 @@ export default {
 
         /**
          * Hàm hiển thị dialog xác nhận xóa 1 tài sản
-         * @param {*} checkActive Giá trị kiểm tra xem trong danh sách tài sản xóa có tài sản nào phát sinh chứng từ hay không
-         * (true:có phát sinh chứng từ,flase: không phát sinh chứng từ).
          * @author LTVIET (02/03/2023)
          */
-        showDialogConfirmDeleteOne(checkActive){
+        showDialogConfirmDeleteOne(){
             // 1. lấy thông tin của tài sản đó
             let asset = this.assetsDeleteMultiple[0];
             let assetCode = asset.fixed_asset_code;
             let assetName = asset.fixed_asset_name;
-            let voucherCode = asset.voucher_code;
             // 2. hiển thị thông báo
-            if(checkActive){
-                this.handleEventShowDialogDeleteOneAssetActive(assetCode,voucherCode);
-            }else{
-                let message = resourceJS.confirm.asset.oneAssetDelete.replace("{0}", assetCode).replace("{1}", assetName);
-                this.contentDialogConfirmDeleteOneAsset = message;
-                this.isShowDialogConfirmDeleteOneAsset = true;
-            }
+            let message = resourceJS.confirm.asset.oneAssetDelete.replace("{0}", assetCode).replace("{1}", assetName);
+            this.contentDialogConfirmDeleteOneAsset = message;
+            this.isShowDialogConfirmDeleteOneAsset = true;
+            
         },
 
         /**
          * Hàm xử lý sự kiện hiển thị dialog thông báo không được xóa tài sản đã chứng từ
-         * @param {*} assetCode mã tài sản
-         * @param {*} voucherCode mã chứng từ
+         * @param {*} asset đối tượng tài sản thực hiện xóa
          * @author LTVIET (04/05/2023)
          */
-        handleEventShowDialogDeleteOneAssetActive(assetCode,voucherCode){
+        handleEventShowDialogDeleteOneAssetActive(asset){
+            this.isShowDialogConfirmDeleteOneAsset = false;
             this.isShowDialogNotifyDelete = true;
-            let message = resourceJS.notify.deleteAssetActive.replace("{0}",assetCode).replace("{1}",voucherCode);
+            let message = resourceJS.notify.deleteAssetActive.replace("{0}",asset.fixed_asset_code).replace("{1}",asset.voucher_code);
             this.contentDialogNotifyDelete = message;
         },
 
         /**
          * Hàm hiển thị dialog xác nhận xóa nhiều tài sản
-         * @param {*} checkActive Giá trị kiểm tra xem trong danh sách tài sản xóa có tài sản nào phát sinh chứng từ hay không
-         * (true:có phát sinh chứng từ,flase: không phát sinh chứng từ).
          * @author LTVIET (02/03/2023)
          */
-         showDialogConfirmDeleteMultiple(checkActive){
+         showDialogConfirmDeleteMultiple(){
             let quantity = this.assetsDeleteMultiple.length;
             if(quantity < 10){
                 quantity = `0${quantity}`; 
             }
-            if(!checkActive){
-                this.isShowDialogConfirmDeleteMultiAsset = true;
-                this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.asset.multiAssetDelete.replace("{0}", quantity);
-            }else{
-                this.handleEventShowDialogDeleteMultipleAssetActive(quantity);
-            }
+            this.isShowDialogConfirmDeleteMultiAsset = true;
+            this.contentDialogConfirmDeleteMultiAsset = resourceJS.confirm.asset.multiAssetDelete.replace("{0}", quantity);
+            
         },
 
         /**
@@ -568,6 +562,8 @@ export default {
          * @author LTVIET (04/05/2023)
          */
         handleEventShowDialogDeleteMultipleAssetActive(quantity){
+            quantity = quantity < 10 ? `0${quantity}` : quantity;
+            this.isShowDialogConfirmDeleteMultiAsset = false;
             this.isShowDialogNotifyDelete = true;
             this.contentDialogNotifyDelete = resourceJS.notify.deleteMultipleAssetActive.replace("{0}",quantity);
         },
@@ -600,12 +596,23 @@ export default {
             }
             // 2.Nếu click button "Xóa"
             // let checkboxSelected = this.$refs[this.refElements.table].getItemSelected();
+            const isActive = this.assetsDeleteMultiple.some(function(asset){
+                return asset.voucher_code;
+            })
             if(this.isShowDialogConfirmDeleteOneAsset==true){
                 // 2.1. Nếu xóa 1 tài sản
-                this.handleEventCloseDialogDeleteOne(this.assetsDeleteMultiple[0]);
+                if(!isActive){
+                    this.handleEventCloseDialogDeleteOne(this.assetsDeleteMultiple[0]);
+                }else{
+                    this.handleEventShowDialogDeleteOneAssetActive(this.assetsDeleteMultiple[0]);
+                }
             }else if(this.isShowDialogConfirmDeleteMultiAsset==true){
                 // 2.2. Nếu xóa nhiều tài sản
-                this.handleEventCloseDialogDeleteMultiple(this.assetsDeleteMultiple);
+                if(!isActive){
+                    this.handleEventCloseDialogDeleteMultiple(this.assetsDeleteMultiple);
+                }else{
+                    this.handleEventShowDialogDeleteMultipleAssetActive(this.assetsDeleteMultiple.length);
+                }
             }
             this.setFocusDefault();
         },

@@ -78,6 +78,7 @@
 
 .asset-no-active-form-body{
     padding: 0px 16px 15px 16px;
+    border-top: 1px solid #cccccc;
     border-radius: 0 0 4px 4px;
     display: flex;
     flex-direction: column;

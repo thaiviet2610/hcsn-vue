@@ -11,6 +11,7 @@
             v-model="value"
             autocomplete="off"
             :tabindex="disable ? -1:0"
+            @click="setSelect"
             @focus="handleEventFocusInput(idInput)"
             @focusout="handleEventFocusInput(null)"
             @input="handleEventInput"
@@ -146,13 +147,17 @@ export default {
     created() {
         //1. nếu valueInput có giá trị thì gán cho value
         if(this.valueInput || this.valueInput === 0){
-            this.valueNumber = this.getNumber(this.valueInput);
+            const result = this.getNumber(this.valueInput);
+            if(result[0]){
+                this.valueNumber = result[1];
+            }
+            this.value = this.formatMoney(result[1]);
         }
         else{
             this.valueNumber = null;
             this.value = "";
+            this.value = this.formatMoney(this.valueNumber);
         }
-        
         //3. nếu input có button thì set style cho input
         if(this.buttonInput){
             this.styleInput = 'padding-right: 28px;';
@@ -162,7 +167,6 @@ export default {
             this.styleInput = 'padding-left: 38px';
         }
         
-        this.value = this.formatMoney(this.valueNumber);
         if(String(this.stepValueInput).indexOf(",") != -1){
             this.stepValue = Number(String(this.stepValueInput).replace(",","."));
         }else{
@@ -178,8 +182,20 @@ export default {
          */
         getNumber(value){
             value = String(value).indexOf(".") == -1 ? value : String(value).replaceAll('.','');
-            value = String(value).indexOf(",") == -1 ? Number(value) : Number(value.replaceAll(',','.'));
-            return value;
+            value = String(value).indexOf(",") == -1 ? String(value) : String(value).replaceAll(',','.');
+            const index = String(value).indexOf(".");
+            let check = true;
+            if(index != -1){
+                const arr = String(value).split(".");
+                if(arr[0].length > 16 || arr[1].length > 4){
+                    check = false;
+                }
+            }else{
+                if(String(value).length > 16){
+                    check = false;
+                }
+            }
+            return check ? [true,Number(value)]:[false,value];
         },
 
         /**
@@ -201,17 +217,18 @@ export default {
             }
             else{
                 //2. nếu giá trị nhập vào là số
-                let length = String(this.valueNumber).length;
-                let index = String(this.valueNumber).indexOf(".");
-                if(length > 19 && index == -1){
+                const result = this.getNumber(this.value);
+                let length = String(result[1]).length;
+                if(length > 16){
                     //2.1. nếu độ dài số nhập vào dài quá 14 ký tự thì không cho nhập vào
                     //--> set invalid = true và hiện thị thông báo lỗi không được nhấp giá trị quá dài
                     this.inValid = true;
                     this.notifyError = resourceJS.error.errorMaxLengthNumber;
                 }
                 else{
+                    const index = String(result[1]).indexOf(".");
                     if(index != -1){
-                        const arr = String(this.valueNumber).split(".");
+                        const arr = String(result[1]).split(".");
                         if(arr[0].length > 19){
                             this.inValid = true;
                             this.notifyError = resourceJS.error.errorMaxLengthIntegerPart;
@@ -248,7 +265,9 @@ export default {
                 let valueRound = 1/this.stepValue;
                 this.valueNumber = Math.round(this.valueNumber*valueRound)/valueRound;
             }
-            this.$emit('getValueInput',this.valueNumber);
+            if(String(this.valueNumber < 17)){  
+                this.$emit('getValueInput',this.valueNumber);
+            }
             this.value = this.formatMoney(this.valueNumber);
         },
 
@@ -278,7 +297,9 @@ export default {
             if(this.valueNumber < 0){
                 this.valueNumber = 0;
             }
-            this.$emit('getValueInput',this.valueNumber);
+            if(String(this.valueNumber < 17)){  
+                this.$emit('getValueInput',this.valueNumber);
+            }
             this.value = this.formatMoney(this.valueNumber);
         },
 
@@ -332,11 +353,12 @@ export default {
          */
          handleEventKeyUp(event){
             let keyCode = event.keyCode;
-            if(!Number(event.key) && Number(event.key) != 0 && keyCode != enumJS.keyBackSpace && keyCode != enumJS.keyComma ){
+
+            if(!Number(event.key) && Number(event.key) != 0 && keyCode != enumJS.keyBackSpace && keyCode != enumJS.keyComma && keyCode != enumJS.keyCtrl && keyCode != enumJS.keyTab
+                && !(this.previousKeyCtrl && (keyCode == enumJS.keyA || keyCode ==enumJS.keyV || keyCode ==enumJS.keyC))){
                 this.value = this.oldValue;
             }else{
                 this.oldValue = this.value;
-                
             }
             if(keyCode == enumJS.keyShift){
                 this.previousKeyShift = false;
@@ -352,17 +374,20 @@ export default {
          * @author LTVIET(06/03/2023)
          */
         handleEventInput(event){
-            // console.log(this.value, this.valueNumber);
             if(!this.value){
                 this.valueNumber = this.value;
+                
             }else{
-                this.valueNumber = this.getNumber(this.value);
+                const result = this.getNumber(this.value);
+                if(result[0]){
+                    this.valueNumber = result[1];
+                    this.$emit("getValueEventInput",this.valueNumber);
+                }
+                if(event.data != ","){
+                    this.value = this.formatMoney(result[1]);
+                }
             }
-            // console.log(this.value, this.valueNumber);
-            if(event.data != ","){
-                this.value = this.formatMoney(this.valueNumber);
-            }
-            // console.log(this.value, this.valueNumber);
+            
             if(this.required && (Number(this.value) == null || Number(this.value) == undefined || Number(this.value) == "")){
                 if(this.value===0){
                     this.inValid = false;
@@ -370,7 +395,16 @@ export default {
             }else{
                 this.inValid = false;
             }
-            this.$emit("getValueEventInput",this.valueNumber);
+        },
+
+        /**
+         * Hàm bôi đen giá trị input date
+         * @author LTVIET (05/03/2023)
+         */
+         setSelect() {
+            this.$nextTick(function() {
+                this.$refs["mInputNumber"]?.select();
+            })
         },
 
         /**

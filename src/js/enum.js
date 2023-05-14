@@ -21,10 +21,12 @@ const enumJS = {
     key8: 56,
     key9: 57,
     keyA: 65,
+    keyC: 67,
     keyE: 69,
     keyD: 68,
     keyP: 80,
     keyS: 83,
+    keyV: 86,
     /**
      * Dấu phẩy
      */
@@ -68,16 +70,16 @@ const enumJS = {
         noAssetIncrements : 10,
 
         // Lỗi khi 1 trong các thuộc tính của nguồn chi phí rỗng
-        CostSourceEmpty : 11,
+        costSourceEmpty : 11,
 
 		/// Lỗi khi giá trị của nguồn chi phí nhỏ hơn hoặc bằng 0
-        CostSourceMountLessOrEqualThanZero : 12,
+        costSourceMountLessOrEqualThanZero : 12,
 
 		/// Lỗi khi có 2 nguồn chi phí trùng nhau
-		CostSourceDuplicate : 13,
+		costSourceDuplicate : 13,
 
 		/// Lỗi khi dữ liệu của nguồn chi phí không hợp lệ
-		CostSourceInValid : 14,
+		costSourceInValid : 14,
     },
     type: {
         add: 1,

@@ -4,6 +4,7 @@
         <label v-if="label" for="">{{ label }}<span v-if="required" class="required"> *</span></label>
         <!-- input nhập dữ liệu -->    
         <input
+            :id="idInput"
             ref="mInput"
             :class="[{'input--error':inValid},{'disableInputClass':disable},classInput]" 
             class="m-input"
@@ -13,6 +14,7 @@
             type="text" 
             autocomplete="off"
             :disabled="disable"
+            @click="setSelect"
             @focus="handleEventFocusInput(idInput)"
             @focusout="handleEventFocusInput(null)"
             @input="handleEventInput"
@@ -142,10 +144,10 @@ export default {
          */
         setFocus() {
             this.$nextTick(function() {
-                this.$refs["mInput"].focus();
+                this.$refs["mInput"]?.focus();
             })
         }, 
-        
+
         /**
          * Hàm xử lý sự kiện nhập phím trong input
          * @author LTVIET(16/03/2023)
@@ -159,8 +161,22 @@ export default {
          * @author LTVIET (05/03/2023)
          */
          handleEventFocusInput(id){
+            // this.setSelect(true);
+            // if(id){
+            //     this.setSelect(true);
+            // }
             this.$emit('getValueIdInputFocus',id);
         },
+
+        /**
+         * Hàm bôi đen giá trị input
+         * @author LTVIET (05/03/2023)
+         */
+         setSelect() {
+            this.$nextTick(function() {
+                this.$refs["mInput"]?.select();
+            })
+        }, 
         
         /**
          * Hàm xử lý sự kiện khi nhập giá trị vào input thì gửi giá trị đó ra lớp cha

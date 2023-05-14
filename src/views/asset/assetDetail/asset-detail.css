@@ -15,13 +15,6 @@
 
 
 
-.form-data{
-    width: 60%;
-    min-width: 465px;
-    min-height: 500px;
-    background-color: #fff;
-    border-radius: 4px;
-}
 
 .form-header{
     display: flex;
@@ -208,6 +201,36 @@
 .class-input__tracked-year{
     text-align: right;
 }
+
+
+.btn-header__icon:hover~.asset-detail-btn-close__tooltip{
+    transform: scale(1) ;
+    z-index: 1000;
+}
+
+.asset-detail-btn-save__tooltip{
+    top: 120%;
+    right: 33%;
+}
+
+
+.btn--main:hover~.asset-detail-btn-save__tooltip{
+    transform: scale(1) ;
+    z-index: 1000;
+}
+
+.asset-detail-btn-cancel__tooltip{
+    top: 120%;
+    right: 36%;
+}
+
+.asset-detail-btn-cancel:hover~.asset-detail-btn-cancel__tooltip{
+    transform: scale(1) ;
+    z-index: 1000;
+}
+
+
+
 
 
 

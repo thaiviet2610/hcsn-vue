@@ -18,7 +18,7 @@ const commonJS = {
                 }
                 let arrBefore = formatBefore.split(/[/-]/);
                 let indexDayBefore = arrBefore.indexOf("dd");
-                let indexMonthBefore = arrBefore.indexOf("mm");
+                let indexMonthBefore = arrBefore.indexOf("MM");
                 let indexYearBefore = arrBefore.indexOf("yyyy");
                 // Lấy giá trị ngày , tháng, năm ở định dạng ban đầu theo vị trí
                 let arrValue = dateTime.split(/[/,-]/);
@@ -30,7 +30,7 @@ const commonJS = {
                 txtMonth = Number(txtMonth) < 10 ? `0${Number(txtMonth)}` : txtMonth;
                 // gán giá trị ngày , tháng, năm của format ban đầu vào định dạng muốn format
                 let result = formatAfter.replace("dd",txtDate);
-                result = result.replace("mm",txtMonth);
+                result = result.replace("MM",txtMonth);
                 result = result.replace("yyyy",txtYear);
                 return result;
                 
@@ -47,7 +47,7 @@ const commonJS = {
     formatNumber(value) {
         let number = value;
         if(value > 1000){
-            number = String(value).indexOf(",") == -1 ? Number(value) : Number(String(value).replaceAll(',','.'));
+            number = String(value).indexOf(",") == -1 ? value : String(value).replaceAll(',','.');
         }
         if(number < 10 && String(number).indexOf(".") == -1){
             number = `0${number}`;

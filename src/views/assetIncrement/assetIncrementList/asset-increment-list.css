@@ -102,13 +102,13 @@
 .content-body__up--right{
     display: flex;
     align-items: center;
-    column-gap: 18px;
+    column-gap: 5px;
 }
 
 .asset-increment-master-table{
     width: 100%;
     max-width: 1232px;
-    height: calc(100% - 63px);
+    height: calc(100% - 62px);
     position: relative;
 }
 
@@ -148,14 +148,20 @@
 	height: 13px;
 }
 
-.icon--full_screen{
+.icon--zoom-in{
     background: url('../../../assets/icon/qlts-icon.png') no-repeat -245px -333px;
 	width: 14px;
 	height: 14px;
 }
 
+.icon--zoom-out{
+    background: url('../../../assets/icon/qlts-icon.png') no-repeat -289px -333px;
+	width: 14px;
+	height: 14px;
+}
 
-.asset_increment--item3:hover .full-screen-tooltip{
+
+.btn__icon:hover~.full-screen-tooltip{
     transform: scale(1);
     top: calc(100% + 10px);
     z-index: 10000;
@@ -165,7 +171,7 @@
     position: relative;
 }
 
-.see-more:hover .asset_increment--item22-tooltip{
+.asset_increment--icon22:hover~.asset_increment--item22-tooltip{
     transform: scale(1);
     top: calc(100% + 10px);
     z-index: 10000;
@@ -175,7 +181,7 @@
     position: relative;
 }
 
-.print:hover .asset_increment--item21-tooltip{
+.asset-increment__btn-export:hover~.asset_increment--item21-tooltip{
     transform: scale(1);
     top: calc(100% + 10px);
     z-index: 10000;
@@ -294,6 +300,14 @@ em.specs {
     right: 50%;
 }
 
+.btn-delete-multiple{
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .function__delete--multiple:hover .asset-list-btn-delete-tooltip{
     transform: scale(1) !important;
@@ -312,7 +326,7 @@ em.specs {
     right: 60% !important;
 }
 
-.asset-increment--index:hover .asset-increment--index-tooltip{
+.table-header__text:hover~.asset-increment--index-tooltip{
     transform: scale(1) !important;
     z-index: 10000;
 }
@@ -378,7 +392,7 @@ em.specs {
     cursor: default;
 }
 
-.asset_increment_detail_list--column2:hover .asset_increment_detail_list--column2-tooltip{
+.table-header__text:hover~.asset_increment_detail_list--column2-tooltip{
     transform: scale(1) !important;
     z-index: 100000 !important;
 }
@@ -435,7 +449,7 @@ em.specs {
 }
 
 
-.asset_increment_detail_list--column9:hover .asset_increment_detail_list--column9-tooltip{
+.table-header__text:hover~.asset_increment_detail_list--column9-tooltip{
     transform: scale(1) !important;
     z-index: 100000 !important;
 }
@@ -470,7 +484,7 @@ em.specs {
     right: 35%;
 }
 
-.btn-add-asset-increment:hover .btn-add-asset-increment-tooltip{
+.btn--main:hover~.btn-add-asset-increment-tooltip{
     transform: scale(1);
     z-index: 10000;
 }

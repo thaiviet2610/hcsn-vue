@@ -1,32 +1,17 @@
 <template>
-    <div>
-        <div  class="form editForm" :tabindex="0"
-            @keydown.esc.prevent="handleEventBtnClickCancel"
-            @keydown.ctrl.s.prevent="handleEventBtnClickSave"
-        >
-            <div class="asset_increment__form-data" >
-                <!-- phần header của form  -->
-                <div class="asset-no-active-form-header">
-                    <!-- title của form  -->
-                    <div class="asset_increment__form-header__text">{{ assetNoActiveInfo.label }}</div>
-                    <!-- button đóng form  -->
-                    <div class="btn-close-asset-no-active">
-                        <MButtonIcon
-                            class="btn-header__icon"
-                            classIcon="form-header__icon"
-                            @addOnClickBtnIcon="handleEventBtnClickCancel">
-                        </MButtonIcon>
-                        <MTooltip
-                            :text="assetNoActiveInfo.button.btnClose.tooltip"
-                            :class="assetNoActiveInfo.button.btnClose.classTooltip"
-                        ></MTooltip>
-                    </div>
-                </div>
-                <!-- phần body của form  -->
-                <div class="asset-no-active-form-body" style="padding: 0;">
+    <div :tabindex="0" >
+        <MForm ref="mForm" :label="assetNoActiveInfo.label"
+        :idItemFirst="assetNoActiveInfo.inputSearch.id"
+        idItemLast="idBtnCancelAssetNoActive"
+        :buttonInfo="assetNoActiveInfo.button"
+        @handleEventCloseForm="handleEventBtnClickCancel"
+        @handleEventSaveForm="handleEventBtnClickSave">
+            <!-- phần body của form  -->
+            <div class="asset-no-active-form-body" style="padding: 0;">
                     <div class="header__body--down" style="padding-bottom: 16px;">
                         <div class="input down-left">
                             <MInput 
+                                :idInput="assetNoActiveInfo.inputSearch.id"
                                 :ref="assetNoActiveInfo.inputSearch.ref"
                                 @keyDownEnter ="handleEventKeyDownEnterInputSearch"
                                 @getValueEventInput="handleEventGetValueInputSearch"
@@ -46,7 +31,6 @@
                         :dataFooter="dataFooterTable"
                         :valuePageNumber="pageNumber"
                         :valuePageSize="pageSize"
-                        :isShowNoData="isShowNoDataTable"
                         :isPaging="assetNoActiveInfo.table.isPaging"
                         :isCheckbox="assetNoActiveInfo.table.isCheckbox"
                         :isFunction="assetNoActiveInfo.table.isFunction"
@@ -59,34 +43,7 @@
                         </MTable>
                     </div> 
                 </div>
-                <!-- phần footer của form  -->
-                <div class="form-footer">
-                    <!-- button lưu form  -->
-                    <div class="btn-save-asset-no-active">
-                        <MButton
-                            class="btn--main"
-                            :label="assetNoActiveInfo.button.btnSave.label"
-                            @btnAddOnClickBtn="handleEventBtnClickSave">
-                        </MButton>
-                        <MTooltip
-                            :text="assetNoActiveInfo.button.btnSave.tooltip"
-                            :class="assetNoActiveInfo.button.btnSave.classTooltip"
-                        ></MTooltip>
-                    </div>
-                    <!-- button hủy form  -->
-                    <div class="btn-cancel-asset-no-active">
-                        <MButton
-                            :label="assetNoActiveInfo.button.btnCancel.label"
-                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                        </MButton>
-                        <MTooltip
-                            :text="assetNoActiveInfo.button.btnCancel.tooltip"
-                            :class="assetNoActiveInfo.button.btnCancel.classTooltip"
-                        ></MTooltip>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </MForm>
         <!-- dialog thông báo  -->
         <MDialog 
             v-if="isShowDialogNotify" 
@@ -119,7 +76,7 @@ export default {
     data() {
         return {
             isShowDialogNotify: false,
-            contentDialogNotify: resourceJS.notify.errorLoadData,
+            contentDialogNotify: "",
             btnDialogNotify: resourceJS.buttonDialog.notify,
             assetFilterApi: configJS.api.asset.assetFilterNotInApi,
             tableInfo: resourceJS.table.tableAssetNoActive,
@@ -132,13 +89,18 @@ export default {
             dataFooterTable: [],
             dataAssets: [],
             assetNoActiveInfo: resourceJS.assetNoActive,
-            isShowNoDataTable: false
+            previousKeyCtrl: false,
+            previousKeyShift: false,
+            isShowLoad: false
         }
     },
     created() {
         this.pageSize = Number(this.dataPageSize[0]);
         this.getDataTable();
-        this.setFocus();
+        this.setFocusDefault();
+    },
+
+    watch: {
     },
     methods: {
         /**
@@ -171,7 +133,7 @@ export default {
          */
          handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
-            this.setFocus();
+            this.setFocusDefault();
         },
 
         /**
@@ -206,11 +168,24 @@ export default {
                 this.isShowLoad = false;
 
             })
-            .catch(err=>{
-                console.log(err);
+            .catch(error=>{
+                console.log(error);
                 this.isShowLoad = false;
                 this.isShowDialogNotify = true;
-                
+                const message = resourceJS.notify.errorLoadData;
+                const errorCode = error.response.data.ErrorCode;
+                this.contentDialogNotify = resourceJS.errorMsg.errorFail.replace("{0}",message).replace("{1}",errorCode);
+            })
+        },
+
+        /**
+         * Hàm set focus vào đối tượng được chọn
+         * @param {*} ref ref của đối tượng được chọn
+         * @author LTVIET (16/03/2023)
+         */
+        setFocus(ref){
+            this.$nextTick(function(){
+                this.$refs[ref].setFocus();
             })
         },
 
@@ -218,10 +193,8 @@ export default {
          * Hàm set focus vào input đầu tiên của form
          * @author LTVIET (16/03/2023)
          */
-        setFocus(){
-            this.$nextTick(function(){
-                this.$refs[this.assetNoActiveInfo.inputSearch.ref].setFocus();
-            })
+         setFocusDefault(){
+            this.setFocus(this.assetNoActiveInfo.inputSearch.ref);
         },
 
         /**
@@ -237,6 +210,7 @@ export default {
          * @author LTVIET (16/03/2023)
          */
         handleEventBtnClickSave(){
+            this.previousKeyCtrl = false;
             let assetsSelected = this.$refs[this.assetNoActiveInfo.table.ref].getEntityCheckboxActiveList();
             this.$emit('onSave',assetsSelected);
         },
@@ -248,9 +222,7 @@ export default {
          */
         handleEventKeyDownEnterInputSearch(value){
             this.keyword = value;
-            this.isShowNoDataTable = true;
             if(!value){
-                this.isShowNoDataTable = false;
                 this.keyword = "";
             }
             this.pageNumber=1;
