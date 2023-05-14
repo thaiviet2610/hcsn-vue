@@ -187,11 +187,11 @@ export default {
             let check = true;
             if(index != -1){
                 const arr = String(value).split(".");
-                if(arr[0].length > 16 || arr[1].length > 4){
+                if(arr[0].length > 15 || arr[1].length > 4){
                     check = false;
                 }
             }else{
-                if(String(value).length > 16){
+                if(String(value).length > 15){
                     check = false;
                 }
             }
@@ -219,7 +219,7 @@ export default {
                 //2. nếu giá trị nhập vào là số
                 const result = this.getNumber(this.value);
                 let length = String(result[1]).length;
-                if(length > 16){
+                if(length > 15){
                     //2.1. nếu độ dài số nhập vào dài quá 14 ký tự thì không cho nhập vào
                     //--> set invalid = true và hiện thị thông báo lỗi không được nhấp giá trị quá dài
                     this.inValid = true;
@@ -229,7 +229,7 @@ export default {
                     const index = String(result[1]).indexOf(".");
                     if(index != -1){
                         const arr = String(result[1]).split(".");
-                        if(arr[0].length > 19){
+                        if(arr[0].length > 15){
                             this.inValid = true;
                             this.notifyError = resourceJS.error.errorMaxLengthIntegerPart;
                         }else if(arr[1].length > 4){
@@ -265,7 +265,7 @@ export default {
                 let valueRound = 1/this.stepValue;
                 this.valueNumber = Math.round(this.valueNumber*valueRound)/valueRound;
             }
-            if(String(this.valueNumber < 17)){  
+            if(String(this.valueNumber < 16)){  
                 this.$emit('getValueInput',this.valueNumber);
             }
             this.value = this.formatMoney(this.valueNumber);
@@ -297,7 +297,7 @@ export default {
             if(this.valueNumber < 0){
                 this.valueNumber = 0;
             }
-            if(String(this.valueNumber < 17)){  
+            if(String(this.valueNumber < 16)){  
                 this.$emit('getValueInput',this.valueNumber);
             }
             this.value = this.formatMoney(this.valueNumber);

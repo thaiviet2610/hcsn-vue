@@ -52,6 +52,7 @@ const resourceJSJS = {
     },
     assetDetail: {
         assetCode : {
+            id: "idAssetCode",
             ref: 'ref_fixed_asset_code',
             label: "Mã tài sản",
             placeholder: "Nhập mã tài sản",
@@ -241,6 +242,7 @@ const resourceJSJS = {
         bodyDown:{
             title: "Thông tin chi tiết",
             inputSearch: {
+                ref: "mInputSearch",
                 placeholder: "Tìm kiếm theo mã, tên tài sản"
             }
         },
@@ -382,8 +384,8 @@ const resourceJSJS = {
         emptyInput: "  không được phép để trống! ",
         emptyInputNumber: " phải nhập giá trị lớn hơn 0",
         errorFormatNumber: " chỉ được nhập số!",
-        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 16 ký tự!",
-        errorMaxLengthIntegerPart: "Độ dài phần nguyên của số nhập vào không được quá 16 số!",
+        errorMaxLengthNumber: "Độ dài số nhập vào không được quá 15 ký tự!",
+        errorMaxLengthIntegerPart: "Độ dài phần nguyên của số nhập vào không được quá 15 số!",
         errorMaxLengthDecimalPart: "Độ dài phần thập phân của số nhập vào không được quá 4 số!",
         errorFormatRate: "Tỷ lệ chỉ được cho phép trong khoảng từ 0 -> 100%!",
         errorDontFindInData: " phải là giá trị nằm trong danh sách lựa chọn!",

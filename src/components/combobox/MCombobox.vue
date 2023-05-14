@@ -46,10 +46,11 @@
         <div
             ref="mComboboxData" 
             class="combobox__data"
+            :class="{'combobox-no-data':entitiesSearch.length==0}"
             @mousedown="onMouseDownInput" 
             v-show="isShow" >
             <div 
-            :id="`item_${index}`"
+                :id="`item_${index}`"
                 :ref="`item_${index}`"
                 class="combobox__data_item" 
                 @click="addOnClickItem(item,index)"
@@ -62,7 +63,17 @@
                 </div>
                 <div :style="setStyleIconSelect(index)" class="data__item__icon"></div>
             </div>
-            
+            <div 
+                v-if="this.entitiesSearch.length == 0"
+                class="combobox__data_item" 
+                :class="{'item__selected': index == indexItemSelect}" >
+                <div 
+                    class="data_item--text" 
+                    style="font-size: 11px;color: red;">
+                        Không có dữ liệu phù hợp
+                </div>
+                <!-- <div :style="setStyleIconSelect(index)" class="data__item__icon"></div> -->
+            </div>
         </div>
         
     </div>
@@ -210,7 +221,6 @@ export default {
             if(this.value == "" || this.value == null || this.value == undefined){
                 this.indexItemSelect = -1;
             }
-            this.scrollY = 0;
             this.zIndex = 0;
         },
 
@@ -240,7 +250,6 @@ export default {
                 this.inValid = false;
             }
             this.isShow = false;
-            this.scrollY = 0;
             this.zIndex = 0;
             const value = item[this.propValue];
             this.$emit("getInputCombobox",value);
@@ -427,7 +436,6 @@ export default {
                     this.$emit("getInputCombobox","");
                 }
                 this.isShow = false;
-                this.scrollY = 0;
                 this.zIndex = 0;
             }
             // Nếu đã có item được chọn
@@ -442,7 +450,6 @@ export default {
                 }
                 //1.3. ẩn đi combobox-data
                 this.isShow = false;
-                this.scrollY = 0;
                 this.zIndex = 0;
                 //1.5. binding dữ liệu mới ra bên ngoài
                 this.$emit("getInputCombobox",this.itemSelected[this.propValue]);
@@ -456,7 +463,6 @@ export default {
         onBlurInput(){  
             //2. ẩn đi combobox-data
             this.isShow = false;
-            this.scrollY = 0;
             this.zIndex = 0;
             //1. kiểm tra xem combobox có riquired và value rỗng không
             let me = this;

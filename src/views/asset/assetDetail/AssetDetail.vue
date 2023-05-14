@@ -1,32 +1,19 @@
 <template>
-    <div id="idAssetDetail">
-        <div  class="form editForm" :key="keyAssetDetail"
-        >
-            <div class="form-data" >
-                <!-- phần header của form  -->
-                <div class="form-header">
-                    <!-- title của form  -->
-                    <div class="form-header__text">{{ label }}</div>
-                    <!-- button đóng form  -->
-                    <div style="position: relative;">
-                        <MButtonIcon
-                            class="btn-header__icon"
-                            classIcon="form-header__icon"
-                            @addOnClickBtnIcon="handleEventBtnClickCancel">
-                        </MButtonIcon>
-                        <MTooltip
-                            :text="assetDetailInfo.button.btnClose.tooltip"
-                            class="asset-detail-btn-close__tooltip">
-                        </MTooltip>
-                    </div>
-                </div>
-                <!-- phần body của form  -->
-                <div id="formBody" class="form-body">
+    <div>
+        <MForm 
+            :label="label"
+            :idItemFirst="assetDetailInfo.assetCode.id"
+            idItemLast="idBtnCanCelAssetDetail"
+            @handleEventCloseForm="handleEventBtnClickCancel"
+            @handleEventSaveForm="handleEventBtnClickSave">
+            <!-- phần body của form  -->
+            <div id="formBody" class="form-body">
                     <div class="form-body__up">
                         <div class="m-row">
                             <div class="input up-left">
                                 <!-- input nhập mã tài sản  -->
                                 <MInput 
+                                    :idInput="assetDetailInfo.assetCode.id"
                                     :ref="assetDetailInfo.assetCode.ref"
                                     :required="assetDetailInfo.assetCode.required"
                                     :disable="assetDetailInfo.assetCode.disable"
@@ -150,11 +137,13 @@
                                     @getValueEventInput="getValueCostInput"
                                     :valueInput="asset.cost"
                                     classInput="class-input__cost"
+                                    
                                     :label="assetDetailInfo.cost.label"
                                     :key="keyCost"
                                     >
                                 </MInputNumber>
                                 <MButton 
+                                    :class="{'error-cost':!check}"
                                     class="btn-edit-budget"
                                     @btnAddOnClickBtn="handleEventEditBudget">
                                 </MButton>
@@ -257,36 +246,7 @@
                         </div> 
                     </div>
                 </div>
-                <!-- phần footer của form  -->
-                <div class="form-footer">
-                    <!-- button lưu form  -->
-                    <div style="position: relative;">
-                        <MButton
-                            class="btn--main"
-                            :label="assetDetailInfo.button.btnSave.label"
-                            @btnAddOnClickBtn="handleEventBtnClickSave">
-                        </MButton>
-                        <MTooltip
-                            :text="assetDetailInfo.button.btnSave.tooltip"
-                            class="asset-detail-btn-save__tooltip">
-                        </MTooltip>
-                    </div>
-                    <!-- button hủy form  -->
-                    <div style="position: relative;">
-                        <MButton
-                            class="asset-detail-btn-cancel"
-                            :label="assetDetailInfo.button.btnCancel.label"
-                            style="border: 0;"
-                            @btnAddOnClickBtn="handleEventBtnClickCancel"  >
-                        </MButton>
-                        <MTooltip
-                            :text="assetDetailInfo.button.btnCancel.tooltip"
-                            class="asset-detail-btn-cancel__tooltip">
-                        </MTooltip>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </MForm>
         <!-- form nguồn chi phí  -->
         <BudgetAsset 
             v-if="isShowBudget"
@@ -396,6 +356,7 @@ export default {
             keyDepartmentName: 0,
             keyAssetCategoryName: 0,
             itemError: null,
+            check: true,
             previousKey: "",
             previousKeyCtrl: false,
             assetDetailInfo: resourceJS.assetDetail,
@@ -416,7 +377,8 @@ export default {
             keyComboboxDepartment: 0,
             assetId: null,
             labelBudgetForm: "",
-            keyCost: 0
+            keyCost: 0,
+            
         }
     },
 
@@ -478,15 +440,8 @@ export default {
         this.$nextTick(function() {
             this.setFocus();
         })
-        document.addEventListener('keydown',this.handleEventKeyDown);
-        document.addEventListener('keyup',this.handleEventKeyUp);
     },
 
-    unmounted() {
-        document.removeEventListener('keydown',this.handleEventKeyDown);
-        document.removeEventListener('keyup',this.handleEventKeyUp);
-    },
-    
     methods: {
         /**
          * Hàm xử lý sự kiện đóng form sửa nguồn chi phí
@@ -689,6 +644,7 @@ export default {
                 let message = errorData.UserMsg;
                 // Nếu là lỗi về dữ liệu
                 if(errorCode == enumJS.errorCode.inValid){
+                    this.isShowDialogNotify = false;
                     this.contentDialogNotifyErrorValidate = resourceJS.error.notify;
                     this.handleEventErrorInvalid(errorData.MoreInfo);
                 }
@@ -715,6 +671,7 @@ export default {
                         this.handleDisplayInputError(itemAssetCode,error.Message);
                         if(!this.itemError){
                             this.itemError = itemAssetCode;
+                            this.itemError.setFocus();
                         }
                     }
                     
@@ -728,6 +685,7 @@ export default {
                             this.handleDisplayInputError(itemEmpty,message);
                             if(!this.itemError){
                                 this.itemError = itemEmpty;
+                                this.itemError.setFocus();
                             }
                         }
                     }
@@ -739,6 +697,7 @@ export default {
                         this.handleDisplayInputError(item,error.Message);
                         if(!this.itemError){
                             this.itemError = item;
+                            this.itemError.setFocus();
                         }
                     }
                 }
@@ -764,12 +723,7 @@ export default {
          */
         validateForm(){
 
-            if(!this.validateEmptyValue() | !this.validateProfessional()){
-                this.isShowDialogNotify = true;
-                this.contentDialogNotifyErrorValidate = resourceJS.error.notify;
-                return false;
-            }
-            return true;
+            return (this.validateEmptyValue() && this.validateProfessional());
         },
 
         /**
@@ -787,21 +741,30 @@ export default {
                         item.inValid = true;
                         if(!this.itemError){
                             this.itemError = item;
+                            this.itemError.setFocus();
                         }
                     }
                 }else if(ref == this.assetDetailInfo.quantity.ref || ref == this.assetDetailInfo.cost.ref || ref == this.assetDetailInfo.lifeTime.ref){
                     if(!item.value){
                         if(item.value == 0){
+                            if(ref == this.assetDetailInfo.cost.ref){
+                                this.check = false;
+                            }
                             check = false;
                             if(!this.itemError){
                                 this.itemError = item;
+                                this.itemError.setFocus();
                             }
                             item.inValid = true;
                             item.notifyError = item.label + resourceJS.error.emptyInputNumber;
                         }else{
+                            if(ref == this.assetDetailInfo.cost.ref){
+                                this.check = false;
+                            }
                             check = false;
                             if(!this.itemError){
                                 this.itemError = item;
+                                this.itemError.setFocus();
                             }
                             item.inValid = true;
                             item.notifyError = item.label + resourceJS.error.emptyInput;
@@ -814,6 +777,7 @@ export default {
                         check = false;
                         if(!this.itemError){
                             this.itemError = item;
+                            this.itemError.setFocus();
                         }
                         item.inValid = true;
                         item.notifyError = item.label + resourceJS.error.emptyInput;
@@ -1231,6 +1195,8 @@ export default {
             this.isShowDialogNotify = false;
             if(this.itemError){
                 this.itemError.setFocus();
+            }else{
+                this.setFocus();
             }
         },
 

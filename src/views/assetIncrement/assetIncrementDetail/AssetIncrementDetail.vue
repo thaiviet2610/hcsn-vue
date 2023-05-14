@@ -19,6 +19,7 @@
                                 :placeholder="assetIncrementDetailInfo.voucherCode.placeholder"
                                 :label="assetIncrementDetailInfo.voucherCode.label"
                                 :valueInput="assetIncrement.voucher_code"
+                                :maxLength="50"
                                 @getValueInput="handleEventGetValueInputVoucherCode"
                                 @getValueEventInput="handleEventGetValueInputVoucherCode"
                                 >
@@ -66,6 +67,7 @@
                             @getValueInput="getValueInputDescription"
                             @getValueEventInput="getValueInputDescription"
                             :label="assetIncrementDetailInfo.description.label"
+                            :maxLength="255"
                             >
                         </MInput>
                     </div>
@@ -77,6 +79,7 @@
                     <div class="header__body--down">
                         <div class="input down-left">
                             <MInput
+                                :ref="assetIncrementDetailInfo.bodyDown.inputSearch.ref"
                                 :placeholder="assetIncrementDetailInfo.bodyDown.inputSearch.placeholder"
                                 :iconInput="true"
                                 @keyDownEnter ="handleEventKeyDownEnterInputSearch"
@@ -292,7 +295,7 @@ export default {
         }
     },
     mounted() {
-        this.setFocus();
+        this.setFocusDefault();
     },
     methods: {
         /**
@@ -363,7 +366,7 @@ export default {
             // Nếu click button "không" thì ẩn dialog đi
             if(label == this.btnDialogCancelAddForm[1][2]){
                 this.isShowDialogAddFormCancel = false;
-                this.setFocus();
+                this.setFocusDefault();
                 return;
             }
             // Nếu click button "Hủy bỏ" thì ẩn dialog và form đi
@@ -386,7 +389,7 @@ export default {
 
             // Nếu click button "Hủy" thì đóng dialog lại
             if(label == this.btnDialogCancelEditForm[2][2]){
-                this.setFocus();
+                this.setFocusDefault();
                 return;
             }
 
@@ -422,10 +425,20 @@ export default {
          * Hàm xử lý sự kiện focus vào input mã chứng từ khi form được khởi tạo lần đầu tiên
          * @author LTVIET (19/04/2023)
          */
-        setFocus(){
+        setFocus(ref){
             this.$nextTick(function(){
-                this.$refs[this.assetIncrementDetailInfo.voucherCode.ref].setFocus();
+                console.log(ref);
+                console.log(this.$refs[ref]);
+                this.$refs[ref].setFocus();
             });
+        },
+
+        /**
+         * Hàm xử lý sự kiện focus vào input mã chứng từ khi form được khởi tạo lần đầu tiên
+         * @author LTVIET (19/04/2023)
+         */
+         setFocusDefault(){
+            this.setFocus(this.assetIncrementDetailInfo.voucherCode.ref);
         },
 
         /**
@@ -434,7 +447,7 @@ export default {
          */
         handleEventCloseFormSelecteAssetNoActive(){
             this.isShowSelectAssetNoActive = false;
-            this.setFocus();
+            this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
         },
 
         /**
@@ -453,7 +466,7 @@ export default {
         handleEventCloseFormBudgetAsset(){
             this.isShowBudgetAsset = false;
             this.getDataTable();
-            this.setFocus();
+            this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
         },
 
         /**
@@ -474,7 +487,7 @@ export default {
             setTimeout(() => {
                 this.closeToastSucess();
             }, 3000);
-            this.setFocus();
+            this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
         },
 
         /**
@@ -547,7 +560,7 @@ export default {
             this.keyInputSearch = ++this.keyInputSearch;
             this.getDataTable();
             this.isShowSelectAssetNoActive = false;
-            this.setFocus();
+            this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
         },
 
         /**
@@ -606,7 +619,7 @@ export default {
                     this.dataBodyApi.ActiveAssets.push(item.fixed_asset_id);
                 }
                 this.getDataTable();
-                this.setFocus();
+                this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
             }
         },
 
@@ -939,7 +952,7 @@ export default {
         handleEventCloseDialogNotify(){
             this.isShowDialogNotify = false;
             if(!this.itemError){
-                this.setFocus();
+                this.setFocusDefault();
             }else{
                 this.itemError.setFocus();
             }

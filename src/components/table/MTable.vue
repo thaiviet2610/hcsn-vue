@@ -192,7 +192,7 @@
     </table>
     
   </div>
-  <div v-else class="content__table" :class="{'no-footer':!isFooter}" :tabindex="-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
+  <div id="mTableContainer" v-else class="content__table" :class="{'no-footer':!isFooter}" :tabindex="-1" @keyup="handleEventKeyUp" @keydown="handleEventKeyDown" >
     <table ref="mTable"  :key="keyTable"  style="border-bottom: none;box-shadow: none;"  >
       <!-- phần title của table  -->
       <thead>
@@ -763,6 +763,7 @@ methods: {
    * @author LTVIET (02/03/2023)
    */
   getUnitData(){
+    document.getElementById("mTableContainer")?.scrollTo(0,0);
     this.reloadTable();
     if(this.isPaging){
       this.pageSize = this.valuePageSize;

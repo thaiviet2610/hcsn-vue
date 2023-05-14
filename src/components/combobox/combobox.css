@@ -154,4 +154,8 @@ div::-webkit-scrollbar {
     width: 8px;
 }
 
+.combobox-no-data{
+    overflow: unset;
+}
+
 

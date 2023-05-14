@@ -325,7 +325,6 @@ export default {
             axios.get(api)
             .then(res=>{
                 this.assets = res.data.Data;
-                console.log(this.assets);
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
                         index: asset.index,

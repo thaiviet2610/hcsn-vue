@@ -350,6 +350,7 @@ export default {
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].entityCheckboxActive = [];
 
             this.getDataTableMaster();
+            this.setFocusDefault();
             
         },
 
@@ -361,6 +362,7 @@ export default {
         getValuePageNumberTableMaster(value){
             this.pageNumberTableMaster = value;
             this.getDataTableMaster();
+            this.setFocusDefault();
         },
 
         /**

@@ -74,7 +74,7 @@
                                         </MInputNumber>
                                     </div>
                                 </div>
-                                <div class="budget__container--right">
+                                <div class="budget__container--right" >
                                     <div style="position: relative;">
                                         <MButtonIcon 
                                             :tabindex="-1"
@@ -202,7 +202,8 @@ export default {
             indexFocus: -1,
             btnDialogNotify: resourceJS.buttonDialog.notify,
             contentDialogNotifyErrorValidate: "",
-            isShowDialogNotify: false
+            isShowDialogNotify: false,
+            check: false
         }
     },
     created() {
@@ -223,6 +224,7 @@ export default {
         }
         
         this.getBudget();
+        
     },
     mounted() {
     },
@@ -249,6 +251,7 @@ export default {
         }
     },
     methods: {
+
         /**
          * Hàm gọi api lấy danh sách nguồn chi phí
          * @author LTVIET (19/04/2023)

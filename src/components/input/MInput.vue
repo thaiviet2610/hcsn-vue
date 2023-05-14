@@ -22,7 +22,7 @@
             @blur="onValidateBlur"
             :placeholder="placeholder">
         <MTooltip
-            v-if="value.length  * 8 > inputWidth"
+            v-if="(value.length - 5 ) * 8 > inputWidth"
             :text="value"
             :style="`max-width: ${inputWidth-22}px !important;`"
             class="m-input-tooltip">
@@ -86,6 +86,10 @@ export default {
         idInput:{
             type: String,
             default: null
+        },
+        maxLength:{
+            type: Number,
+            default: 0
         }
     },
     components:{
@@ -132,7 +136,10 @@ export default {
                 //1.1. set invalid = true và hiện thị thông báo lỗi không được để trống
                 this.inValid = true;
                 this.notifyError = this.label + resourceJS.error.emptyInput;
-            } 
+            }else if(this.maxLength && this.value.length > this.maxLength){
+                this.inValid = true;
+                this.notifyError = this.label + resourceJS.error.maxLength.replace("{0}", this.maxLength);
+            }
             if(!this.inValid){
                 this.$emit('getValueInput',this.value);
             }

@@ -2,6 +2,7 @@
     width: max-content;
     height: max-content;
     position: absolute;
+    max-width: 200px !important;
     min-width: min-content;
     font-size: 10px;
     font-family: Roboto-Regular;
@@ -19,4 +20,5 @@
     transform: scale(0);
     transition: 0.25s ease-in-out;
     cursor: default;
+    /* overflow-wrap: break-word; */
 }
