@@ -88,7 +88,8 @@ export default {
             previousKeyCtrl: false,
             isBlur: true,
             isFocus: false,
-            keyBackSpace: false
+            keyBackSpace: false,
+            oldValue: ""
         }
     },
     watch: {
@@ -104,6 +105,9 @@ export default {
             //nếu không có dữ liệu truyền vào thì hiển thị thời gian hiện tại
             let currentDate = this.getCurrentDate();
             this.txtInputDate = currentDate;
+        }
+        if(this.required){
+            this.placeholder = this.format;
         }
         let date = new Date(this.txtInputDate);
         this.txtDate = date.getDate();
@@ -125,7 +129,6 @@ export default {
          */
          setFocus() {
             this.$nextTick(function() {
-                console.log(1);
                 this.$refs["mInputDate"].focus();
             })
         }, 
@@ -136,7 +139,7 @@ export default {
          */
         handleEventChangeDatePicker(){
             if(this.txtInputDate == ""){
-                this.placeholder = this.format;
+                
                 this.value = "";
                 if(this.required){
                     this.inValid = true;
@@ -160,10 +163,6 @@ export default {
                         // 1.1. nếu là truognwf bắt buộc nhập thì thông báo lỗi
                         this.inValid = true;
                         this.notifyError = this.label + resourceJS.error.emptyInput;
-                    }else{
-                        // 1.2. nếu là trường không bắt buộc thì hiển thị placeholder là định dạng date
-                        this.placeholder = this.format;
-                        this.inValid = false;
                     }
                     this.txtInputDate = this.getCurrentDate();
                     this.value = "";
@@ -318,6 +317,7 @@ export default {
                     // 2.3.1. nếu giá trị ngày, tháng, năm hợp lệ thì truyền dữ liệu ra ngoài
                     this.inValid = false;
                     let value = `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
+                    this.txtInputDate = value;
                     this.$emit('getValueInputDate',value);
                 }
             }else if(!this.value){
@@ -408,11 +408,6 @@ export default {
                     break;
             }
             
-            if(this.value.length == 10 && keyCode > 31 && !(keyCode >=37 && keyCode <=40)){
-                if(!(this.previousKeyCtrl && keyCode == 65)){
-                    event.preventDefault();
-                }
-            }
             if(!((keyCode < 31) || (keyCode >= 48 && keyCode <=57) 
                 || (keyCode >= 96 && keyCode <= 105) || (keyCode >=37 && keyCode <= 40) || keyCode == enumJS.keySlash)){
                     if(!(this.previousKeyCtrl && keyCode == 65)){
@@ -421,6 +416,21 @@ export default {
             }
             if(this.previousKeyShift && (keyCode >= 48 && keyCode <=57)){
                 event.preventDefault();
+            }
+        },
+
+        /**
+         * Hàm xử lý sự kiện keyup trong input
+         * @param {*} event sự kiện cần sử lý
+         * @author LTVIET (05/03/2023)
+         */
+         handleEventKeyUp(event){
+            const keyCode = event.keyCode;
+            if(keyCode == enumJS.keyShift){
+                this.previousKeyShift = false;
+            }
+            if(keyCode == enumJS.keyCtrl){
+                this.previousKeyCtrl = false;
             }
         },
 
@@ -445,20 +455,7 @@ export default {
         }, 
 
 
-        /**
-         * Hàm xử lý sự kiện keyup trong input
-         * @param {*} event sự kiện cần sử lý
-         * @author LTVIET (05/03/2023)
-         */
-        handleEventKeyUp(event){
-            const keyCode = event.keyCode;
-            if(keyCode == enumJS.keyShift){
-                this.previousKeyShift = false;
-            }
-            if(keyCode == enumJS.keyCtrl){
-                this.previousKeyCtrl = false;
-            }
-        },
+        
     },
 }
 </script>
