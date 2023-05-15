@@ -427,8 +427,6 @@ export default {
          */
         setFocus(ref){
             this.$nextTick(function(){
-                console.log(ref);
-                console.log(this.$refs[ref]);
                 this.$refs[ref].setFocus();
             });
         },
@@ -723,7 +721,6 @@ export default {
                 AssetsAdd: this.assetsAdd.length == 0 ? null: this.assetsAdd,
                 AssetsDelete: this.assetsDelete.length == 0 ? null: this.assetsDelete
             }
-            console.log(entity);
             this.isShowLoad = true;
             axios.put(this.assetIncrementApi,entity)
             .then(()=>{
@@ -789,6 +786,7 @@ export default {
          */
          handleEventErrorInvalid(errors){
             this.isShowDialogNotify = false;
+            
             for (let error of errors) {
                 // validate lỗi để trống
                 if(error.ValidateCode == enumJS.validateCode.empty){
@@ -817,6 +815,7 @@ export default {
                 }
                 // validate danh sách tài sản chứng từ rỗng
                 else if(error.ValidateCode == enumJS.validateCode.noAssetIncrements){
+                    this.isShowDialogNotify = true;
                     this.contentDialogNotify = error.Message;
                 }
                 // validate các lỗi còn lại

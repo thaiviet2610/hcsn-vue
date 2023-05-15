@@ -235,13 +235,8 @@ export default {
                         }else if(arr[1].length > 4){
                             this.inValid = true;
                             this.notifyError = resourceJS.error.errorMaxLengthDecimalPart;
-                        }else{
-                            this.inValid = false;
                         }
                     }
-                    else{
-                        this.inValid = false;
-                    }  
                 }
                 
             }
@@ -355,7 +350,7 @@ export default {
             let keyCode = event.keyCode;
 
             if(!Number(event.key) && Number(event.key) != 0 && keyCode != enumJS.keyBackSpace && keyCode != enumJS.keyComma && keyCode != enumJS.keyCtrl && keyCode != enumJS.keyTab
-                && !(this.previousKeyCtrl && (keyCode == enumJS.keyA || keyCode ==enumJS.keyV || keyCode ==enumJS.keyC))){
+                && !(this.previousKeyCtrl && (keyCode == enumJS.keyA || keyCode == enumJS.keyV || keyCode ==enumJS.keyC))){
                 this.value = this.oldValue;
             }else{
                 this.oldValue = this.value;
@@ -387,8 +382,7 @@ export default {
                     this.value = this.formatMoney(result[1]);
                 }
             }
-            
-            if(this.required && (Number(this.value) == null || Number(this.value) == undefined || Number(this.value) == "")){
+            if(this.required && !Number(this.valueNumber)){
                 if(this.value===0){
                     this.inValid = false;
                 }

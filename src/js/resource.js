@@ -379,10 +379,10 @@ const resourceJSJS = {
         duplicateBudget: "Nguồn chi phí đã tồn tại!"
     },
     error: {
-        validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div> ",
+        validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div>",
         maxLength: " không được vượt quá {0} ký tự!",
-        emptyInput: "  không được phép để trống! ",
-        emptyInputNumber: " phải nhập giá trị lớn hơn 0",
+        emptyInput: "  không được phép để trống!",
+        emptyInputNumber: " phải nhập giá trị lớn hơn 0!",
         errorFormatNumber: " chỉ được nhập số!",
         errorMaxLengthNumber: "Độ dài số nhập vào không được quá 15 ký tự!",
         errorMaxLengthIntegerPart: "Độ dài phần nguyên của số nhập vào không được quá 15 số!",
@@ -404,41 +404,41 @@ const resourceJSJS = {
         errorLoadCombobox: "Đã có lỗi khi load data của combobox {0}. vui lòng thử lại sau!",
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
         exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!",
-        noAsset: "Chọn ít nhất 1 tài sản",
-        deleteAssetActive: "<div>Tài sản có mã <b> {0} </b> đã phát sinh chứng từ ghi tăng có mã <b> {1} </b></div>",
-        deleteMultipleAssetActive: "<div><b> {0} </b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
+        noAsset: "Chọn ít nhất 1 tài sản!",
+        deleteAssetActive: "<div>Tài sản có mã <b>{0}</b> đã phát sinh chứng từ ghi tăng có mã <b>{1}</b>.</div>",
+        deleteMultipleAssetActive: "<div><b>{0}</b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
     },
     errorMsg:{
         errorConnection: "Không kết nối được với server. Vui lòng kiểm tra lại!",
-        errorFail: "<div> {0} <br> Error code: <b> {1} </b> </div>",
+        errorFail: "<div>{0}<br> Error code: <b>{1}</b></div>",
         exception: "Đã có lỗi xảy ra. Vui lòng liên hệ trung tâm tư vấn!",
         inValid: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
-        duplicate: "<div>Mã tài sản <b> << {0} >> </b> đã tồn tại.<br> Vui lòng kiểm tra lại!</div>",
+        duplicate: "<div>Mã tài sản <b>&lt&lt{0}&gt&gt</b> đã tồn tại.<br> Vui lòng kiểm tra lại!</div>",
         exportExcelFailed: "Xuất dữu liệu ra file excel không thành công. Vui lòng kiểm tra lại!",
         errorLoadDataTable: "Đã có lỗi khi tải dữ liệu trong bảng. Vui lòng thử lại sau!",
     },
     confirm: {
         asset:{
-            oneAssetDelete: "<div>Bạn có muốn xóa tài sản <b><< {0} - {1} >></b> ?</div>",
-            multiAssetDelete: "<div><b> {0} </b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?</div>",
-            allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này ?",
+            oneAssetDelete: "<div>Bạn có muốn xóa tài sản <b>&lt&lt{0} - {1}&gt&gt</b>?</div>",
+            multiAssetDelete: "<div><b>{0}</b> tài sản đã được chọn. Bạn có muốn xóa các tài sản này khỏi danh sách?</div>",
+            allAssetDelete: "Bạn có chắc chắn muốn xóa tất cả tài sản trong trang này?",
             cantDeleteAsset: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
             multiCantDeleteAsset: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",
             cancelFormAsset: "Bạn có muốn hủy bỏ khai báo tài sản này?",
             changeCancelFormAsset: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
-            exportExcel: "Bạn có muốn xuất dữ liệu ra file excel ?"
+            exportExcel: "Bạn có muốn xuất dữ liệu ra file excel?"
         },
         assetIncrement:{
-            oneAssetIncrementDelete: "<div>Bạn có muốn xóa chứng từ có mã <b><< {0} >></b> ?</div>",
-            multiAssetIncrementDelete: "<div><b> {0} </b> chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?</div>",
-            allAssetIncrementDelete: "Bạn có chắc chắn muốn xóa tất cả chứng từ trong trang này ?",
+            oneAssetIncrementDelete: "<div>Bạn có muốn xóa chứng từ có mã <b>&lt&lt{0}&gt&gt</b>?</div>",
+            multiAssetIncrementDelete: "<div><b>{0}</b> chứng từ đã được chọn. Bạn có muốn xóa các chứng từ này khỏi danh sách?</div>",
+            allAssetIncrementDelete: "Bạn có chắc chắn muốn xóa tất cả chứng từ trong trang này?",
             cantDeleteAssetIncrement: "Không thể xóa tài sản này vì có chứng từ phát sinh.",
             multiCantDeleteAssetIncrement: " tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.",
             cancelFormAssetIncrement: "Bạn có muốn hủy bỏ khai báo chứng từ này?",
             changeCancelFormAssetIncrement: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?",
-            exportExcel: "Bạn có muốn in danh sách chứng từ ra file excel ?",
-            exportMultipleExcel: "<div>Bạn có muốn in <b>{0}</b> chứng từ ra file excel ?</div>",
-            exportExcelDetail: "<div>Bạn có muốn in thông tin của chứng từ <b><< {0} >></b> ra file Excel ?</div>"
+            exportExcel: "Bạn có muốn in danh sách chứng từ ra file excel?",
+            exportMultipleExcel: "<div>Bạn có muốn in <b>{0}</b> chứng từ ra file excel?</div>",
+            exportExcelDetail: "<div>Bạn có muốn in thông tin của chứng từ <b>&lt&lt{0}&gt&gt</b> ra file Excel?</div>"
         },
         budget:{
             cancelForm: "Thông tin thay đổi sẽ không được cập nhật nếu bạn không lưu. Bạn có muốn lưu các thay đổi này?"
@@ -446,7 +446,7 @@ const resourceJSJS = {
     },
     toastSuccess: {
         asset:{
-            exportExcel: "<div>Dữ liệu đã được xuất ra file excel <b> {0} </b>. </div>",
+            exportExcel: "<div>Dữ liệu đã được xuất ra file excel <b>{0}</b>.</div>",
             success: "Thành công.",
             saveSuccess: "Lưu dữ liệu thành công.",
             deleteSuccess: "Tài sản đã được xóa.",

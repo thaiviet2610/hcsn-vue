@@ -24,7 +24,7 @@
         <MTooltip
             v-if="(value.length - 5 ) * 8 > inputWidth"
             :text="value"
-            :style="`max-width: ${inputWidth-22}px !important;`"
+            :style="`max-width: ${inputWidth - 20}px !important;`"
             class="m-input-tooltip">
 
         </MTooltip>    

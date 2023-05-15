@@ -49,7 +49,7 @@
                     <Pane :size="paneSize" >
                         <div min-size="0" class="asset_increment__content-body--up" style="border: none;box-shadow: none">
                             <div class="content-body__up">
-                                <div class="input1">
+                                <div class="asset-increment-list-input-search">
                                     <MInput 
                                         :ref="assetIncrementListInfo.inputSearch.ref"
                                         :placeholder="assetIncrementListInfo.inputSearch.placeholder"
@@ -76,7 +76,7 @@
                                             <MButtonIcon
                                                 class="asset-increment__btn-export"
                                                 classIcon="asset_increment--item21"
-                                                @addOnClickBtnIcon="addOnClickBtnExport">
+                                                @addOnClickBtnIcon="addOnClickBtnExport1">
                                             </MButtonIcon>
                                             <MTooltip
                                                     :text="assetIncrementListInfo.tooltip.print.text"

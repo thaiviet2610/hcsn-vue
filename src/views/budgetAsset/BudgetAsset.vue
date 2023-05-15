@@ -601,6 +601,7 @@ export default {
                 }
             }else{
                 for(let j = 0; j < index; j++){
+                    
                     if(this.priceList[j].budget_name == combobox.value){
                         combobox.inValid = true;
                         combobox.notifyError = resourceJS.validateBudget.duplicateBudget;

@@ -230,6 +230,13 @@ div.asset_increment__content-body--up::-webkit-scrollbar {
     box-sizing: border-box;
 }
 
+.asset-increment-list-input-search{
+    width: 285px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+
 
 .splitpanes__splitter{
     background-image: url(../../../assets/icon/menu.png) ;
@@ -365,8 +372,8 @@ em.specs {
 }
 
 .asset-increment--description{
-    max-width: 488px;
-    min-width: 488px;
+    max-width: 486px;
+    min-width: 486px;
     text-align: left;
     padding-left: 20px;
 }

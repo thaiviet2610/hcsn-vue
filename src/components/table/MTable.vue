@@ -33,7 +33,7 @@
         <tr class="no-data-container" :class="{'no-data-no-footer':!isFooter}">
           <div class="no-data">
             <div class="icon-no-data"></div>
-            <h3 class="text-no-data">{{ textNoData }}</h3>
+            <div class="text-no-data">{{ textNoData }}</div>
           </div>
         </tr>
 

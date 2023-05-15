@@ -418,7 +418,6 @@ export default {
                 
                 this.entitiesSearch = this.entities;
             }
-            // set vị trí thanh scroll theo theo vị trí item được chọn
             this.isShow = true;
             this.zIndex = 2;
         },
@@ -476,27 +475,17 @@ export default {
                     this.notifyError = resourceJS.error.emptyInput;
                 }
                 return;
-            }else if(this.required && findIndex == -1){
+            }else if(findIndex == -1){
                 //1.2. kiểm tra xem giá trị nhập vào có nằm trong danh sách dữ liệu không
                 //1.2.1. nếu có thì set invalid = true và hiển thị thêm thông báo lỗi 
                 this.inValid = true;
-                if(this.label){
-                    this.notifyError = this.label + resourceJS.error.errorDontFindInData;
-                }else{
-                    this.notifyError = resourceJS.error.errorDontFindInData;
-                }
+                this.notifyError = this?.label + resourceJS.error.errorDontFindInData;
                 return;
             }
             else if(findIndex >= 0){
                 //1.3. trường hợp còn lại thì set invalid = false (tức là không có lỗi)
-                this.inValid = false;
+                // this.inValid = false;
                 this.indexItemSelect = findIndex;
-                return;
-            }else if(findIndex==-1 && !this.required){
-                if(this.value == "" || this.value == null || this.value == undefined){
-                    this.indexItemSelect = -1;
-                }
-                this.inValid = false;
                 return;
             }
             

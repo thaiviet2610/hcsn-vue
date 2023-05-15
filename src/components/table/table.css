@@ -329,7 +329,7 @@ tfoot{
 
 .content__table::-webkit-scrollbar {
     height: 6px;
-    width: 4px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -387,9 +387,9 @@ tfoot{
 }
 
 .text-no-data{
-    font-size: 15px;
-    /* color: red;
-    font-family: Roboto-Bold; */
+    font-size: 1.17em;
+    font-family: Roboto-Bold;
+    margin-top: 15px;
 }
 
 .no-data-no-footer{
