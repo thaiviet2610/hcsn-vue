@@ -141,7 +141,7 @@ export default {
                 this.notifyError = this.label + resourceJS.error.maxLength.replace("{0}", this.maxLength);
             }
             if(!this.inValid){
-                this.$emit('getValueInput',this.value);
+                this.$emit('getValueInput',this.value?.trim());
             }
         },
         
@@ -152,6 +152,8 @@ export default {
         setFocus() {
             this.$nextTick(function() {
                 this.$refs["mInput"]?.focus();
+                this.setSelect();
+
             })
         }, 
 
@@ -160,7 +162,7 @@ export default {
          * @author LTVIET(16/03/2023)
          */
         onKeyDownSelecte(){
-            this.$emit("keyDownEnter",this.value);
+            this.$emit("keyDownEnter",this.value?.trim());
         },
 
         /**
@@ -168,11 +170,7 @@ export default {
          * @author LTVIET (05/03/2023)
          */
          handleEventFocusInput(id){
-            // this.setSelect(true);
-            // if(id){
-            //     this.setSelect(true);
-            // }
-            this.$emit('getValueIdInputFocus',id);
+            this.$emit('getValueIdInputFocus',id?.trim());
         },
 
         /**
@@ -182,7 +180,7 @@ export default {
          setSelect() {
             this.$nextTick(function() {
                 this.$refs["mInput"]?.select();
-            })
+            });
         }, 
         
         /**
@@ -193,7 +191,7 @@ export default {
             if(this.value){
                 this.inValid = false;
             }
-            this.$emit("getValueEventInput",this.value);
+            this.$emit("getValueEventInput",this.value?.trim());
         }
     },
     

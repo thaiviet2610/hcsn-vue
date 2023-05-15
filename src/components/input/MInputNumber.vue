@@ -305,6 +305,7 @@ export default {
         setFocus() {
             this.$nextTick(function() {
                 this.$refs["mInputNumber"].focus();
+                this.setSelect();
             })
         }, 
 

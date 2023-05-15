@@ -668,12 +668,14 @@ data() {
 },
 created() {
   this.getUnitData();
+  let length = this.dataEntities.length;
   if(this.pageSize){
-    for(let i=0;i<=this.pageSize;i++){
-      this.checkbox[i] = false;
-      this.rowSelected[i] = false;
-      this.isClickRow[i] = true;
-    }
+    length = this.pageSize;
+  }
+  for(let i=0;i<=length;i++){
+    this.checkbox[i] = false;
+    this.rowSelected[i] = false;
+    this.isClickRow[i] = true;
   }
 },
 

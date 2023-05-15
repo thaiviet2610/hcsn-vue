@@ -65,7 +65,7 @@
             </div>
             <div 
                 v-if="this.entitiesSearch.length == 0"
-                class="combobox__data_item" 
+                class="combobox__data_item-no-data" 
                 :class="{'item__selected': index == indexItemSelect}" >
                 <div 
                     class="data_item--text" 
@@ -262,6 +262,7 @@ export default {
         setFocus() {
             this.$nextTick(function() {
                 this.$refs["mInputCombobox"].focus();
+                this.setSelect();
             })
         }, 
 

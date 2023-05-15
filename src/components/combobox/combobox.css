@@ -158,4 +158,17 @@ div::-webkit-scrollbar {
     overflow: unset;
 }
 
+.combobox__data_item-no-data{
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Roboto-Regular;
+    font-size: 2px !important;
+    text-align: center;
+    position: relative;
+    box-sizing: border-box;
+}
+
 

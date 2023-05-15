@@ -130,6 +130,7 @@ export default {
          setFocus() {
             this.$nextTick(function() {
                 this.$refs["mInputDate"].focus();
+                this.setSelect();
             })
         }, 
 
@@ -147,7 +148,7 @@ export default {
             }else{
                 this.inValid = false;
                 this.value = this.getFormatDate(this.txtInputDate,resourceJS.date.format.yyyyMMdd,this.format);
-                this.$emit("getValueInputDate",this.txtInputDate);
+                this.$emit("getValueInputDate",this.txtInputDate?.trim());
             }
         },
 
@@ -174,7 +175,7 @@ export default {
                         this.inValid = true;
                         let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
                         this.notifyError = message;
-                        this.$emit('getValueInputDate',this.value);
+                        this.$emit('getValueInputDate',this.value?.trim());
                     }else{
                         // 2.2. nếu đúng định dạng
                         // 2.2.1. validate lại giá trị ngày, tháng, năm
@@ -318,7 +319,7 @@ export default {
                     this.inValid = false;
                     let value = `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
                     this.txtInputDate = value;
-                    this.$emit('getValueInputDate',value);
+                    this.$emit('getValueInputDate',value?.trim());
                 }
             }else if(!this.value){
                 this.$emit('getValueInputDate',null);

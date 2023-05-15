@@ -512,7 +512,6 @@ export default {
                 if(validateCode == enumJS.validateCode.costSourceEmpty){
                     const index = dataError.Index;
                     for (const propName of dataError.Data.reverse()) {
-                        console.log(propName);
                         if(propName == "mount"){
                             let item = this.$refs[`mInput_${index}`][0];
                             item.inValid = true;

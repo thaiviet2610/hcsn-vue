@@ -1,5 +1,8 @@
 <template>
-    <div @keydown="handleEventKeyDown" @keyup="handleEventKeyUp">
+    <div @keydown.ctrl.1.prevent="btnClickOpenFormSelectedAsset" 
+        @keydown.ctrl.e.prevent="handleEventShortcutFunctionTable(type.edit)"
+        @keydown.ctrl.d.prevent="handleEventShortcutFunctionTable(type.delete)"
+        @keyup="handleEventKeyUp">
         <MForm :label="labelForm"
             :idItemFirst="assetIncrementDetailInfo.voucherCode.id"
             idItemLast="idBtnCancelAssetIncrementDetail"
@@ -237,6 +240,7 @@ export default {
             btnDialogCancelEditForm: resourceJS.buttonDialog.cancelEditForm,
             oldValueIdAssets: "",
             oldValueAssets: "",
+            type: enumJS.type,
             assetsAdd: [],
             assetsDelete: [],
             dataBodyTable: [],
@@ -455,6 +459,14 @@ export default {
          btnClickOpenFormSelectedAsset(){
             this.isShowSelectAssetNoActive = true;
             this.isShowToastSuccess = false;
+        },
+
+        handleEventShortcutFunctionTable(type){
+            const index = this.$refs[this.assetIncrementDetailInfo.table.ref].indexRowSelected;
+            if(index > 0){
+                const asset = this.dataAssets[index - 1];
+                this.handleEventClickFunctionTable([type,asset]);
+            }
         },
 
         /**
@@ -700,7 +712,6 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         addAssetIncrement(){
-            console.log(this.assetIncrement);
             axios.post(this.assetIncrementApi, this.assetIncrement)
             .then(()=>{
                 this.isShowLoad  = false;

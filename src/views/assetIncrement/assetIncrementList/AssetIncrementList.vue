@@ -573,6 +573,7 @@ export default {
                 console.log(err);
                 let message = resourceJS.notify.errorLoadData;
                 this.handleEventErrorAPI(err,message);
+                this.newVoucherCode = "";
                 this.isShowLoad = false;
             })
         },
