@@ -327,7 +327,7 @@ export default {
                 this.assets = res.data.Data;
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
-                        index: asset.index,
+                        row_index: asset.row_index,
                         fixed_asset_code: asset.fixed_asset_code,
                         fixed_asset_name: asset.fixed_asset_name,
                         fixed_asset_category_name: asset.fixed_asset_category_name,
@@ -348,6 +348,7 @@ export default {
                 this.dataAssets = res.data.Data;
                 this.$refs[this.refElements.table].totalRecord = res.data.TotalRecord;
                 this.$refs[this.refElements.table].getUnitData();
+                this.$refs[this.refElements.table].scrollToTopTable();
                 this.isShowLoad = false;
 
             })
@@ -664,10 +665,11 @@ export default {
             axios.delete(`${this.assetApi}/${id}`)
             .then(()=>{
                 //gọi hàm load lại dữ liệu table
-                this.$refs[this.refElements.table].pageNumber = 1;
+                this.pageNumber = 1;
                 this.$refs[this.refElements.table].checkboxActive = [];
                 this.$refs[this.refElements.table].entityCheckboxActive = [];
                 this.getDataTable();
+
                 //hiển thị dialog thông báo xóa thành công
                 this.isButtonUndo = true;
                 this.isButtonClose = true;
@@ -847,13 +849,15 @@ export default {
          * @author LTVIET (12/06/2023)
          */
         getValueAssetCategory(value){
-            this.assetCategoryId = value;
-            if(!value){
-                this.assetCategoryId = "";
+            if(value != this.assetCategoryId){
+                this.assetCategoryId = value;
+                if(!value){
+                    this.assetCategoryId = "";
+                }
+                this.$refs[this.refElements.table].checkboxActive = [];
+                this.$refs[this.refElements.table].entityCheckboxActive = [];
+                this.getDataTable();
             }
-            this.$refs[this.refElements.table].checkboxActive = [];
-            this.$refs[this.refElements.table].entityCheckboxActive = [];
-            this.getDataTable();
             
         },
 
@@ -863,13 +867,15 @@ export default {
          * @author LTVIET (12/06/2023)
          */
         getValueDepartment(value){
-            this.departmentId = value;
-            if(!value){
-                this.departmentId = "";
+            if(value != this.departmentId){
+                this.departmentId = value;
+                if(!value){
+                    this.departmentId = "";
+                }
+                this.$refs[this.refElements.table].checkboxActive = [];
+                this.$refs[this.refElements.table].entityCheckboxActive = [];
+                this.getDataTable();
             }
-            this.$refs[this.refElements.table].checkboxActive = [];
-            this.$refs[this.refElements.table].entityCheckboxActive = [];
-            this.getDataTable();
             
         },
 
@@ -895,7 +901,7 @@ export default {
          * @author LTVIET (16/03/2023)
          */
         handleEventGetValueInputSearch(value){
-            if(value == ""){
+            if(value == "" && this.keyword != value){
                 this.handleEventKeyDownEnterInputSearch();
             }
         },
@@ -1050,7 +1056,7 @@ export default {
             const assets = table.getEntityCheckboxActiveList();
             let quantityCheckbox = assets.length;
             if(quantityCheckbox == 1){
-                let asset = this.dataAssets[assets[0].index - 1];
+                let asset = this.dataAssets[assets[0].row_index - 1];
                 this.handleEventOpenForm([enumJS.type.edit,asset]);
                 this.previousKeyCtrl = false;
             }

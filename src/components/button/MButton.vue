@@ -19,11 +19,11 @@ export default {
         // tên button
         label: {
             type: String,
-            required: ""
+            default: ""
         },
         idButton: {
             type: String,
-            required: null
+            default: null
         },
         
     },

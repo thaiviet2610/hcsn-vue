@@ -180,7 +180,7 @@ const resourceJSJS = {
             },
             btnCancel: {
                 class: "form-btn-cancel",
-                label: "Hủy",
+                label: "Hủy bỏ",
                 tooltip: "ESC",
                 classTooltip: "form-btn-cancel-tooltip"
             },
@@ -317,6 +317,9 @@ const resourceJSJS = {
             placeholder: "Tìm kiếm theo số chứng từ, nội dung"
         },
         tooltip:{
+            interface: {
+                classTooltip: "asset-increment-list-interface-tooltip"
+            },
             zoomIn:{
                 class: "icon--zoom-in",
                 text: "Phóng to",
@@ -359,7 +362,7 @@ const resourceJSJS = {
             },
 
             btnDeleteMultipleAssetIncrement: {
-                tooltip: "Xóa nhiều (Ctrl+D)",
+                tooltip: "Xóa nhiều",
                 classTooltip: "btn-add-asset-increment-tooltip"
             },
         },
@@ -382,6 +385,7 @@ const resourceJSJS = {
         validateData: "<div><b><< {0} >></b> cần phải điền đầy đủ thông tin!</div>",
         maxLength: " không được vượt quá {0} ký tự!",
         emptyInput: "  không được phép để trống!",
+        emptyBudget: "Không được bỏ trống ô này!",
         emptyInputNumber: " phải nhập giá trị lớn hơn 0!",
         errorFormatNumber: " chỉ được nhập số!",
         errorMaxLengthNumber: "Độ dài số nhập vào không được quá 15 ký tự!",
@@ -402,10 +406,11 @@ const resourceJSJS = {
         errorPriceLessThanDepre: "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá!",
         errorLoadData: "Đã có lỗi khi tải dữ liệu. Vui lòng thử lại!",
         errorLoadCombobox: "Đã có lỗi khi load data của combobox {0}. vui lòng thử lại sau!",
+        noDataCombobox: "Không có dữ liệu phù hợp",
         notData : "Vui lòng chọn giá trị hợp lệ trong dánh sách dữ liệu!",
         exception: "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!",
         noAsset: "Chọn ít nhất 1 tài sản!",
-        deleteAssetActive: "<div>Tài sản có mã <b>{0}</b> đã phát sinh chứng từ ghi tăng có mã <b>{1}</b>.</div>",
+        deleteAssetActive: "<div>Tài sản có mã <b>&lt&lt{0}&gt&gt</b> đã phát sinh chứng từ ghi tăng có mã <b>&lt&lt{1}&gt&gt</b>.</div>",
         deleteMultipleAssetActive: "<div><b>{0}</b> tài sản được chọn không thể xóa. Vui lòng kiểm tra lại tài sản trước khi thực hiện xóa.</div>"
     },
     errorMsg:{
@@ -567,6 +572,7 @@ const resourceJSJS = {
     },
     table: {
         noDataTable: "Không có dữ liệu",
+        totalText: "Tổng cộng",
         tableAsset:{
             contextMenu:{
                 width: 156,
@@ -653,45 +659,35 @@ const resourceJSJS = {
                 },
             ],
             body:{
-                index: {
+                row_index: {
                     class: "column2",
-                    maxWidth: 35
                 },
                 fixed_asset_code:{
                     class: "column3",
-                    maxWidth: 80
                 },
                 fixed_asset_name: {
                     class: "column4",
-                    maxWidth: 110
                 },
                 fixed_asset_category_name:{
                     class: "column5",
-                    maxWidth: 130
                 },
                 department_name: {
                     class: "column6",
-                    maxWidth: 204
                 },
                 quantity: {
                     class: "column7",
-                    maxWidth: 55
                 },
                 cost: {
                     class: "column8",
-                    maxWidth: 120
                 },
                 depreciation_value: {
                     class: "column9",
-                    maxWidth: 120
                 },
                 residual_value:{
                     class: "column10",
-                    maxWidth: 120
                 },
                 active:{
                     class: "column12",
-                    maxWidth: 85
                 },
             },
             footer: {
@@ -788,33 +784,26 @@ const resourceJSJS = {
                 },
             ],
             body:{
-                index: {
+                row_index: {
                     class: "asset_increment_detail--column2",
-                    maxWidth: 65
                 },
                 fixed_asset_code:{
                     class: "asset_increment_detail--column3",
-                    maxWidth: 100
                 },
                 fixed_asset_name: {
                     class: "asset_increment_detail--column4",
-                    maxWidth: 110
                 },
                 department_name: {
                     class: "asset_increment_detail--column6",
-                    maxWidth: 248
                 },
                 cost: {
                     class: "asset_increment_detail--column8",
-                    maxWidth: 130
                 },
                 depreciation_value: {
                     class: "asset_increment_detail--column9",
-                    maxWidth: 130
                 },
                 residual_value: {
                     class: "asset_increment_detail--column10",
-                    maxWidth: 130
                 },
             },
             footer: {
@@ -917,33 +906,26 @@ const resourceJSJS = {
                 },
             ],
             body:{
-                index: {
+                row_index: {
                     class: "asset-no-active--column2",
-                    maxWidth: 55
                 },
                 fixed_asset_code: {
                     class: "asset-no-active--column3",
-                    maxWidth: 110
                 },
                 fixed_asset_name: {
                     class: "asset-no-active--column4",
-                    maxWidth: 130
                 },
                 department_name: {
-                    class: "asset-no-active--column6",
-                    maxWidth: 276
+                    class: "asset-no-active--column6"
                 },
                 cost: {
                     class: "asset-no-active--column8",
-                    maxWidth: 140
                 },
                 depreciation_value: {
                     class: "asset-no-active--column9",
-                    maxWidth: 140
                 },
                 residual_value: {
                     class: "asset-no-active--column10 asset-no-active__residual-value",
-                    maxWidth: 140
                 },
             },
             footer: {
@@ -1042,33 +1024,26 @@ const resourceJSJS = {
                 },
             ],
             body:{
-                index:{
+                row_index:{
                     class: "asset_increment_detail_list--column2",
-                    maxWidth: 65
                 },
                 fixed_asset_code:{
                     class: "asset_increment_detail_list--column3",
-                    maxWidth: 120
                 },
                 fixed_asset_name: {
                     class: "asset_increment_detail_list--column4",
-                    maxWidth: 150
                 },
                 department_name: {
                     class: "asset_increment_detail_list--column6",
-                    maxWidth: 396
                 },
                 cost: {
                     class: "asset_increment_detail_list--column8",
-                    maxWidth: 160
                 },
                 depreciation_value: {
                     class: "asset_increment_detail_list--column9",
-                    maxWidth: 160
                 },
                 residual_value:{
                     class: "asset_increment_detail_list--column10",
-                    maxWidth: 160
                 },
             },
             footer: {
@@ -1160,29 +1135,23 @@ const resourceJSJS = {
                 },
             ],
             body:{
-                index: {
+                row_index: {
                     class: "asset-increment--index",
-                    maxWidth: 70,
                 },
                 voucher_code: {
                     class: "asset-increment--voucher-code asset-increment--voucher-code--text",
-                    maxWidth: 130
                 },
                 voucher_date: {
                     class: "asset-increment--voucher-date",
-                    maxWidth: 130
                 },
                 increment_date: {
                     class: "asset-increment--increment-date",
-                    maxWidth: 130
                 },
                 price: {
                     class: "asset-increment--price",
-                    maxWidth: 140
                 },
                 description: {
                     class: "asset-increment--description",
-                    maxWidth: 488
                 },
             },
             footer: {

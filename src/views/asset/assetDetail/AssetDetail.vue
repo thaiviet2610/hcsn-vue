@@ -1140,13 +1140,17 @@ export default {
          * @author LTVIET (29/03/2023)
          */
         getValueDepartmentId(value){
-            this.asset.department_id = value;
-            const department  = this.dataComboboxDepartment.find(function(department){
-                return department.department_id == value;
-            })
-            this.asset.department_code = department.department_code;
-            this.asset.department_name = department.department_name;
-            this.keyDepartmentName = ++this.keyDepartmentName;
+            if(value){
+                this.asset.department_id = value;
+                const department  = this.dataComboboxDepartment.find(function(department){
+                    return department.department_id == value;
+                })
+                
+                this.asset.department_code = department.department_code;
+                this.asset.department_name = department.department_name;
+                this.keyDepartmentName = ++this.keyDepartmentName;
+            }
+            
         },
 
         /**
@@ -1155,26 +1159,28 @@ export default {
          * @author LTVIET (29/03/2023)
          */
         getValueAssetCategoryId(value){
-            this.asset.fixed_asset_category_id = value;
-            const assetCategory = this.dataComboboxAssetCategory.find(function(assetCategory){
-                return assetCategory.fixed_asset_category_id == value;
-            })
-            // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
-            this.asset.fixed_asset_category_code = assetCategory.fixed_asset_category_code;
-            this.asset.fixed_asset_category_name = assetCategory.fixed_asset_category_name;
-            this.keyAssetCategoryName = ++this.keyAssetCategoryName;
-            // Nếu thay đổi loại tài sản thì sẽ lấy:
-            // --> số năm sử dụng theo loại tài sản
-            this.asset.life_time = assetCategory.life_time;
-            // --> tỷ lệ khấu hao theo loại tài sản
-            this.asset.depreciation_rate = assetCategory.depreciation_rate;
-            this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
-            this.getDepreciationRateInput();
-            // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
-            this.depreciationValueYear = this.getDepreciationValueYear;
-            this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
-            this.keyDepreciationRate = ++this.keyDepreciationRate;
-            this.keyLifeTime = ++this.keyLifeTime;
+            if(value){
+                this.asset.fixed_asset_category_id = value;
+                const assetCategory = this.dataComboboxAssetCategory.find(function(assetCategory){
+                    return assetCategory.fixed_asset_category_id == value;
+                })
+                // Nếu đối tượng loại tài sản thay đổi thì lấy code, name theo đối tượng mới
+                this.asset.fixed_asset_category_code = assetCategory.fixed_asset_category_code;
+                this.asset.fixed_asset_category_name = assetCategory.fixed_asset_category_name;
+                this.keyAssetCategoryName = ++this.keyAssetCategoryName;
+                // Nếu thay đổi loại tài sản thì sẽ lấy:
+                // --> số năm sử dụng theo loại tài sản
+                this.asset.life_time = assetCategory.life_time;
+                // --> tỷ lệ khấu hao theo loại tài sản
+                this.asset.depreciation_rate = assetCategory.depreciation_rate;
+                this.depreciationRate = this.getRoundValue(this.asset.depreciation_rate*100,10);
+                this.getDepreciationRateInput();
+                // --> giá trị hao mòn năm theo tỷ lệ hao mòn năm
+                this.depreciationValueYear = this.getDepreciationValueYear;
+                this.keyDepreciationValueYear = ++this.keyDepreciationValueYear;
+                this.keyDepreciationRate = ++this.keyDepreciationRate;
+                this.keyLifeTime = ++this.keyLifeTime;
+            }
             
         },
 

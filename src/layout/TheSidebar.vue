@@ -139,6 +139,8 @@
 <script>
 import resourceJS from '@/js/resource';
 import TheMenu from './TheMenu.vue';
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 export default {
     name:"TheSidebar",
     components:{
@@ -147,8 +149,9 @@ export default {
     updated() {
     },
     created() {
-        
+        this.setup();
     },
+
     mounted() {
 
     },
@@ -166,13 +169,26 @@ export default {
             txtBodyTool: resourceJS.theSidebar.body.txtCategory,
             txtBodySearch: resourceJS.theSidebar.body.txtSearch,
             txtBodyReport: resourceJS.theSidebar.body.txtReport,
-            isShowDetailAsset: true,
+            isShowDetailAsset: false,
             isShow: true,
             check: true,
+            a: null
             
         }
     },
     methods: {
+        setup() {
+            const route = useRoute()
+            const router = useRouter()
+
+            onMounted(async () => {
+            await router.isReady();
+                if(route.path == "/AssetIncrementList"){
+                    this.isShowDetailAsset = true;
+                }
+            })
+        },
+
         /**
          * Hàm xử lý sự kiện click btn thu gọn sidebar
          * @author LTVIET (01/04/2023)

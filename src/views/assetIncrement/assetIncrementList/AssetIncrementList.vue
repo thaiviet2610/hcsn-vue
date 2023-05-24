@@ -30,6 +30,11 @@
                             @addOnClickBtnIcon="handleEventOpenInterfaceSeleceted"
                             >
                         </MButtonIcon>
+                        <MTooltip
+                            v-show="!isShowInterfaceSelecte"
+                            :text="interfaceTooltip"
+                            :class="assetIncrementListInfo.tooltip.interface.classTooltip">
+                        </MTooltip>
                         <div v-show="isShowInterfaceSelecte" class="interface__container">
                             <div @click="handleEventClickVerticalInterFace" class="interface__item">
                                 <div class="vertical_interface"></div>
@@ -40,6 +45,7 @@
                                 <div>{{ assetIncrementListInfo.interfaceSeleceted.horizontalInterface }}</div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -55,7 +61,8 @@
                                         :placeholder="assetIncrementListInfo.inputSearch.placeholder"
                                         :iconInput="true"
                                         @getValueEventInput="handleEventGetValueInputSearch"
-                                        @keyDownEnter="handleEventEnterGetValueInputSearch">
+                                        @keyDownEnter="handleEventEnterGetValueInputSearch"
+                                        :key="keyInputSearch">
                                     </MInput>
                                 </div>
                                 <div class="content-body__up--right">
@@ -76,7 +83,7 @@
                                             <MButtonIcon
                                                 class="asset-increment__btn-export"
                                                 classIcon="asset_increment--item21"
-                                                @addOnClickBtnIcon="addOnClickBtnExport1">
+                                                @addOnClickBtnIcon="addOnClickBtnExport">
                                             </MButtonIcon>
                                             <MTooltip
                                                     :text="assetIncrementListInfo.tooltip.print.text"
@@ -284,6 +291,7 @@ export default {
             typeForm: "",
             classSplitpanes: "",
             assets: [],
+            keyInputSearch: 0,
             assetsDeleteMultiple: [],
             contextMenuDelete: false,
             dataBodyTableMaster: [],
@@ -300,10 +308,12 @@ export default {
             idVoucherSelected: null,
             tooltipFullScreen: "",
             fileNameExcel: "",
-            idsExport: []
+            idsExport: [],
+            interfaceTooltip: ""
         }
     },
     created() {
+        this.interfaceTooltip = this.assetIncrementListInfo.interfaceSeleceted.horizontalInterface;
         this.classIconFullScreen = this.assetIncrementListInfo.button.btnFullScreen.classZoomIn;
         this.tooltipFullScreen = this.assetIncrementListInfo.button.btnFullScreen.textZoomIn;
         this.pageSizeTableMaster = Number(this.dataPageSizeTableMaster[0]);
@@ -385,11 +395,12 @@ export default {
 
         /**
          * Hàm xử lý sự kiện bấm phím tắt gọi đến chức năng trong table
-         * @param {*} keyCode mã phím tắt
+         * @param {*} event sự kiện cần xử lý
          * @author LTVIET (15/04/2023)
          */
-        handleEventShortcutsFunctionTableMaster(keyCode){
+        handleEventShortcutsFunctionTableMaster(event){
             let tableMaster = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref];
+            const keyCode = event.keyCode;
             // khi chọn 1 dòng trong 1 table
             if(tableMaster.indexRowSelected > 0){
                 const assetIncrement = this.dataAssetIncrements[tableMaster.indexRowSelected - 1];
@@ -407,17 +418,15 @@ export default {
                 if(quantityAssetIncrementActive == 1){
                     const assetIncrement = assetIncrements[0];
                     if(keyCode == enumJS.keyE){
-                    this.handleEventClickFunctionTableMaster([enumJS.type.edit,assetIncrement]);
+                        this.handleEventClickFunctionTableMaster([enumJS.type.edit,assetIncrement]);
                     }else if(keyCode == enumJS.keyD){
                         this.handleEventClickFunctionTableMaster([enumJS.type.delete,assetIncrement]);
                     }
                 }
-                // khi có nhiều checkbox được chọn
-                else if(quantityAssetIncrementActive > 1){
-                    this.addOnClickBtnDeleteMultiple();
-                }
+                
             }
         },
+
 
 
 
@@ -433,7 +442,7 @@ export default {
                 this.assetIncrements = res.data.Data;
                 this.dataBodyTableMaster = this.assetIncrements.map(function(assetIncrement){
                     return {
-                        index: assetIncrement.index,
+                        row_index: assetIncrement.row_index,
                         voucher_code: assetIncrement.voucher_code,
                         voucher_date: commonJS.formatDate(assetIncrement.voucher_date,"",resourceJS.date.format.ddMMyyyy),
                         increment_date: commonJS.formatDate(assetIncrement.increment_date,"",resourceJS.date.format.ddMMyyyy),
@@ -448,6 +457,7 @@ export default {
                 this.dataAssetIncrements = res.data.Data;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].totalRecord = this.totalRecordTableMaster;
                 this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getUnitData();
+                this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].scrollToTopTable();
                 if(this.assetIncrements.length > 0){
                     const quantityAssetIncrementActive = this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].getEntityCheckboxActiveList().length;
                     if(quantityAssetIncrementActive == 0){
@@ -504,6 +514,8 @@ export default {
          */
         handleEventCloseFormAssetIncrementDetail(){
             this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].selectedRowTable(1);
+            this.$refs[this.assetIncrementListInfo.table.tableMaster.ref].scrollToTopTable();
+
             this.isShowDetail = false;
             this.setFocusDefault();
         },
@@ -655,6 +667,7 @@ export default {
         handleEventClickHorizontalInterFace(){
             this.paneSize = 60;
             this.checkPanSize = enumJS.paneSize.diffrentPercent;
+            this.interfaceTooltip = this.assetIncrementListInfo.interfaceSeleceted.horizontalInterface;
             this.classInterface = "horizontal_interface";
             this.isShowInterfaceSelecte = false;
         },
@@ -666,6 +679,7 @@ export default {
         handleEventClickVerticalInterFace(){
             this.paneSize = enumJS.percent.oneHundred;
             this.checkPanSize = enumJS.paneSize.oneHundredPercent;
+            this.interfaceTooltip = this.assetIncrementListInfo.interfaceSeleceted.verticalInterface;
             this.classInterface = "vertical_interface";
             this.isShowInterfaceSelecte = false;
         },
@@ -691,7 +705,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventGetValueInputSearch(value){
-            if(value==""){
+            if(value=="" && value != this.keyword){
                 this.handleEventEnterGetValueInputSearch(value);
             }
         },
@@ -706,6 +720,7 @@ export default {
             this.isShowToastSuccess = true;
             this.notifyToastSuccess = resourceJS.toastSuccess.asset.success;
             this.contentToastSuccess = resourceJS.toastSuccess.asset.saveSuccess;
+            this.keyInputSearch = ++this.keyInputSearch;
             setTimeout(() => {
                 this.closeToastSucess();
             }, 3000);
@@ -740,6 +755,7 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         getAssetIncrementSelected(value){
+
             if(value){
                 this.getAssetIncrementDetailById(value);
             }else{
@@ -866,7 +882,6 @@ export default {
                 }
                 let quantity = ids.length;
                 quantity = quantity < 10 ? `0${quantity}` : quantity;
-                console.log(ids);
                 this.assetIncrementExportApi = `${api}?voucherIds=${ids}`;
                 message = resourceJS.confirm.assetIncrement.exportMultipleExcel.replace("{0}",quantity);
                 this.fileNameExcel = this.assetIncrementListInfo.export.fileName;
@@ -984,9 +999,10 @@ export default {
                 axios.get(`${this.assetIncrementApi}/${this.idVoucherSelected}`)
                 .then(res=>{
                     const assets = res.data.assets;
+                    this.dataAssets = assets;
                     this.dataBodyTableDetail = assets.map(function(asset){
                         return {
-                            index: asset.index,
+                            row_index: asset.row_index,
                             fixed_asset_code: asset.fixed_asset_code,
                             fixed_asset_name: asset.fixed_asset_name,
                             department_name: asset.department_name,
@@ -996,7 +1012,11 @@ export default {
                         }
                     })
                     this.isShowLoadTableDetail = false;
+                    this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].isClickRow = new Array(assets.length+1).fill(true);
                     this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].getUnitData();
+                    this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].indexRowSelected = 0;
+                    this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].rowSelected = [];
+                    this.$refs[this.assetIncrementListInfo.table.tableDetail.ref].scrollToTopTable();
                     this.getDataAssetIncrementDetaiForm(assetIncrement,assets);
                 })
                 .catch(err=>{

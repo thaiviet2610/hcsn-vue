@@ -1,6 +1,14 @@
 import resourceJS from "./resource";
 
 const commonJS = {
+    /**
+     * Hàm format thời gian
+     * @param {*} dateTime giá trị thời gian cần format
+     * @param {*} formatBefore định dạng thời gian lúc chưa format
+     * @param {*} formatAfter định dạng thời gian muốn format
+     * @returns giá trị thời gian đã được format
+     * @author LTVIET (16/03/2023)
+     */
     formatDate (dateTime,formatBefore,formatAfter) {
         try {
             if(dateTime !=null && dateTime != undefined) {
@@ -44,11 +52,14 @@ const commonJS = {
         }
     },
 
-    formatNumber(value) {
-        let number = value;
-        if(value > 1000){
-            number = String(value).indexOf(",") == -1 ? value : String(value).replaceAll(',','.');
-        }
+    /**
+     * Hàm format số
+     * @param {*} number giá trị số cần format
+     * @returns giá trị số đã được format
+     * @author LTVIET (16/03/2023)
+     */
+    formatNumber(number) {
+
         if(number < 10 && String(number).indexOf(".") == -1){
             number = `0${number}`;
             if(Number(number) == 0){

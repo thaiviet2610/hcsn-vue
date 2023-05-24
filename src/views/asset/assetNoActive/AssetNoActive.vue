@@ -148,7 +148,7 @@ export default {
                 this.assets = res.data.Data;
                 this.dataBodyTable = res.data.Data.map(function(asset){
                     return {
-                        index: asset.index,
+                        row_index: asset.row_index,
                         fixed_asset_code: asset.fixed_asset_code,
                         fixed_asset_name: asset.fixed_asset_name,
                         department_name: asset.department_name,
@@ -165,6 +165,7 @@ export default {
                 this.dataAssets = res.data.Data;
                 this.$refs[this.assetNoActiveInfo.table.ref].totalRecord = res.data.TotalRecord;
                 this.$refs[this.assetNoActiveInfo.table.ref].getUnitData();
+                this.$refs[this.assetNoActiveInfo.table.ref].scrollToTopTable();
                 this.isShowLoad = false;
 
             })
@@ -237,7 +238,7 @@ export default {
          * @author LTVIET (16/03/2023)
          */
          handleEventGetValueInputSearch(value){
-            if(value == ""){
+            if(value == "" && this.keyword != value){
                 this.handleEventKeyDownEnterInputSearch();
             }
         },

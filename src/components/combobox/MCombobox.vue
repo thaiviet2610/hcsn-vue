@@ -2,7 +2,7 @@
     <!-- thẻ label của combobox  -->
     <label v-if="label" for="">{{ label }}<span v-if="required" class="required">*</span></label>
     <!-- combobox  -->
-    <div class="combobox" :style="'z-index:'+this.zIndex" :data_tooltip_top="value.length>23?value:null">
+    <div class="combobox" :style="`z-index:${this.zIndex};`">
         <!-- thẻ input để nhập dữ liệu  -->
         <input 
             ref="mInputCombobox"
@@ -19,7 +19,14 @@
             @input="onSearchItem"
             @keydown="onKeyDownSelecte"
             @blur="onBlurInput"
+            @mouseenter="handleEventMouseEnter"
             :style="styleInput">
+        <MTooltip
+            v-if="isShowTooltip"
+            :text="value"
+            class="combobox-tooltip"
+            :style="`max-width: ${inputWidth - 10}px`"
+        ></MTooltip>
         <!-- thẻ buton thực hiện chức năng hiện combobox-data  -->
         <MButtonIcon
             v-if="!isShow"
@@ -70,9 +77,8 @@
                 <div 
                     class="data_item--text" 
                     style="font-size: 11px;color: red;">
-                        Không có dữ liệu phù hợp
+                        {{ noData }}
                 </div>
-                <!-- <div :style="setStyleIconSelect(index)" class="data__item__icon"></div> -->
             </div>
         </div>
         
@@ -85,6 +91,7 @@
 <script>
 import resourceJS from '@/js/resource.js'
 import enumJS from '@/js/enum.js'
+import { mouseEnter } from '@/js/mouseenter'
 export default {
     name:"TheCombobox",
     props: {
@@ -156,7 +163,10 @@ export default {
             inValid: false, // biến thể hiện giá trị lỗi của combobox(true:lỗi,false:không lỗi)
             notifyError: null, // nội dung thông báo lỗi
             isShowLoad: false, // trạng thái của dialog laod dữ liệu 
-            btnDialgNotify: resourceJS.buttonDialog.notify
+            btnDialgNotify: resourceJS.buttonDialog.notify,
+            noData: resourceJS.notify.noDataCombobox,
+            isShowTooltip: false,
+            inputWidth: 0
         }
     },
     components:{
@@ -184,7 +194,6 @@ export default {
         if (!this.iconCombobox) {
             this.styleInput = 'width: 100%; padding-right: 28px';
         }
-
         
     },
     watch: {
@@ -199,6 +208,9 @@ export default {
             let findIndex = this.entitiesSearch.findIndex(item=>item[me.propValue] == me.itemSelected[me.propValue]);
             return findIndex;
         }
+    },
+    mounted() {
+        this.inputWidth = this.$refs["mInputCombobox"].offsetWidth; 
     },
     methods: {
 
@@ -222,6 +234,14 @@ export default {
                 this.indexItemSelect = -1;
             }
             this.zIndex = 0;
+        },
+
+        /**
+         * Hàm xử lý sự kiện mouse enter
+         * @param {*} event 
+         */
+        handleEventMouseEnter(event){
+            this.isShowTooltip = mouseEnter(event);
         },
 
         /**
@@ -476,7 +496,7 @@ export default {
                     this.notifyError = resourceJS.error.emptyInput;
                 }
                 return;
-            }else if(findIndex == -1){
+            }else if(findIndex == -1 && this.required){
                 //1.2. kiểm tra xem giá trị nhập vào có nằm trong danh sách dữ liệu không
                 //1.2.1. nếu có thì set invalid = true và hiển thị thêm thông báo lỗi 
                 this.inValid = true;

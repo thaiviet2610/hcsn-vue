@@ -1,5 +1,5 @@
 <template>
-    <div @keydown.ctrl.1.prevent="btnClickOpenFormSelectedAsset" 
+    <div :tabindex="0" @keydown.ctrl.1.prevent="btnClickOpenFormSelectedAsset" 
         @keydown.ctrl.e.prevent="handleEventShortcutFunctionTable(type.edit)"
         @keydown.ctrl.d.prevent="handleEventShortcutFunctionTable(type.delete)"
         @keyup="handleEventKeyUp">
@@ -268,6 +268,7 @@ export default {
                 this.oldValueAssetIncrement = JSON.stringify(this.assetIncrement);
             }
         }
+        // khởi tạo 1 biến lưu lại giá trị của các chứng từ ban đầu
         const oldValueAssetIncrement = JSON.parse(this.oldValueAssetIncrement);
         const idAssets = oldValueAssetIncrement.assets.map(function(asset){
             return asset.fixed_asset_id;
@@ -276,9 +277,10 @@ export default {
         oldValueAssetIncrement.price = 0;
         this.oldValueAssetIncrement = JSON.stringify(oldValueAssetIncrement);
         this.dataBodyApi = {
-            NotInAssets: [],
-            ActiveAssets: []
+            AssetsNotIn: [],
+            AssetsActive: []
         }
+        // khởi tạo 1 biến lưu lại giá trị id của các tài sản ban đầu
         let oldValueIdAssets = [];
         if(this.assetIncrement.assets){
             oldValueIdAssets = this.assetIncrement.assets.map(function(asset){
@@ -286,15 +288,16 @@ export default {
             })
         }
         this.oldValueIdAssets = JSON.stringify(oldValueIdAssets);
-
         if(this.assetIncrement.assets){
-            this.dataBodyApi.NotInAssets = this.assetIncrement.assets.map(function(asset){
+            // Thêm giá trị cho mảng chứa danh sách các tài sản chưa chứng từ
+            this.dataBodyApi.AssetsNotIn = this.assetIncrement.assets.map(function(asset){
                 return asset.fixed_asset_id;
             });
+            // khởi tạo mảng chứa các tài sản theo tìm kiếm
             const assetsToString = JSON.stringify(this.assetIncrement.assets);
             this.oldValueAssets = assetsToString;
             this.assetsSearch = JSON.parse(assetsToString);
-            
+            // lấy dữ liệu table
             this.getDataTable();
         }
     },
@@ -457,10 +460,16 @@ export default {
          * @author LTVIET (19/04/2023)
          */
          btnClickOpenFormSelectedAsset(){
+            if(this.isShowBudgetAsset) return;
             this.isShowSelectAssetNoActive = true;
             this.isShowToastSuccess = false;
         },
 
+        /**
+         * Hàm xử lý sự kiện khi bấm các phím tắt để gọi đến chức năng của table
+         * @param {*} type loại chức năng của table muốn gọi đến (sửa,xóa)
+         * @author LTVIET (19/04/2023)
+         */
         handleEventShortcutFunctionTable(type){
             const index = this.$refs[this.assetIncrementDetailInfo.table.ref].indexRowSelected;
             if(index > 0){
@@ -559,9 +568,9 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventSelectedAssets(value){
-            for(let i =0;i<value.length;i++){
+            for(let i = 0;i < value.length; i++){
                 let id = value[i].fixed_asset_id;
-                this.dataBodyApi.NotInAssets.push(id);
+                this.dataBodyApi.AssetsNotIn.push(id);
                 this.assetIncrement.assets.push(value[i]);
             }
             const assets = JSON.stringify(this.assetIncrement.assets);
@@ -624,9 +633,9 @@ export default {
                 
                 let indexSearch = this.assetsSearch.indexOf(item);
                 this.assetsSearch.splice(indexSearch,1);
-                this.dataBodyApi.NotInAssets.splice(indexSearch,1);
+                this.dataBodyApi.AssetsNotIn.splice(indexSearch,1);
                 if(JSON.parse(this.oldValueIdAssets).indexOf(item.fixed_asset_id) != -1){
-                    this.dataBodyApi.ActiveAssets.push(item.fixed_asset_id);
+                    this.dataBodyApi.AssetsActive.push(item.fixed_asset_id);
                 }
                 this.getDataTable();
                 this.setFocus(this.assetIncrementDetailInfo.bodyDown.inputSearch.ref);
@@ -641,7 +650,7 @@ export default {
             this.dataAssets = this.assetsSearch;
             const assets = this.assetsSearch.map(function(asset){
                 return {
-                    index: asset.index,
+                    row_index: asset.row_index,
                     fixed_asset_code: asset.fixed_asset_code,
                     fixed_asset_name: asset.fixed_asset_name,
                     department_name: asset.department_name,
@@ -660,7 +669,7 @@ export default {
                 if(this.assetsSearch[i].residual_value > 0){
                     residualTotal += this.assetsSearch[i].residual_value;
                 }
-                this.dataBodyTable[i].index = i+1;
+                this.dataBodyTable[i].row_index = i+1;
             }
             costTotal = commonJS.formatNumber(Math.round(costTotal));
             deprectionValueTotal = commonJS.formatNumber(Math.round(deprectionValueTotal));
@@ -675,6 +684,8 @@ export default {
          * @author LTVIET (19/04/2023)
          */
         handleEventBtnClickSave(){
+            // let check = true
+            // if(check){
             if(this.validateAssetIncrement() & this.validateAssetNoActives()){
                 this.assetIncrement.price = this.getTotalPrice(this.assetIncrement.assets);
                 this.isShowLoad  = true;
@@ -806,10 +817,7 @@ export default {
                         if(!itemEmpty.inValid){
                             let message = itemEmpty.label + error.Message;
                             this.handleDisplayInputError(itemEmpty,message);
-                            if(!this.itemError){
-                                this.itemError = itemEmpty;
-                                this.itemError.setFocus();
-                            }
+                            this.setItemError(itemEmpty);
                         }
                     }
                 }
@@ -818,10 +826,7 @@ export default {
                     let itemVoucherCode = this.$refs[this.assetIncrementDetailInfo.voucherCode.ref];
                     if(!itemVoucherCode.inValid){
                         this.handleDisplayInputError(itemVoucherCode,error.Message);
-                        if(!this.itemError){
-                            this.itemError = itemVoucherCode;
-                            this.itemError.setFocus();
-                        }
+                        this.setItemError(itemVoucherCode);
                     }  
                 }
                 // validate danh sách tài sản chứng từ rỗng
@@ -834,10 +839,7 @@ export default {
                     let item = this.$refs[`ref_${error.Data}`];
                     if(!item.inValid){
                         this.handleDisplayInputError(item,error.Message);
-                        if(!this.itemError){
-                            this.itemError = item;
-                            this.itemError.setFocus();
-                        }
+                        this.setItemError(item);
                     }
                 }
             }
@@ -869,10 +871,7 @@ export default {
                     check = false;
                     item.inValid = true;
                     item.notifyError = item.label + resourceJS.error.emptyInput;
-                    if(!this.itemError){
-                        this.itemError = item;
-                        this.itemError.setFocus();
-                    }
+                    this.setItemError(item);
                 }
                 if(ref == this.assetIncrementDetailInfo.voucherCode.ref){
                     check = this.validateMaxLength(item,this.assetIncrementDetailInfo.voucherCode.maxLength);
@@ -897,10 +896,7 @@ export default {
                 check = false;
                 const message = item.label + resourceJS.error.maxLength.replace("{0}",maxLength);
                 this.handleDisplayInputError(item,message);
-                if(!this.itemError){
-                    this.itemError = item;
-                    this.itemError.setFocus();
-                }
+                this.setItemError(item);
             }   
             return check;    
         },
@@ -953,6 +949,18 @@ export default {
          */
          getValueInputDescription(value){
             this.assetIncrement.description = value;
+        },
+
+        /**
+         * Hàm gán đối tượng lỗi vào itemError
+         * @param {*} item đối tượng lỗi
+         * @author LTVIET (18/04/2023)
+         */
+         setItemError(item){
+            if(!this.itemError){
+                this.itemError = item;
+                this.itemError.setFocus();
+            }
         },
 
         /**

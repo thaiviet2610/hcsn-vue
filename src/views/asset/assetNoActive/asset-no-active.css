@@ -38,8 +38,8 @@
 }
 
 .asset-no-active--column6{
-    max-width: 276px;
-    min-width: 276px;
+    max-width: 274px;
+    min-width: 274px;
     padding-right: 5px;
     text-align: left;
 }
@@ -105,7 +105,7 @@
 }
 
 .asset-no-active--footer-left{
-    min-width: 621px;
+    min-width: 619px;
 }
 
 .btn-close-asset-no-active{

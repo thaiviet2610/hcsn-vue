@@ -53,6 +53,17 @@
     white-space: nowrap;
 }
 
+.combobox_input:hover~.combobox-tooltip{
+    transform: scale(1);
+    z-index: 10000000;
+}
+
+.combobox-tooltip{
+    position: absolute;
+    top: 100%;
+    left: 0%;
+}
+
 .combobox__button{
     width: 16px !important;
     height: 16px !important;

@@ -9,8 +9,14 @@
 <script>
 export default {
     props: {
-        text: String,
-        classTooltip: String
+        text:{
+            type: String,
+            default: ""
+        },
+        classTooltip: {
+            type: String,
+            default: ""
+        },
     }
 }
 </script>

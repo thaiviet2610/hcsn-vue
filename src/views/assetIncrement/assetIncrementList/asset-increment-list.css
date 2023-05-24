@@ -21,7 +21,7 @@
     background-color: #ffffff;
     border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .16);
-    z-index: 10;
+    z-index: 11;
 }
 
 .horizontal_interface{
@@ -57,6 +57,16 @@
     background: url('../../../assets/icon/qlts-icon.png') no-repeat -158px -249px;
 	width: 11px;
 	height: 7px;
+}
+
+.asset-increment-list-interface-tooltip{
+    top: 110%;
+    right: 0;
+}
+
+.asset_increment--icon12:hover~.asset-increment-list-interface-tooltip{
+    transform: scale(1);
+    z-index: 10000;
 }
 
 
@@ -107,8 +117,7 @@
 
 .asset-increment-master-table{
     width: 100%;
-    max-width: 1232px;
-    height: calc(100% - 62px);
+    height: calc(100% - 63px);
     position: relative;
 }
 
@@ -375,7 +384,7 @@ em.specs {
     max-width: 486px;
     min-width: 486px;
     text-align: left;
-    padding-left: 20px;
+    padding-left: 15px;
 }
 
 .asset-increment--footer-left{
@@ -491,7 +500,7 @@ em.specs {
     right: 35%;
 }
 
-.btn--main:hover~.btn-add-asset-increment-tooltip{
+.btn-delete-multiple:hover~.btn-add-asset-increment-tooltip{
     transform: scale(1);
     z-index: 10000;
 }

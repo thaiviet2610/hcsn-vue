@@ -20,13 +20,13 @@
             @input="handleEventInput"
             @keydown.enter="onKeyDownSelecte"
             @blur="onValidateBlur"
+            @mouseenter="handleEventMouseEnter"
             :placeholder="placeholder">
         <MTooltip
-            v-if="(value.length - 5 ) * 8 > inputWidth"
+            v-if="isShowTooltip"
             :text="value"
             :style="`max-width: ${inputWidth - 20}px !important;`"
             class="m-input-tooltip">
-
         </MTooltip>    
         <!-- thẻ div hiển thị thông báo lỗi nếu có  -->
         <div v-if="inValid" class="error--info">{{ notifyError }}</div>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mouseEnter } from '@/js/mouseenter.js';
 import resourceJS from '../../js/resource.js'
 export default {
     name:"MInput",
@@ -104,6 +105,7 @@ export default {
             styleInput: null,
             errorFormatNumber: false,
             inputWidth: 0,
+            isShowTooltip: false,
         }
     },
     watch: {
@@ -116,7 +118,7 @@ export default {
         
         //1. nếu valueInput có giá trị thì gán cho value
         if(this.valueInput){
-            this.value = this.valueInput;
+            this.value = String(this.valueInput).trim();
         }
         //3. nếu input có icon set style cho input
         if(this.iconInput){
@@ -125,6 +127,13 @@ export default {
         }
     },
     methods: {
+        /**
+         * Hàm xử lý sự kiện mouse enter
+         * @param {*} event 
+         */
+        handleEventMouseEnter(event){
+            this.isShowTooltip = mouseEnter(event);
+        },
 
         /**
          * Hàm xử lý sự kiện blur input

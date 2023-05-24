@@ -171,7 +171,7 @@
                 </MButtonIcon>
               </div>
             </div>
-            <div v-else class="footer-text"> Tổng cộng:</div>
+            <div v-else class="footer-text"> {{ textTotal }}</div>
           </td>
           <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
             class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;">
@@ -220,7 +220,6 @@
       <!-- phần body của table  -->
       <tbody>
         <tr style="position: relative;"
-          :ref="`mRow_${1+1}`"
           @contextmenu="handleEventClickRightMouse($event,index)"
           @dblclick="btnAddOnDblClickRowTable(index+1)"
           @click="addOnClickRowTable(index + 1)"
@@ -241,11 +240,11 @@
               >
             </MCheckbox>
           </td>
-          <td v-for="(itemBody,indexBody) of item" :key="indexBody" class="body-table"
-              :class="tableInfo.body[indexBody].class">
-              <div class="body-table__text">{{ itemBody }}</div>
+          <td v-for="(itemBody,indexBody) of item" :key="indexBody" class="body-table cell"
+              :class="tableInfo.body[indexBody].class" >
+              <div @mouseover="handleEventMouseEnter" class="body-table__text">{{ itemBody }}</div>
               <MTooltip
-              v-show="(itemBody.length - 5) * 8 > tableInfo.body[indexBody].maxWidth"
+                v-show="isShowTooltip"
                 :text="itemBody"
                 :class="tableInfo.body[indexBody].class"
                 class="body-table__tooltip"
@@ -409,9 +408,9 @@
                 </MButtonIcon>
               </div>
             </div>
-            <div v-else class="footer-text"> Tổng cộng:</div>
+            <div v-else class="footer-text"> {{ textTotal }}</div>
           </td>
-          <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" 
+          <td v-for="(itemFooter,indexFooter) of dataFooter" :key="indexFooter" @mouseenter="handleEventMouseEnter"
             class="footer_right" :class="tableInfo.footer.footerClass[indexFooter]" style="border: none;cursor: default !important;" >
               {{ itemFooter }}
           </td>
@@ -463,6 +462,7 @@ import commonJS from "@/js/common.js";
 import resourceJS from "@/js/resource.js";
 import MContextMenu from "../contextMenu/MContextMenu.vue";
 import enumJS from '@/js/enum.js';
+import {mouseEnter} from '../../js/mouseenter.js'
 export default {
 name: "MTable",
 components: {
@@ -626,6 +626,7 @@ data() {
     contextMenuEnity: null,
     previousKeyShift: false,
     previousKeyCtrl: false,
+    isShowTooltip: false,
     /**
      * vị trí checkbox bắt đầu của danh sách đối tượng cần xóa nhiều
      * @author LTVIET (01/03/2023)
@@ -662,6 +663,7 @@ data() {
     totalRecord: 0,
     clickFunction: false,
     textNoData: resourceJS.table.noDataTable,
+    textTotal: resourceJS.table.totalText,
     isDblClick: true,
     isClickRow: []
   };
@@ -690,6 +692,14 @@ unmounted() {
   document.removeEventListener('click',this.handleEventCloseContextMenu);
 },
 methods: {
+  /**
+   * Hàm xử lý sự kiện mouse enter
+   * @param {*} event 
+   */
+  handleEventMouseEnter(event){
+    this.isShowTooltip = mouseEnter(event);
+  },
+
   /**
    * Hàm xử lý sự kiện click chuột trái ra ngoài contextmenu thì sẽ ẩn đi contextment
    * @author LTVIET (16/04/2023)
@@ -765,7 +775,6 @@ methods: {
    * @author LTVIET (02/03/2023)
    */
   getUnitData(){
-    document.getElementById("mTableContainer")?.scrollTo(0,0);
     this.reloadTable();
     if(this.isPaging){
       this.pageSize = this.valuePageSize;
@@ -800,6 +809,14 @@ methods: {
     if(!this.totalPage){
       this.totalPage = 1;
     }
+  },
+
+  /**
+   * Hàm chuyển thanh scroll lên dòng đầu tiên của table
+   * @author LTVIET (15/03/2023)
+   */
+  scrollToTopTable(){
+    document.getElementById("mTableContainer")?.scrollTo(0,0);
   },
 
   /**
@@ -873,6 +890,9 @@ methods: {
           this.rowSelected.fill(false);
           this.rowSelected[index] = true;
           this.indexRowSelected = index;
+          // if(this.isCheckbox){
+          //   this.setFocusCheckbox(index);
+          // }
         }
         else{
           this.markCheckbox(index);
@@ -933,12 +953,13 @@ methods: {
         this.previousKeyShift = true;
         break;
       case enumJS.keyCtrl:
-        this.previousKeyCtrl = true;
+        // this.previousKeyCtrl = true;
         break;
       default:
         break;
     }
   },
+
 
   /**
    * Hàm xử lý sự kiện bấm phím xuống 

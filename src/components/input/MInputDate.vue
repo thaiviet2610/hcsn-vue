@@ -22,7 +22,7 @@
                 autocomplete="off"
                 :disabled="disable"
                 :tabindex="disable ? -1:0"
-                @click="handleEventClick"
+                @click="setFocus"
                 @focus="isFocus = true;"
                 @focusout="isFocus = false"
                 @input="handleEventInput" 
@@ -128,10 +128,13 @@ export default {
          * @author LTVIET (05/03/2023)
          */
          setFocus() {
-            this.$nextTick(function() {
+            this.$nextTick(function(){
                 this.$refs["mInputDate"].focus();
-                this.setSelect();
             })
+            if(this.isBlur){
+                this.setSelect();
+            }
+        
         }, 
 
         /**
@@ -175,7 +178,6 @@ export default {
                         this.inValid = true;
                         let message = resourceJS.inputDate.inValidFormat.replace("{0}",this.label).replace("{1}",this.format);
                         this.notifyError = message;
-                        this.$emit('getValueInputDate',this.value?.trim());
                     }else{
                         // 2.2. nếu đúng định dạng
                         // 2.2.1. validate lại giá trị ngày, tháng, năm
@@ -316,15 +318,14 @@ export default {
                 // 2.3. validate giá trị ngày, tháng, năm
                 if(this.validateValueDate()){
                     // 2.3.1. nếu giá trị ngày, tháng, năm hợp lệ thì truyền dữ liệu ra ngoài
-                    this.inValid = false;
                     let value = `${this.txtYear}-${this.txtMonth}-${this.txtDate}`;
                     this.txtInputDate = value;
                     this.$emit('getValueInputDate',value?.trim());
                 }
             }else if(!this.value){
                 this.$emit('getValueInputDate',null);
-
             }
+            this.inValid = false;
         },
 
         /**
@@ -345,8 +346,8 @@ export default {
             let arrValue = this.value.split("/");
             if((arrValue.length == 1) && (length == arr[0].length)){
                 this.value = this.value + "/";
-                this.isBlur = false;
                 this.keyValueInput = ++this.keyValueInput;
+                this.isBlur = false;
                 this.setFocus();
             }
             if((arrValue.length == 2) && (arrValue[1].length == arr[1].length)){
@@ -433,16 +434,6 @@ export default {
             if(keyCode == enumJS.keyCtrl){
                 this.previousKeyCtrl = false;
             }
-        },
-
-        /**
-         * Hàm xử lý sự kiện click vào input date
-         * @author LTVIET (05/03/2023)
-         */
-        handleEventClick(){
-            this.setSelect();
-            // this.handleEventShowPicker();
-            this.setFocus();
         },
 
         /**

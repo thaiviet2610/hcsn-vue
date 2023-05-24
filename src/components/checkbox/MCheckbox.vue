@@ -1,5 +1,6 @@
 <template>
     <button 
+        :id="idCheckbox"
         ref="mCheckbox"
         @click="addOnClick" 
         class="checkbox">
@@ -15,6 +16,10 @@ export default {
             type: Boolean,
             default: false
         },
+        idCheckbox: {
+            type: String,
+            default: ""
+        }
     },
     components:{
 

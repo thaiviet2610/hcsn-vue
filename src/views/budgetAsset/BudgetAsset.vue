@@ -215,20 +215,20 @@ export default {
                 this.priceList.push(item);
             }
         }else{
-            this.priceList.push({
-                budget_id: "00000000-0000-0000-0000-000000000000",
-                budget_code: "",
-                budget_name: "",
-                mount: null
-            });
+            const budget = this.getBudgetDefault();
+            this.priceList.push(budget);
         }
         
-        this.getBudget();
+        this.getDataComboboxBudget();
         
     },
     mounted() {
     },
     watch: {
+        /**
+         * Hàm theo dõi khi giá trị muont thay đổi thì tính lại giá trị mount total
+         * @author LTVIET (17/05/2023)
+         */
         priceList: {
             handler: function () {
                 this.mountTotal = this.getMountTotal;
@@ -253,10 +253,10 @@ export default {
     methods: {
 
         /**
-         * Hàm gọi api lấy danh sách nguồn chi phí
+         * Hàm gọi api lấy danh sách nguồn chi phí của combobox 
          * @author LTVIET (19/04/2023)
          */
-        getBudget(){
+         getDataComboboxBudget(){
             this.isShowLoad = true;
             axios.get(this.budgetApi)
             .then(res=>{
@@ -269,6 +269,20 @@ export default {
                 this.handleEventErrorAPI(err);
                 this.isShowLoad = false;
             })
+        },
+
+        /**
+         * Hàm khởi tạo giá trị mặc định cho đối tượng nguồn hình thành
+         * @author LTVIET (19/04/2023)
+         */
+        getBudgetDefault(){
+            const budget = {
+                budget_id: "00000000-0000-0000-0000-000000000000",
+                budget_code: "",
+                budget_name: "",
+                mount: null
+            };
+            return budget;
         },
         
         /**
@@ -308,12 +322,7 @@ export default {
          * @author LTVIET (18/04/2023)
          */
         handleEventAddBudgetAsset(){
-            let price  = {
-                budget_id: "00000000-0000-0000-00000000",
-                budget_code: "",
-                budget_name: "",
-                mount: null
-            }
+            let price  = this.getBudgetDefault();
             this.priceList.push(price);
             this.$nextTick(function() {
                 this.$refs[`mCombobox_${this.priceList.length-1}`][0].setFocus();
@@ -356,16 +365,14 @@ export default {
             }
         },
 
-        
-
         /**
          * Hàm xử lý sự kiện lấy ra giá trị nguồn chi phí từ combobox
-         * @param {*} value id của đối tượng nguồn chi phí trong combobox
+         * @param {*} id id của đối tượng nguồn chi phí trong combobox
          * @param {*} index vị trí của đối tượng nguồn chi phí trong danh sách
          * @author LTVIET (18/04/2023)
          */
-        getValueBudget(value,index){
-            this.getBudgetById(value,index);
+        getValueBudget(id,index){
+            this.getBudgetById(id,index);
         },
 
         /**
@@ -413,7 +420,6 @@ export default {
         setFocus(index){
             this.$nextTick(function() {
                 this.$refs[`mCombobox_${index}`][0].setFocus();
-                // this.$refs[`mCombobox_${index}`][0].setSelect();
             })
             
         },
@@ -516,18 +522,12 @@ export default {
                             let item = this.$refs[`mInput_${index}`][0];
                             item.inValid = true;
                             item.notifyError = resourceJS.error.emptyInput;
-                            if(!this.itemError){
-                                this.itemError = item;
-                                this.itemError.setFocus();
-                            }
+                            this.setItemError(item);
                         }else{
                             let item = this.$refs[`mCombobox_${index}`][0];
                             item.inValid = true;
                             item.notifyError = resourceJS.error.emptyInput;
-                            if(!this.itemError){
-                                this.itemError = item;
-                                this.itemError.setFocus();
-                            }
+                            this.setItemError(item);
                         }
                     }
                 }
@@ -536,20 +536,14 @@ export default {
                     let item = this.$refs[`mCombobox_${index}`][0];
                     item.inValid = true;
                     item.notifyError = resourceJS.validateBudget.duplicateBudget;
-                    if(!this.itemError){
-                        this.itemError = item;
-                        this.itemError.setFocus();
-                    }
+                    this.setItemError(item);
                 }
                 if(validateCode == enumJS.validateCode.costSourceMountLessOrEqualThanZero){
                     const index = dataError;
                     let item = this.$refs[`mInput_${index}`][0];
                     item.inValid = true;
                     item.notifyError = resourceJS.error.emptyInputNumber;
-                    if(!this.itemError){
-                        this.itemError = item;
-                        this.itemError.setFocus();
-                    }
+                    this.setItemError(item);
                 }
                 
             }
@@ -594,27 +588,32 @@ export default {
                 combobox.inValid = true;
                 combobox.notifyError = resourceJS.error.emptyInput;
                 check = false;
-                if(!this.itemError){
-                    this.itemError = combobox;
-                    this.itemError.setFocus();
-                }
+                this.setItemError(combobox);
             }else{
                 for(let j = 0; j < index; j++){
-                    
                     if(this.priceList[j].budget_name == combobox.value){
                         combobox.inValid = true;
                         combobox.notifyError = resourceJS.validateBudget.duplicateBudget;
                         check = false;
-                        if(!this.itemError){
-                            this.itemError = combobox;
-                            this.itemError.setFocus();
-                        }
+                        this.setItemError(combobox);
                         break;
                     }
                 }
             }
             if(combobox.inValid) check = false;
             return check;
+        },
+
+        /**
+         * Hàm gán đối tượng lỗi vào itemError
+         * @param {*} item đối tượng lỗi
+         * @author LTVIET (18/04/2023)
+         */
+        setItemError(item){
+            if(!this.itemError){
+                this.itemError = item;
+                this.itemError.setFocus();
+            }
         },
         
         /**
@@ -624,7 +623,7 @@ export default {
          */
         validateInput(input){
             let check = true;
-            if(!input.value && input.value != 0){
+            if(!input.value && input.value !== 0){
                 input.inValid = true;
                 input.notifyError = resourceJS.error.emptyInput;
                 check = false;
@@ -632,7 +631,7 @@ export default {
                     this.itemError = input;
                     this.itemError.setFocus();
                 }
-            }else if(input.valueNumber === 0){
+            }else if(Number(input.value) == 0){
                 input.inValid = true;
                 input.notifyError = resourceJS.error.emptyInputNumber;
                 check = false;
